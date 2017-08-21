@@ -26,7 +26,6 @@
     
     self.navigationItem.rightBarButtonItem = nil;
     
-    
 }
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer
