@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="16B2657" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" restorationIdentifier="SimulateresulrHeadCellId" id="p3X-QU-ZVo" customClass="SimulateresulrHeadCell">
+            <rect key="frame" x="0.0" y="0.0" width="445" height="161"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="445" height="161"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="tiku_headbg.png" translatesAutoresizingMaskIntoConstraints="NO" id="MTi-m6-Ml8">
+                        <rect key="frame" x="0.0" y="0.0" width="445" height="161"/>
+                    </imageView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="做对题数" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pPe-I5-s2Y">
+                        <rect key="frame" x="40" y="65" width="60" height="15"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="60" id="Tob-Lq-UUz"/>
+                            <constraint firstAttribute="height" constant="15" id="pzy-MD-HRF"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="12" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DjK-Fo-rH3">
+                        <rect key="frame" x="345" y="45" width="60" height="15"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="60" id="CDP-sr-dLT"/>
+                            <constraint firstAttribute="height" constant="15" id="aE2-QR-Zbo"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="tiku-ridus.png" translatesAutoresizingMaskIntoConstraints="NO" id="evw-Ot-8Le">
+                        <rect key="frame" x="180.5" y="10" width="84" height="84"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="84" id="bOy-DY-Qcc"/>
+                            <constraint firstAttribute="width" constant="84" id="wSe-7y-gUY"/>
+                        </constraints>
+                    </imageView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="97" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4oq-Z1-nP8">
+                        <rect key="frame" x="180" y="8" width="84" height="84"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="84" id="iyP-34-LZl"/>
+                            <constraint firstAttribute="width" constant="84" id="vRS-zq-qmI"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                        <color key="textColor" red="0.11372549019607843" green="0.47843137254901957" blue="0.97254901960784312" alpha="1" colorSpace="calibratedRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="继续加油吧" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CSh-HR-rFT">
+                        <rect key="frame" x="0.0" y="96" width="445" height="15"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="15" id="owB-jG-roQ"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="12" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ojp-YU-PDf">
+                        <rect key="frame" x="40" y="45" width="60" height="15"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="15" id="E9b-u3-fGy"/>
+                            <constraint firstAttribute="width" constant="60" id="OgH-bX-M1u"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="做错题数" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1G9-wB-RBT">
+                        <rect key="frame" x="345" y="65" width="60" height="15"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="15" id="qLG-W2-CMY"/>
+                            <constraint firstAttribute="width" constant="60" id="tlz-9Y-zma"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+            </view>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="CSh-HR-rFT" secondAttribute="trailing" id="0jT-Iq-sTD"/>
+                <constraint firstAttribute="trailing" secondItem="1G9-wB-RBT" secondAttribute="trailing" constant="40" id="5k0-2u-bey"/>
+                <constraint firstItem="DjK-Fo-rH3" firstAttribute="top" secondItem="p3X-QU-ZVo" secondAttribute="top" constant="45" id="8Ai-Lh-TnE"/>
+                <constraint firstItem="pPe-I5-s2Y" firstAttribute="top" secondItem="ojp-YU-PDf" secondAttribute="bottom" constant="5" id="9Gt-Hx-1kZ"/>
+                <constraint firstItem="ojp-YU-PDf" firstAttribute="leading" secondItem="p3X-QU-ZVo" secondAttribute="leading" constant="40" id="DVs-aB-OkP"/>
+                <constraint firstItem="4oq-Z1-nP8" firstAttribute="top" secondItem="p3X-QU-ZVo" secondAttribute="top" constant="8" id="EHa-cW-u4C"/>
+                <constraint firstItem="pPe-I5-s2Y" firstAttribute="leading" secondItem="p3X-QU-ZVo" secondAttribute="leading" constant="40" id="Hpj-oe-5hS"/>
+                <constraint firstItem="ojp-YU-PDf" firstAttribute="top" secondItem="p3X-QU-ZVo" secondAttribute="top" constant="45" id="OqS-0K-eEe"/>
+                <constraint firstItem="1G9-wB-RBT" firstAttribute="top" secondItem="DjK-Fo-rH3" secondAttribute="bottom" constant="5" id="Rqw-NE-5sR"/>
+                <constraint firstItem="CSh-HR-rFT" firstAttribute="leading" secondItem="p3X-QU-ZVo" secondAttribute="leading" id="VtH-GH-vzZ"/>
+                <constraint firstItem="CSh-HR-rFT" firstAttribute="top" secondItem="evw-Ot-8Le" secondAttribute="bottom" constant="2" id="WeP-xg-Cyg"/>
+                <constraint firstAttribute="trailing" secondItem="DjK-Fo-rH3" secondAttribute="trailing" constant="40" id="bTT-U6-IvE"/>
+                <constraint firstAttribute="bottom" secondItem="MTi-m6-Ml8" secondAttribute="bottom" id="nuU-Lt-9fR"/>
+                <constraint firstItem="MTi-m6-Ml8" firstAttribute="leading" secondItem="p3X-QU-ZVo" secondAttribute="leading" id="qw2-pJ-n3K"/>
+                <constraint firstAttribute="trailing" secondItem="MTi-m6-Ml8" secondAttribute="trailing" id="raC-IN-YVn"/>
+                <constraint firstItem="evw-Ot-8Le" firstAttribute="centerX" secondItem="p3X-QU-ZVo" secondAttribute="centerX" id="se3-YY-zkQ"/>
+                <constraint firstItem="4oq-Z1-nP8" firstAttribute="centerX" secondItem="p3X-QU-ZVo" secondAttribute="centerX" id="uKc-SX-4rg"/>
+                <constraint firstItem="evw-Ot-8Le" firstAttribute="top" secondItem="p3X-QU-ZVo" secondAttribute="top" constant="10" id="wIk-e6-7yT"/>
+                <constraint firstItem="MTi-m6-Ml8" firstAttribute="top" secondItem="p3X-QU-ZVo" secondAttribute="top" id="z0c-Qj-AZr"/>
+            </constraints>
+            <size key="customSize" width="445" height="161"/>
+            <connections>
+                <outlet property="iconImageView" destination="evw-Ot-8Le" id="TcL-NA-0H3"/>
+                <outlet property="rateLabel" destination="CSh-HR-rFT" id="15F-VN-gPV"/>
+                <outlet property="rightLB" destination="ojp-YU-PDf" id="wc7-up-ZeH"/>
+                <outlet property="scoreLB" destination="4oq-Z1-nP8" id="1NO-aW-waQ"/>
+                <outlet property="wrongnumberLabel" destination="DjK-Fo-rH3" id="gID-UO-OZk"/>
+            </connections>
+            <point key="canvasLocation" x="-337" y="88"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <image name="tiku-ridus.png" width="95" height="95"/>
+        <image name="tiku_headbg.png" width="375" height="152"/>
+    </resources>
+</document>
