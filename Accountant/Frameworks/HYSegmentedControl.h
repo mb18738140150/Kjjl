@@ -20,6 +20,8 @@
 
 @property (nonatomic,assign)BOOL drop;
 @property (assign, nonatomic) id<HYSegmentedControlDelegate>delegate;
+@property (nonatomic, assign)int selectIndex;
+
 //初始化函数 
 - (id)initWithOriginY:(CGFloat)y Titles:(NSArray *)titles delegate:(id)delegate;
 
@@ -31,5 +33,8 @@
 - (void)clickBT:(NSInteger)index;
 
 - (void)changeTitle:(NSString *)title withIndex:(NSInteger)index;
+
+- (void)addTipWithIndex:(NSInteger)index;
+- (void)cancelTipWithIndex:(NSInteger)index;
 
 @end

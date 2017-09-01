@@ -13,9 +13,9 @@
 #import <AudioToolbox/AudioToolbox.h>
 #import <RongIMKit/RongIMKit.h>
 #import <RongIMLib/RongIMLib.h>
-
+#import "AppDelegate.h"
 //如果您的APP中只使用融云的底层通讯库 IMLib ，请把IsUseRongCloudIMKit 设置成 0，如果使用 IMKit 请设置成 1
-#define IsUseRongCloudIMKit 0
+#define IsUseRongCloudIMKit 1
 
 NSString *const RCDLiveKitDispatchMessageNotification = @"RCDLiveKitDispatchMessageNotification";
 NSString *const RCDLiveKitDispatchTypingMessageNotification = @"RCDLiveKitDispatchTypingMessageNotification";
@@ -76,6 +76,19 @@ static RCDLive *__rongUIKit = nil;
   [[RCIM sharedRCIM] setReceiveMessageDelegate:self];
 #endif
 }
+
+- (void)setReciveMessageAndConnectionStatusDelegate
+{
+#if !IsUseRongCloudIMKit
+    // listen receive message
+    [[RCIMClient sharedRCIMClient] setReceiveMessageDelegate:self object:nil];
+    [[RCIMClient sharedRCIMClient] setRCConnectionStatusChangeDelegate:self];
+# else
+    [[RCIM sharedRCIM] setConnectionStatusDelegate:self];
+    [[RCIM sharedRCIM] setReceiveMessageDelegate:self];
+#endif
+}
+
 
 - (void)disconnectRongCloud{
   
@@ -152,11 +165,17 @@ static RCDLive *__rongUIKit = nil;
  *  @param status 网络状态。
  */
 - (void)onConnectionStatusChanged:(RCConnectionStatus)status {
+    
+    if (status == ConnectionStatus_KICKED_OFFLINE_BY_OTHER_CLIENT || status == ConnectionStatus_TOKEN_INCORRECT) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:kRCIMConnectionStatusChanged object:@{@"status":@(status)}];
+    }
+    
     if (/*ConnectionStatus_NETWORK_UNAVAILABLE != status && */ConnectionStatus_UNKNOWN != status &&
         ConnectionStatus_Unconnected != status) {
         [[NSNotificationCenter defaultCenter] postNotificationName:RCDLiveKitDispatchConnectionStatusChangedNotification
                                                         object:[NSNumber numberWithInt:status]];
-    } else {
+    }
+    else {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self performSelector:@selector(delayNotifyUnConnectedStatus) withObject:nil afterDelay:3];
         });
@@ -165,8 +184,12 @@ static RCDLive *__rongUIKit = nil;
 
 #else
 
-
 -(void)onRCIMConnectionStatusChanged:(RCConnectionStatus)status{
+    
+    if (status == ConnectionStatus_KICKED_OFFLINE_BY_OTHER_CLIENT || status == ConnectionStatus_TOKEN_INCORRECT) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:kRCIMConnectionStatusChanged object:@{@"status":@(status)}];
+    }
+    
     if (/*ConnectionStatus_NETWORK_UNAVAILABLE != status && */ConnectionStatus_UNKNOWN != status &&
         ConnectionStatus_Unconnected != status) {
         [[NSNotificationCenter defaultCenter] postNotificationName:RCDLiveKitDispatchConnectionStatusChangedNotification

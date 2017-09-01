@@ -29,6 +29,8 @@
 //#import "QINIULivePlaying.h"
 //#import "QCLOUDLivePlaying.h"
 
+#import "LivingChatViewController.h"
+
 #import "UIView+RCDDanmaku.h"
 #import "RCDDanmaku.h"
 #import "RCDDanmakuManager.h"
@@ -57,7 +59,7 @@ UIScrollViewDelegate, UINavigationControllerDelegate,RCTKInputBarControlDelegate
 @property (nonatomic, strong)UIImageView                        *stateImageView;
 @property (nonatomic, strong)UIButton                           *backBT;
 @property (nonatomic, strong)HYSegmentedControl * segmentC;
-
+@property (nonatomic, strong)LivingChatViewController * chatVC;
 /**
  *  存储长按返回的消息的model
  */
@@ -446,6 +448,7 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
 
 - (void)segmentSetup
 {
+//    self.segmentC = [[HYSegmentedControl alloc] initWithOriginY:kZXVideoPlayerOriginalHeight Titles:@[@"聊天室", @"视频详情",@"助教老师"] delegate:self];
     self.segmentC = [[HYSegmentedControl alloc] initWithOriginY:kZXVideoPlayerOriginalHeight Titles:@[@"聊天室", @"视频详情"] delegate:self];
     [self.view addSubview:self.segmentC];
 }
@@ -559,6 +562,13 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
                                                 });
                                                 
                                             } error:^(RCErrorCode status) {
+                                                
+                                                if (self.segmentC.selectIndex == 2) {
+                                                    [self.chatVC.view removeFromSuperview];
+                                                    [self.chatVC popupChatViewController];
+                                                    self.chatVC = nil;
+                                                }
+                                                
                                                 [self dismissViewControllerAnimated:YES completion:nil];
                                             }];
     }
@@ -606,7 +616,7 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
         self.contentView.backgroundColor = RCDLive_RGBCOLOR(235, 235, 235);
         self.contentView = [[UIScrollView alloc]initWithFrame:contentViewFrame];
         self.contentView.scrollEnabled = NO;
-        self.contentView.contentSize = CGSizeMake(kScreenWidth * 2, (kScreenHeight - 42 - kZXVideoPlayerOriginalHeight));
+        self.contentView.contentSize = CGSizeMake(kScreenWidth * 3, (kScreenHeight - 42 - kZXVideoPlayerOriginalHeight));
         [self.view addSubview:self.contentView];
     }
     //聊天消息区
@@ -706,6 +716,14 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
         [self.videoDetailView.tableView reloadData];
         [self.contentView addSubview:self.videoDetailView];
     }
+    
+    if (self.privateChatView == nil) {
+        self.privateChatView = [[UIView alloc]initWithFrame:CGRectMake(kScreenWidth * 2, 0, kScreenWidth, (kScreenHeight - 42 - kZXVideoPlayerOriginalHeight))];
+        self.privateChatView.backgroundColor = [UIColor grayColor];
+        [self.contentView addSubview:self.privateChatView];
+//        self.privateChatView.bounds.origin.y = -(kScreenHeight - 42 - kZXVideoPlayerOriginalHeight);
+    }
+    
 }
 
 -(void)showInputBar:(id)sender{
@@ -1323,7 +1341,12 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
     
     NSLog(@"%@", rcMessage);
     
+    if (rcMessage.conversationType == ConversationType_PRIVATE) {
+        [self.segmentC addTipWithIndex:2];
+    }
+    
     RCDLiveMessageModel *model = [[RCDLiveMessageModel alloc] initWithMessage:rcMessage];
+    
     NSDictionary *leftDic = notification.userInfo;
     if (leftDic && [leftDic[@"left"] isEqual:@(0)]) {
         self.isNeedScrollToButtom = YES;
@@ -1408,6 +1431,72 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
 {
     [self.inputBar setInputBarStatus:RCDLiveBottomBarDefaultStatus];
     [self.contentView setContentOffset:CGPointMake(kScreenWidth * index, 0) animated:YES];
+    
+    if (index == 2) {
+        [self quitChatRoom];
+        [self.segmentC cancelTipWithIndex:2];
+        if (!self.chatVC) {
+            self.chatVC = [[LivingChatViewController alloc]init];
+            _chatVC.conversationType = ConversationType_PRIVATE;
+            _chatVC.targetId = @"3926";
+            [self.privateChatView addSubview:_chatVC.view];
+        }
+        
+    }else if (index == 0)
+    {
+        [self.chatVC.view removeFromSuperview];
+        [self.chatVC popupChatViewController];
+        self.chatVC = nil;
+        if (self.conversationMessageCollectionView.delegate == nil) {
+            [self joinChatRoom];
+        }
+    }
+    
+}
+
+- (void)joinChatRoom
+{
+    __weak typeof(self)weakSelf = self;
+    
+    [[RCIMClient sharedRCIMClient]
+     joinChatRoom:self.targetId
+     messageCount:self.defaultHistoryMessageCountOfChatRoom
+     success:^{
+         dispatch_async(dispatch_get_main_queue(), ^{
+
+             self.conversationMessageCollectionView.dataSource = self;
+             self.conversationMessageCollectionView.delegate = self;
+             [self registerNotification];
+         });
+     }
+     error:^(RCErrorCode status) {
+         
+         dispatch_async(dispatch_get_main_queue(), ^{
+             if (status == KICKED_FROM_CHATROOM) {
+                 [weakSelf loadErrorAlert:NSLocalizedStringFromTable(@"JoinChatRoomRejected", @"RongCloudKit", nil)];
+             } else {
+                 [weakSelf loadErrorAlert:NSLocalizedStringFromTable(@"JoinChatRoomFailed", @"RongCloudKit", nil)];
+             }
+         });
+     }];
+}
+
+- (void)quitChatRoom
+{
+    [[RCIMClient sharedRCIMClient] quitChatRoom:self.targetId
+                                        success:^{
+                                            self.conversationMessageCollectionView.dataSource = nil;
+                                            self.conversationMessageCollectionView.delegate = nil;
+                                            [[NSNotificationCenter defaultCenter] removeObserver:self name:RCDLiveKitDispatchMessageNotification object:nil];
+                                            
+                                            //断开融云连接，如果你退出聊天室后还有融云的其他通讯功能操作，可以不用断开融云连接，否则断开连接后需要重新connectWithToken才能使用融云的功能
+                                            //                                                [[RCDLive sharedRCDLive]logoutRongCloud];
+                                            
+                                            
+                                            
+                                        } error:^(RCErrorCode status) {
+                                            
+                                        }];
 }
 
 #pragma mark - 输入框事件

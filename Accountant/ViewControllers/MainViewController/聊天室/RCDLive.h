@@ -221,4 +221,9 @@ FOUNDATION_EXPORT NSString *const RCDLiveKitDispatchMessageNotification;
  @discussion 与融云服务器建立连接之后，应该设置当前用户的用户信息，用于SDK显示和发送。
  */
 @property(nonatomic, strong) RCUserInfo *currentUserInfo;
+
+
+- (void)setReciveMessageAndConnectionStatusDelegate;
+
+
 @end

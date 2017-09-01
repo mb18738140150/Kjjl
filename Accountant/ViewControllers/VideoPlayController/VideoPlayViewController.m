@@ -598,4 +598,9 @@
     
 }
 
+- (void)dismissStiop
+{
+    [self.videoController backstop];
+}
+
 @end

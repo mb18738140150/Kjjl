@@ -14,4 +14,6 @@
 @property (nonatomic,assign) int                             beginChapterId;
 @property (nonatomic,assign) int                             beginVideoId;
 
+- (void)dismissStiop;
+
 @end

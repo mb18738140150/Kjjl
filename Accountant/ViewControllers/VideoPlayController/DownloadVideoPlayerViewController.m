@@ -268,6 +268,10 @@
     [self.view addSubview:self.chapterTableView];
 }
 
+- (void)dismissStiop
+{
+    [self.videoController backstop];
+}
 
 
 @end

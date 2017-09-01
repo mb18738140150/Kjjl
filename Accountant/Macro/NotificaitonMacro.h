@@ -38,4 +38,6 @@
 
 #define kLocalNitificationOfLivingStart             @"localNotificationLivingStart"
 
+#define kRCIMConnectionStatusChanged                @"RCIMConnectionStatusChanged"
+
 #endif /* NotificaitonMacro_h */

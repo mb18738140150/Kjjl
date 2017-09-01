@@ -17,7 +17,7 @@
 #import "CommonMacro.h"
 #import "SVProgressHUD.h"
 #import "CourseModuleProtocol.h"
-#import "ImageModuleProtocol.h"
+#import "ImageModuleProtocol.h"/Users/aaa/Desktop/projects/Accountant/Accountant/ViewControllers/MainViewController/CustomCells
 #import "MJRefresh.h"
 #import "MainViewMacro.h"
 #import "UserManager.h"
@@ -32,7 +32,10 @@
 
 #import "LivingChatViewController.h"
 
-#define SERVICE_ID @"KEFU150105808199853"
+//#define SERVICE_ID @"KEFU150105808199853"
+
+#define SERVICE_ID @"KEFU150336412912915"
+
 //#define SERVICE_ID_XIAONENG1 @"kf_4029_1483495902343"
 //#define SERVICE_ID_XIAONENG2 @"op_1000_1483495280515"
 #define OrderAlerttag 2000
@@ -463,10 +466,18 @@
     });
 }
 
-
 #pragma mark - navigationaction
 - (void)lookMessage
 {
+    
+//    LivingChatViewController * chatVC = [[LivingChatViewController alloc]init];
+//    chatVC.conversationType = ConversationType_PRIVATE;
+//    chatVC.targetId = @"3273";
+//    chatVC.hidesBottomBarWhenPushed = YES;
+//    [self.navigationController pushViewController:chatVC animated:YES];
+
+//    return;
+    
     
     if ([[UserManager sharedManager] getUserId]) {
         RCDCustomerServiceViewController * chatService = [[RCDCustomerServiceViewController alloc]init];

@@ -72,6 +72,8 @@
  */
 @property(nonatomic, strong) LivingDetailView *videoDetailView;
 
+@property(nonatomic, strong) UIView * privateChatView;
+
 #pragma mark - 输入工具栏
 
 @property(nonatomic,strong) RCDLiveInputBar *inputBar;

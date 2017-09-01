@@ -15,5 +15,5 @@
 
 @property (nonatomic,assign) NSInteger                           selectedSection;
 @property (nonatomic,assign) NSInteger                           selectedRow;
-
+- (void)dismissStiop;
 @end

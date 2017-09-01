@@ -25,7 +25,7 @@
 #import "SettingTableViewCell.h"
 #define kSettingCellID @"SettingTableViewCellID"
 
-#import "LivingChatViewController.h"
+//#import "LivingChatViewController.h"
 
 #define headerImageName @"stuhead"
 
@@ -38,7 +38,6 @@
 @end
 
 @implementation SettingViewController
-
 
 - (void)viewWillAppear:(BOOL)animated
 {
@@ -161,20 +160,16 @@
         UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:nil action:nil];
         self.navigationItem.backBarButtonItem = item;
        
+        __weak typeof(self)weakSelf = self;
+        
         SettingDetailViewController * vc = [[SettingDetailViewController alloc]init];
         vc.hidesBottomBarWhenPushed = YES;
         vc.quitBlock = ^(){
             
-            [self.navigationController.tabBarController setSelectedIndex:0];
-            
+            [weakSelf performSelector:@selector(changeSelectIndex) withObject:nil afterDelay:0.1];
         };
         [self.navigationController pushViewController:vc animated:YES];
-        
-//        LivingChatViewController * chatVC = [[LivingChatViewController alloc]init];
-//        chatVC.targetId = @"3202";
-//        chatVC.hidesBottomBarWhenPushed = YES;
-//        [self.navigationController pushViewController:chatVC animated:YES];
-        
+            
     }
     
     if (indexPath.section == 2) {
@@ -183,6 +178,10 @@
     }
 }
 
+- (void)changeSelectIndex
+{
+    [self.navigationController.tabBarController setSelectedIndex:0];
+}
 
 #pragma mark - alert delegate
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex

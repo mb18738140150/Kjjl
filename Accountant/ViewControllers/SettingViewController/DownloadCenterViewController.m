@@ -28,8 +28,6 @@
 @property (nonatomic,strong) DownloadingTableViewDataSource         *downloadingTableDataSource;
 @property (nonatomic,strong) DownloadedTableViewDataSource          *downloadedTableDataSource;
 
-
-
 @property (nonatomic,strong) NSArray                                *downloadCourseArray;
 
 @property (nonatomic,strong) UIView                                 *headerView;

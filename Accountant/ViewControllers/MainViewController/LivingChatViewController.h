@@ -11,5 +11,5 @@
 @interface LivingChatViewController : RCConversationViewController
 
 @property (nonatomic, strong)NSDictionary * infoDic;
-
+- (void)popupChatViewController;
 @end

@@ -126,8 +126,8 @@
     RCDLiveChatRoomViewController *chatRoomVC = [[RCDLiveChatRoomViewController alloc]init];
     chatRoomVC.conversationType = ConversationType_CHATROOM;
     chatRoomVC.targetId = [NSString stringWithFormat:@"%@", [infoDic objectForKey:kCourseID]];
-    //    chatRoomVC.targetId = @"chatRoomId-008";
-    chatRoomVC.contentURL = [infoDic objectForKey:kCourseURL];
+        chatRoomVC.targetId = @"chatRoomId-008";
+//    chatRoomVC.contentURL = [infoDic objectForKey:kCourseURL];
     chatRoomVC.infoDic = infoDic;
     [self presentViewController:chatRoomVC animated:YES completion:nil];
     
@@ -165,6 +165,7 @@
 
 - (void)courseClick:(NSNotification *)notification
 {
+    
     if ([[UserManager sharedManager] isUserLogin]) {
         NSDictionary *infoDic = notification.object;
         [infoDic objectForKey:kCourseID];

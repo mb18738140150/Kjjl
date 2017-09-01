@@ -7,7 +7,7 @@
 //
 
 #import "AppDelegate.h"
-#import "TabbarViewController.h"
+
 #import "HttpRequestManager.h"
 #import "UserManager.h"
 #import "CourseraManager.h"
@@ -23,6 +23,8 @@
 #import "NSDictionary+Unicode.h"
 #import "DownLoadModel.h"
 #import <RongIMKit/RongIMKit.h>
+
+#import "ZXVideoPlayerController.h"
 
 #define kappKey @"996fd8241dbee684918b6578"
 #define kchannel @"App Store"
@@ -41,7 +43,7 @@
 
 @interface AppDelegate ()<UserModule_AppInfoProtocol,UIAlertViewDelegate,JPUSHRegisterDelegate,UserModule_BindJPushProtocol,UNUserNotificationCenterDelegate>
 
-@property (nonatomic,strong) TabbarViewController           *tabbarViewController;
+
 
 @property (nonatomic,strong) NSString                       *versionContent;
 @property (nonatomic,strong) NSString                       *updateUrl;
@@ -96,6 +98,7 @@
     if ([[UserManager sharedManager] getUserId]) {
         [[RCIM sharedRCIM] connectWithToken:[[UserManager sharedManager] getRongToken] success:^(NSString *userId) {
             NSLog(@"连接融云成功");
+            [[RCDLive sharedRCDLive] setReciveMessageAndConnectionStatusDelegate];
             RCUserInfo *user = [RCUserInfo new];
             
             user.userId = [NSString stringWithFormat:@"%d", [UserManager sharedManager].getUserId];
@@ -119,6 +122,9 @@
             
         }];
     }
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rCIMConnectionStatusChanged:) name:kRCIMConnectionStatusChanged object:nil];
+    
     
     [DownloaderManager sharedManager];
     [[TYDownloadSessionManager manager] setBackgroundSessionDownloadCompleteBlock:^NSString *(NSString *downloadUrl) {
@@ -391,13 +397,11 @@ forRemoteNotification:(NSDictionary *)userInfo
 }
 #endif
 
-#pragma mark - RCIMConnectionStatusDelegate
-/**
- *  网络状态变化。
- *
- *  @param status 网络状态。
- */
-- (void)onRCIMConnectionStatusChanged:(RCConnectionStatus)status {
+#pragma mark - RCIMConnectionStatusChangeNotification
+- (void)rCIMConnectionStatusChanged:(NSNotification*)notification {
+    
+    RCConnectionStatus status = [[notification.object objectForKey:@"status"] integerValue];
+    
     if (status == ConnectionStatus_KICKED_OFFLINE_BY_OTHER_CLIENT) {
         
         UIAlertView *alert = [[UIAlertView alloc]
@@ -432,9 +436,58 @@ forRemoteNotification:(NSDictionary *)userInfo
     [[RCIMClient sharedRCIMClient] setRCConnectionStatusChangeDelegate:nil];
     [[RCIMClient sharedRCIMClient] logout];
     
+    
+//    if (self.tabbarViewController.navigationController.presentedViewController) {
+//        [self.tabbarViewController.navigationController.presentedViewController dismissViewControllerAnimated:NO completion:nil
+//         ];
+//    }
+    
+    if (self.tabbarViewController.presentedViewController) {
+        
+        if ([self.tabbarViewController.presentedViewController isKindOfClass:NSClassFromString(@"VideoPlayViewController")] || [self.tabbarViewController.presentedViewController isKindOfClass:NSClassFromString(@"DownloadVideoPlayerViewController")]) {
+            
+            [self.tabbarViewController.presentedViewController performSelector:@selector(dismissStiop) withObject:nil afterDelay:0];
+            
+        }
+        
+        [self.tabbarViewController.presentedViewController dismissViewControllerAnimated:NO completion:nil];
+    }
+    
+    UIViewController * vc = [self.tabbarViewController.viewControllers objectAtIndex:self.tabbarViewController.selectedIndex];
+    [vc.navigationController popToRootViewControllerAnimated:NO];
+    
     self.tabbarViewController.selectedIndex = 0;
     [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationOfLoginClick object:nil];
     
+}
+
+- (UIViewController *)getCurrentVC
+{
+    UIViewController *result = nil;
+    
+    UIWindow * window = [[UIApplication sharedApplication] keyWindow];
+    if (window.windowLevel != UIWindowLevelNormal)
+    {
+        NSArray *windows = [[UIApplication sharedApplication] windows];
+        for(UIWindow * tmpWin in windows)
+        {
+            if (tmpWin.windowLevel == UIWindowLevelNormal)
+            {
+                window = tmpWin;
+                break;
+            }
+        }
+    }
+    
+    UIView *frontView = [[window subviews] objectAtIndex:0];
+    id nextResponder = [frontView nextResponder];
+    
+    if ([nextResponder isKindOfClass:[UIViewController class]])
+        result = nextResponder;
+    else
+        result = window.rootViewController;
+    
+    return result;
 }
 
 @end

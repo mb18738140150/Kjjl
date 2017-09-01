@@ -28,7 +28,6 @@
         return courseCount/2 + 1;
     }
     
-    
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath

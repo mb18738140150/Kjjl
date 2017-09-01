@@ -570,7 +570,10 @@ static const CGFloat kVideoPlayerControllerAnimationTimeInterval = 0.3f;
 
 #pragma mark -
 #pragma mark - Action Code
-
+- (void)backstop
+{
+    [self backButtonClick];
+}
 /// MARK: 返回按钮点击
 - (void)backButtonClick
 {
@@ -585,18 +588,18 @@ static const CGFloat kVideoPlayerControllerAnimationTimeInterval = 0.3f;
             [self stop];
             [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
             
-            if (self.videoPlayerGoBackBlock) {
-                [self.videoControl cancelAutoFadeOutControlBar];
-                self.videoPlayerGoBackBlock();
-            }
-            
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.001 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
                 if (self.videoPlayerGoBackWithPlayTimeBlock) {
                     NSLog(@"bofangshijian ---- %f", round(currentTime));
                     self.videoPlayerGoBackWithPlayTimeBlock(currentTime);
                 }
+                
+                if (self.videoPlayerGoBackBlock) {
+                    [self.videoControl cancelAutoFadeOutControlBar];
+                    self.videoPlayerGoBackBlock();
+                }
+                
             });
-            
             
         }
     } else { // 全屏模式，返回到竖屏模式

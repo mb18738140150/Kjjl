@@ -85,6 +85,7 @@
     [self.view addSubview:self.progressView];
     [SVProgressHUD show];
 }
+
 - (void)navigationViewSetup
 {
     self.title = [self.infoDic objectForKey:kCourseName];
@@ -101,7 +102,6 @@
 - (void)backAction:(UIButton *)button
 {
     [self.navigationController popViewControllerAnimated:YES];
-    
 }
 
 #pragma mark- WKUIDelegate

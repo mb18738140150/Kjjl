@@ -164,10 +164,10 @@
     [[RCIMClient sharedRCIMClient] setReceiveMessageDelegate:nil object:nil];
     [[RCIMClient sharedRCIMClient] setRCConnectionStatusChangeDelegate:nil];
     [[RCIMClient sharedRCIMClient] logout];
-    [self.navigationController popViewControllerAnimated:NO];
     if (self.quitBlock) {
         self.quitBlock();
     }
+    [self.navigationController popViewControllerAnimated:NO];
 }
 //1. 获取缓存文件的大小
 -( float )readCacheSize

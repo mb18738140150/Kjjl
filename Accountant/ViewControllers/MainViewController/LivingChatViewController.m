@@ -10,6 +10,9 @@
 #import "ZXVideo.h"
 
 #import "ZXVideoPlayerController.h"
+
+#define kChatViewheight kScreenHeight - 42 - kZXVideoPlayerOriginalHeight
+#define kChatView_top 42 + kZXVideoPlayerOriginalHeight
 @interface LivingChatViewController ()<UIGestureRecognizerDelegate>
 @property (nonatomic, strong) ZXVideoPlayerController           *videoController;
 @property (nonatomic,strong) ZXVideo                            *playingVideo;
@@ -21,10 +24,16 @@
     [super viewDidLoad];
 
     [self navigationViewSetup];
-    
+    [self setUpUI];
     [self notifyUpdateUnreadMessageCount];
-    
+    self.displayUserNameInCell = NO;
     self.navigationItem.rightBarButtonItem = nil;
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillHide:)
+                                                 name:UIKeyboardWillHideNotification
+                                               object:nil];
     
 }
 
@@ -32,6 +41,7 @@
                                       *)gestureRecognizer{
     return NO; //YES：允许右滑返回  NO：禁止右滑返回
 }
+
 #pragma mark - ui
 - (void)navigationViewSetup
 {
@@ -41,15 +51,36 @@
     self.automaticallyAdjustsScrollViewInsets = NO;
     self.navigationController.navigationBar.translucent = NO;
 }
+
 - (void)backAction:(UIButton *)button
 {
     [self.navigationController popViewControllerAnimated:YES];
 }
+
+- (void)setUpUI
+{
+    [self.chatSessionInputBarControl.pluginBoardView removeItemAtIndex:2];
+    [self.chatSessionInputBarControl setInputBarType:RCChatSessionInputBarControlDefaultType
+                                               style:RC_CHAT_INPUT_BAR_STYLE_CONTAINER];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        [self.view setBounds:CGRectMake(0,kChatView_top, kScreenWidth, kScreenHeight)];
+        
+        self.conversationMessageCollectionView.frame = CGRectMake(0, kChatView_top, kScreenWidth, (kChatViewheight - 50));
+        self.chatSessionInputBarControl.hd_y = kChatView_top + self.conversationMessageCollectionView.hd_height;
+        [self scrollToBottomAnimated:YES];
+        
+        NSLog(@"%.2f  ** %.2f", self.conversationMessageCollectionView.hd_height,self.conversationMessageCollectionView.hd_y);
+        
+    });
+}
+
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
     self.navigationController.interactivePopGestureRecognizer.delegate = self;
 }
+
 - (void)leftBarButtonItemPressed:(id)sender {
     //需要调用super的实现
     [super leftBarButtonItemPressed:nil];
@@ -105,19 +136,46 @@
     });
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+
+- (void)didSendMessage:(NSInteger)status
+               content:(RCMessageContent *)messageContent
+{
+    [super didSendMessage:status content:messageContent];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        [self.chatSessionInputBarControl updateStatus:KBottomBarDefaultStatus animated:YES];
+    });
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+- (void)popupChatViewController {
+    [super leftBarButtonItemPressed:nil];
 }
-*/
+
+
+#pragma mark - 键盘监听事件
+- (void)keyboardWillShow:(NSNotification *)note
+{
+    
+    CGRect begin = [[[note userInfo] objectForKey:@"UIKeyboardFrameBeginUserInfoKey"] CGRectValue];
+    
+    CGRect end = [[[note userInfo] objectForKey:@"UIKeyboardFrameEndUserInfoKey"] CGRectValue];
+    
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+//        self.conversationMessageCollectionView.hd_height = kChatViewheight - end.size.height - 50;
+//        self.chatSessionInputBarControl.hd_y = self.conversationMessageCollectionView.hd_height;
+        
+    });
+}
+
+-(void)keyboardWillHide:(NSNotification *)note{
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+//        self.conversationMessageCollectionView.frame = CGRectMake(0, kChatView_top, kScreenWidth, (kChatViewheight - 50));
+//        self.chatSessionInputBarControl.hd_y = self.conversationMessageCollectionView.hd_height;
+    });
+}
 
 @end

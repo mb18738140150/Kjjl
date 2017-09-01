@@ -169,8 +169,8 @@
         }];
     }
     
-    
     if (self.delegate && [self.delegate respondsToSelector:@selector(hySegmentedControlSelectAtIndex:)]) {
+        self.selectIndex = btn.tag - 1000;
         [self.delegate hySegmentedControlSelectAtIndex:btn.tag - 1000];
     }
 }
@@ -207,6 +207,22 @@
         bt.imageEdgeInsets = UIEdgeInsetsMake(0, 110, 0, 0);
     }
     
+}
+
+- (void)addTipWithIndex:(NSInteger)index
+{
+    UIButton * bt = [_array4Btn   objectAtIndex:index];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        [bt setImage:[UIImage imageNamed:@"message_tip"] forState:UIControlStateNormal];
+    });
+}
+- (void)cancelTipWithIndex:(NSInteger)index
+{
+    UIButton * bt = [_array4Btn   objectAtIndex:index];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [bt setImage:[UIImage imageNamed:@""] forState:UIControlStateNormal];
+    });
 }
 
 /*

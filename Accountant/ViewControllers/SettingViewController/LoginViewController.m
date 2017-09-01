@@ -81,7 +81,7 @@
     
     _account=[[UITextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(accountImageView.frame) + 10, 10, accountView.hd_width - 70, 20)];
     [_account setBackgroundColor:[UIColor clearColor]];
-    _account.placeholder=[NSString stringWithFormat:@"输入手机号"];
+    _account.placeholder=[NSString stringWithFormat:@"请输入账号"];
     _account.delegate = self;
     _account.font = kMainFont;
     _account.textColor = kCommonMainTextColor_50;
@@ -100,7 +100,7 @@
     _password=[[UITextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(passwordImageView.frame) + 10, 10, kScreenWidth-40, 20)];
     [_password setBackgroundColor:[UIColor clearColor]];
     _password.secureTextEntry = YES;
-    _password.placeholder=[NSString stringWithFormat:@"密码"];
+    _password.placeholder=[NSString stringWithFormat:@"请输入密码"];
     _password.layer.cornerRadius=5.0;
     _password.delegate = self;
     _password.font = kMainFont;
@@ -200,6 +200,8 @@
 {
     [[RCIM sharedRCIM] connectWithToken:[[UserManager sharedManager] getRongToken] success:^(NSString *userId) {
         NSLog(@"连接融云成功");
+        
+        [[RCDLive sharedRCDLive] setReciveMessageAndConnectionStatusDelegate];
         
         RCUserInfo *user = [RCUserInfo new];
         
