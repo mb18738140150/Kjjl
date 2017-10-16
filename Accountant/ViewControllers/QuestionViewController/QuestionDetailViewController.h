@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ViewController.h"
 
-@interface QuestionDetailViewController : UIViewController
+@interface QuestionDetailViewController : ViewController
 
 @property (nonatomic,assign) int                 questionId;
 

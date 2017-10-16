@@ -125,11 +125,12 @@
         model.filePath = [s stringForColumn:@"path"];
         model.fileSize = [s stringForColumn:@"fileSize"];
         model.cueerntFileSize = [s stringForColumn:@"currentFileSize"];
+        
         NSString * jsonStr = [s stringForColumn:@"infoDic"];
         NSData * jsonData = [jsonStr dataUsingEncoding:NSUTF8StringEncoding];
-        model.infoDic = [jsonData objectFromJSONData];
+        NSMutableDictionary * infoDic = [jsonData objectFromJSONData];
         
-        [arry addObject:model];
+        [arry addObject:infoDic];
     }
     
     return arry;

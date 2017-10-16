@@ -89,4 +89,6 @@
 
 @property (nonatomic, strong)NSDictionary * infoDic;
 
+@property (nonatomic, assign)BOOL isLivingCourse;
+
 @end

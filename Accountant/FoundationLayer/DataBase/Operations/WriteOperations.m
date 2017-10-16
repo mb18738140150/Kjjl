@@ -11,10 +11,10 @@
 
 @implementation WriteOperations
 
-- (BOOL)writeDownloadVideoInfo:(DownLoadModel *)downLoadModel
+- (BOOL)writeDownloadVideoInfo:(NSDictionary *)infoDic
 {
-    NSDictionary * dic = downLoadModel.infoDic;
-    BOOL isSuccess = [self.dataBase executeUpdate:@"insert into Downloading (videoId,videoName,path,videoUrl,fileSize,currentFileSize,infoDic) values (?,?,?,?,?,?,?)",[dic objectForKey:kVideoId],[dic objectForKey:kVideoName],downLoadModel.filePath,[dic objectForKey:kVideoURL],downLoadModel.fileSize,downLoadModel.cueerntFileSize,[downLoadModel.infoDic JSONString]];
+    NSDictionary * dic = infoDic;
+    BOOL isSuccess = [self.dataBase executeUpdate:@"insert into Downloading (videoId,videoName,videoUrl,infoDic) values (?,?,?,?)",[dic objectForKey:kVideoId],[dic objectForKey:kVideoName],[dic objectForKey:kVideoURL],[infoDic JSONString]];
     
     return isSuccess;
 }

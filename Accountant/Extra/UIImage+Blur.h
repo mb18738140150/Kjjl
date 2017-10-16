@@ -12,6 +12,6 @@
 
 - (UIImage *)coreBlurWithBlurNumber:(CGFloat)blur;
 
-
++(UIImage *)imageGray:(UIImage *)image andRGBValue:(unsigned int)value;
 
 @end

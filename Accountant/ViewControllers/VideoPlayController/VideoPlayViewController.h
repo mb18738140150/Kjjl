@@ -14,6 +14,8 @@
 @property (nonatomic,assign) int                             beginChapterId;
 @property (nonatomic,assign) int                             beginVideoId;
 
+@property (nonatomic, strong)NSDictionary                    *infoDic;
+
 - (void)dismissStiop;
 
 @end

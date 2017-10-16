@@ -25,7 +25,6 @@ typedef BOOL(^RunloopBlock)(void);
 // timer
 @property (nonatomic, strong)NSTimer * timer;
 
-
 @end
 
 

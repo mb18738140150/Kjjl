@@ -7,6 +7,7 @@
 //
 
 #import "CategoryDetailTableViewCell.h"
+#import "UIImage+Blur.h"
 
 #define YUFoldingSepertorLineWidth       0.3f
 #define YUFoldingMargin                  8.0f
@@ -156,11 +157,14 @@
         [self resetWith:infoDic];
     }
 }
-
+- (void)hideDownloadBtn
+{
+    self.learnImageView.hidden = YES;
+}
 - (void)resetVideoCellWith:(NSDictionary *)infoDic
 {
     if ([[infoDic objectForKey:@"isDownload"] intValue] == 0) {
-        self.learnImageView.image = [UIImage imageNamed:@"下载(6)"];
+        self.learnImageView.image = [UIImage imageGray:[UIImage imageNamed:@"下载(6)"] andRGBValue:121];
         self.downloadState = DownloadState_unDownload;
     }else
     {

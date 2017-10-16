@@ -21,6 +21,7 @@
 
 - (void)initalModels
 {
+    
     NSString *dataPath = [[PathUtility getDocumentPath] stringByAppendingPathComponent:@"user.data"];
     NSFileManager *manager = [NSFileManager defaultManager];
     if ([manager fileExistsAtPath:dataPath]) {

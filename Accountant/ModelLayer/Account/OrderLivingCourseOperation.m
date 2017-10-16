@@ -13,10 +13,10 @@
 @property (nonatomic,weak) id<UserModule_OrderLivingCourseProtocol> notifiedObject;
 @end
 @implementation OrderLivingCourseOperation
-- (void)didRequestOrderLivingCourseWithCourseId:(int )courseid withNotifiedObject:(id<UserModule_OrderLivingCourseProtocol>)object
+- (void)didRequestOrderLivingCourseWithCourseInfo:(NSDictionary * )infoDic withNotifiedObject:(id<UserModule_OrderLivingCourseProtocol>)object
 {
     self.notifiedObject = object;
-    [[HttpRequestManager sharedManager] reqeustOrderLivingCourseWithId:courseid andProcessDelegate:self];
+    [[HttpRequestManager sharedManager] reqeustOrderLivingCourseWithInfo:infoDic andProcessDelegate:self];
 }
 
 - (void)didRequestSuccessed:(NSDictionary *)successInfo
@@ -25,6 +25,7 @@
         [self.notifiedObject didRequestOrderLivingSuccessed];
     }
 }
+
 - (void)didRequestFailed:(NSString *)failInfo
 {
     if (isObjectNotNil(self.notifiedObject)) {

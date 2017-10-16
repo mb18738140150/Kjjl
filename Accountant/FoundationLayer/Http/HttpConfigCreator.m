@@ -414,6 +414,16 @@
     return c;
 }
 
++ (HttpConfigModel *)getTestJurisdictionWithCourseId:(int)courseId
+{
+    HttpConfigModel *c = [[HttpConfigModel alloc] init];
+    NSDictionary *dic = @{kCommand:kCommandJurisdictionCourse,
+                          @"userId":@"0",
+                          @"categoryId":@(courseId)};
+    [self setConfigModel:c withInfo:dic];
+    return c;
+}
+
 + (HttpConfigModel *)getTestHistoryConfigWithInfo:(NSDictionary *)infoDic
 {
     HttpConfigModel *c = [[HttpConfigModel alloc] init];
@@ -440,12 +450,13 @@
     return c;
 }
 
-+ (HttpConfigModel *)getNotStartLiveingCourse
++ (HttpConfigModel *)getNotStartLiveingCourseWith:(NSDictionary *)infoDic
 {
     HttpConfigModel *c = [[HttpConfigModel alloc] init];
     NSDictionary *dic = @{kCommand:kCommandGetLiveingCourse,
                           @"userId":@"0",
-                          @"Type":@(1)};
+                          @"Type":@(2),
+                          @"Month":[infoDic objectForKey:@"Month"]};
     [self setConfigModel:c withInfo:dic];
     return c;
 }
@@ -460,12 +471,37 @@
     return c;
 }
 
-+ (HttpConfigModel *)getOrderLivingCourseWithCourseId:(int)courseId
++ (HttpConfigModel *)getLivingSectionDetailWithInfo:(NSDictionary *) infoDic
+{
+    HttpConfigModel *c = [[HttpConfigModel alloc] init];
+    NSDictionary *dic = @{kCommand:kCommandLivingSectionDetail,
+                          @"userId":@"0",
+                          @"courseId":[infoDic objectForKey:kCourseID],
+                          @"teacherId":[infoDic objectForKey:kteacherId],
+                          @"month":[infoDic objectForKey:@"month"]};
+    [self setConfigModel:c withInfo:dic];
+    return c;
+}
+
++ (HttpConfigModel *)getOrderLivingCourseWithCourseInfo:(NSDictionary *)infoDic;
 {
     HttpConfigModel *c = [[HttpConfigModel alloc] init];
     NSDictionary *dic = @{kCommand:kCommandOrderLivingCourse,
                           @"userId":@"0",
-                          @"courseId":@(courseId)};
+                          @"courseId":[infoDic objectForKey:kCourseID],
+                          @"sectionId":[infoDic objectForKey:kCourseSecondID],
+                          @"playTime":[infoDic objectForKey:kLivingTime]};
+    [self setConfigModel:c withInfo:dic];
+    return c;
+}
+
++ (HttpConfigModel *)getCancelOrderLivingCourseWithCourseInfo:(NSDictionary *)infoDic
+{
+    HttpConfigModel *c = [[HttpConfigModel alloc] init];
+    NSDictionary *dic = @{kCommand:kCommandCancelOrderLivingCourse,
+                          @"userId":@"0",
+                          @"courseId":[infoDic objectForKey:kCourseID],
+                          @"sectionId":[infoDic objectForKey:kCourseSecondID]};
     [self setConfigModel:c withInfo:dic];
     return c;
 }
@@ -477,6 +513,62 @@
                           @"userId":@"0",
                           @"device":@(1),
                           @"CID":CID};
+    [self setConfigModel:c withInfo:dic];
+    return c;
+}
+
++ (HttpConfigModel *)getVerifyAccount:(NSString *)accountNumber
+{
+    HttpConfigModel *c = [[HttpConfigModel alloc] init];
+    NSDictionary *dic = @{kCommand:kCommandVerifyAccount,
+                          @"accountNumber":accountNumber
+                          };
+    [self setConfigModel:c withInfo:dic];
+    return c;
+}
+
++ (HttpConfigModel *)completeUserInfo:(NSDictionary *)userInfo
+{
+    HttpConfigModel *c = [[HttpConfigModel alloc] init];
+    NSDictionary *dic = @{kCommand:kCommandcompleteUserInfo,
+                          @"iconStr":[userInfo objectForKey:@"iconStr"],
+                          @"nickName":[userInfo objectForKey:@"nickName"],
+                          @"qqAccount":[userInfo objectForKey:@"qqAccount"],
+                          @"phoneNumber":[userInfo objectForKey:@"phoneNumber"]
+                          };
+    [self setConfigModel:c withInfo:dic];
+    return c;
+}
+
++ (HttpConfigModel *)getVerifyCode:(NSString *)phoneNumber
+{
+    HttpConfigModel *c = [[HttpConfigModel alloc] init];
+    NSDictionary *dic = @{kCommand:kCommandVerifyCode,
+                          @"phoneNumber":phoneNumber
+                          };
+    [self setConfigModel:c withInfo:dic];
+    return c;
+}
+
++ (HttpConfigModel *)registWith:(NSDictionary *)infoDic
+{
+    HttpConfigModel *c = [[HttpConfigModel alloc] init];
+    NSDictionary *dic = @{kCommand:kCommandRegist,
+                          @"phoneNumber":[infoDic objectForKey:@"phoneNumber"],
+                          @"password":[infoDic objectForKey:@"password"]
+                          };
+    [self setConfigModel:c withInfo:dic];
+    return c;
+}
+
++ (HttpConfigModel *)forgetPasswordWith:(NSDictionary *)infoDic
+{
+    HttpConfigModel *c = [[HttpConfigModel alloc] init];
+    NSDictionary *dic = @{kCommand:kCommandForgetPassword,
+                          @"phoneNumber":[infoDic objectForKey:@"phoneNumber"],
+                          @"password":[infoDic objectForKey:@"password"],
+                          @"accountNumber":[infoDic objectForKey:@"accountNumber"]
+                          };
     [self setConfigModel:c withInfo:dic];
     return c;
 }

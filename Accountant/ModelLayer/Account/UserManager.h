@@ -36,6 +36,16 @@
  */
 - (void)resetPasswordWithOldPassword:(NSString *)oldPwd andNewPwd:(NSString *)newPwd withNotifiedObject:(id<UserModule_ResetPwdProtocol>)object;
 
+- (void)registWithDic:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_RegistProtocol>)object;
+
+
+- (void)forgetPsdWithDic:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_ForgetPasswordProtocol>)object;
+
+- (void)getVerifyCodeWithPhoneNumber:(NSString *)phoneNumber withNotifiedObject:(id<UserModule_VerifyCodeProtocol>)object;
+
+- (void)getVerifyAccountWithAccountNumber:(NSString *)accountNumber withNotifiedObject:(id<UserModule_VerifyAccountProtocol>)object;
+
+- (void)completeUserInfoWithDic:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_CompleteUserInfoProtocol>)object;
 
 /**
  请求app版本信息
@@ -59,17 +69,22 @@
 /**
  绑定极光账号
  
- 
  */
 - (void)didRequestBindJPushWithCID:(NSString *)cid withNotifiedObject:(id<UserModule_BindJPushProtocol>)object;
 
 /**
  预约直播课
  
+ */
+- (void)didRequestOrderLivingCourseOperationWithCourseInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_OrderLivingCourseProtocol>)object;
+
+/**
+ 取消预约直播课
  
  */
-- (void)didRequestOrderLivingCourseOperationWithCourseId:(int)courseId withNotifiedObject:(id<UserModule_OrderLivingCourseProtocol>)object;
+- (void)didRequestCancelOrderLivingCourseOperationWithCourseInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_OrderLivingCourseProtocol>)object;
 
+//- (void)refreshRCDUserInfoWithNickName:(NSString *)nickName andWithPortraitUrl:(NSString *)portraitUrl;
 
 /**
  获取用户id
@@ -87,6 +102,27 @@
 - (NSString *)getUserName;
 
 /**
+ 获取昵称
+ 
+ @return 昵称
+ */
+- (NSString *)getUserNickName;
+
+/**
+ 获取验证码
+ 
+ @return 验证码
+ */
+- (NSString *)getVerifyCode;
+
+/**
+ 获取绑定手机号
+ 
+ @return 已绑定手机号
+ */
+- (NSString *)getVerifyPhoneNumber;
+
+/**
  获取融云token
  
  @return 融云tokrn
@@ -101,6 +137,8 @@
  @return 用户信息
  */
 - (NSDictionary *)getUserInfos;
+
+- (void)refreshUserInfoWith:(NSDictionary *)infoDic;
 
 - (int)getUserLevel;
 

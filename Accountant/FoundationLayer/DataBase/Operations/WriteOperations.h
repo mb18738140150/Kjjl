@@ -26,7 +26,7 @@
 
 - (BOOL)deleteLineVideoInfo:(NSDictionary *)dic;
 
-- (BOOL)writeDownloadVideoInfo:(DownLoadModel *)downLoadModel;
+- (BOOL)writeDownloadVideoInfo:(NSDictionary *)infoDic;
 
 - (BOOL)deleteDownloadVideoInfoWithId:(NSNumber *)videoId;
 

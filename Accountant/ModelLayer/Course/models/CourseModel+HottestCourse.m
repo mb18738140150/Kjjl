@@ -14,7 +14,9 @@
 {
     if (self = [super init]) {
         self.courseName = [dicInfo objectForKey:@"courseName"];
-        self.courseURLString = [dicInfo objectForKey:@"courseUrl"];
+        if (![[dicInfo objectForKey:@"courseUrl"] isKindOfClass:[NSNull class]] && [dicInfo objectForKey:@"courseUrl"]) {
+            self.courseURLString = [dicInfo objectForKey:@"courseUrl"];
+        }
         self.courseCover = [dicInfo objectForKey:@"cover"];
         self.courseID = [[dicInfo objectForKey:@"id"] intValue];
         self.coueseTeacherName = [dicInfo objectForKey:@"teacherName"];
@@ -43,6 +45,44 @@
         if ([self.livingDetail isKindOfClass:[NSNull class]] || !self.livingDetail) {
             self.livingDetail = @"暂无视频详情";
         }
+        
+        NSNumber *sectionId = [dicInfo objectForKey:@"sectionId"];
+        if ([sectionId isKindOfClass:[NSNull class]] ) {
+            sectionId = @0;
+        }
+        self.sectionId = sectionId.intValue;
+        
+        NSNumber *isFree = [dicInfo objectForKey:@"isFree"];
+        if ([isFree isKindOfClass:[NSNull class]] ) {
+            isFree = @0;
+        }
+        self.isFree = isFree.intValue;
+        
+        NSNumber *haveJurisdiction = [dicInfo objectForKey:@"haveJurisdiction"];
+        if ([haveJurisdiction isKindOfClass:[NSNull class]] ) {
+            haveJurisdiction = @1;
+        }
+        self.haveJurisdiction = haveJurisdiction.intValue;
+        
+        self.chatRoomId = @"";
+        if (![[dicInfo objectForKey:@"chatRoomId"] isKindOfClass:[NSNull class]] && [dicInfo objectForKey:@"chatRoomId"]) {
+            self.chatRoomId = [dicInfo objectForKey:@"chatRoomId"];
+        }
+        
+        self.assistantId = @"";
+        if (![[dicInfo objectForKey:@"assistantId"] isKindOfClass:[NSNull class]] && [dicInfo objectForKey:@"assistantId"]) {
+            self.assistantId = [dicInfo objectForKey:@"assistantId"];
+        }
+        
+        if (![[dicInfo objectForKey:@"playback"] isKindOfClass:[NSNull class]] && [dicInfo objectForKey:@"playback"]) {
+            self.playback = [dicInfo objectForKey:@"playback"];
+        }
+        
+        self.lastTime = @"";
+        if (![[dicInfo objectForKey:@"lastTime"] isKindOfClass:[NSNull class]] && [dicInfo objectForKey:@"lastTime"]) {
+            self.lastTime = [dicInfo objectForKey:@"lastTime"];
+        }
+        
         
     }
     return self;

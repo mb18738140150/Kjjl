@@ -47,7 +47,7 @@
 - (void)didRequestFailed:(NSString *)failInfo
 {
     if (self.notifiedObject != nil) {
-        [self.notifiedObject didRequestLiveStreamFailed];
+        [self.notifiedObject didRequestLiveStreamFailed:failInfo];
     }
 }
 

@@ -143,13 +143,14 @@
     if ([[QuestionManager sharedManager] isLoadMax]) {
         [self.contentTableView.mj_footer endRefreshingWithNoMoreData];
     }
+    
 }
 
 - (void)didQuestionRequestFailed:(NSString *)failedInfo
 {
     self.isLoadingMore = NO;
     [SVProgressHUD dismiss];
-    [SVProgressHUD showErrorWithStatus:@"网络连接失败，请稍后再试"];
+    [SVProgressHUD showErrorWithStatus:failedInfo];
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [SVProgressHUD dismiss];
         [self.navigationController popViewControllerAnimated:YES];

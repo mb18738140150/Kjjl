@@ -11,6 +11,10 @@
 #import "LoginBackgroundView.h"
 #import "UserManager.h"
 #import "SVProgressHUD.h"
+#import "RegistViewController.h"
+#import "ForgetPasswordViewController.h"
+#import "VerifyAccountViewController.h"
+#define kImageWidth 25
 
 @interface LoginViewController ()<UITextFieldDelegate,UserModule_LoginProtocol,UserModule_BindJPushProtocol>
 
@@ -31,6 +35,40 @@
     // Do any additional setup after loading the view.
     
     [self viewInit];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    self.navigationController.navigationBarHidden = NO;
+    self.navBarBgAlpha = @"0.0";
+    self.navigationController.navigationBar.tintColor = kCommonNavigationBarColor;
+    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[UIColor whiteColor]};
+}
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@""] forBarMetrics:UIBarMetricsDefault];
+    [self.navigationController.navigationBar setShadowImage:nil];
+    
+    // 设置导航栏标题和返回按钮颜色
+    self.navigationController.navigationBar.tintColor = [UIColor darkGrayColor];
+    [self.navigationController.navigationBar setTitleTextAttributes:@{NSForegroundColorAttributeName : kCommonMainTextColor_50}];
+    
+}
+- (void)navigationViewSetup
+{
+    
+    //    self.edgesForExtendedLayout = UIRectEdgeNone;
+    //    self.automaticallyAdjustsScrollViewInsets = NO;
+    //    self.navigationController.navigationBar.translucent = NO;
+    
+    UINavigationBar * bar = self.navigationController.navigationBar;
+    [bar setShadowImage:[UIImage imageNamed:@"tm"]];
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"tm"] forBarMetrics:UIBarMetricsDefault];
+    
+    self.navigationController.navigationBar.tintColor = kCommonNavigationBarColor;
+    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[UIColor whiteColor]};
     
 }
 
@@ -43,7 +81,7 @@
     [self.view addSubview:resignControl];
     
     self.view.backgroundColor = [UIColor whiteColor];
-    [self setTopGradientLayer];
+//    [self setTopGradientLayer];
     
     self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, kScreenHeight / 2 - 120 - 90, kScreenWidth, 30)];
     self.titleLabel.text = @"WELCOME";
@@ -51,6 +89,9 @@
     self.titleLabel.font = [UIFont systemFontOfSize:25];
     self.titleLabel.textColor = [UIColor whiteColor];
 //    [self.view addSubview:self.titleLabel];
+    
+    [self prepareUI];
+    return;
     
     self.logoImageView = [[UIImageView alloc] initWithFrame:CGRectMake(kScreenWidth / 2 - 40, 60, 80, 80)];
     self.logoImageView.image = [UIImage imageNamed:@"logo"];
@@ -75,7 +116,7 @@
     accountView.backgroundColor = kBackgroundGrayColor;
     [_background addSubview:accountView];
     
-    UIImageView * accountImageView = [[UIImageView alloc]initWithFrame:CGRectMake(20, 5, 30, 30)];
+    UIImageView * accountImageView = [[UIImageView alloc]initWithFrame:CGRectMake(20, 5, kImageWidth, kImageWidth)];
     accountImageView.image = [UIImage imageNamed:@"手机(1)"];
     [accountView addSubview:accountImageView];
     
@@ -93,7 +134,7 @@
     passwordView.backgroundColor = kBackgroundGrayColor;
     [_background addSubview:passwordView];
     
-    UIImageView * passwordImageView = [[UIImageView alloc]initWithFrame:CGRectMake(20, 5, 30, 30)];
+    UIImageView * passwordImageView = [[UIImageView alloc]initWithFrame:CGRectMake(20, 5, kImageWidth, kImageWidth)];
     passwordImageView.image = [UIImage imageNamed:@"密码"];
     [passwordView addSubview:passwordImageView];
     
@@ -138,6 +179,124 @@
     [self.view addSubview:bottomImageView];
 }
 
+- (void)prepareUI
+{
+    self.logoImageView = [[UIImageView alloc] initWithFrame:CGRectMake(kScreenWidth / 2 - 90, 60, 180, 80)];
+    self.logoImageView.image = [UIImage imageNamed:@"loginLogo"];
+    [self.view addSubview:self.logoImageView];
+    
+    UIImageView * imageview1 = [[UIImageView alloc]initWithFrame:CGRectMake(self.logoImageView.hd_x+10, CGRectGetMaxY(self.logoImageView.frame)+10, 160, 16)];
+    imageview1.image = [UIImage imageNamed:@"loginLogoBorrom"];
+    [self.view addSubview:imageview1];
+    
+    _background=[[LoginBackgroundView alloc] initWithFrame:CGRectMake(20, CGRectGetMaxY(imageview1.frame) + 10, kScreenWidth-40, kScreenHeight - 160 - 70)];
+    [_background setBackgroundColor:[UIColor whiteColor]];
+//    [[_background layer] setCornerRadius:10];
+//    _background.layer.shadowColor = kCommonMainTextColor_200.CGColor;
+//    _background.layer.shadowOffset = CGSizeMake(5, 5);
+//    _background.layer.shadowOpacity = 0.5;
+//    _background.layer.shadowRadius = 10;
+//    _background.clipsToBounds = NO;
+    _background.userInteractionEnabled = YES;
+    [self.view addSubview:_background];
+    
+    UIView * accountView = [[UIView alloc]initWithFrame:CGRectMake(20, 40, kScreenWidth - 80, 40)];
+    accountView.backgroundColor = [UIColor whiteColor];
+    [_background addSubview:accountView];
+    
+    UIImageView * accountImageView = [[UIImageView alloc]initWithFrame:CGRectMake(5, 5, kImageWidth, kImageWidth)];
+    accountImageView.image = [UIImage imageNamed:@"手机(1)"];
+    [accountView addSubview:accountImageView];
+    
+    _account=[[UITextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(accountImageView.frame) + 10, 10, accountView.hd_width - 70, 20)];
+    [_account setBackgroundColor:[UIColor clearColor]];
+    _account.placeholder=[NSString stringWithFormat:@"请输入账号"];
+    _account.delegate = self;
+    _account.font = kMainFont;
+    _account.textColor = kCommonMainTextColor_50;
+    [accountView addSubview:_account];
+    
+    UIView * accountBottomView = [[UIView alloc]initWithFrame:CGRectMake(0, accountView.hd_height - 1, accountView.hd_width, 1)];
+    accountBottomView.backgroundColor = kCommonMainTextColor_200;
+    [accountView addSubview:accountBottomView];
+    
+    UIView * passwordView = [[UIView alloc]initWithFrame:CGRectMake(20, CGRectGetMaxY(accountView.frame) + 20, kScreenWidth - 80, 40)];
+    passwordView.backgroundColor = [UIColor whiteColor];
+    [_background addSubview:passwordView];
+    
+    UIImageView * passwordImageView = [[UIImageView alloc]initWithFrame:CGRectMake(5, 5, kImageWidth, kImageWidth)];
+    passwordImageView.image = [UIImage imageNamed:@"密码"];
+    [passwordView addSubview:passwordImageView];
+    
+    _password=[[UITextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(passwordImageView.frame) + 10, 10, kScreenWidth-40, 20)];
+    [_password setBackgroundColor:[UIColor clearColor]];
+    _password.secureTextEntry = YES;
+    _password.placeholder=[NSString stringWithFormat:@"请输入密码"];
+    _password.layer.cornerRadius=5.0;
+    _password.delegate = self;
+    _password.font = kMainFont;
+    _password.textColor = kCommonMainTextColor_50;
+    [passwordView addSubview:_password];
+    
+    UIView * passwordBottomView = [[UIView alloc]initWithFrame:CGRectMake(0, passwordView.hd_height - 1, passwordView.hd_width, 1)];
+    passwordBottomView.backgroundColor = kCommonMainTextColor_200;
+    [passwordView addSubview:passwordBottomView];
+    
+    self.closeImageView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 50, 30, 30)];
+    self.closeImageView.image = [UIImage imageNamed:@"close.png"];
+    self.closeImageView.userInteractionEnabled = YES;
+    
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissSelf)];
+    
+    [self.closeImageView addGestureRecognizer:tap];
+    [self.view addSubview:self.closeImageView];
+    
+    
+    UIButton * forgetPsdBTn = [UIButton buttonWithType:UIButtonTypeCustom];
+    forgetPsdBTn.frame = CGRectMake(20, CGRectGetMaxY(passwordView.frame) + 40, 70, 20);
+    forgetPsdBTn.titleLabel.font = kMainFont;
+    [forgetPsdBTn setTitle:@"忘记密码" forState:UIControlStateNormal];
+    [forgetPsdBTn setTitleColor:kCommonMainTextColor_150 forState:UIControlStateNormal];
+    [forgetPsdBTn addTarget:self action:@selector(forgetPasswordAction) forControlEvents:UIControlEventTouchUpInside];
+    [_background addSubview:forgetPsdBTn];
+    
+    UIButton * registPsdBTn = [UIButton buttonWithType:UIButtonTypeCustom];
+    registPsdBTn.frame = CGRectMake(CGRectGetMaxX(passwordView.frame) -70, CGRectGetMaxY(passwordView.frame) + 40, 70, 20);
+    registPsdBTn.titleLabel.font = kMainFont;
+    [registPsdBTn setTitle:@"立即注册" forState:UIControlStateNormal];
+    [registPsdBTn setTitleColor:kCommonMainTextColor_150 forState:UIControlStateNormal];
+    [registPsdBTn addTarget:self action:@selector(registerAction) forControlEvents:UIControlEventTouchUpInside];
+    [_background addSubview:registPsdBTn];
+    
+    _loginButton=[UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [_loginButton setFrame:CGRectMake(20, CGRectGetMaxY(passwordView.frame) + 70, kScreenWidth - 80, 40)];
+    _loginButton.titleLabel.font = [UIFont systemFontOfSize:16];
+    
+    [_loginButton setTitle:@"立即登录" forState:UIControlStateNormal];
+    _loginButton.layer.cornerRadius = _loginButton.hd_height / 2;
+    _loginButton.layer.masksToBounds = YES;
+    _loginButton.layer.borderColor = kCommonMainTextColor_150.CGColor;
+    _loginButton.layer.borderWidth = 0.5;
+    [_loginButton addTarget:self action:@selector(doLogin) forControlEvents:UIControlEventTouchUpInside];
+    [_loginButton setBackgroundColor:[UIColor whiteColor]];
+    [_loginButton setTitleColor:kCommonMainTextColor_150 forState:UIControlStateNormal];
+    [_background addSubview:_loginButton];
+    
+    
+    UIButton * touristBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    touristBtn.frame = CGRectMake(0, _background.hd_height - 40, _background.hd_width, 20);
+    [touristBtn setTitle:@"我想随便看看>>>" forState:UIControlStateNormal];
+    touristBtn.titleLabel.font = kMainFont;
+    [touristBtn setTitleColor:UIRGBColor(25, 96, 246) forState:UIControlStateNormal];
+    [touristBtn setBackgroundColor:[UIColor whiteColor]];
+    [_background addSubview:touristBtn];
+    [touristBtn addTarget:self action:@selector(touristAction) forControlEvents:UIControlEventTouchUpInside];
+    
+    UIImageView * bottomImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, kScreenHeight - 70, kScreenWidth, 70)];
+    bottomImageView.image = [UIImage imageNamed:@"login-bgbgbg"];
+    [self.view addSubview:bottomImageView];
+}
+
 - (void)resignTextFiled
 {
     [_account resignFirstResponder];
@@ -163,6 +322,26 @@
     [SVProgressHUD show];
 }
 
+- (void)forgetPasswordAction
+{
+    NSLog(@"忘记密码");
+    VerifyAccountViewController * forgetVC = [[VerifyAccountViewController alloc]init];
+    [self.navigationController pushViewController:forgetVC animated:YES];
+}
+
+- (void)registerAction
+{
+    NSLog(@"注册");
+    RegistViewController * registVC = [[RegistViewController alloc]init];
+    [self.navigationController pushViewController:registVC animated:YES];
+}
+
+- (void)touristAction
+{
+    NSLog(@"随便看看");
+    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+}
+
 #pragma mark - login protocol func
 - (void)didUserLoginSuccessed
 {
@@ -184,6 +363,8 @@
         
     });
     
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationOfLoginSuccess object:nil];
+    
 }
 
 - (void)didUserLoginFailed:(NSString *)failedInfo
@@ -195,7 +376,6 @@
     });
 }
 
-
 - (void)connectRongyun
 {
     [[RCIM sharedRCIM] connectWithToken:[[UserManager sharedManager] getRongToken] success:^(NSString *userId) {
@@ -205,14 +385,15 @@
         
         RCUserInfo *user = [RCUserInfo new];
         
-            user.userId = [NSString stringWithFormat:@"%d", [UserManager sharedManager].getUserId];
-            user.name = [[UserManager sharedManager] getUserName];
-            user.portraitUri = [[UserManager sharedManager] getIconUrl];
+        user.userId = [NSString stringWithFormat:@"%d", [UserManager sharedManager].getUserId];
+        user.name = [[UserManager sharedManager] getUserNickName];
+        user.portraitUri = [[UserManager sharedManager] getIconUrl];
         
-            [[RCIM sharedRCIM]refreshUserInfoCache:user withUserId:user.userId];
-            [RCIM sharedRCIM].currentUserInfo.userId = user.userId;
-            [RCIM sharedRCIM].currentUserInfo.name = user.name;
-            [RCIM sharedRCIM].currentUserInfo.portraitUri = user.portraitUri;
+        [[RCIM sharedRCIM]refreshUserInfoCache:user withUserId:user.userId];
+        [RCIM sharedRCIM].currentUserInfo.userId = user.userId;
+        [RCIM sharedRCIM].currentUserInfo.name = user.name;
+        [RCIM sharedRCIM].currentUserInfo.portraitUri = user.portraitUri;
+        [RCIM sharedRCIM].enableMessageAttachUserInfo = YES;
         
     } error:^(RCConnectErrorCode status) {
         NSLog(@"连接失败");

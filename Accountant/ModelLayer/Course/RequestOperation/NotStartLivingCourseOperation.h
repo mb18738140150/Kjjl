@@ -13,6 +13,8 @@
 
 @property (nonatomic,weak) id<CourseModule_NotStartLivingCourse>              notifiedObject;
 - (void)setCurrentNotStartLivingCourseWithModel:(HottestCourseModel *)model;
-- (void)didRequestNotStartLivingCourseWithNotifiedObject:(id<CourseModule_NotStartLivingCourse>)object;
+//- (void)setCurrentNotStartLivingSectionCourseWithModel:(HottestCourseModel *)model;
+- (void)didRequestNotStartLivingCourseWithInfo:(NSDictionary *)infoDic NotifiedObject:(id<CourseModule_NotStartLivingCourse>)object;
+- (int)getIsHaveJurisdiction;
 
 @end

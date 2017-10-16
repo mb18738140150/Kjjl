@@ -16,10 +16,18 @@
 
 @property (nonatomic, copy)void(^MoreBlock)();
 
+@property (nonatomic, copy)void(^exchangeNewCourseBlock)();
+
+@property (nonatomic, copy)void (^moreLivingCourseBlock)();
+
+@property (nonatomic, copy)void (^mainMoreCourseBlock)();
+
 @property (nonatomic,weak) NSArray              *catoryDataSourceArray;
 
 @property (nonatomic,strong) NSArray            *mainQuestionArray;
 
 @property (nonatomic, strong)NSArray            *notStartLivingCOurseAyrray;
+
+@property (nonatomic, copy)void(^mainCountDownBlock)();
 
 @end

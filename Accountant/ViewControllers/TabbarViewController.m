@@ -61,13 +61,18 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(registerClick:) name:kNotificationOfRegisterClick object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(livingChatClick:) name:kNotificationOfLivingChatClick object:nil];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(livingPlayBackClick:) name:kNotificationOfLivingPlayBackClick object:nil];
+    
     [self startMonitorNet];
 }
 
 - (void)requireLogin
 {
     LoginViewController *login = [[LoginViewController alloc] init];
-    [self presentViewController:login animated:YES completion:nil];
+    
+    UINavigationController * nav = [[UINavigationController alloc]initWithRootViewController:login];
+    
+    [self presentViewController:nav animated:YES completion:nil];
 }
 
 - (void)playVideo
@@ -120,14 +125,45 @@
 
 #pragma mark - notification func
 
+- (void)livingPlayBackClick:(NSNotification *)notification
+{
+    NSDictionary * infoDic = notification.object;
+    VideoPlayViewController *vc = [[VideoPlayViewController alloc] init];
+    vc.infoDic = infoDic;
+    vc.isPlayFromLoacation = self.isPlayFromLoacation;
+    if (self.isPlayFromLoacation) {
+        vc.beginVideoId = self.videoId;
+        vc.beginChapterId = self.chapterId;
+    }
+    [self presentViewController:vc animated:YES completion:nil];
+}
+
 - (void)livingChatClick:(NSNotification *)notification
 {
     NSDictionary * infoDic = notification.object;
+    
     RCDLiveChatRoomViewController *chatRoomVC = [[RCDLiveChatRoomViewController alloc]init];
+    
+    if (![infoDic objectForKey:kChatRoomID]) {
+        if ([infoDic objectForKey:kCourseSecondID] && [[infoDic objectForKey:kCourseSecondID] intValue] == 0) {
+            infoDic = [[[CourseraManager sharedManager] getLivingSectionDetailArray] objectAtIndex:0];
+        }else
+        {
+            for (NSDictionary *dic in [[CourseraManager sharedManager] getLivingSectionDetailArray]) {
+                if ([[infoDic objectForKey:kCourseSecondID]isEqual:[dic objectForKey:kCourseSecondID]]) {
+                    infoDic = dic;
+                }
+            }
+        }
+        
+        
+        chatRoomVC.isLivingCourse = YES;
+    }
+    
     chatRoomVC.conversationType = ConversationType_CHATROOM;
-    chatRoomVC.targetId = [NSString stringWithFormat:@"%@", [infoDic objectForKey:kCourseID]];
-        chatRoomVC.targetId = @"chatRoomId-008";
-//    chatRoomVC.contentURL = [infoDic objectForKey:kCourseURL];
+    chatRoomVC.targetId = [NSString stringWithFormat:@"%@", [infoDic objectForKey:kChatRoomID]];
+//        chatRoomVC.targetId = @"chatRoomId-008";
+    chatRoomVC.contentURL = [infoDic objectForKey:kCourseURL];
     chatRoomVC.infoDic = infoDic;
     [self presentViewController:chatRoomVC animated:YES completion:nil];
     
@@ -165,7 +201,6 @@
 
 - (void)courseClick:(NSNotification *)notification
 {
-    
     if ([[UserManager sharedManager] isUserLogin]) {
         NSDictionary *infoDic = notification.object;
         [infoDic objectForKey:kCourseID];
@@ -184,7 +219,6 @@
         }
         [[CourseraManager sharedManager] didRequestDetailCourseWithCourseID:[[infoDic objectForKey:kCourseID] intValue] withNotifiedObject:self];
     }
-    
     else{
         [self requireLogin];
     }
@@ -231,7 +265,6 @@
     
     self.viewControllers = @[mainNavigation,categoryNavigation,questionNavigation,testNavigation,settingNavigation];
 }
-
 
 
 #pragma mark - delegate func

@@ -34,11 +34,15 @@
 // 搜索页直播课信息
 @property (nonatomic, strong) HottestCourseModel *searchLiveStreamModel;
 
-// 今日直播课信息
-@property (nonatomic, strong) HottestCourseModel *notStartLivingCourseModel;
-
 // 近期直播课信息
+@property (nonatomic, strong) HottestCourseModel *notStartLivingCourseModel;
+//@property (nonatomic, strong) HottestCourseModel *notStartLivingSectionCourseModel;
+
+// 往期直播课信息
 @property (nonatomic, strong) HottestCourseModel *endLivingCourseModel;
+
+// 直播课小节信息
+@property (nonatomic, strong) HottestCourseModel *livingSectionDetailModel;
 
 //全部课程的信息
 @property (nonatomic,strong) AllCourseModel                 *allCourseModel;

@@ -31,7 +31,7 @@ typedef enum : NSUInteger {
 @property (nonatomic, strong)UILabel * questionCountLabel;
 @property (nonatomic, strong)UILabel *learnPepleCountLB;
 @property (nonatomic, strong)ProcessView * learnProcessView;
-@property (nonatomic, strong)UIImageView *learnImageView;
+@property (nonatomic, strong)UIImageView *learnImageView;// 下载
 @property (nonatomic, strong)UILabel * totalCountLB;
 @property (nonatomic, strong) UITapGestureRecognizer *tapGesture;
 @property (nonatomic, strong) UIView        *bottomLineView;
@@ -40,5 +40,7 @@ typedef enum : NSUInteger {
 @property (nonatomic, copy)void(^downloadBlock)(VideoDownloadState downloadState);
 
 - (void)resetisLast:(BOOL)islast withDicInfo:(NSDictionary *)infoDic;
+
+- (void)hideDownloadBtn;
 
 @end

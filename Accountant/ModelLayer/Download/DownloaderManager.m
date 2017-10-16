@@ -81,11 +81,7 @@
     return self;
 }
 
-- (BOOL)isVideoIsDownloadedWithVideoId:(NSNumber *)videoId
-{
-    BOOL isDownloaded = [[DBManager sharedManager] isVideoDownload:videoId];
-    return isDownloaded;
-}
+
 
 - (BOOL)isTaskAddToDownloadedQueue:(NSString *)downloadTaskId
 {
@@ -103,9 +99,6 @@
         model.downLoadState = DownloadStateWait;
         model.filePath = [self getFilePath:dic];
         
-        if (![[DBManager sharedManager] isExitDownloadingVideo:[dic objectForKey:kVideoId]]) {
-            [[DBManager sharedManager] saveDownLoadingInfo:model];
-        }
         // 新添加的下载model先全部添加到等待下载数组
         [self.downLoadwaitModelsArr addObject:model];
         [self.downloadTaskIdQueue addObject:[dic objectForKey:kDownloadTaskId]];
@@ -359,12 +352,7 @@
     };
 }
 
-- (void)writeDB:(NSDictionary *)dic
-{
-    NSLog(@"下载完成 dic = %@", dic);
-    [[DBManager sharedManager] deletedownLoadVideoWithId:[dic objectForKey:kVideoId]];
-    [[DBManager sharedManager] saveDownloadInfo:dic];
-}
+
 
 - (void)writeToDBWith:(NSDictionary *)dic
 {
@@ -490,13 +478,17 @@
 #pragma mark - TY
 - (void)TY_addDownloadTask:(NSMutableDictionary *)dic
 {
+    
+    if (![[DBManager sharedManager] isExitDownloadingVideo:[dic objectForKey:kVideoId]]) {
+        [[DBManager sharedManager] saveDownLoadingInfo:dic];
+    }
+    
     TYDownloadModel * downLoadModel = [[TYDownloadModel alloc]initWithURLString:[dic objectForKey:kVideoURL] filePath:[self getFilePath:dic] infoDic:dic];
     
     TYDownloadSessionManager *manager = [TYDownloadSessionManager manager];
     __weak typeof(self) weakSelf = self;
     [manager startWithDownloadModel:downLoadModel progress:^(TYDownloadProgress *progress) {
        
-        
     } state:^(TYDownloadState state, NSString *filePath, NSError *error) {
         if (state == TYDownloadStateCompleted) {
             [weakSelf writeDB:dic];
@@ -508,15 +500,28 @@
             if (isObjectNotNil(self.processDownloadDelegate)) {
                 [weakSelf.processDownloadDelegate deleteDownloadTask];
             };
+        }else if (state == TYDownloadStateSuspended){
+            if (isObjectNotNil(self.processDownloadDelegate)) {
+                [weakSelf.processDownloadDelegate didDownloadSuspend];
+            };
         }
         
         //NSLog(@"state %ld error%@ filePath%@",state,error,filePath);
     }];
 }
+
+- (void)writeDB:(NSDictionary *)dic
+{
+    NSLog(@"下载完成 dic = %@", dic);
+    [[DBManager sharedManager] deletedownLoadVideoWithId:[dic objectForKey:kVideoId]];
+    [[DBManager sharedManager] saveDownloadInfo:dic];
+}
+
 - (TYDownloadModel *)TY_getDownLoadModelWithDownloadVideoURL:(NSString *)videoURL
 {
     return [[TYDownloadSessionManager manager] downLoadingModelForURLString:videoURL];
 }
+
 - (NSArray *)TY_getDownloadingVideoInfoArray
 {
     NSMutableArray * array = [[NSMutableArray alloc]init];
@@ -546,6 +551,11 @@
     }
 }
 
+- (BOOL)isVideoIsDownloadedWithVideoId:(NSNumber *)videoId
+{
+    BOOL isDownloaded = [[DBManager sharedManager] isVideoDownload:videoId];
+    return isDownloaded;
+}
 
 // 暂停下载
 - (void)TY_pauseDownloadWithModel:(TYDownloadModel *)model
@@ -566,7 +576,7 @@
 {
     TYDownloadSessionManager *manager = [TYDownloadSessionManager manager];
     [manager deleteFileWithDownloadModel:model];
+    [[DBManager sharedManager] deletedownLoadVideoWithId:[model.infoDic objectForKey:kVideoId]];
 }
-
 
 @end

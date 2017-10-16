@@ -34,7 +34,6 @@
         self.dataArray = [[CourseraManager sharedManager] getSearchLiveStreamArray];
     }
     
-    
     [self navigationViewSetup];
     [self contentViewInit];
     
@@ -44,7 +43,7 @@
 - (void)navigationViewSetup
 {
    
-        self.navigationItem.title = @"搜索结果";
+    self.navigationItem.title = @"搜索结果";
     self.navigationController.navigationBar.barTintColor = kCommonNavigationBarColor;
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:kCommonMainTextColor_50};
     self.edgesForExtendedLayout = UIRectEdgeNone;
@@ -149,7 +148,7 @@
     if (alertView.tag == OrderAlerttag) {
         if (buttonIndex == 1) {
             [SVProgressHUD showWithStatus:@"预约中"];
-            [[UserManager sharedManager] didRequestOrderLivingCourseOperationWithCourseId:self.orderCourseId withNotifiedObject:self];
+//            [[UserManager sharedManager] didRequestOrderLivingCourseOperationWithCourseId:self.orderCourseId withNotifiedObject:self];
         }
     }
 }

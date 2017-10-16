@@ -44,12 +44,60 @@
         NSString *localizedMessage = [RCDLiveKitUtility formatMessage:notification];
         NSString *name=@"";
         if (content.senderUserInfo) {
+            
+            /*
+             //            if (notification.extra) {
+             //                switch (notification.extra.intValue) {
+             //                    case 1:
+             //                        name = [NSString stringWithFormat:@"注册-%@:",content.senderUserInfo.name];
+             //                        break;
+             //                    case 2:
+             //                        name = [NSString stringWithFormat:@"试用-%@:",content.senderUserInfo.name];
+             //                        break;
+             //                    case 3:
+             //                        name = [NSString stringWithFormat:@"正式会员-%@:",content.senderUserInfo.name];
+             //                        break;
+             //
+             //                    default:
+             //                        name = [NSString stringWithFormat:@"%@:",content.senderUserInfo.name];
+             //                        break;
+             //                }
+             //            }else
+             //            {
+             //            }
+             */
+            
             name = [NSString stringWithFormat:@"%@:",content.senderUserInfo.name];
         }
-        NSString *str =[NSString stringWithFormat:@"%@ %@",name,localizedMessage];
+        
+        NSString *str =[NSString stringWithFormat:@"%@\n    %@",name,localizedMessage];
         NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:str];
         
+//        if (notification.extra) {
+//            switch (notification.extra.intValue) {
+//                case 1:
+//                    [attributedString addAttribute:NSForegroundColorAttributeName value:(RCDLive_HEXCOLOR(0x1D7AF8)) range:[str rangeOfString:name]];
+//                    break;
+//                case 2:
+//                    [attributedString addAttribute:NSForegroundColorAttributeName value:(RCDLive_HEXCOLOR(0x00FF00)) range:[str rangeOfString:name]];
+//                    break;
+//                case 3:
+//                    [attributedString addAttribute:NSForegroundColorAttributeName value:(RCDLive_HEXCOLOR(0xFF0000)) range:[str rangeOfString:name]];
+//                    break;
+//                    
+//                default:
+//                    [attributedString addAttribute:NSForegroundColorAttributeName value:(RCDLive_HEXCOLOR(0x1D7AF8)) range:[str rangeOfString:name]];
+//                    break;
+//            }
+//        }else
+//        {
+//        }
+        
         [attributedString addAttribute:NSForegroundColorAttributeName value:(RCDLive_HEXCOLOR(0x1D7AF8)) range:[str rangeOfString:name]];
+        if ([model.senderUserId isEqualToString:[[NSUserDefaults standardUserDefaults] objectForKey:kAssistantID]]) {
+            [attributedString addAttribute:NSForegroundColorAttributeName value:(RCDLive_HEXCOLOR(0xFF0000)) range:[str rangeOfString:name]];
+        }
+        
         [attributedString addAttribute:NSForegroundColorAttributeName value:([UIColor grayColor]) range:[str rangeOfString:localizedMessage]];
         self.tipMessageLabel.attributedText = attributedString.copy;
     }else if ([content isMemberOfClass:[RCDLiveGiftMessage class]]){
@@ -72,7 +120,9 @@
     }
 
     NSString *__text = self.tipMessageLabel.text;
+    
     CGSize __labelSize = [RCDLiveTipMessageCell getTipMessageCellSize:__text];
+    
 
     if (_isFullScreenMode) {
         self.tipMessageLabel.frame = CGRectMake(6,0, __labelSize.width, __labelSize.height);
@@ -85,8 +135,6 @@
 //        self.tipMessageLabel.alpha = 1;
     }
 }
-
-
 
 - (void)attributedLabel:(RCDLiveAttributedLabel *)label didSelectLinkWithURL:(NSURL *)url
 {

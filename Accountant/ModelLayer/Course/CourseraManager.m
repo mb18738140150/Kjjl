@@ -25,6 +25,7 @@
 #import "NotStartLivingCourseOperation.h"
 #import "EndLivingCourseOperation.h"
 #import "HotSearchOperation.h"
+#import "LivingSectionDetailOperation.h"
 
 @interface CourseraManager ()
 
@@ -43,6 +44,7 @@
 @property (nonatomic, strong)NotStartLivingCourseOperation  *notStartLivingOperation;
 @property (nonatomic, strong)EndLivingCourseOperation       *endLivingOperation;
 @property (nonatomic,strong)HotSearchOperation              *hotSearchOperation;
+@property (nonatomic,strong)LivingSectionDetailOperation    *livingSectionDetailOperation;
 
 @end
 
@@ -84,10 +86,13 @@
         
         self.notStartLivingOperation = [[NotStartLivingCourseOperation alloc]init];
         [self.notStartLivingOperation setCurrentNotStartLivingCourseWithModel:self.courseModuleModel.notStartLivingCourseModel];
+//        [self.notStartLivingOperation setCurrentNotStartLivingSectionCourseWithModel:self.courseModuleModel.notStartLivingSectionCourseModel];
         
         self.endLivingOperation = [[EndLivingCourseOperation alloc]init];
         [self.endLivingOperation setCurrentEndLivingCourseWithModel:self.courseModuleModel.endLivingCourseModel];
         
+        self.livingSectionDetailOperation = [[LivingSectionDetailOperation alloc]init];
+        [self.livingSectionDetailOperation setCurrentLivingSectionDetailWithModel:self.courseModuleModel.livingSectionDetailModel];
         
         self.courseCategoryOperation = [[CourseCategoryOperation alloc] init];
         [self.courseCategoryOperation setCurrentAllCourseCategoryModel:self.courseModuleModel.allCourseCategoryModel];
@@ -187,9 +192,9 @@
     [self.deleteCollectCourseOperation didRequestDeleteCollectCourseWithId:courseId andNotifiedObject:object];
 }
 
-- (void)didRequestNotStartLivingCourseWithNotifiedObject:(id<CourseModule_NotStartLivingCourse>)delegate
+- (void)didRequestNotStartLivingCourseWithInfo:(NSDictionary *)infoDic NotifiedObject:(id<CourseModule_NotStartLivingCourse>)delegate
 {
-    [self.notStartLivingOperation didRequestNotStartLivingCourseWithNotifiedObject:delegate];
+    [self.notStartLivingOperation didRequestNotStartLivingCourseWithInfo:infoDic NotifiedObject:delegate];
 }
 
 - (void)didRequestEndLivingCourseWithNotifiedObject:(id<CourseModule_EndLivingCourse>)delegate
@@ -197,16 +202,37 @@
     [self.endLivingOperation didRequestEndLivingCourseWithNotifiedObject:delegate];
 }
 
+- (void)didrequestLivingSectionDetailWithInfo:(NSDictionary *)infoDic andNotifiedObject:(id<CourseModule_LivingSectionDetail>)delegate
+{
+    [self.livingSectionDetailOperation didRequestLivingSectionDetailWithInfo:infoDic andNotifiedObject:delegate];
+}
+
+- (int)getIsHaveJurisdiction
+{
+    return [self.notStartLivingOperation getIsHaveJurisdiction];
+}
+
 #pragma mark - getter funcs
 - (NSArray *)getHottestCourseArray
 {
     NSMutableArray *hottestArray = [[NSMutableArray alloc] init];
-    for (CourseModel *model in self.courseModuleModel.hottestCourseModel.hottestCourses) {
+//    for (CourseModel *model in self.courseModuleModel.hottestCourseModel.hottestCourses) {
+//        NSDictionary *dic = @{kCourseID:@(model.courseID),
+//                              kCourseCover:model.courseCover,
+//                              kCourseName:model.courseName,
+//                              kCourseTeacherName:model.coueseTeacherName};
+//        [hottestArray addObject:dic];
+//    }
+    
+    for (int i = 4 * self.exchangeNumber; i < 4 * self.exchangeNumber + 4 && 4 * self.exchangeNumber + 3 < self.courseModuleModel.hottestCourseModel.hottestCourses.count; i++) {
+        CourseModel * model = self.courseModuleModel.hottestCourseModel.hottestCourses[i];
         NSDictionary *dic = @{kCourseID:@(model.courseID),
                               kCourseCover:model.courseCover,
-                              kCourseName:model.courseName};
+                              kCourseName:model.courseName,
+                              kCourseTeacherName:model.coueseTeacherName};
         [hottestArray addObject:dic];
     }
+    
     return hottestArray;
 }
 
@@ -249,7 +275,6 @@
     return hottestArray;
 }
 
-
 - (NSArray *)getSearchLiveStreamArray
 {
     NSMutableArray *hottestArray = [[NSMutableArray alloc] init];
@@ -263,22 +288,126 @@
     return hottestArray;
 }
 
+- (NSArray *)getLivingTeacherInfoArrar
+{
+    NSMutableArray * teacherArr = [NSMutableArray array];
+    for (TeacherModel * tModel in self.courseModuleModel.notStartLivingCourseModel.teacherDataArray) {
+        NSDictionary *  dic = @{kCourseTeacherName:tModel.teacherName,
+                                kteacherId:tModel.teacherId};
+        [teacherArr addObject:dic];
+    }
+    return teacherArr;
+}
+
 - (NSArray *)getNotStartLivingCourseArray
 {
     NSMutableArray *hottestArray = [[NSMutableArray alloc] init];
+    
+    // 课程数据源
+    NSMutableArray *livingCourseArr = [NSMutableArray array];
+    
+    NSMutableArray *noStartlivingCourseArr = [NSMutableArray array];
+    NSMutableArray *endlivingCourseArr = [NSMutableArray array];
+    
     for (CourseModel *model in self.courseModuleModel.notStartLivingCourseModel.hottestCourses) {
+        
         NSDictionary *dic = @{kCourseID:@(model.courseID),
                               kCourseCover:model.courseCover,
                               kCourseName:model.courseName,
                               kCourseTeacherName:model.coueseTeacherName,
-                              kCourseURL:model.courseURLString,
                               kLivingTime:model.time,
                               kLivingState:@(model.playState),
                               kTeacherDetail:model.teacherDetail,
                               kTeacherPortraitUrl:model.teacherPortraitUrl,
-                              kLivingDetail:model.livingDetail};
-        [hottestArray addObject:dic];
+                              kLivingDetail:model.livingDetail,
+                              kHaveJurisdiction:@(model.haveJurisdiction),
+                              kLivinglastTime:model.lastTime,
+                              kCourseSecondID:@(model.sectionId)};
+        
+        if (model.lastTime.length == 0) {
+            [endlivingCourseArr addObject:dic];
+        }else
+        {
+            [noStartlivingCourseArr addObject:dic];
+        }
     }
+    
+    [noStartlivingCourseArr sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+        NSString * time1 = [(NSDictionary *)obj1 objectForKey:kLivinglastTime];
+        
+        NSString * time2 = [(NSDictionary *)obj2 objectForKey:kLivinglastTime];
+        
+        NSComparisonResult result = [time1 compare:time2 options:NSCaseInsensitiveSearch];
+        return result;
+    }];
+    
+    for (NSDictionary * infoDic in noStartlivingCourseArr) {
+        [livingCourseArr addObject:infoDic];
+    }
+    for (NSDictionary *infoDic in endlivingCourseArr) {
+        [livingCourseArr addObject:infoDic];
+    }
+    
+    [hottestArray addObject:livingCourseArr];
+    
+    // 直播课程小结数据源
+    NSMutableArray * livingScrtionCourseArray = [NSMutableArray arrayWithArray:self.courseModuleModel.livingSectionDetailModel.hottestCourses];
+    
+    NSMutableArray * noStartArr = [NSMutableArray array];
+    NSMutableArray * endArr = [NSMutableArray array];
+    
+    [hottestArray addObject:noStartArr];
+    [hottestArray addObject:endArr];
+    
+    for (int i = 0; i < livingScrtionCourseArray.count; i++) {
+        
+        CourseModel * jModel = [livingScrtionCourseArray objectAtIndex:i];
+        
+        NSDictionary *dic = @{kCourseID:@(jModel.courseID),
+                              kCourseTeacherName:jModel.coueseTeacherName,
+                              kLivingTime:jModel.time,
+                              kLivingState:@(jModel.playState),
+                              kTeacherDetail:jModel.teacherDetail,
+                              kTeacherPortraitUrl:jModel.teacherPortraitUrl,
+                              kLivingDetail:jModel.livingDetail,
+                              kHaveJurisdiction:@(jModel.haveJurisdiction),
+                              kCourseSecondID:@(jModel.sectionId),
+                              kCourseSecondName:jModel.courseName,
+                              kCourseURL:jModel.courseURLString,
+                              kChatRoomID:jModel.chatRoomId,
+                              kAssistantID:jModel.assistantId,
+                              kPlayBackUrl:jModel.playback,
+                              kIsLivingCourseFree:@(jModel.isFree)};
+        
+        
+        if (jModel.playState == 3) {
+            [endArr addObject:dic];
+        }else
+        {
+            [noStartArr addObject:dic];
+        }
+    }
+    
+//    NSMutableArray * currentMonthLivingCourseArr = nil;
+//    BOOL havaCurrentMonthLivingCOurse = NO;
+//    for (int i = 1; i <hottestArray.count; i++) {
+//        NSMutableArray * array = [hottestArray objectAtIndex:i];
+//        for (NSDictionary * infoDic in array) {
+//            havaCurrentMonthLivingCOurse = [NSString judgeCurrentDay:[infoDic objectForKey:kLivingTime]];
+//            if (havaCurrentMonthLivingCOurse) {
+//                break;
+//            }
+//        }
+//        if (havaCurrentMonthLivingCOurse) {
+//            currentMonthLivingCourseArr = array;
+//            break;
+//        }
+//    }
+//    if (havaCurrentMonthLivingCOurse) {
+//        [hottestArray removeObject:currentMonthLivingCourseArr];
+//        [hottestArray insertObject:currentMonthLivingCourseArr atIndex:1];
+//    }
+    
     return hottestArray;
 }
 
@@ -301,6 +430,36 @@
     return hottestArray;
 }
 
+/**
+ 获取已结束直播课程
+ 
+ @return 已结束直播课程
+ */
+- (NSArray *)getLivingSectionDetailArray
+{
+    NSMutableArray *LivingSectionDetailArray = [[NSMutableArray alloc] init];
+    
+    for (CourseModel *jModel in self.courseModuleModel.livingSectionDetailModel.hottestCourses) {
+        NSDictionary *dic = @{kCourseID:@(jModel.courseID),
+                              kCourseTeacherName:jModel.coueseTeacherName,
+                              kLivingTime:jModel.time,
+                              kLivingState:@(jModel.playState),
+                              kTeacherDetail:jModel.teacherDetail,
+                              kTeacherPortraitUrl:jModel.teacherPortraitUrl,
+                              kLivingDetail:jModel.livingDetail,
+                              kHaveJurisdiction:@(jModel.haveJurisdiction),
+                              kCourseSecondID:@(jModel.sectionId),
+                              kCourseSecondName:jModel.courseName,
+                              kCourseURL:jModel.courseURLString,
+                              kChatRoomID:jModel.chatRoomId,
+                              kAssistantID:jModel.assistantId,
+                              kPlayBackUrl:jModel.playback,
+                              kIsLivingCourseFree:@(jModel.isFree)};
+        [LivingSectionDetailArray addObject:dic];
+    }
+    return LivingSectionDetailArray;
+}
+
 - (NSArray *)getAllCourseArray
 {
     NSMutableArray *allCourseArray = [[NSMutableArray alloc] init];
@@ -319,7 +478,8 @@
     NSDictionary *dic = @{kCourseID:@(model.courseID),
                           kCourseCover:model.courseCover,
                           kCourseName:model.courseName,
-                          kCourseIsCollect:@(model.isCollect)};
+                          kCourseIsCollect:@(model.isCollect),
+                          kCourseCanDownLoad:@(model.canDownload)};
     return dic;
 }
 
@@ -402,6 +562,58 @@
     }
     return array;
 }
+
+- (NSArray *)getMainVCCategoryArray
+{
+    NSMutableArray *array = [[NSMutableArray alloc] init];
+    for (CourseCategoryModel *model in self.courseModuleModel.allCourseCategoryModel.allCategory) {
+        NSMutableDictionary *tmpDic = [[NSMutableDictionary alloc] init];
+        [tmpDic setObject:model.categoryName forKey:kCourseCategoryName];
+        [tmpDic setObject:@(model.categoryId) forKey:kCourseCategoryId];
+        [tmpDic setObject:model.categoryImageUrl forKey:kCourseCategoryCoverUrl];
+        NSMutableArray *array1 = [[NSMutableArray alloc] init];
+        
+        switch (model.categoryId) {
+            case 52:
+            case 62:
+            case 44:
+            case 46:
+            case 40:
+            {
+                for (CourseCategorysecondModel *courseSecondModel in model.categrorySecondCoursesArray) {
+                    NSMutableDictionary *tmpDic2 = [[NSMutableDictionary alloc] init];
+                    [tmpDic2 setObject:@(courseSecondModel.categorySecondId) forKey:kCourseSecondID];
+                    [tmpDic2 setObject:courseSecondModel.categorySecondName forKey:kCourseSecondName];
+                    [tmpDic2 setObject:courseSecondModel.categorySecondImageUrl forKey:kCourseSecondCover];
+                    
+                    NSMutableArray * array2 = [[NSMutableArray alloc]init];
+                    for (CourseModel *courseModel in courseSecondModel.categroryCoursesArray) {
+                        NSMutableDictionary * tmpDic3 = [[NSMutableDictionary alloc]init];
+                        [tmpDic3 setObject:@(courseModel.courseID) forKey:kCourseID];
+                        [tmpDic3 setObject:courseModel.courseName forKey:kCourseName];
+                        [tmpDic3 setObject:courseModel.courseCover forKey:kCourseCover];
+                        [tmpDic3 setObject:courseModel.coueseTeacherName forKey:kCourseTeacherName];
+                        [array2 addObject:tmpDic3];
+                    }
+                    [tmpDic2 setObject:array2 forKey:kCourseCategorySecondCourseInfos];
+                    
+                    [array1 addObject:tmpDic2];
+                }
+                [tmpDic setObject:array1 forKey:kCourseCategoryCourseInfos];
+                
+                [array addObject:tmpDic];
+            }
+                break;
+                
+            default:
+                break;
+        }
+        
+        
+    }
+    return array;
+}
+
 
 - (NSArray *)getCategoryCoursesInfo
 {
@@ -490,6 +702,27 @@
         [array addObject:dic];
     }
     return array;
+}
+
+- (void )refreshLivingSectionStateOrder_complate:(int)index
+{
+    CourseModel * model = self.courseModuleModel.livingSectionDetailModel.hottestCourses[index];
+    model.playState = 1;
+}
+
+- (void )refreshLivingSectionStateOrder_complateWith:(NSDictionary *)infoDic
+{
+    for (CourseModel * model in self.courseModuleModel.livingSectionDetailModel.hottestCourses) {
+        if (model.sectionId == [[infoDic objectForKey:kCourseSecondID] intValue]) {
+            if (model.playState == 1) {
+                model.playState = 0;
+            }else
+            {
+                model.playState = 1;
+            }
+        }
+        
+    }
 }
 
 #pragma mark - utility func

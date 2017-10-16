@@ -103,9 +103,13 @@
     
     [self.collectionView reloadData];
 }
-- (void)didRequestHotSearchCourseFailed
+- (void)didRequestHotSearchCourseFailed:(NSString *)faildInfo
 {
-    
+    [SVProgressHUD dismiss];
+    [SVProgressHUD showErrorWithStatus:faildInfo];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [SVProgressHUD dismiss];
+    });
 }
 
 - (void)didRequestLiveStreamSuccessed
@@ -124,10 +128,13 @@
     [self.navigationController pushViewController:vc animated:YES];
     
 }
-- (void)didRequestLiveStreamFailed
+- (void)didRequestLiveStreamFailed:(NSString *)failStr
 {
-    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"暂无搜索结果" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-    [alert show];
+    [SVProgressHUD dismiss];
+    [SVProgressHUD showErrorWithStatus:failStr];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [SVProgressHUD dismiss];
+    });
 }
 
 - (void)didRequestVideoCourseSuccessed
@@ -138,7 +145,6 @@
         [alert show];
         return;
     }
-    
     
     [self searchDBWith:self.searchTF.text];
     SearchReaultViewController * vc = [[SearchReaultViewController alloc]init];
@@ -371,7 +377,7 @@
 #pragma mark - HYSegmentedControl 代理方法
 - (void)hySegmentedControlSelectAtIndex:(NSInteger)index
 {
-    self.index = index;
+    self.index = (int)index;
     switch (index) {
         case 0:{
             self.type = @"视频课";

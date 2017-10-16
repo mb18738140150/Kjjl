@@ -16,10 +16,13 @@
 #import "UserManager.h"
 #import "UIImageView+AFNetworking.h"
 #import "UIImage+AFNetworking.h"
+#import "ChangeEquipmentNameView.h"
+#import "AppDelegate.h"
+#import "ChangeBindViewController.h"
 
 #define headerImageName @"stuhead"
 
-@interface UserCenterViewController ()<UITableViewDelegate,UITableViewDataSource,UIGestureRecognizerDelegate>
+@interface UserCenterViewController ()<UITableViewDelegate,UITableViewDataSource,UIGestureRecognizerDelegate,UserModule_CompleteUserInfoProtocol,UIImagePickerControllerDelegate,UINavigationControllerDelegate,HttpUploadProtocol>
 
 @property (nonatomic,strong) UIImageView            *bgImageView;
 @property (nonatomic,strong) UIImageView            *headerImageView;
@@ -31,6 +34,13 @@
 @property (nonatomic,strong) NSDictionary           *userInfos;
 @property (nonatomic,strong) NSArray                *userDisplayKeyArray;
 @property (nonatomic,strong) NSArray                *userDisplayNameArray;
+// 修改昵称
+@property (nonatomic, strong)ChangeEquipmentNameView  * changeNameView;
+@property (nonatomic, strong)NSMutableDictionary      * nickNameDic;
+
+@property (nonatomic, strong)UIImagePickerController * imagePic;
+@property (nonatomic, strong)UIImage                 * nImage;
+@property (nonatomic, strong)NSString                * iconMsg;
 
 @end
 
@@ -39,7 +49,7 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    
+    [self.navigationController setNavigationBarHidden:YES animated:YES];
 }
 
 - (void)viewDidLoad {
@@ -49,7 +59,7 @@
     self.userInfos = [[UserManager sharedManager] getUserInfos];
     self.userDisplayNameArray = @[@"用户名",@"用户id",@"昵称",@"用户级别",@"电话号码"];
     self.userDisplayKeyArray = @[kUserName,kUserId,kUserNickName,kUserLevel,kUserTelephone];
-    
+    self.iconMsg = @"";
     [self navigationViewSetup];
     [self contentSetup];
 }
@@ -99,27 +109,146 @@
         }
         
     }else if(indexPath.row == 4){
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         NSString *tele = [self.userInfos objectForKey:[self.userDisplayKeyArray objectAtIndex:indexPath.row]];
         if (tele == nil || [tele isEqualToString:@""]) {
             cell.detailTextLabel.text = @"未绑定";
         }else{
             cell.detailTextLabel.text = [NSString stringWithFormat:@"%@",[self.userInfos objectForKey:[self.userDisplayKeyArray objectAtIndex:indexPath.row]]];
         }
-    }else{
+        UITapGestureRecognizer * changePhoneNumberTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(changePhoneNumberAction:)];
+        cell.detailTextLabel.userInteractionEnabled = YES;
+        
+        [cell addGestureRecognizer:changePhoneNumberTap];
+        
+    }else if (indexPath.row == 2){
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        cell.detailTextLabel.text = [NSString stringWithFormat:@"%@",[self.userInfos objectForKey:[self.userDisplayKeyArray objectAtIndex:indexPath.row]]];
+        cell.detailTextLabel.userInteractionEnabled = YES;
+        [self.nickNameDic setObject:cell.detailTextLabel.text forKey:@"old"];
+        [self.nickNameDic setObject:cell.detailTextLabel.text forKey:@"new"];
+        
+        if (cell.detailTextLabel.gestureRecognizers.count == 0) {
+            UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(changeNickname)];
+            [cell.detailTextLabel addGestureRecognizer:tap];
+        }
+    }
+    
+    else{
         cell.detailTextLabel.text = [NSString stringWithFormat:@"%@",[self.userInfos objectForKey:[self.userDisplayKeyArray objectAtIndex:indexPath.row]]];
     }
     return cell;
 }
 
+// 修改昵称
+- (void)changeNickname
+{
+    if (self.changeNameView) {
+        AppDelegate * delegate = [UIApplication sharedApplication].delegate;
+        [delegate.window addSubview:self.changeNameView];
+        self.changeNameView.alpha = 0;
+        [UIView animateWithDuration:.3 animations:^{
+            self.changeNameView.alpha = 1;
+        }];
+    }else
+    {
+        NSArray * nibarr = [[NSBundle mainBundle]loadNibNamed:@"ChangeEquipmentNameView" owner:self options:nil];
+        self.changeNameView = [nibarr objectAtIndex:0];
+        CGRect tmpFrame = [[UIScreen mainScreen] bounds];
+        self.changeNameView.frame = tmpFrame;
+        self.changeNameView.equipmentNameTF.delegate = self.changeNameView;
+        self.changeNameView.title = @"昵称";
+        self.changeNameView.titleLabel.text = @"修改昵称";
+        self.changeNameView.equipmentNameTF.placeholder = @"请输入昵称";
+        self.changeNameView.equipmentNameTF.text = [self.nickNameDic objectForKey:@"new"];
+        AppDelegate * delegate = [[UIApplication sharedApplication] delegate];
+        [delegate.window addSubview:self.changeNameView];
+        self.changeNameView.alpha = 0;
+        [UIView animateWithDuration:.3 animations:^{
+            self.changeNameView.alpha = 1;
+        }];
+        __weak UserCenterViewController * meVC = self;
+        [self.changeNameView getEquipmentOption:^(NSString *name) {
+            NSLog(@"name = %@", name);
+            [meVC.changeNameView removeFromSuperview];
+            
+            [meVC changeNickName:name];
+            
+            [meVC.nickNameDic setObject:name forKey:@"new"];
+        }];
+    }
+}
+
+- (void)changeNickName:(NSString *)nNickName;
+{
+    [SVProgressHUD show];
+    NSDictionary *dic = @{
+                          @"iconStr":@"",
+                          @"nickName":nNickName,
+                          @"qqAccount":@"",
+                          @"phoneNumber":@""
+                          };
+    [[UserManager sharedManager]completeUserInfoWithDic:dic withNotifiedObject:self];
+}
+
+#pragma mark - 绑定新手机号
+- (void)changePhoneNumberAction:(UITapGestureRecognizer *)tapGesture
+{
+    UILabel * label = (UILabel *)tapGesture.view;
+    
+    ChangeBindViewController * changePhoneNBVC = [[ChangeBindViewController alloc]init];
+    if ([label.text isEqualToString:@"未绑定"]) {
+        changePhoneNBVC.isBind = YES;
+    }else
+    {
+        changePhoneNBVC.isBind = NO;
+        changePhoneNBVC.verifyPhoneNumber = [self.userInfos objectForKey:kUserTelephone];
+    }
+    [self.navigationController pushViewController:changePhoneNBVC animated:YES];
+}
+
+#pragma mark - completeuserInfo
+- (void)didCompleteUserSuccessed
+{
+    [SVProgressHUD dismiss];
+    [self.nickNameDic setObject:[self.nickNameDic objectForKey:@"new"] forKey:@"old"];
+    NSDictionary * infoDic = @{@"icon":self.iconMsg,
+                               @"phoneNumber":@"",
+                               @"nickName":[self.nickNameDic objectForKey:@"new"]
+                               };
+    [[UserManager sharedManager]refreshUserInfoWith:infoDic];
+    self.userInfos = [[UserManager sharedManager]getUserInfos];
+    [self.infoTableView reloadData];
+    if (self.iconMsg && self.iconMsg.length > 0) {
+        [self refreshHeadImage];
+        self.iconMsg = @"";
+    }
+    
+}
+
+- (void)didCompleteUserFailed:(NSString *)failInfo
+{
+    [SVProgressHUD dismiss];
+    self.iconMsg = @"";
+    [self.nickNameDic setObject:[self.nickNameDic objectForKey:@"old"] forKey:@"new"];
+    [SVProgressHUD showErrorWithStatus:failInfo];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [SVProgressHUD dismiss];
+    });
+}
+
+- (void)refreshHeadImage
+{
+    self.headerImageView.image = self.nImage;
+    self.bgImageView.image = self.headerImageView.image;
+}
 
 #pragma mark - ui setup
 - (void)navigationViewSetup
 {
-    
     self.navigationItem.title = @"个人中心";
     self.edgesForExtendedLayout = UIRectEdgeNone;
     self.automaticallyAdjustsScrollViewInsets = NO;
-    
     
     [self.navigationController setNavigationBarHidden:YES animated:YES];
     self.navigationController.navigationBar.barTintColor = kCommonNavigationBarColor;
@@ -139,13 +268,19 @@
     self.bgImageView.backgroundColor = [UIColor grayColor];
 
     self.headerImageView = [[UIImageView alloc] initWithFrame:CGRectMake(self.bgImageView.frame.size.width/2 - kWidthOfWidthImage/2, self.bgImageView.frame.size.height/2 - kWidthOfWidthImage/2 + 10, kWidthOfWidthImage, kWidthOfWidthImage)];
-    self.headerImageView.backgroundColor = [UIColor greenColor];
 //    self.headerImageView.image = [UIImage imageNamed:headerImageName];
     [self.headerImageView setImageWithURL:[NSURL URLWithString:[self.userInfos objectForKey:kUserHeaderImageUrl]]];
     self.headerImageView.layer.cornerRadius = self.headerImageView.frame.size.width/2;
     self.headerImageView.layer.masksToBounds = YES;
+    self.headerImageView.userInteractionEnabled = YES;
+    self.imagePic = [[UIImagePickerController alloc] init];
+    _imagePic.allowsEditing = YES;
+    _imagePic.delegate = self;
+    UITapGestureRecognizer * changeIconTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(changeIcon)];
+    [self.headerImageView addGestureRecognizer:changeIconTap];
     
-    UIImage *oriImage = [UIImage imageNamed:headerImageName];
+    
+    UIImage *oriImage = self.headerImageView.image;
 /*    UIImage *bgImage = [oriImage imageByScalingAndCroppingForSize:CGSizeMake(kScreenWidth+20, kScreenWidth+20)];
     self.bgImageView.image = [bgImage coreBlurWithBlurNumber:10];*/
 //    [self.bgImageView setImageWithURL:[NSURL URLWithString:[self.userInfos objectForKey:kUserHeaderImageUrl]]];
@@ -174,6 +309,86 @@
     self.infoTableView.delegate = self;
     self.infoTableView.dataSource = self;
     [self.view addSubview:self.infoTableView];
+    
+    self.nickNameDic = [NSMutableDictionary dictionary];
+}
+
+- (void)changeIcon
+{
+    
+    UIAlertController * alertcontroller = [UIAlertController alertControllerWithTitle:@"选择图片来源" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    UIAlertAction * cancleAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
+    UIAlertAction * cameraAction = [UIAlertAction actionWithTitle:@"拍照" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+            self.imagePic.sourceType = UIImagePickerControllerSourceTypeCamera;
+            [self presentViewController:self.imagePic animated:YES completion:nil];
+        }else
+        {
+            UIAlertController * tipControl = [UIAlertController alertControllerWithTitle:@"提示" message:@"没有相机,请选择图库" preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction * sureAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                ;
+            }];
+            [tipControl addAction:sureAction];
+            [self presentViewController:tipControl animated:YES completion:nil];
+            
+        }
+    }];
+    UIAlertAction * libraryAction = [UIAlertAction actionWithTitle:@"从相册获取" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        self.imagePic.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+        [self presentViewController:self.imagePic animated:YES completion:nil];
+    }];
+    
+    [alertcontroller addAction:cancleAction];
+    [alertcontroller addAction:cameraAction];
+    [alertcontroller addAction:libraryAction];
+    
+    [self presentViewController:alertcontroller animated:YES completion:nil];
+    
+}
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info
+{
+    UIImage * image = [info objectForKey:@"UIImagePickerControllerEditedImage"];
+    self.nImage = image;
+    [SVProgressHUD show];
+    
+    [self upLoadImage:image];
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)upLoadImage:(UIImage *)image
+{
+   
+    [[HttpUploaderManager sharedManager]uploadImage:UIImagePNGRepresentation(image) withProcessDelegate:self];
+}
+
+#pragma mark - uploadImageProtocol
+- (void)didUploadSuccess:(NSDictionary *)successInfo
+{
+    [SVProgressHUD dismiss];
+    NSLog(@"%@", successInfo);
+    
+    NSString * imageStr = [successInfo objectForKey:@"msg"];
+    NSArray * imageStrArr = [imageStr componentsSeparatedByString:@","];
+    
+    self.iconMsg = [imageStrArr objectAtIndex:0];
+    NSDictionary *dic = @{
+                          @"iconStr":[imageStrArr objectAtIndex:1],
+                          @"nickName":@"",
+                          @"qqAccount":@"",
+                          @"phoneNumber":@""
+                          };
+    [[UserManager sharedManager]completeUserInfoWithDic:dic withNotifiedObject:self];
+}
+
+- (void)didUploadFailed:(NSString *)uploadFailed
+{
+    [SVProgressHUD dismiss];
+    [SVProgressHUD showErrorWithStatus:uploadFailed];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [SVProgressHUD dismiss];
+    });
 }
 
 @end

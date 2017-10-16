@@ -165,7 +165,7 @@
         return;
     }
     
-    if ([[DownloaderManager sharedManager] isTaskAddToDownloadedQueue:downloadTaskId]) {
+    if ([[DownloaderManager sharedManager] TY_isTaskAddToDownloadedQueue:[videoDic objectForKey:kVideoURL]]) {
         return;
     }
     

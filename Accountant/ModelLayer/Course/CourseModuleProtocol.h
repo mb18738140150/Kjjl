@@ -81,7 +81,7 @@
 @protocol CourseModule_HotSearchProtocol <NSObject>
 
 - (void)didRequestHotSearchCourseSuccessed;
-- (void)didRequestHotSearchCourseFailed;
+- (void)didRequestHotSearchCourseFailed:(NSString *)faildInfo;
 
 @end
 
@@ -95,7 +95,7 @@
 @protocol CourseModule_LiveStreamProtocol <NSObject>
 
 - (void)didRequestLiveStreamSuccessed;
-- (void)didRequestLiveStreamFailed;
+- (void)didRequestLiveStreamFailed:(NSString *)failStr;
 
 @end
 
@@ -110,5 +110,12 @@
 
 - (void)didRequestEndLivingCourseSuccessed;
 - (void)didRequestEndLivingCourseFailed:(NSString *)failedInfo;
+
+@end
+
+@protocol CourseModule_LivingSectionDetail <NSObject>
+
+- (void)didRequestLivingSectionDetailSuccessed;
+- (void)didRequestLivingSectionDetailFailed:(NSString *)failedInfo;
 
 @end

@@ -14,6 +14,7 @@
 {
     if (self = [super init]) {
         self.hottestCourses = [[NSMutableArray alloc] init];
+        self.teacherDataArray = [[NSMutableArray alloc] init];
     }
     return self;
 }
@@ -21,11 +22,17 @@
 - (void)removeAllCourses
 {
     [self.hottestCourses removeAllObjects];
+    [self.teacherDataArray removeAllObjects];
 }
 
 - (void)addCourse:(CourseModel *)model
 {
     [self.hottestCourses addObject:model];
+}
+
+- (void)addTeacher:(TeacherModel *)model
+{
+    [self.teacherDataArray addObject:model];
 }
 
 - (NSString *)description

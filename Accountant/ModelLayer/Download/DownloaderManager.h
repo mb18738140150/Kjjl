@@ -11,6 +11,7 @@
 #import "DownLoadModel.h"
 #import "AFNetworking.h"
 #import "TYDownloadSessionManager.h"
+//#import "TYDownLoadDataManager.h"
 
 typedef enum {
     DownloadTaskStateWait,
@@ -35,13 +36,7 @@ typedef enum {
 + (instancetype)sharedManager;
 
 
-/**
- 获取某一视频是否已经下载
 
- @param videoId 视频id
- @return 是否下载
- */
-- (BOOL)isVideoIsDownloadedWithVideoId:(NSNumber *)videoId;
 
 
 /**
@@ -106,6 +101,13 @@ typedef enum {
 
 #pragma mark - TY
 
+/**
+ 获取某一视频是否已经下载
+ 
+ @param videoId 视频id
+ @return 是否下载
+ */
+- (BOOL)isVideoIsDownloadedWithVideoId:(NSNumber *)videoId;
 
 /**
  获取某一视频是否已经下载

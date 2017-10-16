@@ -29,10 +29,20 @@
 @property (nonatomic, strong)NSString * time;
 @property (nonatomic, assign)int playState;
 
-
+@property (nonatomic, assign)int                    canDownload;// 视频是否有下载权限
 // 直播课
 @property (nonatomic, strong)NSString *teacherPortraitUrl;
 @property (nonatomic, strong)NSString *teacherDetail;
 @property (nonatomic, strong)NSString *livingDetail;
+@property (nonatomic, assign)int haveJurisdiction;// 是否有观看直播课回放权限
+@property (nonatomic, strong)NSString *lastTime;//课程最近小节播放时间
+
+// 直播课小节
+@property (nonatomic, assign)int sectionId;
+@property (nonatomic, strong)NSString * chatRoomId;
+@property (nonatomic, strong)NSString * assistantId;
+@property (nonatomic, strong)NSString * playback;
+@property (nonatomic, assign)int isFree;
+
 
 @end

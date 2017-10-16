@@ -220,6 +220,10 @@
         return;
     }
     
+    if (downloadModel.state == TYDownloadStateSuspended) {
+        downloadModel.state = TYDownloadStateReadying;
+    }
+    
     [self resumeWithDownloadModel:downloadModel];
 }
 
@@ -231,6 +235,14 @@
     }
     
     @synchronized (self) {
+        
+        if (downloadModel.state == TYDownloadStateSuspended) {
+            if ([self.waitingDownloadModels indexOfObject:downloadModel] == NSNotFound) {
+                [self.waitingDownloadModels addObject:downloadModel];
+            }
+            self.downloadingModelDic[downloadModel.downloadURL] = downloadModel;
+        }
+        
         [self.downloadingModels removeObject:downloadModel];
         // 还有未下载的
         if (self.waitingDownloadModels.count > 0) {
@@ -256,7 +268,9 @@
             [self downloadModel:downloadModel didChangeState:TYDownloadStateReadying filePath:nil error:nil];
             return NO;
         }
-        
+        if (downloadModel.state == TYDownloadStateSuspended) {
+            return NO;
+        }
         if ([self.waitingDownloadModels indexOfObject:downloadModel] != NSNotFound) {
             [self.waitingDownloadModels removeObject:downloadModel];
         }
@@ -311,6 +325,9 @@
 {
     if (!downloadModel.manualCancle) {
         downloadModel.manualCancle = YES;
+        if ([self.waitingDownloadModels indexOfObject:downloadModel] == NSNotFound) {
+            [self.waitingDownloadModels addObject:downloadModel];
+        }
         [downloadModel.task cancel];
     }
 }
@@ -340,6 +357,22 @@
     if (!downloadModel || !downloadModel.filePath) {
         return;
     }
+    
+    /*
+     1.删除正在下载的（有文件）
+     2.删除等待中的（有文件或者没有文件）task = nil
+     3.删除暂停的（有文件或者没有文件）task = nil
+     
+     
+     */
+    
+    if (downloadModel.state == TYDownloadStateSuspended ) {
+        if ([self.waitingDownloadModels indexOfObject:downloadModel] != NSNotFound) {
+            [self.waitingDownloadModels removeObject:downloadModel];
+        }
+        [self removeDownLoadingModelForURLString:downloadModel.downloadURL];
+    }
+    downloadModel.state = TYDownloadStateNone;
     
     // 文件是否存在
     if ([self.fileManager fileExistsAtPath:downloadModel.filePath]) {
@@ -585,12 +618,24 @@
             [self willResumeNextWithDowloadModel:downloadModel];
         });
     }else if (error){
-        // 下载失败
-        dispatch_async(dispatch_get_main_queue(), ^(){
-            downloadModel.state = TYDownloadStateFailed;
-            [self downloadModel:downloadModel didChangeState:TYDownloadStateFailed filePath:nil error:error];
-            [self willResumeNextWithDowloadModel:downloadModel];
-        });
+        
+        if (downloadModel.state == TYDownloadStateNone) {
+            // 删除下载
+            dispatch_async(dispatch_get_main_queue(), ^(){
+                downloadModel.state = TYDownloadStateNone;
+                [self downloadModel:downloadModel didChangeState:TYDownloadStateNone filePath:nil error:error];
+                [self willResumeNextWithDowloadModel:downloadModel];
+            });
+        }else
+        {
+            // 下载失败
+            dispatch_async(dispatch_get_main_queue(), ^(){
+                downloadModel.state = TYDownloadStateFailed;
+                [self downloadModel:downloadModel didChangeState:TYDownloadStateFailed filePath:nil error:error];
+                [self willResumeNextWithDowloadModel:downloadModel];
+            });
+        }
+        
     }else if ([self isDownloadCompletedWithDownloadModel:downloadModel]) {
         // 下载完成
         dispatch_async(dispatch_get_main_queue(), ^(){

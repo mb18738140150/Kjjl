@@ -24,7 +24,7 @@
 #define kSimulateresulrHeadCellId @"SimulateresulrHeadCellId"
 #define kCourseTypeBottomCollectionViewCellid @"CourseTypeBottomCollectionViewCellID"
 
-@interface TestLibraryViewController ()<UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout>
+@interface TestLibraryViewController ()<UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout,TestModule_JurisdictionProtocol>
 
 @property (nonatomic, strong)UILabel *titleLabel;
 @property (nonatomic, strong)UIImageView * titleImageView;
@@ -39,6 +39,8 @@
 @property (nonatomic,strong) NSString       *cateName;
 @property (nonatomic,assign) int             cateId;
 
+@property (nonatomic, strong)NSDictionary * selectDic;
+
 @property (nonatomic,strong) UIView             *section1View;
 @property (nonatomic,strong) UIView             *section2View;
 @property (nonatomic,strong) UIView             *section3View;
@@ -52,6 +54,9 @@
 
 @property (nonatomic, strong)UICollectionView *questionTypeCollectionView;
 @property (nonatomic, strong)NSArray * typeDetailArray;
+
+#pragma mark - 权限
+@property (nonatomic, assign)BOOL isHaveJurisdiction;
 
 @end
 
@@ -234,8 +239,9 @@
 {
     
     if ([collectionView isEqual:self.collectView]) {
-        self.section = indexPath.section;
-        self.row = indexPath.row;
+        
+        self.section = (int)indexPath.section;
+        self.row = (int)indexPath.row;
         
         NSDictionary * dic = [NSDictionary dictionary];
         
@@ -248,12 +254,16 @@
         if (indexPath.section == 2) {
             dic = [self.subcategoryArray3 objectAtIndex:indexPath.row];
         }
-        
+        self.selectDic = dic;
         self.cateId = [[dic objectForKey:kTestCategoryId] intValue];
         self.cateName = [dic objectForKey:kTestCategoryName];
+        self.titleLabel.text = self.cateName;
         [self.collectView reloadData];
         [self.questionTypeCollectionView reloadData];
         [self searchClick];
+//        [[TestManager sharedManager] didRequestTestJurisdictionWithcourseId:[[dic objectForKey:kTestCategoryId] intValue] NotifiedObject:self];
+//        [SVProgressHUD show];
+        
     }else
     {
         switch (indexPath.row) {
@@ -380,10 +390,34 @@
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section{
     if (![self.collectView isEqual:collectionView]) {
         return CGSizeMake(0, 0);
+        
     }
     return CGSizeMake(kScreenWidth, 60);
 }
 
+#pragma mark - courseJurisdiction
+- (void)didRequestJurisdictionSuccess
+{
+    self.isHaveJurisdiction = YES;
+    [SVProgressHUD dismiss];
+    NSDictionary * dic = self.selectDic;
+    self.cateId = [[dic objectForKey:kTestCategoryId] intValue];
+    self.cateName = [dic objectForKey:kTestCategoryName];
+    self.titleLabel.text = self.cateName;
+    [self.collectView reloadData];
+    [self.questionTypeCollectionView reloadData];
+    [self searchClick];
+}
+ 
+- (void)didRequestJurisdictionFailed:(NSString *)failedInfo
+{
+    [SVProgressHUD dismiss];
+    [SVProgressHUD showErrorWithStatus:failedInfo];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [SVProgressHUD dismiss];
+        
+    });
+}
 
 - (void)chapterTestClick
 {

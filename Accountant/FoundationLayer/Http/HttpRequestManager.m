@@ -290,6 +290,12 @@
     [self startPostWithConfig:s andProcessDelegate:delegate];
 }
 
+- (void)requestTestJurisdictionWithId:(int)courseId andProcessDelegate:(id<HttpRequestProtocol>)delegate
+{
+    HttpConfigModel *s = [HttpConfigCreator getTestJurisdictionWithCourseId:courseId];
+    [self startPostWithConfig:s andProcessDelegate:delegate];
+}
+
 - (void)reqeustTestAddQuestionHistoryWithInfo:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate
 {
     HttpConfigModel *s = [HttpConfigCreator getTestHistoryConfigWithInfo:infoDic];
@@ -302,9 +308,9 @@
     [self startPostWithConfig:s andProcessDelegate:delegate];
 }
 
-- (void)requestGetNotStartLivingCourseWithProcessDelegate:(id<HttpRequestProtocol>)delegate
+- (void)requestGetNotStartLivingCourseWithInfo:(NSDictionary *)infoDic ProcessDelegate:(id<HttpRequestProtocol>)delegate
 {
-    HttpConfigModel * s = [HttpConfigCreator getNotStartLiveingCourse];
+    HttpConfigModel * s = [HttpConfigCreator getNotStartLiveingCourseWith:infoDic];
     [self startPostWithConfig:s andProcessDelegate:delegate];
 }
 
@@ -314,16 +320,57 @@
     [self startPostWithConfig:s andProcessDelegate:delegate];
 }
 
-
-- (void)reqeustOrderLivingCourseWithId:(int)courseId andProcessDelegate:(id<HttpRequestProtocol>)delegate
+- (void)requestGetLivingSectionDetailWithInfo:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate
 {
-    HttpConfigModel * s = [HttpConfigCreator getOrderLivingCourseWithCourseId:courseId];
+    HttpConfigModel * s = [HttpConfigCreator getLivingSectionDetailWithInfo:infoDic];
+    [self startPostWithConfig:s andProcessDelegate:delegate];
+}
+
+- (void)reqeustOrderLivingCourseWithInfo:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate
+{
+    HttpConfigModel * s = [HttpConfigCreator getOrderLivingCourseWithCourseInfo:infoDic];
+    [self startPostWithConfig:s andProcessDelegate:delegate];
+}
+
+- (void)reqeustCancelOrderLivingCourseWithInfo:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate
+{
+    HttpConfigModel * s = [HttpConfigCreator getCancelOrderLivingCourseWithCourseInfo:infoDic];
     [self startPostWithConfig:s andProcessDelegate:delegate];
 }
 
 - (void)reqeustBindJPushWithCId:(NSString *)CID andProcessDelegate:(id<HttpRequestProtocol>)delegate
 {
     HttpConfigModel * s = [HttpConfigCreator getBindJPushWithCId:CID];
+    [self startPostWithConfig:s andProcessDelegate:delegate];
+}
+
+- (void)reqeustVerifyAccountWithAccountNumber:(NSString *)AccountNumber andProcessDelegate:(id<HttpRequestProtocol>)delegate
+{
+    HttpConfigModel * s = [HttpConfigCreator getVerifyAccount:AccountNumber];
+    [self startPostWithConfig:s andProcessDelegate:delegate];
+}
+
+- (void)reqeustVerifyCodeWithPhoneNumber:(NSString *)phoneNumber andProcessDelegate:(id<HttpRequestProtocol>)delegate
+{
+    HttpConfigModel * s = [HttpConfigCreator getVerifyCode:phoneNumber];
+    [self startPostWithConfig:s andProcessDelegate:delegate];
+}
+
+- (void)reqeustRegistWithdic:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate
+{
+    HttpConfigModel * s = [HttpConfigCreator registWith:infoDic];
+    [self startPostWithConfig:s andProcessDelegate:delegate];
+}
+
+- (void)reqeustForgetPasswordWithDic:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate
+{
+    HttpConfigModel * s = [HttpConfigCreator forgetPasswordWith:infoDic];
+    [self startPostWithConfig:s andProcessDelegate:delegate];
+}
+
+- (void)reqeustCompleteUserInfoWithDic:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate
+{
+    HttpConfigModel * s = [HttpConfigCreator completeUserInfo:infoDic];
     [self startPostWithConfig:s andProcessDelegate:delegate];
 }
 
@@ -338,7 +385,7 @@
     NSLog(@"%@",[configModel.parameters jsonString]);
     [session POST:configModel.urlString parameters:configModel.parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         int result = [[responseObject objectForKey:@"result"] intValue];
-//        NSLog(@"%@",responseObject);
+        NSLog(@"%@",responseObject);
         if (delegate != nil) {
             if (result == 1) {
                 [delegate didRequestSuccessed:responseObject];

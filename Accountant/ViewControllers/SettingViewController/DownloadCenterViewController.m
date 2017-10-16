@@ -255,6 +255,11 @@
     [self reloadTables];
 }
 
+- (void)didDownloadSuspend
+{
+    [self reloadTables];
+}
+
 #pragma mark - table delegate
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {

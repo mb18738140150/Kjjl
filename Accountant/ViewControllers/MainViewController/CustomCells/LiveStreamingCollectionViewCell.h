@@ -11,10 +11,14 @@
 @interface LiveStreamingCollectionViewCell : UICollectionViewCell
 
 @property (nonatomic, strong)UILabel * pointLabel;
+@property (nonatomic, strong)UIImageView *pointImageView;
 @property (nonatomic, strong)UILabel * timeLB;
 @property (nonatomic, strong)UIView * lineView;
 
 @property (nonatomic, strong)UIImageView * imageView;
+
+
+
 @property (nonatomic, strong)UILabel * stateLabel;
 
 @property (nonatomic, strong)UILabel * titleLB;

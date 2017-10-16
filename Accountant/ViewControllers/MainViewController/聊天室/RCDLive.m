@@ -229,6 +229,13 @@ static RCDLive *__rongUIKit = nil;
                    success:(void (^)(long messageId))successBlock
                      error:(void (^)(RCErrorCode nErrorCode,
                                      long messageId))errorBlock {
+    
+//    if ([content isKindOfClass:[RCTextMessage class]]) {
+//        RCTextMessage *textMessage = (RCTextMessage*)content;
+//        textMessage.extra = [NSString stringWithFormat:@"%d",[[UserManager sharedManager] getUserLevel]];
+//        content = textMessage;
+//    }
+    
     RCMessage *rcMessage = [[RCIMClient sharedRCIMClient]
                             sendMessage:conversationType
                             targetId:targetId

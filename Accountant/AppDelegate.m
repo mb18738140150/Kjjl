@@ -28,7 +28,7 @@
 
 #define kappKey @"996fd8241dbee684918b6578"
 #define kchannel @"App Store"
-#define kapsForProduction 0
+#define kapsForProduction 1
 #define kadvertisingIdentifier
 #define RONGCLOUD_IM_APPKEY @"x4vkb1qpx76mk"
 
@@ -42,8 +42,6 @@
 #endif
 
 @interface AppDelegate ()<UserModule_AppInfoProtocol,UIAlertViewDelegate,JPUSHRegisterDelegate,UserModule_BindJPushProtocol,UNUserNotificationCenterDelegate>
-
-
 
 @property (nonatomic,strong) NSString                       *versionContent;
 @property (nonatomic,strong) NSString                       *updateUrl;
@@ -102,7 +100,7 @@
             RCUserInfo *user = [RCUserInfo new];
             
             user.userId = [NSString stringWithFormat:@"%d", [UserManager sharedManager].getUserId];
-            user.name = [[UserManager sharedManager] getUserName];
+            user.name = [[UserManager sharedManager] getUserNickName];
             user.portraitUri = [[UserManager sharedManager] getIconUrl];
             
             [[RCIM sharedRCIM]refreshUserInfoCache:user withUserId:user.userId];
@@ -111,13 +109,13 @@
             [RCIM sharedRCIM].currentUserInfo.portraitUri = user.portraitUri;
         } error:^(RCConnectErrorCode status) {
             NSLog(@"连接失败");
-//            UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"" message:@"连接融云失败，请从新登录" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-//            [alert show];
+            UIAlertView * alert = [[UIAlertView alloc] initWithTitle:nil message:@"连接融云失败，请从新登录" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+            [alert show];
             [weakself pushLoginVC];
         } tokenIncorrect:^{
             NSLog(@"token过期");
-//            UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"" message:@"Token失效，请从新登录" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-//            [alert show];
+            UIAlertView * alert = [[UIAlertView alloc] initWithTitle:nil message:@"Token失效，请从新登录" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+            [alert show];
             [weakself pushLoginVC];
             
         }];
@@ -125,24 +123,29 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rCIMConnectionStatusChanged:) name:kRCIMConnectionStatusChanged object:nil];
     
-    
     [DownloaderManager sharedManager];
+    
     [[TYDownloadSessionManager manager] setBackgroundSessionDownloadCompleteBlock:^NSString *(NSString *downloadUrl) {
         TYDownloadModel *model = [[TYDownloadModel alloc]initWithURLString:downloadUrl];
         return model.filePath;
     }];
     [[TYDownloadSessionManager manager] configureBackroundSession];
     
+    NSArray * downloadVideoArr = [[DBManager sharedManager] getDownloadingVideos];
+    if (downloadVideoArr.count > 0) {
+        for (NSMutableDictionary * infoDic in downloadVideoArr) {
+            [[DownloaderManager sharedManager] TY_addDownloadTask:infoDic];
+        }
+    }
+    
     return YES;
 }
-
-
-
 
 - (void)pushLoginVC
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationOfLoginClick object:nil];
 }
+
 #pragma mark - UI setup
 - (void)mainViewSetup
 {
@@ -291,8 +294,6 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     [JPUSHService handleRemoteNotification:userInfo];
 }
 
-
-
 - (void)UIApplication:(UIApplication *)application setApplicationIconBadgeNumber:(NSInteger)number
 {
 //    [JPUSHService setBadge:0];
@@ -435,7 +436,6 @@ forRemoteNotification:(NSDictionary *)userInfo
     [[RCIMClient sharedRCIMClient] setReceiveMessageDelegate:nil object:nil];
     [[RCIMClient sharedRCIMClient] setRCConnectionStatusChangeDelegate:nil];
     [[RCIMClient sharedRCIMClient] logout];
-    
     
 //    if (self.tabbarViewController.navigationController.presentedViewController) {
 //        [self.tabbarViewController.navigationController.presentedViewController dismissViewControllerAnimated:NO completion:nil

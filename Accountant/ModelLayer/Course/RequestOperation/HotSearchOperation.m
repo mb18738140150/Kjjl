@@ -63,8 +63,7 @@
 - (void)didRequestFailed:(NSString *)failInfo
 {
     if (self.notifiedObject != nil) {
-        [self.notifiedObject didRequestHotSearchCourseFailed
-         ];
+        [self.notifiedObject didRequestHotSearchCourseFailed:failInfo];
     }
 }
 

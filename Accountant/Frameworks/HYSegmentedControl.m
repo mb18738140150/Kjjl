@@ -21,6 +21,8 @@
 @property (strong, nonatomic)UIScrollView *scrollView;
 @property (strong, nonatomic)NSMutableArray *array4Btn;
 @property (strong, nonatomic)UIView *bottomLineView;
+@property (nonatomic, strong)NSMutableArray *separateLineArray;
+@property (nonatomic, strong)UIColor * color;
 
 @end
 
@@ -41,13 +43,38 @@
     return [self initWithOriginY:y Titles:titles delegate:delegate];
 }
 
+- (id)initWithOriginY:(CGFloat)y Titles:(NSArray *)titles delegate:(id)delegate drop:(BOOL)drop color:(UIColor *)color
+{
+    self.drop = drop;
+    self.color = color;
+    return [self initWithOriginY:y Titles:titles delegate:delegate];
+}
+
+- (id)initWithOriginX:(CGFloat)X OriginY:(CGFloat)y Titles:(NSArray *)titles delegate:(id)delegate  drop:(BOOL)drop
+{
+    self.drop = drop;
+    return [self initWithOriginX:X OriginY:y Titles:titles delegate:delegate];
+}
+
+- (id)initWithOriginX:(CGFloat)X OriginY:(CGFloat)y Titles:(NSArray *)titles delegate:(id)delegate  drop:(BOOL)drop color:(UIColor *)color
+{
+    self.drop = drop;
+    self.color = color;
+    return [self initWithOriginX:X OriginY:y Titles:titles delegate:delegate];
+}
 
 - (id)initWithOriginY:(CGFloat)y Titles:(NSArray *)titles delegate:(id)delegate
 {
-    CGRect rect4View = CGRectMake(0, y, HYSegmentedControl_Width , HYSegmentedControl_Height);
+    
+    return [self initWithOriginX:0 OriginY:y Titles:titles delegate:delegate];
+}
+
+- (id)initWithOriginX:(CGFloat)X OriginY:(CGFloat)y Titles:(NSArray *)titles delegate:(id)delegate
+{
+    CGRect rect4View = CGRectMake(X, y, HYSegmentedControl_Width , HYSegmentedControl_Height);
     if (self = [super initWithFrame:rect4View]) {
         
-//        self.backgroundColor = UIColorFromRGBValue(0xf3f3f3);
+        //        self.backgroundColor = UIColorFromRGBValue(0xf3f3f3);
         self.backgroundColor = [UIColor whiteColor];
         [self setUserInteractionEnabled:YES];
         
@@ -57,7 +84,7 @@
         //  array4btn
         //
         _array4Btn = [[NSMutableArray alloc] initWithCapacity:[titles count]];
-        
+        _separateLineArray = [NSMutableArray array];
         //
         //  set button
         //
@@ -78,7 +105,12 @@
             btn.frame = CGRectMake(i*width4btn, .0f, width4btn, HYSegmentedControl_Height);
             [btn setTitleColor:UIColorFromRGBValue(0x999999) forState:UIControlStateNormal];
             btn.titleLabel.font = [UIFont systemFontOfSize:14];
-            [btn setTitleColor:UIColorFromRGBValue(0x1D7AF8) forState:UIControlStateSelected];
+            if (self.color) {
+                [btn setTitleColor:self.color forState:UIControlStateSelected];
+            }else
+            {
+                [btn setTitleColor:UIColorFromRGBValue(0x1D7AF8) forState:UIControlStateSelected];
+            }
             [btn setTitle:[titles objectAtIndex:i] forState:UIControlStateNormal];
             [btn addTarget:self action:@selector(segmentedControlChange:) forControlEvents:UIControlEventTouchUpInside];
             btn.tag = Define_Tag_add+i;
@@ -89,6 +121,7 @@
                 [btn setImage:[UIImage imageNamed:@"tiku-tra2-down"] forState:UIControlStateNormal];
                 btn.titleEdgeInsets = UIEdgeInsetsMake(0, -btn.imageView.hd_width * 1.5 + 6, 0, 0);
                 btn.imageEdgeInsets = UIEdgeInsetsMake(0, 110, 0, 0);
+                
             }
             
             if (i == 0) {
@@ -102,19 +135,31 @@
         for (int i = 1; i<[titles count]; i++) {
             UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(i*width4btn-1.0f, originY, 1.0f, height4Line)];
             lineView.backgroundColor = UIColorFromRGBValue(0xE6E6E6);
+            if (self.color) {
+                lineView.hidden = YES;
+            }else
+            {
+                lineView.hidden = NO;
+            }
             [_scrollView addSubview:lineView];
+            [_separateLineArray addObject:lineView];
         }
         
         //
         //  bottom lineView
         //
         
-        UIView * bottomView = [[UIView alloc] initWithFrame:CGRectMake(0, HYSegmentedControl_Height-1, HYSegmentedControl_Width, 1.0f)];
+        UIView * bottomView = [[UIView alloc] initWithFrame:CGRectMake(0, HYSegmentedControl_Height-1, _scrollView.contentSize.width, 1.0f)];
         bottomView.backgroundColor = UIColorFromRGBValue(0xC5C5C5);
         [_scrollView addSubview:bottomView];
         
         _bottomLineView = [[UIView alloc] initWithFrame:CGRectMake(.0f, HYSegmentedControl_Height-1, width4btn-0.0f, 1.0f)];
-        _bottomLineView.backgroundColor = UIColorFromRGBValue(0x1D7AF8);
+        if (self.color) {
+            _bottomLineView.backgroundColor = self.color;
+        }else
+        {
+            _bottomLineView.backgroundColor = UIColorFromRGBValue(0x1D7AF8);
+        }
         [_scrollView addSubview:_bottomLineView];
         
         [self addSubview:_scrollView];
@@ -175,7 +220,6 @@
     }
 }
 
-
 #warning ////// index 从 0 开始
 // delegete method
 - (void)changeSegmentedControlWithIndex:(NSInteger)index
@@ -206,14 +250,12 @@
         bt.titleEdgeInsets = UIEdgeInsetsMake(0, -bt.imageView.hd_width * 1.5 + 6, 0, 0);
         bt.imageEdgeInsets = UIEdgeInsetsMake(0, 110, 0, 0);
     }
-    
 }
 
 - (void)addTipWithIndex:(NSInteger)index
 {
     UIButton * bt = [_array4Btn   objectAtIndex:index];
     dispatch_async(dispatch_get_main_queue(), ^{
-        
         [bt setImage:[UIImage imageNamed:@"message_tip"] forState:UIControlStateNormal];
     });
 }
@@ -223,8 +265,44 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         [bt setImage:[UIImage imageNamed:@""] forState:UIControlStateNormal];
     });
+    
 }
 
+- (void)hideTitlesWith:(NSArray *)titlesArray
+{
+    for (int i = 0; i < titlesArray.count; i++) {
+        int tag = [titlesArray[i] intValue];
+        UIButton * bt = [_array4Btn   objectAtIndex:tag];
+        bt.enabled = NO;
+        UIView * lineView;
+        if (tag < _separateLineArray.count) {
+            lineView = [_separateLineArray objectAtIndex:tag];
+            
+        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            bt.titleLabel.textColor = [UIColor whiteColor];
+            lineView.backgroundColor = [UIColor whiteColor];
+        });
+    }
+}
+
+- (void)showTitlesWith:(NSArray *)titlesArray
+{
+    for (int i = 0; i < titlesArray.count; i++) {
+        int tag = [titlesArray[i] intValue];
+        UIButton * bt = [_array4Btn   objectAtIndex:tag];
+        bt.enabled = YES;
+        UIView * lineView;
+        if (tag < _separateLineArray.count) {
+            lineView = [_separateLineArray objectAtIndex:tag];
+            
+        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [bt setTitleColor:UIColorFromRGBValue(0x999999) forState:UIControlStateNormal];
+            lineView.backgroundColor = UIColorFromRGBValue(0xE6E6E6);
+        });
+    }
+}
 /*
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.

@@ -78,12 +78,12 @@
     if ([[self.cellInfoDic objectForKey:kQuestionQuizzerHeaderImageUrl] class] == [NSNull class] || [self.cellInfoDic objectForKey:kQuestionQuizzerHeaderImageUrl] == nil || [[self.cellInfoDic objectForKey:kQuestionQuizzerHeaderImageUrl] isEqualToString:@""]) {
         self.headerImageView.image = [UIImage imageNamed:@"stuhead"];
     }else{
-        [self.headerImageView sd_setImageWithURL:[NSURL URLWithString:[self.cellInfoDic objectForKey:kQuestionQuizzerHeaderImageUrl]] placeholderImage:[UIImage imageNamed:@"stuhead"]] ;
+        [self.headerImageView sd_setImageWithURL:[NSURL URLWithString:[self.cellInfoDic objectForKey:kQuestionQuizzerHeaderImageUrl]] placeholderImage:[UIImage imageNamed:@"140-140"]] ;
     }
+    
     self.headerImageView.layer.cornerRadius = self.headerImageView.frame.size.width/2;
     self.headerImageView.clipsToBounds = YES;
     [self addSubview:self.headerImageView];
-    
     
     self.quizzerUserNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.headerImageView.frame.origin.x + self.headerImageView.frame.size.width + 5, 10, 100, 15)];
     NSString *showName;

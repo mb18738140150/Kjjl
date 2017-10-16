@@ -113,14 +113,17 @@
     
     UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"发布" style:UIBarButtonItemStylePlain target:self action:@selector(publishQuestion)];
     self.navigationItem.rightBarButtonItem = item;
+    [self.navigationItem.rightBarButtonItem setTintColor:kCommonMainTextColor_50];
     TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"public-返回"] title:@""];
     [leftBarItem addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
 }
+
 - (void)backAction:(UIButton *)button
 {
     [self.navigationController popViewControllerAnimated:YES];
 }
+
 - (void)publishQuestion
 {
     if (self.titleField.text != nil && self.contentField.text != nil && ![@""isEqualToString:self.titleField.text] && ![@"" isEqualToString:self.contentField.text]) {

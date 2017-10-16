@@ -21,6 +21,7 @@
 #import "ScreenView.h"
 #import "CoursecategoryTableViewCell.h"
 #import "SecondLevelTableViewCell.h"
+#import "LivingCourseTableViewCell.h"
 
 #import "HYSegmentedControl.h"
 #import "ClassroomLivingTableViewCell.h"
@@ -30,35 +31,42 @@
 
 #import "CourseraManager.h"
 #import "CourseModuleProtocol.h"
+#import "MonthSelectView.h"
+#import "LivingSectionDetailViewController.h"
+#import "MainLivingCourseTableViewCell.h"
 
 #define kClassroomcellId @"ClassroomVideoTableViewCellID"
 #define kClassroomLivingcellId @"ClassroomLivingTableViewCellID"
+#define kLivingCourseCellId @"LivingCourseCellID"
 
 #define kTime 0.3
 #define kSegmentHeight 42
 #define OrderAlerttag 2000
 
-@interface CourseCategoryViewController ()<HYSegmentedControlDelegate, UITableViewDelegate, UITableViewDataSource, CourseModule_AllCourseCategoryProtocol, CourseModule_NotStartLivingCourse, CourseModule_EndLivingCourse,UIAlertViewDelegate,UserModule_OrderLivingCourseProtocol>
+@interface CourseCategoryViewController ()<HYSegmentedControlDelegate, UITableViewDelegate, UITableViewDataSource, CourseModule_AllCourseCategoryProtocol, CourseModule_NotStartLivingCourse, CourseModule_EndLivingCourse,UIAlertViewDelegate,CourseModule_LivingSectionDetail,UIScrollViewDelegate,UserModule_OrderLivingCourseProtocol,UserModule_CancelOrderLivingCourseProtocol>
 
 /**
  *  视频和直播页面切换segment
  */
 @property (nonatomic, strong)HYSegmentedControl * segmentC;
 @property (nonatomic, strong)HYSegmentedControl * livingSegmentC;
+@property (nonatomic, strong)MonthSelectView    * monthSelectView;
 
 @property (nonatomic, strong)UISegmentedControl * topSegment;
 
 @property (nonatomic, strong)UIScrollView * scrollView;
 
 // zhibo
-@property (nonatomic, strong)UITableView *livingTableview;
+@property (nonatomic, strong)UITableView *livingTableview;// 直播课列表
 
 // 课程视频
 @property (nonatomic, strong)UITableView *videoTableview;
-//@property (nonatomic, strong)UITableView                    *secondLevelTableView;
-@property (nonatomic, strong) UITableView   *screenTableView;
+@property (nonatomic, strong) UITableView   *screenTableView;// 视频课程分类
 @property (nonatomic, strong) UIView        *screenBackView;
-@property (nonatomic, strong) UITableView *sectionScreentableview;
+@property (nonatomic, strong) UITableView *sectionScreentableview;// 视频课程小节分类
+@property (nonatomic, strong) UITableView * teacherTableView;
+@property (nonatomic, strong) UITableView * monthTableView;
+@property (nonatomic, strong) UIView        *livingBackView;
 
 @property (nonatomic, strong) NSIndexPath *currentVideoIndexpath;
 @property (nonatomic, strong) NSIndexPath *currentSectionIndexpath;
@@ -68,16 +76,32 @@
 @property (nonatomic, strong)NSArray                        *sectionArray;
 
 @property (nonatomic, strong)NSDictionary *currentCourseInfo;
-@property (nonatomic, strong)NSMutableArray *dataSourceArr;
+@property (nonatomic, strong)NSMutableArray *dataSourceArr;// 数据源
 @property (nonatomic, strong)NSMutableArray * allCourseArr;
-@property (nonatomic, strong)NSMutableArray * videoCourseArray;
-@property (nonatomic, strong)NSMutableArray *livingCourseArr;
+@property (nonatomic, strong)NSMutableArray * videoCourseArray;// 视频数据源
+@property (nonatomic, strong)NSMutableArray *livingCourseArr;// 直播课数据源
 
-@property (nonatomic, assign)NSInteger topIndex;
-@property (nonatomic,assign)NSInteger videoIndex;
-@property (nonatomic, assign)NSInteger livingIndex;
+@property (nonatomic, strong)NSMutableArray *teacherArr;
 
-@property (nonatomic, assign) int orderCourseId;
+@property (nonatomic, assign)NSInteger topIndex;//
+@property (nonatomic,assign)NSInteger videoIndex;// 视频 segmentIndex
+@property (nonatomic, assign)NSInteger livingIndex;// 直播 segmentIndex
+
+@property (nonatomic, assign) int selectCurrentMonthCourseId;// 选中的本月直播课程分类id
+@property (nonatomic, strong)NSDictionary * selectCurrentMonthCourseSectionInfoDic;// 选中的本月直播课程小节info
+
+@property (nonatomic, strong)NSDictionary * selectCourseInfoDic;
+
+@property (nonatomic, assign)int selectLivingCourseId;// 已选中直播课id
+@property (nonatomic, assign)CGFloat teachertableviewheight;
+@property (nonatomic, assign)CGFloat sectionScreentableviewHeight;
+@property (nonatomic, strong)NSString * teacherId;// 已选中的老师id
+@property (nonatomic, strong)NSIndexPath *teacherIndexpath;// 选择老师indexpath
+@property (nonatomic, strong)NSIndexPath *monthIndexPath;// 本月直播还是往期直播indexpath
+@property (nonatomic, strong)NSIndexPath *selectMonthIndexpath;// 往期直播课选中的月份indexpath
+@property (nonatomic, assign)int        month;// 往期直播课选中月份，选年为0。
+
+@property (nonatomic, strong)NSDictionary *selectOrderLivingSectionInfoDic;// 预约课
 
 @end
 
@@ -113,6 +137,14 @@
     return _livingCourseArr;
 }
 
+- (NSMutableArray *)teacherArr
+{
+    if (!_teacherArr) {
+        _teacherArr = [NSMutableArray array];
+    }
+    return _teacherArr;
+}
+
 - (NSArray *)sectionArray
 {
     if (!_sectionArray) {
@@ -125,6 +157,9 @@
     [super viewDidLoad];
     self.view.backgroundColor = kCommonNavigationBarColor;
     
+    self.teacherId = @"";
+    self.month = [NSString getCurrentMonth];
+    
     [self addNotification];
     [self doRequestAllCategory];
     [self doRequestLivingcourse];
@@ -136,7 +171,9 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated{
-    
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+    self.selectCurrentMonthCourseId = 0;
+    self.selectCurrentMonthCourseSectionInfoDic = nil;
     if (![[UserManager sharedManager] isUserLogin]) {
         self.videoTableview.tableHeaderView = [self getTableHeadView];
         self.livingTableview.tableHeaderView = [self getTableHeadView];
@@ -149,12 +186,11 @@
             [self.videoTableview reloadData];
         }else
         {
-            [self.livingTableview reloadData];
+            [self reloadLivingTableViewData];
         }
         
     }
 }
-
 
 #pragma mark - request funcs
 - (void)doRequestAllCategory
@@ -166,8 +202,8 @@
 - (void)doRequestLivingcourse
 {
     [SVProgressHUD show];
-    [[CourseraManager sharedManager] didRequestNotStartLivingCourseWithNotifiedObject:self];
-    [[CourseraManager sharedManager] didRequestEndLivingCourseWithNotifiedObject:self];
+    [[CourseraManager sharedManager] didRequestNotStartLivingCourseWithInfo:@{@"Month":@(self.month)} NotifiedObject:self];
+//    [[CourseraManager sharedManager] didRequestEndLivingCourseWithNotifiedObject:self];
 }
 
 - (void)addNotification
@@ -189,6 +225,7 @@
         [self changeSlect:self.topSegment];
     }
     
+    
     int categoryId = [[info objectForKey:kCourseCategoryId] intValue];
     NSString * categoryName = [info objectForKey:kCourseCategoryName];
     
@@ -201,7 +238,7 @@
             self.currentSectionIndexpath = [NSIndexPath indexPathForRow:0 inSection:0];
             [self reloadVideo:indexPath];
             
-            [self hideScreen];
+            [self hideScreenWithHide:NO];
             return;
         }else
         {
@@ -218,7 +255,7 @@
                     NSIndexPath * indexPath1 = [NSIndexPath indexPathForRow:j+1 inSection:0];
                     self.currentSectionIndexpath = indexPath1;
                     [self reloadSection:indexPath1];
-                    [self hideScreen];
+                    [self hideScreenWithHide:NO];
                     return;
                 }
             }
@@ -226,8 +263,6 @@
         
     }
 }
-
-
 
 - (void)moreLivingClick:(NSNotification *)notification
 {
@@ -274,13 +309,14 @@
 {
     self.scrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, kScreenHeight - kNavigationBarHeight - kStatusBarHeight - kTabBarHeight)];
     self.scrollView.contentSize = CGSizeMake(kScreenWidth * 2, kScreenHeight - kNavigationBarHeight - kStatusBarHeight - kTabBarHeight - kSegmentHeight);
-    self.scrollView.scrollEnabled = NO;
+    self.scrollView.pagingEnabled = YES;
+    self.scrollView.delegate = self;
     [self.view addSubview:self.scrollView];
     
     self.segmentC = [[HYSegmentedControl alloc] initWithOriginY:0 Titles:@[@"全部课程",@"全部课程"] delegate:self drop:YES] ;
     [self.scrollView addSubview:self.segmentC];
     
-    self.livingSegmentC = [[HYSegmentedControl alloc] initWithOriginY:0 Titles:@[@"近期直播",@"往期直播"] delegate:self];
+    self.livingSegmentC = [[HYSegmentedControl alloc] initWithOriginX:kScreenWidth OriginY:0 Titles:@[@"本月直播",@"老师"] delegate:self drop:YES];
     self.livingSegmentC.hd_x = kScreenWidth;
     [self.scrollView addSubview:self.livingSegmentC];
     
@@ -304,26 +340,31 @@
     self.livingTableview.backgroundColor = UIRGBColor(230, 230, 230);
     
     self.livingTableview.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
-        if (self.livingIndex == 0) {
-            [SVProgressHUD show];
-            [[CourseraManager sharedManager] didRequestNotStartLivingCourseWithNotifiedObject:self];
-        }else
-        {
-            [SVProgressHUD show];
-            [[CourseraManager sharedManager]didRequestEndLivingCourseWithNotifiedObject:self];
-        }
+        [SVProgressHUD show];
+        [[CourseraManager sharedManager] didRequestNotStartLivingCourseWithInfo:@{@"Month":@(self.month)} NotifiedObject:self];
     }];
     
+    [self.livingTableview registerClass:[LivingCourseTableViewCell class] forCellReuseIdentifier:kLivingCourseCellId];
     [self.livingTableview registerNib:[UINib nibWithNibName:@"ClassroomLivingTableViewCell" bundle:nil] forCellReuseIdentifier:kClassroomLivingcellId];
     [self.scrollView addSubview:self.livingTableview];
     
+    // 月份选择view
+    self.monthSelectView = [[MonthSelectView alloc]initWithFrame:CGRectMake(kScreenWidth, kSegmentHeight, kScreenWidth, 35)];
+    [self.monthSelectView reloadData];
+    __weak typeof(self)weakSef = self;
+    self.monthSelectView.MonthSelectBlock = ^(int month) {
+        weakSef.month = month;
+        [weakSef doRequestLivingcourse];
+    };
+    [self.scrollView addSubview:self.monthSelectView];
     
+    // 视频筛选
     self.screenBackView = [[UIView alloc]initWithFrame:CGRectMake(0, 41, kScreenWidth, kScreenHeight - kStatusBarHeight - kNavigationBarHeight - kTabBarHeight - kSegmentHeight + 1)];
     self.screenBackView.backgroundColor = [UIColor colorWithWhite:.4 alpha:.5];
     [self.view addSubview:self.screenBackView];
-    
     UITapGestureRecognizer * tip = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(hideScreen)];
     [self.screenBackView addGestureRecognizer:tip];
+    
     
     self.screenTableView = [[UITableView alloc]initWithFrame:CGRectMake(0, kSegmentHeight - 1, kScreenWidth / 2 , 260) style:UITableViewStylePlain];
     self.screenTableView.delegate = self;
@@ -343,70 +384,29 @@
     [self.screenBackView setHidden:YES];
     [self.sectionScreentableview setHidden:YES];
     
-}
-
-- (void)showScreenTableview:(BOOL)isShow
-{
-    [self.sectionScreentableview setHidden:YES];
-    if (isShow) {
-        [self.screenBackView setHidden:NO];
-        [self.screenTableView setHidden:NO];
-        self.screenTableView.frame = CGRectMake(0, kSegmentHeight - 1, kScreenWidth / 2 , 0);
-        
-        [UIView animateWithDuration:kTime animations:^{
-            self.screenTableView.frame = CGRectMake(0, kSegmentHeight - 1, kScreenWidth / 2 , 260);
-        } completion:^(BOOL finished) {
-            
-        }];
-        
-    }else
-    {
-        [self.screenBackView setHidden:NO];
-        self.screenTableView.frame = CGRectMake(0, kSegmentHeight - 1, kScreenWidth /2 , 260);
-        
-        [UIView animateWithDuration:kTime animations:^{
-            self.screenTableView.frame = CGRectMake(0, kSegmentHeight - 1, kScreenWidth / 2 , 0);
-        } completion:^(BOOL finished) {
-            [self.screenTableView setHidden:YES];
-            [self.screenBackView setHidden:YES];
-        }];
-    }
+    // 直播课筛选
+    self.livingBackView = [[UIView alloc]initWithFrame:CGRectMake(0, 41, kScreenWidth, kScreenHeight - kStatusBarHeight - kNavigationBarHeight - kTabBarHeight - kSegmentHeight + 1)];
+    self.livingBackView.backgroundColor = [UIColor colorWithWhite:.4 alpha:.5];
+    [self.view addSubview:self.livingBackView];
+    UITapGestureRecognizer * livingTip = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(hideLiving)];
+    [self.livingBackView addGestureRecognizer:livingTip];
     
-}
-
-- (void)showSecondLeveltableview:(BOOL)isShow
-{
-    [self.screenTableView setHidden:YES];
+    self.teacherTableView = [[UITableView alloc]initWithFrame:CGRectMake(kScreenWidth / 2, kSegmentHeight - 1, kScreenWidth / 2 , 100) style:UITableViewStylePlain];
+    self.teacherTableView.delegate = self;
+    self.teacherTableView.dataSource = self;
+    self.teacherTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    self.teacherTableView.showsVerticalScrollIndicator = NO;
+    [self.view addSubview:self.teacherTableView];
     
-    if (isShow) {
-        [self.screenBackView setHidden:NO];
-        [self.sectionScreentableview setHidden:NO];
-        self.sectionScreentableview.frame = CGRectMake(kScreenWidth / 2 , 41, kScreenWidth / 2 , 0);
-        
-        [UIView animateWithDuration:kTime animations:^{
-            self.sectionScreentableview.frame = CGRectMake(kScreenWidth / 2 , 41, kScreenWidth / 2 , 80);
-        } completion:^(BOOL finished) {
-            
-        }];
-    }else
-    {
-        [self.screenBackView setHidden:NO];
-        self.sectionScreentableview.frame = CGRectMake(kScreenWidth / 2 , 41, kScreenWidth / 2 , 80);
-        [UIView animateWithDuration:kTime animations:^{
-            self.sectionScreentableview.frame = CGRectMake(kScreenWidth / 2 , 41, kScreenWidth / 2 , 0);
-        } completion:^(BOOL finished) {
-            [self.sectionScreentableview setHidden:YES];
-            [self.screenBackView setHidden:YES];
-        }];
-    }
-}
-
-- (void)hideScreen
-{
-    if (self.screenTableView.hidden && self.sectionScreentableview.hidden) {
-        return;
-    }
-    [self.segmentC clickBT:self.videoIndex];
+    self.monthTableView = [[UITableView alloc]initWithFrame:CGRectMake(0, kSegmentHeight - 1, kScreenWidth / 2 , 80) style:UITableViewStylePlain];
+    self.monthTableView.delegate = self;
+    self.monthTableView.dataSource = self;
+    self.monthTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    self.monthTableView.showsVerticalScrollIndicator = NO;
+    [self.view addSubview:self.monthTableView];
+    [self.teacherTableView setHidden:YES];
+    [self.monthTableView setHidden:YES];
+    [self.livingBackView setHidden:YES];
 }
 
 #pragma mark = 登录头部视图
@@ -463,6 +463,12 @@
 #pragma mark - tableview delegate
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
+    if ([tableView isEqual:self.livingTableview]) {
+        if (self.monthIndexPath.row == 1) {
+            return 1;
+        }
+        return self.livingCourseArr.count;
+    }
     return 1;
 }
 
@@ -477,7 +483,75 @@
     if ([tableView isEqual:self.videoTableview]) {
         return [self.dataSourceArr count];
     }
+    if ([tableView isEqual:self.teacherTableView]) {
+        return self.teacherArr.count + 1;
+    }
+    if ([tableView isEqual:self.monthTableView]) {
+        return 2;
+    }
+    if ([tableView isEqual:self.livingTableview]) {
+        NSArray * array = self.livingCourseArr[section];
+        
+        if (self.monthIndexPath.row == 1) {
+            // 往期回放，不显示本月课程
+            
+            return [[self.livingCourseArr objectAtIndex:0] count];
+            
+        }else
+        {
+            if (section == 0) {
+                if (array.count > 0) {
+                    return 1;
+                }
+                return 0;
+            }
+        }
+        
+        return array.count;
+    }
     return [self.dataSourceArr count];
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    if ([tableView isEqual:self.livingTableview]) {
+        if (self.monthIndexPath.row == 1) {
+            return nil;
+        }
+        if (section == 0) {
+            return nil;
+        }
+        UIView * sectionHeadView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, 28)];
+        sectionHeadView.backgroundColor = UIRGBColor(230, 230, 230);
+        
+        UILabel * titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(10, 0, kScreenWidth - 20, 28)];
+        titleLabel.textColor = kCommonMainTextColor_50;
+        titleLabel.font = kMainFont;
+        titleLabel.textAlignment = 1;
+        titleLabel.textColor = UIRGBColor(255, 102, 0);
+        [sectionHeadView addSubview:titleLabel];
+
+        titleLabel.text = @"已结束";
+        
+        if (section == 1) {
+            
+            titleLabel.text = @"未开始";
+            
+//            BOOL currentDay = [NSString judgeCurrentDay:[infoDic objectForKey:kLivingTime]];
+//            if (currentDay) {
+//                titleLabel.textAlignment = 1;
+//                titleLabel.text = @"今日直播";
+//                titleLabel.textColor = UIRGBColor(255, 102, 0);
+//                UIImageView * stateImageView = [[UIImageView alloc]initWithFrame:CGRectMake(titleLabel.hd_centerX - 30 - 15, 6, 13, 17)];
+//                stateImageView.image = [UIImage imageNamed:@"livingHeadSectionImage"];
+//                [sectionHeadView addSubview:stateImageView];
+//            }
+            
+        }
+        
+        return sectionHeadView;
+    }
+    return nil;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -510,7 +584,69 @@
         }
         cell.textLabel.textAlignment = 1;
         return cell;
-    }else if ([tableView isEqual:self.sectionScreentableview]) {
+    }else if ([tableView isEqual:self.teacherTableView]) {
+        UITableViewCell * cell = [UIUtility getCellWithCellName:@"cellID" inTableView:tableView andCellClass:[UITableViewCell class]];
+        cell.backgroundColor = [UIColor whiteColor];
+        
+        if (![cell viewWithTag:1000]) {
+            UIView * lineVlew = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth / 2, 1)];
+            lineVlew.backgroundColor = kTableViewCellSeparatorColor;
+            lineVlew.tag = 1000;
+            [cell addSubview:lineVlew];
+        }
+        
+        if (indexPath.row == 0) {
+            cell.textLabel.text = @"全部老师";
+        }else
+        {
+            NSDictionary *categoryDic = [self.teacherArr objectAtIndex:indexPath.row - 1];
+            cell.textLabel.text = [categoryDic objectForKey:kCourseTeacherName];
+        }
+        
+        
+        if ([indexPath isEqual:self.teacherIndexpath]) {
+            cell.textLabel.textColor = UIColorFromRGB(0x1D7AF8);
+        }else
+        {
+            cell.textLabel.textColor = kMainTextColor;
+        }
+        cell.textLabel.textAlignment = 1;
+        return cell;
+    }else if ([tableView isEqual:self.monthTableView]) {
+        UITableViewCell * cell = [UIUtility getCellWithCellName:@"cellID" inTableView:tableView andCellClass:[UITableViewCell class]];
+        cell.backgroundColor = [UIColor whiteColor];
+        
+        if (![cell viewWithTag:1000]) {
+            UIView * lineVlew = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth / 2, 1)];
+            lineVlew.backgroundColor = kTableViewCellSeparatorColor;
+            lineVlew.tag = 1000;
+            [cell addSubview:lineVlew];
+        }
+        switch (indexPath.row) {
+            case 0:
+                cell.textLabel.text = @"本月直播";
+                break;
+            case 1:
+                cell.textLabel.text = @"往期回放";
+                break;
+                
+            default:
+                break;
+        }
+        
+        
+        if ([indexPath isEqual:self.monthIndexPath]) {
+            cell.textLabel.textColor = UIColorFromRGB(0x1D7AF8);
+        }else
+        {
+            cell.textLabel.textColor = kMainTextColor;
+        }
+        cell.textLabel.textAlignment = 1;
+        return cell;
+    }
+    
+    
+    else if ([tableView isEqual:self.sectionScreentableview]) {
         UITableViewCell * cell = [UIUtility getCellWithCellName:@"cellID" inTableView:tableView andCellClass:[UITableViewCell class]];
         cell.backgroundColor = [UIColor whiteColor];
         
@@ -549,22 +685,171 @@
         return cell;
     }else
     {
+        if (self.monthIndexPath.row == 1) {
+            static NSString *courseCellName = @"liveCourseCell";
+            MainLivingCourseTableViewCell * lCell = (MainLivingCourseTableViewCell *)[self getCellWithCellName:courseCellName inTableView:tableView andCellClass:[MainLivingCourseTableViewCell class]];
+            [lCell resetCellContent:[[self.livingCourseArr objectAtIndex:0] objectAtIndex:indexPath.row]];
+            
+            __weak typeof(self)weakSelf = self;
+            lCell.mainCountDownFinishBlock = ^{
+                [weakSelf doRequestLivingcourse];
+            };
+            
+            return lCell;
+        }
+        
+        __weak typeof(self)weakSelf = self;
+        if (indexPath.section == 0) {
+            LivingCourseTableViewCell * livingCell = [tableView dequeueReusableCellWithIdentifier:kLivingCourseCellId forIndexPath:indexPath];
+            
+            livingCell.selectionStyle = UITableViewCellSelectionStyleNone;
+            
+            [livingCell resetInfoWithArray:[self getLivingCourseArr]];
+            
+            livingCell.LivingCourseBlock = ^(NSDictionary *infoDic) {
+                
+                weakSelf.selectCourseInfoDic = infoDic;
+                weakSelf.selectCurrentMonthCourseId = [[infoDic objectForKey:kCourseID] intValue];
+                [SVProgressHUD show];
+                NSDictionary * infoDic1 = @{kCourseID:[infoDic objectForKey:kCourseID],
+                                            kteacherId:@"",
+                                            @"month":@(0)};
+                
+                [[CourseraManager sharedManager]didrequestLivingSectionDetailWithInfo:infoDic1 andNotifiedObject:self];
+//                if ([[UserManager sharedManager] isUserLogin]){
+//                    
+//                }else
+//                {
+//                    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationOfLoginClick object:nil];
+//                }
+            };
+            
+            return livingCell;
+        }
         ClassroomLivingTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:kClassroomLivingcellId forIndexPath:indexPath];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        if (indexPath.row <= self.dataSourceArr.count - 1) {
-            [cell resetWithDic:[self.dataSourceArr objectAtIndex:indexPath.row]];
+        
+        NSDictionary * dic = [[self.livingCourseArr objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
+        if (indexPath.row <= [[self.livingCourseArr objectAtIndex:indexPath.section] count] - 1) {
+            [cell resetWithDic:dic];
         }
+        
+        cell.countDownFinishBlock = ^{
+            NSDictionary * dic = @{kCourseID:@(0),
+                                        kteacherId:self.teacherId,
+                                        @"month":@(self.month)};
+            [[CourseraManager sharedManager] didrequestLivingSectionDetailWithInfo:dic andNotifiedObject:self];
+        };
+        
+        cell.LivingPlayBlock = ^(LivingPlayType playType) {
+            
+            switch (playType) {
+                case LivingPlayType_living:
+                case LivingPlayType_videoBack:
+                {
+                    self.selectCurrentMonthCourseId = [[dic objectForKey:kCourseID] intValue];
+                    self.selectCurrentMonthCourseSectionInfoDic = dic;
+                    [SVProgressHUD show];
+                    NSDictionary * dic1 = @{kCourseID:[dic objectForKey:kCourseID],
+                                            kteacherId:@"",
+                                            @"month":@(0)};
+                    [[CourseraManager sharedManager] didrequestLivingSectionDetailWithInfo:dic1 andNotifiedObject:self];
+                    
+                    /*
+                     NSMutableDictionary * infoDic = [[NSMutableDictionary alloc]initWithDictionary:dic];
+                     
+                     [infoDic setObject:[dic objectForKey:kCourseSecondID] forKey:kCourseID];
+                     [infoDic setObject:[dic objectForKey:kCourseSecondName] forKey:kCourseName];
+                     
+                     [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationOfLivingChatClick object:infoDic];
+                     */
+                    
+                }
+                    break;
+                case LivingPlayType_order:
+                {
+                    
+                    if (![[UserManager sharedManager] isUserLogin]){
+                        [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationOfLoginClick object:nil];
+                        return ;
+                    }
+                    [SVProgressHUD show];
+                    
+                    weakSelf.selectOrderLivingSectionInfoDic = dic;
+                    NSDictionary * orderDic = @{@"courseID":[dic objectForKey:kCourseID],
+                                                @"courseSecondID":[dic objectForKey:kCourseSecondID],
+                                                @"livingTime":[[[dic objectForKey:kLivingTime] componentsSeparatedByString:@"~"] objectAtIndex:0]};
+                    [[UserManager sharedManager] didRequestOrderLivingCourseOperationWithCourseInfo:orderDic withNotifiedObject:self];
+                    
+                }
+                    break;
+                case LivingPlayType_ordered:
+                {
+                    
+                    if (![[UserManager sharedManager] isUserLogin]){
+                        [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationOfLoginClick object:nil];
+                        return ;
+                    }
+                    [SVProgressHUD show];
+                    
+                    weakSelf.selectOrderLivingSectionInfoDic = dic;
+                    NSDictionary * orderDic = @{@"courseID":[dic objectForKey:kCourseID],
+                                                @"courseSecondID":[dic objectForKey:kCourseSecondID],
+                                                @"livingTime":[[[dic objectForKey:kLivingTime] componentsSeparatedByString:@"~"] objectAtIndex:0]};
+                    [[UserManager sharedManager] didRequestCancelOrderLivingCourseOperationWithCourseInfo:orderDic withNotifiedObject:self];
+                    
+                }
+                    break;
+                    
+                default:
+                    break;
+            }
+        };
+        
+//        if ((indexPath.row < 3 && [[dic objectForKey:kLivingState] intValue] != 3) ||  [[dic objectForKey:kLivingState] intValue] == 3) {
+//            cell.livingStateImageView.hidden = NO;
+//            cell.timeLB.hidden = NO;
+//        }else
+//        {
+//            cell.livingStateImageView.hidden = YES;
+//            cell.timeLB.hidden = YES;
+//        }
+        
         return cell;
     }
-    
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if ([tableView isEqual:self.screenTableView] || [tableView isEqual:self.sectionScreentableview]) {
+    if ([tableView isEqual:self.screenTableView] || [tableView isEqual:self.sectionScreentableview] || [tableView isEqual:self.teacherTableView] || [tableView isEqual:self.monthTableView]) {
         return 40;
     }
+    
+    if ([tableView isEqual:self.livingTableview] && indexPath.section == 0 && self.monthIndexPath.row == 0) {
+        return kScreenWidth / 4 + 20 + 25 + 38;
+    }
+    if ([tableView isEqual:self.livingTableview] && indexPath.section != 0 && self.monthIndexPath.row == 0) {
+        NSDictionary * dic = [self.livingCourseArr[indexPath.section] objectAtIndex:indexPath.row];
+        if ([[dic objectForKey:kLivingState] intValue] == 2 || [[dic objectForKey:kLivingState] intValue] == 3) {
+            return 81;
+        }
+        return 110;
+    }
     return 100;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    if ([tableView isEqual:self.livingTableview]) {
+        if (self.monthIndexPath.row == 1) {
+            return 0;
+        }
+        if (section == 0) {
+            return 0;
+        }
+        return 28;
+    }
+    return 0;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -573,50 +858,175 @@
         self.currentVideoIndexpath = indexPath;
         self.currentSectionIndexpath = [NSIndexPath indexPathForRow:0 inSection:0];
         [self reloadVideo:indexPath];
-        
-        [self hideScreen];
+        [self hideScreenWithHide:NO];
         
         return;
     }
     if ([tableView isEqual:self.sectionScreentableview]) {
         self.currentSectionIndexpath = indexPath;
         [self reloadSection:indexPath];
-        [self hideScreen];
+        [self hideScreenWithHide:NO];
         
         return;
     }
-    
-    NSDictionary *info = [self.dataSourceArr objectAtIndex:indexPath.row];
-    if ([tableView isEqual:self.livingTableview]) {
-        self.orderCourseId = [[info objectForKey:kCourseID] intValue];
-        if ([[info objectForKey:kLivingState] intValue] != 5) {
-            
-            if ([[UserManager sharedManager] isUserLogin]){
-            
-                if ([[info objectForKey:kLivingState] intValue] == 3) {
-                    UIAlertView *orderAlert = [[UIAlertView alloc]initWithTitle:nil message:@"您还未预约，是否预约？" delegate:self cancelButtonTitle:@"否" otherButtonTitles:@"是", nil];
-                    orderAlert.tag = OrderAlerttag;
-                    [orderAlert show];
-                }else
-                {
-                    NSLog(@"%@", info);
-                    
-//                    LivingCourseViewController * vc = [[LivingCourseViewController alloc]init];
-//                    vc.infoDic = info;
-//                    vc.hidesBottomBarWhenPushed = YES;
-//                    [self.navigationController pushViewController:vc animated:YES];
-                    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationOfLivingChatClick object:info];
-                }
-            }else
-            {
-                 [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationOfLoginClick object:nil];
-            }
-            return;
+    if ([tableView isEqual:self.teacherTableView]) {
+        self.teacherIndexpath = indexPath;
+        if (indexPath.row == 0) {
+            self.teacherId = @"";
+        }else
+        {
+            self.teacherId = [[self.teacherArr objectAtIndex:indexPath.row - 1] objectForKey:kteacherId];
         }
+        [self doRequestLivingcourse];
+        [self hideLivingWithHide:NO];
+        return;
     }
     
+    if ([tableView isEqual:self.monthTableView]) {
+        self.monthIndexPath = indexPath;
+        if (indexPath.row == 0) {
+            self.month = [NSString getCurrentMonth];
+            [self doRequestLivingcourse];
+        }else
+        {
+            self.month = 0;
+            self.monthSelectView.selectIndexpath = [NSIndexPath indexPathForRow:0 inSection:0];
+            [self doRequestLivingcourse];
+            [self reloadLivingTableViewData];
+            [self refreshlivingSegment];
+        }
+        [self hideLivingWithHide:NO];
+        return;
+    }
+    
+    if ([tableView isEqual:self.livingTableview]) {
+        
+        
+        /*
+         if (![[UserManager sharedManager] isUserLogin]){
+         [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationOfLoginClick object:nil];
+         return ;
+         }
+         */
+        
+        if (self.monthIndexPath.row == 1) {
+
+            NSDictionary * dic = [[self.livingCourseArr objectAtIndex:0] objectAtIndex:indexPath.row];
+            self.selectCourseInfoDic = dic;
+            self.selectCurrentMonthCourseId = [[dic objectForKey:kCourseID] intValue];
+            [SVProgressHUD show];
+            NSDictionary * dic1 = @{kCourseID:[dic objectForKey:kCourseID],
+                                   kteacherId:@"",
+                                   @"month":@(0)};
+            [[CourseraManager sharedManager] didrequestLivingSectionDetailWithInfo:dic1 andNotifiedObject:self];
+            
+            return;
+        }
+        
+        NSDictionary * dic = [[self.livingCourseArr objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
+        self.selectCurrentMonthCourseId = [[dic objectForKey:kCourseID] intValue];
+        self.selectCurrentMonthCourseSectionInfoDic = dic;
+        [SVProgressHUD show];
+        NSDictionary * dic1 = @{kCourseID:[dic objectForKey:kCourseID],
+                                kteacherId:@"",
+                                @"month":@(0)};
+        [[CourseraManager sharedManager] didrequestLivingSectionDetailWithInfo:dic1 andNotifiedObject:self];
+        
+        /*
+         LivingPlayType playType = [[dic objectForKey:kLivingState] integerValue];
+         switch (playType) {
+         case LivingPlayType_ordered:
+         case LivingPlayType_living:
+         {
+         
+         NSMutableDictionary * infoDic = [[NSMutableDictionary alloc]initWithDictionary:dic];
+         
+         [infoDic setObject:[dic objectForKey:kCourseSecondID] forKey:kCourseID];
+         [infoDic setObject:[dic objectForKey:kCourseSecondName] forKey:kCourseName];
+         
+         [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationOfLivingChatClick object:infoDic];
+         
+         
+         
+         }
+         break;
+         case LivingPlayType_order:
+         {
+         [SVProgressHUD show];
+         
+         self.selectOrderLivingSectionInfoDic = dic;
+         NSDictionary * orderDic = @{@"courseID":[dic objectForKey:kCourseID],
+         @"courseSecondID":[dic objectForKey:kCourseSecondID],
+         @"livingTime":[[[dic objectForKey:kLivingTime] componentsSeparatedByString:@"~"] objectAtIndex:0]};
+         [[UserManager sharedManager] didRequestOrderLivingCourseOperationWithCourseInfo:orderDic withNotifiedObject:self];
+         
+         }
+         break;
+         case LivingPlayType_videoBack:
+         {
+         [self playBackWith:dic];
+         }
+         break;
+         
+         default:
+         break;
+         }
+         */
+        
+        /*
+         //        self.orderCourseId = [[info objectForKey:kCourseID] intValue];
+         //        if ([[info objectForKey:kLivingState] intValue] != 5) {
+         //
+         //            if ([[UserManager sharedManager] isUserLogin]){
+         //
+         //                [SVProgressHUD show];
+         //                self.selectCourseInfoDic = info;
+         //
+         //                NSDictionary * infoDic = @{kCourseID:[info objectForKey:kCourseID],
+         //                                           kteacherId:@"",
+         //                                           @"month":@(0)};
+         //
+         //                [[CourseraManager sharedManager]didrequestLivingSectionDetailWithInfo:infoDic andNotifiedObject:self];
+         //
+         //
+         //            }else
+         //            {
+         //                 [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationOfLoginClick object:nil];
+         //            }
+         //            return;
+         //        }
+         
+         */
+        
+        return;
+    }
+    NSDictionary *info = [self.dataSourceArr objectAtIndex:indexPath.row];
     NSLog(@"info = %@", [info description]);
     [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationOfCourseClick object:info];
+}
+#pragma mark - utility
+- (UITableViewCell *)getCellWithCellName:(NSString *)reuseName inTableView:(UITableView *)table andCellClass:(Class)cellClass
+{
+    UITableViewCell *cell = [table dequeueReusableCellWithIdentifier:reuseName];
+    if (cell == nil) {
+        cell = [[cellClass alloc] init];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    }
+    return cell;
+}
+- (void)reloadLivingTableViewData
+{
+    if (self.monthIndexPath.row == 1) {
+        self.livingTableview.frame = CGRectMake(kScreenWidth, kSegmentHeight + 35, kScreenWidth, kScreenHeight - kNavigationBarHeight - kStatusBarHeight - kTabBarHeight - kSegmentHeight - 35);
+        self.monthSelectView.hidden = NO;
+        
+        [self.monthSelectView reloadData];
+    }else
+    {
+        self.livingTableview.frame = CGRectMake(kScreenWidth, kSegmentHeight, kScreenWidth, kScreenHeight - kNavigationBarHeight - kStatusBarHeight - kTabBarHeight - kSegmentHeight);
+        self.monthSelectView.hidden = YES;
+    }
+    [self.livingTableview reloadData];
 }
 
 #pragma mark - alertDelegate
@@ -625,29 +1035,9 @@
     if (alertView.tag == OrderAlerttag) {
         if (buttonIndex == 1) {
             [SVProgressHUD showWithStatus:@"预约中"];
-            [[UserManager sharedManager] didRequestOrderLivingCourseOperationWithCourseId:self.orderCourseId withNotifiedObject:self];
+//            [[UserManager sharedManager] didRequestOrderLivingCourseOperationWithCourseId:self.orderCourseId withNotifiedObject:self];
         }
     }
-}
-
-#pragma mark - orderLivingCourseProtocal
-- (void)didRequestOrderLivingSuccessed
-{
-    [SVProgressHUD showWithStatus:@"预约成功"];
-    [self performSelector:@selector(orderSuccess) withObject:nil afterDelay:0.7];
-}
-
-- (void)didRequestOrderLivingFailed:(NSString *)failedInfo
-{
-    [SVProgressHUD dismiss];
-    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:nil message:failedInfo delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
-    [alert show];
-    [alert performSelector:@selector(dismiss) withObject:nil afterDelay:0.7];
-}
-
-- (void)orderSuccess
-{
-    [SVProgressHUD dismiss];
 }
 
 #pragma mark - segmentAction
@@ -657,14 +1047,15 @@
     [self.scrollView setContentOffset:CGPointMake(segment.selectedSegmentIndex * _scrollView.hd_width, 0) animated:NO];
     
     if (self.topIndex == 0) {
+        [self hideLivingWithHide:YES];
         [self reloadVideo:self.currentVideoIndexpath];
         [self reloadSection:self.currentSectionIndexpath];
         [self.videoTableview reloadData];
     }else
     {
-        [self hideScreen];
-        self.dataSourceArr = self.livingCourseArr;
-        [self.livingTableview reloadData];
+        [self hideScreenWithHide:YES];
+//        self.dataSourceArr = self.livingCourseArr;
+        [self reloadLivingTableViewData];
     }
 }
 
@@ -693,31 +1084,213 @@
                 [self showSecondLeveltableview:NO];
             }
         }
-        [self.livingTableview reloadData];
+        [self reloadLivingTableViewData];
         [self.videoTableview reloadData];
         
     }else
     {
         self.livingIndex = index;
         
-        if (index == 0) {
-            self.livingCourseArr = [[CourseraManager sharedManager] getNotStartLivingCourseArray];
+        if (index == 1) {
+            
+            if (self.teacherTableView.hidden) {
+                
+                [self showTeacherTableview:YES];
+            }else
+            {
+                [self showTeacherTableview:NO];
+            }
         }else
         {
-            self.livingCourseArr = [[CourseraManager sharedManager] getEndLivingCourseArray] ;
+            if (self.monthTableView.hidden) {
+                
+                [self showMonthTableview:YES];
+            }else
+            {
+                [self showMonthTableview:NO];
+            }
         }
         
-        if (!self.screenTableView.hidden) {
+        [self reloadLivingTableViewData];
+    }
+}
+
+- (void)showScreenTableview:(BOOL)isShow
+{
+    [self.sectionScreentableview setHidden:YES];
+    if (isShow) {
+        [self.screenBackView setHidden:NO];
+        [self.screenTableView setHidden:NO];
+        self.screenTableView.frame = CGRectMake(0, kSegmentHeight - 1, kScreenWidth / 2 , 0);
+        
+        [UIView animateWithDuration:kTime animations:^{
+            self.screenTableView.frame = CGRectMake(0, kSegmentHeight - 1, kScreenWidth / 2 , 260);
+        } completion:^(BOOL finished) {
             
-            [self showScreenTableview:NO];
-        }
-        if (!self.sectionScreentableview.hidden) {
+        }];
+        
+    }else
+    {
+        [self.screenBackView setHidden:NO];
+        self.screenTableView.frame = CGRectMake(0, kSegmentHeight - 1, kScreenWidth /2 , 260);
+        
+        [UIView animateWithDuration:kTime animations:^{
+            self.screenTableView.frame = CGRectMake(0, kSegmentHeight - 1, kScreenWidth / 2 , 0);
+        } completion:^(BOOL finished) {
+            [self.screenTableView setHidden:YES];
+            [self.screenBackView setHidden:YES];
+        }];
+    }
+    
+}
+
+- (void)showSecondLeveltableview:(BOOL)isShow
+{
+    [self.screenTableView setHidden:YES];
+    
+    if (isShow) {
+        [self.screenBackView setHidden:NO];
+        [self.sectionScreentableview setHidden:NO];
+        self.sectionScreentableview.frame = CGRectMake(kScreenWidth / 2 , 41, kScreenWidth / 2 , 0);
+        
+        [UIView animateWithDuration:kTime animations:^{
+            self.sectionScreentableview.frame = CGRectMake(kScreenWidth / 2 , 41, kScreenWidth / 2 , self.sectionScreentableviewHeight);
+        } completion:^(BOOL finished) {
             
-            [self showSecondLeveltableview:NO];
+        }];
+    }else
+    {
+        [self.screenBackView setHidden:NO];
+        self.sectionScreentableview.frame = CGRectMake(kScreenWidth / 2 , 41, kScreenWidth / 2 , self.sectionScreentableviewHeight);
+        [UIView animateWithDuration:kTime animations:^{
+            self.sectionScreentableview.frame = CGRectMake(kScreenWidth / 2 , 41, kScreenWidth / 2 , 0);
+        } completion:^(BOOL finished) {
+            [self.sectionScreentableview setHidden:YES];
+            [self.screenBackView setHidden:YES];
+        }];
+    }
+}
+
+- (void)showTeacherTableview:(BOOL)isShow
+{
+    [self.monthTableView setHidden:YES];
+    if (isShow) {
+        [self.livingBackView setHidden:NO];
+        [self.teacherTableView setHidden:NO];
+        self.teacherTableView.frame = CGRectMake(kScreenWidth / 2, kSegmentHeight - 1, kScreenWidth / 2 , 0);
+        
+        [UIView animateWithDuration:kTime animations:^{
+            self.teacherTableView.frame = CGRectMake(kScreenWidth / 2, kSegmentHeight - 1, kScreenWidth / 2 , self.teachertableviewheight);
+        } completion:^(BOOL finished) {
+            
+        }];
+        
+    }else
+    {
+        [self.livingBackView setHidden:NO];
+        self.teacherTableView.frame = CGRectMake(kScreenWidth / 2, kSegmentHeight - 1, kScreenWidth /2 , self.teachertableviewheight);
+        
+        [UIView animateWithDuration:kTime animations:^{
+            self.teacherTableView.frame = CGRectMake(kScreenWidth / 2, kSegmentHeight - 1, kScreenWidth / 2 , 0);
+        } completion:^(BOOL finished) {
+            [self.teacherTableView setHidden:YES];
+            [self.livingBackView setHidden:YES];
+        }];
+    }
+    
+}
+
+- (void)showMonthTableview:(BOOL)isShow
+{
+    [self.teacherTableView setHidden:YES];
+    
+    if (isShow) {
+        [self.livingBackView setHidden:NO];
+        [self.monthTableView setHidden:NO];
+        self.monthTableView.frame = CGRectMake(0 , 41, kScreenWidth / 2 , 0);
+        
+        [UIView animateWithDuration:kTime animations:^{
+            self.monthTableView.frame = CGRectMake(0 , 41, kScreenWidth / 2 , 80);
+        } completion:^(BOOL finished) {
+            
+        }];
+    }else
+    {
+        [self.livingBackView setHidden:NO];
+        self.monthTableView.frame = CGRectMake(0 , 41, kScreenWidth / 2 , 80);
+        [UIView animateWithDuration:kTime animations:^{
+            self.monthTableView.frame = CGRectMake(0 , 41, kScreenWidth / 2 , 0);
+        } completion:^(BOOL finished) {
+            [self.monthTableView setHidden:YES];
+            [self.livingBackView setHidden:YES];
+        }];
+    }
+}
+
+- (void)hideScreen
+{
+    [self hideScreenWithHide:NO];
+}
+
+- (void)hideScreenWithHide:(BOOL)isHide
+{
+    if (isHide) {
+        self.screenTableView.hidden = YES;
+        self.sectionScreentableview.hidden = YES;
+        self.screenBackView.hidden = YES;
+        return;
+    }
+    if (self.screenTableView.hidden && self.sectionScreentableview.hidden) {
+        return;
+    }
+    [self.segmentC clickBT:self.videoIndex];
+}
+
+- (void)hideLiving
+{
+    [self hideLivingWithHide:NO];
+}
+
+- (void)hideLivingWithHide:(BOOL)isHide
+{
+    if (isHide) {
+        self.teacherTableView.hidden = YES;
+        self.monthTableView.hidden = YES;
+        self.livingBackView.hidden = YES;
+        return;
+    }
+    if (self.teacherTableView.hidden && self.monthTableView.hidden) {
+        return;
+    }
+    [self.livingSegmentC clickBT:self.livingIndex];
+}
+
+#pragma mark 观看视频回放
+- (void)playBackWith:(NSDictionary *)infoDic
+{
+    if ([[infoDic objectForKey:kHaveJurisdiction] intValue]) {
+        
+        if ([infoDic objectForKey:kPlayBackUrl] && [[infoDic objectForKey:kPlayBackUrl] length] > 0) {
+            NSMutableDictionary * mInfoDic = [NSMutableDictionary dictionary];
+            [mInfoDic setObject:[infoDic objectForKey:kCourseSecondID] forKey:kVideoId];
+            [mInfoDic setObject:[infoDic objectForKey:kCourseSecondName] forKey:kVideoName];
+            [mInfoDic setObject:[infoDic objectForKey:kPlayBackUrl] forKey:kVideoURL];
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationOfLivingPlayBackClick object:mInfoDic];
+        }else
+        {
+            [SVProgressHUD showErrorWithStatus:@"视频暂未上传完成，请稍等..."];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [SVProgressHUD dismiss];
+            });
         }
         
-        self.dataSourceArr = self.livingCourseArr;
-        [self.livingTableview reloadData];
+    }else
+    {
+        [SVProgressHUD showErrorWithStatus:@"暂无观看权限"];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [SVProgressHUD dismiss];
+        });
     }
 }
 
@@ -782,16 +1355,176 @@
 
 - (void)didRequestNotStartLivingCourseSuccessed
 {
-    [SVProgressHUD dismiss];
+    self.teacherArr = [[CourseraManager sharedManager] getLivingTeacherInfoArrar];
     self.livingCourseArr = [[CourseraManager sharedManager] getNotStartLivingCourseArray];
-    [self.livingTableview.mj_header endRefreshing];
-    [self.livingTableview reloadData];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.teacherTableView.frame = CGRectMake(kScreenWidth / 2, kSegmentHeight - 1, kScreenWidth / 2 , (self.teacherArr.count + 1) * 40.0) ;
+        self.teachertableviewheight = (self.teacherArr.count + 1) * 40.0;
+    });
+    [self.teacherTableView reloadData];
+    
+    if (self.monthIndexPath.row == 0) {
+        NSDictionary * dic = @{kCourseID:@(0),
+                               kteacherId:self.teacherId,
+                               @"month":@(self.month)};
+        [[CourseraManager sharedManager] didrequestLivingSectionDetailWithInfo:dic andNotifiedObject:self];
+    }else
+    {
+        [SVProgressHUD dismiss];
+        [self.livingTableview.mj_header endRefreshing];
+        [self reloadLivingTableViewData];
+    }
 }
 
 - (void)didRequestNotStartLivingCourseFailed:(NSString *)failedInfo
 {
+    [self.livingTableview.mj_header endRefreshing];
+    [SVProgressHUD dismiss];
+    if ([failedInfo isEqualToString:@"暂无数据"]) {
+        failedInfo = @"暂无课程";
+    }
+    [SVProgressHUD showErrorWithStatus:failedInfo];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [SVProgressHUD dismiss];
+    });
+    self.livingCourseArr = [[CourseraManager sharedManager] getNotStartLivingCourseArray];
+    [self reloadLivingTableViewData];
+    
+    if(self.monthIndexPath.row == 0){
+        
+        NSDictionary * dic = @{kCourseID:@(0),
+                               kteacherId:self.teacherId,
+                               @"month":@(self.month)};
+        [[CourseraManager sharedManager] didrequestLivingSectionDetailWithInfo:dic andNotifiedObject:self];
+        return;
+    }
+}
+
+#pragma mark - LivingSectionDetailProtocal
+
+- (void)didRequestLivingSectionDetailSuccessed
+{
     [SVProgressHUD dismiss];
     [self.livingTableview.mj_header endRefreshing];
+    [self refreshlivingSegment];
+    
+    if (self.selectCurrentMonthCourseId) {
+//        self.selectCurrentMonthCourseId = 0;
+        if (self.selectCurrentMonthCourseSectionInfoDic) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationOfLivingChatClick object:self.selectCurrentMonthCourseSectionInfoDic];
+            self.selectCurrentMonthCourseSectionInfoDic = nil;
+        }else
+        {
+            [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationOfLivingChatClick object:self.selectCourseInfoDic];
+            self.selectCourseInfoDic = nil;
+        }
+        
+        return;
+    }else
+    {
+        self.livingCourseArr = [[CourseraManager sharedManager] getNotStartLivingCourseArray];
+        if (self.topIndex == 1) {
+        }
+        
+        [self reloadLivingTableViewData];
+    }
+}
+
+- (void)didRequestLivingSectionDetailFailed:(NSString *)failedInfo
+{
+    if ([failedInfo isEqualToString:@"暂无数据"]) {
+        failedInfo = @"暂无课程";
+    }
+    
+    [SVProgressHUD dismiss];
+    [self.livingTableview.mj_header endRefreshing];
+    if (self.selectCurrentMonthCourseId) {
+        self.selectCurrentMonthCourseId = 0;
+        self.selectCurrentMonthCourseSectionInfoDic = nil;
+        [SVProgressHUD showErrorWithStatus:failedInfo];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [SVProgressHUD dismiss];
+        });
+        return;
+    }
+    self.livingCourseArr = [[CourseraManager sharedManager] getNotStartLivingCourseArray];
+    [SVProgressHUD showErrorWithStatus:failedInfo];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [SVProgressHUD dismiss];
+    });
+    [self reloadLivingTableViewData];
+    [self refreshlivingSegment];
+}
+
+- (void)refreshlivingSegment
+{
+    if (self.teacherIndexpath) {
+        if (self.teacherIndexpath.row == 0) {
+            [self.livingSegmentC changeTitle:@"全部老师" withIndex:1];
+        }else
+        {
+            [self.livingSegmentC changeTitle:[self.teacherArr[self.teacherIndexpath.row - 1] objectForKey:kCourseTeacherName] withIndex:1];
+        }
+    }
+    if (self.monthIndexPath) {
+        if (self.monthIndexPath.row == 0) {
+            [self.livingSegmentC changeTitle:@"本月直播" withIndex:0];
+        }else
+        {
+            [self.livingSegmentC changeTitle:@"往期回放" withIndex:0];
+        }
+    }
+}
+
+#pragma mark - orderLivingProtocol
+
+- (void)didRequestOrderLivingSuccessed
+{
+    [SVProgressHUD dismiss];
+    [SVProgressHUD showSuccessWithStatus:@"预约成功"];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [SVProgressHUD dismiss];
+    });
+    
+    [[CourseraManager sharedManager] refreshLivingSectionStateOrder_complateWith:self.selectOrderLivingSectionInfoDic];
+    self.livingCourseArr = [[CourseraManager sharedManager] getNotStartLivingCourseArray];
+    [self reloadLivingTableViewData];
+}
+
+- (void)didRequestOrderLivingFailed:(NSString *)failedInfo
+{
+    [SVProgressHUD dismiss];
+    [SVProgressHUD showErrorWithStatus:failedInfo];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [SVProgressHUD dismiss];
+    });
+}
+
+- (void)orderSuccess
+{
+    [SVProgressHUD dismiss];
+}
+
+- (void)didRequestCancelOrderLivingSuccessed
+{
+    [SVProgressHUD dismiss];
+    [SVProgressHUD showSuccessWithStatus:@"取消预约成功"];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [SVProgressHUD dismiss];
+    });
+    
+    [[CourseraManager sharedManager] refreshLivingSectionStateOrder_complateWith:self.selectOrderLivingSectionInfoDic];
+    self.livingCourseArr = [[CourseraManager sharedManager] getNotStartLivingCourseArray];
+    [self reloadLivingTableViewData];
+}
+
+- (void)didRequestCancelOrderLivingFailed:(NSString *)failedInfo
+{
+    [SVProgressHUD dismiss];
+    [SVProgressHUD showErrorWithStatus:failedInfo];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [SVProgressHUD dismiss];
+    });
 }
 
 #pragma mark - reload
@@ -802,6 +1535,7 @@
         self.videoCourseArray = self.allCourseArr;
         self.dataSourceArr = self.allCourseArr;
         self.sectionArray = @[];
+        [self refreshSectiontableViewFrame];
         self.currentCourseInfo = nil;
         [self.videoTableview reloadData];
         [self.screenTableView reloadData];
@@ -814,6 +1548,8 @@
         
         self.currentCourseInfo = [self.categoryArray objectAtIndex:indexPath.row - 1];
         self.sectionArray = [self.currentCourseInfo objectForKey:kCourseCategoryCourseInfos];
+        [self refreshSectiontableViewFrame];
+        
         for (NSDictionary * courseSecondInfo in [self.currentCourseInfo objectForKey:kCourseCategoryCourseInfos]) {
             for (NSDictionary *courseDic in [courseSecondInfo objectForKey:kCourseCategorySecondCourseInfos]) {
                 
@@ -872,6 +1608,7 @@
     {
         NSMutableArray * array = [NSMutableArray array];
         self.sectionArray = [self.currentCourseInfo objectForKey:kCourseCategoryCourseInfos];
+        [self refreshSectiontableViewFrame];
         NSDictionary * courseSecondInfo = [self.sectionArray objectAtIndex:indexPath.row - 1];
         
         for (NSDictionary *courseDic in [courseSecondInfo objectForKey:kCourseCategorySecondCourseInfos]) {
@@ -892,6 +1629,79 @@
         [self.screenTableView reloadData];
         [self.sectionScreentableview reloadData];
     }
+}
+
+- (void)refreshSectiontableViewFrame
+{
+    self.sectionScreentableviewHeight = (self.sectionArray.count + 1) * 40;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.sectionScreentableview.hd_height = self.sectionScreentableviewHeight;
+    });
+}
+
+#pragma mark - scrollViewDelegate
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+{
+    if ([scrollView isEqual:self.scrollView]) {
+        int i = self.scrollView.contentOffset.x / kScreenWidth;
+        switch (i ) {
+            case 0:
+                self.topSegment.selectedSegmentIndex = 0;
+                break;
+            case 1:
+                self.topSegment.selectedSegmentIndex = 1;
+                break;
+            default:
+                break;
+        }
+        [self changeSlect:self.topSegment];
+    }
+}
+
+- (NSString *)getDate:(NSDictionary *)infoDic
+{
+    
+    NSDateFormatter *dateFomatter = [[NSDateFormatter alloc] init];
+    dateFomatter.dateFormat = @"yyyy-MM-dd HH:mm";
+    
+    // 截止时间字符串格式
+    NSString * expireDateStr = [infoDic objectForKey:kLivingTime];
+    
+    expireDateStr = [[expireDateStr componentsSeparatedByString:@"~"] objectAtIndex:0];
+    
+    // 截止时间data格式
+    NSDate *expireDate = [dateFomatter dateFromString:expireDateStr];
+    
+    dateFomatter.dateFormat = @"MM月dd日";
+    
+    NSString * nDateStr = [dateFomatter stringFromDate:expireDate];
+    
+    return nDateStr;
+}
+
+- (NSArray *)getLivingCourseArr
+{
+    NSArray * livingCourseArr = self.livingCourseArr[0];
+    NSString * teacherName = @"";
+    for (NSDictionary * teacherInfo in self.teacherArr) {
+        if ([self.teacherId isEqualToString:[teacherInfo objectForKey:kteacherId]]) {
+            teacherName = [teacherInfo objectForKey:kCourseTeacherName];
+        }
+    }
+    
+    NSMutableArray * livingCourseArrWithTeacher = [NSMutableArray array];
+    
+    for (NSDictionary * infoDic in livingCourseArr) {
+        if ([teacherName isEqualToString:[infoDic objectForKey:kCourseTeacherName]]) {
+            [livingCourseArrWithTeacher addObject:infoDic];
+        }
+    }
+    
+    if (self.teacherId.length == 0) {
+        return livingCourseArr;
+    }
+    return livingCourseArrWithTeacher;
 }
 
 @end

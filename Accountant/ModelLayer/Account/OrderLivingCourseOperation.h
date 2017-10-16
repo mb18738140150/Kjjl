@@ -9,5 +9,5 @@
 #import <Foundation/Foundation.h>
 
 @interface OrderLivingCourseOperation : NSObject
-- (void)didRequestOrderLivingCourseWithCourseId:(int )courseid withNotifiedObject:(id<UserModule_OrderLivingCourseProtocol>)object;
+- (void)didRequestOrderLivingCourseWithCourseInfo:(NSDictionary * )infoDic withNotifiedObject:(id<UserModule_OrderLivingCourseProtocol>)object;
 @end

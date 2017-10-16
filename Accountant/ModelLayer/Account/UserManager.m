@@ -14,6 +14,16 @@
 #import "AppInfoOperation.h"
 #import "BindJPushOperation.h"
 #import "OrderLivingCourseOperation.h"
+#import "CancelOrderLivingCourseOperation.h"
+
+
+#import "VerifyCodeOperation.h"
+#import "RegistOperation.h"
+#import "ForgetPsdOperation.h"
+#import "VerifyAccountOperation.h"
+#import "CompleteUserInfoOperation.h"
+
+#import "PathUtility.h"
 
 @interface UserManager()
 
@@ -26,6 +36,12 @@
 
 @property (nonatomic, strong)BindJPushOperation         *bindJPushOperation;
 @property (nonatomic, strong)OrderLivingCourseOperation *orderLivingCourseOperation;
+@property (nonatomic, strong)CancelOrderLivingCourseOperation *cancelOrderLivingCOurseOperation;
+@property (nonatomic, strong)VerifyCodeOperation         *verifyCodeOperation;
+@property (nonatomic, strong)RegistOperation         *registOperation;
+@property (nonatomic, strong)ForgetPsdOperation         *forgetPsdOperation;
+@property (nonatomic, strong)VerifyAccountOperation     *verfyAccountOperation;
+@property (nonatomic, strong)CompleteUserInfoOperation  *completeOperation;
 
 @end
 
@@ -50,8 +66,14 @@
         self.resetOperation = [[ResetPwdOperation alloc] init];
         self.bindJPushOperation = [[BindJPushOperation alloc]init];
         self.orderLivingCourseOperation = [[OrderLivingCourseOperation alloc]init];
+        self.cancelOrderLivingCOurseOperation = [[CancelOrderLivingCourseOperation alloc] init];
         self.infoOperation = [[AppInfoOperation alloc] init];
         self.infoOperation.appInfoModel = self.userModuleModels.appInfoModel;
+        self.verifyCodeOperation = [[VerifyCodeOperation alloc]init];
+        self.registOperation = [[RegistOperation alloc]init];
+        self.forgetPsdOperation = [[ForgetPsdOperation alloc]init];
+        self.verfyAccountOperation = [[VerifyAccountOperation alloc]init];
+        self.completeOperation = [[CompleteUserInfoOperation alloc]init];
     }
     return self;
 }
@@ -66,6 +88,31 @@
     [self.resetOperation didRequestResetPwdWithOldPwd:oldPwd andNewPwd:newPwd withNotifiedObject:object];
 }
 
+- (void)registWithDic:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_RegistProtocol>)object
+{
+    [self.registOperation didRequestRegistWithWithDic:infoDic withNotifiedObject:object];
+}
+
+- (void)forgetPsdWithDic:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_ForgetPasswordProtocol>)object
+{
+    [self.forgetPsdOperation didRequestForgetPsdWithWithDic:infoDic withNotifiedObject:object];
+}
+
+- (void)completeUserInfoWithDic:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_CompleteUserInfoProtocol>)object;
+{
+    [self.completeOperation didRequestCompleteUserInfoWithWithDic:infoDic withNotifiedObject:object];
+}
+
+- (void)getVerifyCodeWithPhoneNumber:(NSString *)phoneNumber withNotifiedObject:(id<UserModule_VerifyCodeProtocol>)object
+{
+    [self.verifyCodeOperation didRequestVerifyCodeWithWithPhoneNumber:phoneNumber withNotifiedObject:object];
+}
+
+- (void)getVerifyAccountWithAccountNumber:(NSString *)accountNumber withNotifiedObject:(id<UserModule_VerifyAccountProtocol>)object
+{
+    [self.verfyAccountOperation didRequestVerifyAccountWithWithAccountNumber:accountNumber withNotifiedObject:object];
+}
+
 - (void)didRequestAppVersionInfoWithNotifiedObject:(id<UserModule_AppInfoProtocol>)object
 {
     [self.infoOperation didRequestAppInfoWithNotifedObject:object];
@@ -74,6 +121,17 @@
 - (void)logout
 {
     [self.loginOperation clearLoginUserInfo];
+}
+
+- (void)refreshRCDUserInfoWithNickName:(NSString *)nickName andWithPortraitUrl:(NSString *)portraitUrl
+{
+    RCUserInfo *user = [RCUserInfo new];
+    
+    user.userId = [NSString stringWithFormat:@"%d", [UserManager sharedManager].getUserId];
+    user.name = nickName.length > 0 ? nickName : [[UserManager sharedManager] getUserNickName];
+    user.portraitUri = portraitUrl.length > 0 ? portraitUrl : [[UserManager sharedManager] getIconUrl];
+    
+    [[RCIM sharedRCIM]refreshUserInfoCache:user withUserId:user.userId];
 }
 
 - (int)getUserId
@@ -87,9 +145,14 @@
 }
 
 
-- (void)didRequestOrderLivingCourseOperationWithCourseId:(int)courseId withNotifiedObject:(id<UserModule_OrderLivingCourseProtocol>)object
+- (void)didRequestOrderLivingCourseOperationWithCourseInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_OrderLivingCourseProtocol>)object
 {
-    [self.orderLivingCourseOperation didRequestOrderLivingCourseWithCourseId:courseId withNotifiedObject:object];
+    [self.orderLivingCourseOperation didRequestOrderLivingCourseWithCourseInfo:infoDic withNotifiedObject:object];
+}
+
+- (void)didRequestCancelOrderLivingCourseOperationWithCourseInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_OrderLivingCourseProtocol>)object
+{
+    [self.cancelOrderLivingCOurseOperation didRequestCancelOrderLivingCourseWithCourseInfo:infoDic withNotifiedObject:object];
 }
 
 - (BOOL)isUserLogin
@@ -100,6 +163,20 @@
 - (NSString *)getUserName
 {
     return self.userModuleModels.currentUserModel.userName;
+}
+- (NSString *)getUserNickName
+{
+    return self.userModuleModels.currentUserModel.userNickName;
+}
+
+- (NSString *)getVerifyCode
+{
+    return self.verifyCodeOperation.verifyCode;
+}
+
+- (NSString *)getVerifyPhoneNumber
+{
+    return self.verfyAccountOperation.verifyPhoneNumber;
 }
 
 - (NSString *)getRongToken
@@ -127,6 +204,41 @@
     [dic setObject:@(self.userModuleModels.currentUserModel.level) forKey:kUserLevel];
 //    dic setObject:self.userModuleModels.currentUserModel. forKey:<#(nonnull id<NSCopying>)#>
     return dic;
+}
+
+- (void)refreshUserInfoWith:(NSDictionary *)infoDic
+{
+    RCUserInfo *user = [RCUserInfo new];
+    
+    
+    if ([infoDic objectForKey:@"icon"] && [[infoDic objectForKey:@"icon"] length] > 0) {
+        self.userModuleModels.currentUserModel.headImageUrl = [infoDic objectForKey:@"icon"];
+        user.portraitUri = [infoDic objectForKey:@"icon"];
+    }else
+    {
+        user.portraitUri = [[UserManager sharedManager] getIconUrl];
+    }
+    
+    if ([infoDic objectForKey:@"phoneNumber"] && [[infoDic objectForKey:@"phoneNumber"] length] > 0) {
+        self.userModuleModels.currentUserModel.telephone = [infoDic objectForKey:@"phoneNumber"];
+    }
+    
+    if ([infoDic objectForKey:@"nickName"] && [[infoDic objectForKey:@"nickName"] length] > 0) {
+        self.userModuleModels.currentUserModel.userNickName = [infoDic objectForKey:@"nickName"];
+        user.name = [infoDic objectForKey:@"nickName"];
+    }else
+    {
+        user.name = [[UserManager sharedManager] getUserNickName];
+    }
+    
+    user.userId = [NSString stringWithFormat:@"%d", [UserManager sharedManager].getUserId];
+    
+    [[RCIM sharedRCIM]refreshUserInfoCache:user withUserId:user.userId];
+    [RCIM sharedRCIM].currentUserInfo.userId = user.userId;
+    [RCIM sharedRCIM].currentUserInfo.name = user.name;
+    [RCIM sharedRCIM].currentUserInfo.portraitUri = user.portraitUri;
+    NSString *dataPath = [[PathUtility getDocumentPath] stringByAppendingPathComponent:@"user.data"];
+    [NSKeyedArchiver archiveRootObject:self.userModuleModels.currentUserModel toFile:dataPath];
 }
 
 - (NSDictionary *)getUpdateInfo

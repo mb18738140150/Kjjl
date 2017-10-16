@@ -146,7 +146,7 @@ static const CGFloat kVideoPlayerControllerAnimationTimeInterval = 0.3f;
 - (void)monitorVideoPlayback
 {
     if (![[NSString stringWithFormat:@"%f", self.initialPlaybackTime] isEqualToString:@"nan"] && self.initialPlaybackTime != 0.0) {
-        NSLog(@" **** %.0f", self.initialPlaybackTime);
+//        NSLog(@" **** %.0f", self.initialPlaybackTime);
         
         self.currentPlaybackTime = self.initialPlaybackTime;
         self.initialPlaybackTime = 0.0;
@@ -222,7 +222,7 @@ static const CGFloat kVideoPlayerControllerAnimationTimeInterval = 0.3f;
 /// 播放状态改变, 可配合playbakcState属性获取具体状态
 - (void)onMPMoviePlayerPlaybackStateDidChangeNotification
 {
-    NSLog(@"MPMoviePlayer  PlaybackStateDidChange  Notification *** %ld ", (long)self.playbackState);
+//    NSLog(@"MPMoviePlayer  PlaybackStateDidChange  Notification *** %ld ", (long)self.playbackState);
     
     if (isplayed && self.playbackState == MPMoviePlaybackStatePlaying) {
         [self pause];

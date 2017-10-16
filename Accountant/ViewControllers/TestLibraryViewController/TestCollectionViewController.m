@@ -130,7 +130,7 @@
 #pragma mark - table delegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    self.selectRow = indexPath.row;
+    self.selectRow = (int)indexPath.row;
     
     NSDictionary *dic = [self.collectQuestionChapterInfo objectAtIndex:indexPath.row];
     

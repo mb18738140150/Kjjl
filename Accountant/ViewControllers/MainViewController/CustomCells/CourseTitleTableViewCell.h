@@ -10,6 +10,8 @@
 
 @interface CourseTitleTableViewCell : UITableViewCell
 
+@property (nonatomic, assign)BOOL nCourse;
 - (void)resetSubviewsWithTitle:(NSString *)title;
+- (void)resetSubviewsWithTitle:(NSString *)title withNCourse:(BOOL)nCourse;
 
 @end

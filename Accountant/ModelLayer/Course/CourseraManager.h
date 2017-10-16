@@ -14,6 +14,8 @@
 
 + (instancetype)sharedManager;
 
+@property (nonatomic, assign)BOOL showMore;
+@property (nonatomic, assign)int exchangeNumber;
 
 - (PlayingInfoModel *)getPlayingInfo;
 
@@ -132,10 +134,27 @@
  @param delegate 请求成功后通知的对象
  */
 - (void)didRequestSearchliveStreamCoursesWithkeyWord:(NSString *)keyword NotifiedObject:(id<CourseModule_LiveStreamProtocol>)delegate;
+/**
+ 请求未开始直播接口
 
-- (void)didRequestNotStartLivingCourseWithNotifiedObject:(id<CourseModule_NotStartLivingCourse>)delegate;
-
+ @param delegate 请求成功后通知的对象
+ */
+- (void)didRequestNotStartLivingCourseWithInfo:(NSDictionary *)infoDic NotifiedObject:(id<CourseModule_NotStartLivingCourse>)delegate;
+/**
+ 请求往期直播接口
+ 
+ @param delegate 请求成功后通知的对象
+ */
 - (void)didRequestEndLivingCourseWithNotifiedObject:(id<CourseModule_EndLivingCourse>)delegate;
+/**
+ 请求直播小节详情接口
+ 
+ @param infoDic 直播课程id
+ @param delegate 请求成功后通知的对象
+ */
+- (void)didrequestLivingSectionDetailWithInfo:(NSDictionary *)infoDic andNotifiedObject:(id<CourseModule_LivingSectionDetail>)delegate;
+
+- (int)getIsHaveJurisdiction;
 
 /**
  获取热门课程信息
@@ -173,12 +192,25 @@
 - (NSArray *)getNotStartLivingCourseArray;
 
 /**
+ 获取直播课程老师信息
+ 
+ @return 直播课程老师信息
+ */
+- (NSArray *)getLivingTeacherInfoArrar;
+
+/**
  获取已结束直播课程
  
  @return 已结束直播课程
  */
 - (NSArray *)getEndLivingCourseArray;
 
+/**
+ 获取直播课程小节
+ 
+ @return 直播课程小节
+ */
+- (NSArray *)getLivingSectionDetailArray;
 
 /**
  获取所有课程信息
@@ -218,8 +250,12 @@
  @return 所有课程类别信息
  */
 - (NSArray *)getAllCategoryArray;
-
-
+/**
+ 获取主页展示课程信息
+ 
+ @return 所有课程信息
+ */
+- (NSArray *)getMainVCCategoryArray;
 /**
  获取请求过某一类别下所有课程的信息
 
@@ -259,5 +295,13 @@
  */
 - (NSArray *)getCollectCourseInfoArray;
 
+/**
+ 获取 我的 我的课程 收藏 的课程
+ 
+ @prama index 直播课小节预约成功index
+ */
+- (void )refreshLivingSectionStateOrder_complate:(int)index;
+
+- (void )refreshLivingSectionStateOrder_complateWith:(NSDictionary *)infoDic;
 
 @end

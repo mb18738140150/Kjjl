@@ -13,17 +13,22 @@
 #import "CourseTitleTableViewCell.h"
 #import "ImageManager.h"
 #import "CourseraManager.h"
+#import "QuestionManager.h"
 #import "QuestionTableViewCell.h"
 #import "UIUtility.h"
 #import "LiveStreamingTableViewCell.h"
 #import "CoursecategoryTableViewCell.h"
 #import "MainBottomTableViewCell.h"
+#import "NewCourseExchangeTableViewCell.h"
+#import "MainLivingCourseTableViewCell.h"
+#import "CourseraManager.h"
+#import "MainVCCourseTableViewCell.h"
 
 @implementation ContentTableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 4;
+    return 6;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -39,14 +44,44 @@
             break;
         
         case 2:
-            if ([[[CourseraManager sharedManager] getNotStartLivingCourseArray] count]) {
-                count = [[[CourseraManager sharedManager] getNotStartLivingCourseArray] count] + 1;
+            if ([CourseraManager sharedManager].showMore) {
+                return [[[[CourseraManager sharedManager] getNotStartLivingCourseArray] objectAtIndex:0] count] + 2;
+            }else
+            {
+                if ([[[[CourseraManager sharedManager] getNotStartLivingCourseArray] objectAtIndex:0] count] < 4 && [[[[CourseraManager sharedManager] getNotStartLivingCourseArray] objectAtIndex:0] count] > 0) {
+                    return [[[[CourseraManager sharedManager] getNotStartLivingCourseArray] objectAtIndex:0] count] + 1;
+                }else if ([[[[CourseraManager sharedManager] getNotStartLivingCourseArray] objectAtIndex:0] count] == 0) {
+                    return 0;
+                }
+                else
+                {
+                    return 5;
+                }
             }
+            
+//            if ([[[CourseraManager sharedManager] getNotStartLivingCourseArray] count]) {
+//                count = 2;
+//            }
             return count;
             break;
         
         case 3:
-            count = [[[CourseraManager sharedManager] getHottestCourseArray] count] - 7;
+            count = [[[CourseraManager sharedManager] getHottestCourseArray] count];
+            
+            return 4;
+            
+            if (count%2 == 0) {
+                return count/2 + 1;
+            }else{
+                return count/2 + 2;
+            }
+            
+            break;
+            
+        case 4:
+            return 1;
+        case 5:
+            count = [[[QuestionManager sharedManager] getMainQuestionInfos] count] + 1;
             break;
         default:
             break;
@@ -73,60 +108,152 @@
         return bannerCell;
     }
     
+    // 直播
     if (indexPath.section == 2 && indexPath.row == 0) {
         static NSString *courseTitleCellName = @"liveCourseTitleCell";
         CourseTitleTableViewCell *titleCell = (CourseTitleTableViewCell *)[self getCellWithCellName:courseTitleCellName inTableView:tableView andCellClass:[CourseTitleTableViewCell class]];
-        [titleCell resetSubviewsWithTitle:@"直播大厅"];
+        [titleCell resetSubviewsWithTitle:@"近期直播"];
         return titleCell;
     }
     
-    if (indexPath.section == 2 && indexPath.row != 0) {
-        static NSString *courseCellName = @"liveCourseCell";
-        LiveStreamingTableViewCell * cell = (LiveStreamingTableViewCell *)[self getCellWithCellName:courseCellName inTableView:tableView andCellClass:[LiveStreamingTableViewCell class]];
-        
-        [cell resetInfoWith:[[CourseraManager sharedManager] getNotStartLivingCourseArray]];
-        
-        cell.clickBlock = ^(NSDictionary *infoDic){
-            if (self.clockBlock) {
-                self.clockBlock(infoDic);
+    if (indexPath.section == 2 && [CourseraManager sharedManager].showMore && indexPath.row == [[[[CourseraManager sharedManager]getNotStartLivingCourseArray] objectAtIndex:0] count] + 1) {
+        static NSString *courseTitleCellName = @"courseFootCell";
+        NewCourseExchangeTableViewCell *footCell = (NewCourseExchangeTableViewCell *)[self getCellWithCellName:courseTitleCellName inTableView:tableView andCellClass:[NewCourseExchangeTableViewCell class]];
+        __weak typeof(self)weakSelf = self;
+        footCell.MoreLivingCourseBlock = ^(BOOL showMore) {
+            if (weakSelf.moreLivingCourseBlock) {
+                weakSelf.moreLivingCourseBlock();
             }
         };
-//        cell.morelivingBlock = ^(){
-//            if (self.MoreBlock) {
-//                self.MoreBlock();
-//            }
-//        };
-        
-        return cell;
+        [footCell resetMoreInfoWithNotTopLine];
+        return footCell;
     }
     
-    
+    if(indexPath.section == 2 && ![CourseraManager sharedManager].showMore && indexPath.row == 4){
+        static NSString *courseTitleCellName = @"courseFootCell";
+        NewCourseExchangeTableViewCell *footCell = (NewCourseExchangeTableViewCell *)[self getCellWithCellName:courseTitleCellName inTableView:tableView andCellClass:[NewCourseExchangeTableViewCell class]];
+        __weak typeof(self)weakSelf = self;
+        footCell.MoreLivingCourseBlock = ^(BOOL showMore) {
+            if (weakSelf.moreLivingCourseBlock) {
+                weakSelf.moreLivingCourseBlock();
+            }
+        };
+        [footCell resetMoreInfoWithNotTopLine];
+        return footCell;
+    }
+    if (indexPath.section == 2 && indexPath.row != 0) {
+        static NSString *courseCellName = @"liveCourseCell";
+        
+        /*
+         //        LiveStreamingTableViewCell * cell = (LiveStreamingTableViewCell *)[self getCellWithCellName:courseCellName inTableView:tableView andCellClass:[LiveStreamingTableViewCell class]];
+         //
+         //        [cell resetInfoWith:[[[CourseraManager sharedManager]getNotStartLivingCourseArray] objectAtIndex:0]];
+         //        __weak typeof(self)weakSelf = self;
+         //        cell.clickBlock = ^(NSDictionary *infoDic){
+         //            if (weakSelf.clockBlock) {
+         //                weakSelf.clockBlock(infoDic);
+         //            }
+         //        };
+         
+         */
+        __weak typeof(self)weakSelf = self;
+        MainLivingCourseTableViewCell * lCell = (MainLivingCourseTableViewCell *)[self getCellWithCellName:courseCellName inTableView:tableView andCellClass:[MainLivingCourseTableViewCell class]];
+        [lCell resetCellContent:[[[[CourseraManager sharedManager]getNotStartLivingCourseArray] objectAtIndex:0] objectAtIndex:indexPath.row - 1]];
+        lCell.mainCountDownFinishBlock = ^{
+            if (weakSelf.mainCountDownBlock) {
+                weakSelf.mainCountDownBlock();
+            }
+        };
+        return lCell;
+    }
+    // 新上课程
     if (indexPath.section == 3 && indexPath.row == 0) {
         static NSString *courseTitleCellName = @"courseTitleCell";
         CourseTitleTableViewCell *titleCell = (CourseTitleTableViewCell *)[self getCellWithCellName:courseTitleCellName inTableView:tableView andCellClass:[CourseTitleTableViewCell class]];
-        [titleCell resetSubviewsWithTitle:@"热门课程"];
+        titleCell.nCourse = YES;
+        [titleCell resetSubviewsWithTitle:@"新上课程"];
         return titleCell;
     }
     
-    if (indexPath.section == 3 && indexPath.row != 0) {
+    if (indexPath.section == 3 && indexPath.row == 3) {
+        static NSString *courseTitleCellName = @"courseFootCell";
+        NewCourseExchangeTableViewCell *footCell = (NewCourseExchangeTableViewCell *)[self getCellWithCellName:courseTitleCellName inTableView:tableView andCellClass:[NewCourseExchangeTableViewCell class]];
+        __weak typeof(self)weakSelf = self;
+        footCell.ExchangeBlock = ^(int number) {
+            NSLog(@"**** %d", number);
+            if (weakSelf.exchangeNewCourseBlock) {
+                weakSelf.exchangeNewCourseBlock();
+            }
+        };
+        [footCell resetCell];
+        return footCell;
+    }
+    
+    if (indexPath.section == 3 && indexPath.row != 0 && indexPath.row != 3) {
         static NSString *courseCellName = @"courseCell";
-        CoursecategoryTableViewCell *courseCell = (CoursecategoryTableViewCell *)[self getCellWithCellName:courseCellName inTableView:tableView andCellClass:[CoursecategoryTableViewCell class]];
-        NSArray *array = [[CourseraManager sharedManager] getHottestCourseArray];
         
-        courseCell.courseType = CourseCategoryType_hot;
-        [courseCell resetCellContent:[array objectAtIndex:indexPath.row]];
+        /*
+         CoursecategoryTableViewCell *courseCell = (CoursecategoryTableViewCell *)[self getCellWithCellName:courseCellName inTableView:tableView andCellClass:[CoursecategoryTableViewCell class]];
+         NSArray *array = [[CourseraManager sharedManager] getHottestCourseArray];
+         
+         courseCell.courseType = CourseCategoryType_hot;
+         [courseCell resetCellContent:[array objectAtIndex:indexPath.row]];
+         
+         */
+        
+        CourseTableViewCell *courseCell = (CourseTableViewCell *)[self getCellWithCellName:courseCellName inTableView:tableView andCellClass:[CourseTableViewCell class]];
+        NSArray *array = [[CourseraManager sharedManager] getHottestCourseArray];
+        if (array.count == 0) {
+            
+        }else{
+            NSArray *allCourseInfo = array;
+            NSArray *subarray;
+            if ((indexPath.row) * 2 <= allCourseInfo.count) {
+                if (indexPath.row == 1) {
+                    subarray = [allCourseInfo subarrayWithRange:NSMakeRange(0, 2)];
+                }else{
+                    subarray = [allCourseInfo subarrayWithRange:NSMakeRange(2*(indexPath.row - 1), 2)];
+                }
+                
+                [courseCell resetCellContentWithTwoCourseInfo:subarray];
+            }else{
+                if (indexPath.row == 1) {
+                    subarray = [allCourseInfo subarrayWithRange:NSMakeRange(0, 1)];
+                }else{
+                    subarray = [allCourseInfo subarrayWithRange:NSMakeRange(2*(indexPath.row - 1), 1)];
+                }
+                [courseCell resetCellContentWithOneCourseInfo:subarray];
+            }
+        }
         
         return courseCell;
     }
     
-    if (indexPath.section == 4 && indexPath.row == 0) {
+    if (indexPath.section == 4) {
+        static NSString *mainCourseCellName = @"mainCourseCellName";
+        
+        MainVCCourseTableViewCell *courseCell = (MainVCCourseTableViewCell *)[self getCellWithCellName:mainCourseCellName inTableView:tableView andCellClass:[MainVCCourseTableViewCell class]];
+        
+        [courseCell resetInfo];
+        __weak typeof(self)weakSelf = self;
+        courseCell.MoreCourseClickBlock = ^{
+            NSLog(@"更多课程");
+            if (weakSelf.mainMoreCourseBlock) {
+                weakSelf.mainMoreCourseBlock();
+            }
+        };
+        
+        return courseCell;
+    }
+    
+    if (indexPath.section == 5 && indexPath.row == 0) {
         static NSString *courseTitleCellName = @"courseTitleCell";
         CourseTitleTableViewCell *titleCell = (CourseTitleTableViewCell *)[self getCellWithCellName:courseTitleCellName inTableView:tableView andCellClass:[CourseTitleTableViewCell class]];
         [titleCell resetSubviewsWithTitle:@"答疑中心"];
         return titleCell;
     }
     
-    if (indexPath.section == 4 && indexPath.row != 0) {
+    if (indexPath.section == 5 && indexPath.row != 0) {
         static NSString *cellName = @"questionCell";
         QuestionTableViewCell *cell = (QuestionTableViewCell *)[UIUtility getCellWithCellName:cellName inTableView:tableView andCellClass:[QuestionTableViewCell class]];
         cell.isCalculatedDate = NO;
@@ -142,7 +269,6 @@
     cell.textLabel.text = @"1111";
     return cell;
 }
-
 
 
 #pragma mark - utility

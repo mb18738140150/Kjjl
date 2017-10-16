@@ -26,11 +26,13 @@
     self.searchLiveStreamModel = [[HottestCourseModel alloc]init];
     self.searchVideoCourseModel = [[HottestCourseModel alloc]init];
     self.notStartLivingCourseModel = [[HottestCourseModel alloc]init];
+//    self.notStartLivingSectionCourseModel = [[HottestCourseModel alloc]init];
     self.endLivingCourseModel = [[HottestCourseModel alloc]init];
     self.allCourseModel = [[AllCourseModel alloc] init];
     self.detailCourseModel = [[DetailCourseModel alloc] init];
     self.allCourseCategoryModel = [[AllCourseCategoryModel alloc] init];
     self.courseCategoryDetailModel = [[CourseCategoryDetailModel alloc] init];
+    self.livingSectionDetailModel = [[HottestCourseModel alloc]init];
     
     self.playingInfoModel = [[PlayingInfoModel alloc] init];
     

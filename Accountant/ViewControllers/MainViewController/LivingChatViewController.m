@@ -22,11 +22,13 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
+    
     [self navigationViewSetup];
     [self setUpUI];
     [self notifyUpdateUnreadMessageCount];
     self.displayUserNameInCell = NO;
+    [RCIM sharedRCIM].enableMessageAttachUserInfo = YES;
+    
     self.navigationItem.rightBarButtonItem = nil;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
@@ -136,6 +138,12 @@
     });
 }
 
+- (void)sendMessage:(RCMessageContent *)messageContent
+        pushContent:(NSString *)pushContent
+{
+    messageContent.senderUserInfo = [RCDLive sharedRCDLive].currentUserInfo;
+    [super sendMessage:messageContent pushContent:pushContent];
+}
 
 - (void)didSendMessage:(NSInteger)status
                content:(RCMessageContent *)messageContent

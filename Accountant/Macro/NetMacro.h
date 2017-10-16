@@ -9,20 +9,20 @@
 #ifndef NetMacro_h
 #define NetMacro_h
 
-#define kRootUrl @"http://f.kjb360.cn/kjjldata.ashx"
+#define kRootUrl @"http://test.kjjl100.com/kjjldata.ashx"
+//#define kRootUrl @"http://f.kjb360.cn/kjjldata.ashx"
 //#define kRootUrl @"http://f.kjb360.cn/ceshi.ashx"
 #define kRootKJBUrl @"http://f.kjb360.cn/getdata.ashx"
 #define kMD5String @"tianmingkeji"
 
 
-#define kUploadRootUrl @"http://jl.kjb360.cn/users"
+#define kUploadRootUrl @"http://f.kjb360.cn/UploadImg.ashx"
 
 #define kNetError @"请检查网络连接"
 
-
 #pragma mark - net paramaters
 #define kCommand @"command"
-#define kCommandVersionInfo             @"4"
+
 #define kCommandLogin                   @"1"
 #define kCommandSearchCourse            @"2"
 #define kCommandBanner                  @"3"
@@ -66,6 +66,14 @@
 #define kCommandHotSearchCourse         @"32"
 #define kCommandBindJPush               @"33"
 #define kCommandOrderLivingCourse       @"34"
-
+#define kCommandJurisdictionCourse      @"35"
+#define kCommandVersionInfo             @"4"
+#define kCommandVerifyCode              @"37"
+#define kCommandRegist                  @"38"
+#define kCommandForgetPassword          @"39"
+#define kCommandVerifyAccount           @"40"
+#define kCommandcompleteUserInfo        @"41"
+#define kCommandLivingSectionDetail     @"42"
+#define kCommandCancelOrderLivingCourse       @"43"
 
 #endif /* NetMacro_h */

@@ -8,13 +8,18 @@
 
 #import <Foundation/Foundation.h>
 #import "CourseModel.h"
+#import "TeacherModel.h"
 
 @interface HottestCourseModel : NSObject
 
 @property (nonatomic,strong) NSMutableArray     *hottestCourses;
 
+@property (nonatomic,strong) NSMutableArray     *teacherDataArray;
+
 - (void)removeAllCourses;
 
 - (void)addCourse:(CourseModel *)model;
+
+- (void)addTeacher:(TeacherModel *)model;
 
 @end

@@ -93,16 +93,32 @@
 
 + (HttpConfigModel *)getTestUncollectQuestionWithQuestionId:(int)questionId;
 
++ (HttpConfigModel *)getTestJurisdictionWithCourseId:(int)courseId;
+
 + (HttpConfigModel *)getTestHistoryConfigWithInfo:(NSDictionary *)infoDic;
 
 + (HttpConfigModel *)getTestHistoryDetailConfigWithInfo:(NSDictionary *)infoDic;
 
-+ (HttpConfigModel *)getNotStartLiveingCourse;
++ (HttpConfigModel *)getNotStartLiveingCourseWith:(NSDictionary *)infoDic;
 
 + (HttpConfigModel *)getEndLivingCourse;
 
-+ (HttpConfigModel *)getOrderLivingCourseWithCourseId:(int)courseId;
++ (HttpConfigModel *)getLivingSectionDetailWithInfo:(NSDictionary *) infoDic;
+
++ (HttpConfigModel *)getOrderLivingCourseWithCourseInfo:(NSDictionary *)infoDic;
+
++ (HttpConfigModel *)getCancelOrderLivingCourseWithCourseInfo:(NSDictionary *)infoDic;
 
 + (HttpConfigModel *)getBindJPushWithCId:(NSString *)CID;
+
++ (HttpConfigModel *)getVerifyCode:(NSString *)phoneNumber;
+
++ (HttpConfigModel *)registWith:(NSDictionary *)infoDic;
+
++ (HttpConfigModel *)forgetPasswordWith:(NSDictionary *)infoDic;
+
++ (HttpConfigModel *)getVerifyAccount:(NSString *)accountNumber;
+
++ (HttpConfigModel *)completeUserInfo:(NSDictionary *)userInfo;
 
 @end

@@ -23,11 +23,13 @@
 #import "TestMyCollectionQuestionOperation.h"
 #import "TestUncollectionQuestionOperation.h"
 #import "TestQuestionHistoryOperation.h"
+#import "TestJurisdictionOperation.h"
 
 @interface TestManager ()
 
 @property (nonatomic,strong) TestModuleModels                   *testModuleModel;
 
+@property (nonatomic,strong) TestJurisdictionOperation          *courseJurisdiction;
 @property (nonatomic,strong) TestAllCategoryOperation           *allCategoryOperation;
 @property (nonatomic,strong) TestChapterOperation               *chapterOperation;
 @property (nonatomic,strong) TestSectionQuestionOperation       *sectionQuestionOperation;
@@ -64,6 +66,8 @@
     self = [super init];
     if (self) {
         self.testModuleModel = [[TestModuleModels alloc] init];
+        
+        self.courseJurisdiction = [[TestJurisdictionOperation alloc]init];
         
         // 章节测试
         self.allCategoryOperation = [[TestAllCategoryOperation alloc] init];
@@ -115,6 +119,11 @@
 
     }
     return self;
+}
+
+- (void)didRequestTestJurisdictionWithcourseId:(int)courseId NotifiedObject:(id<TestModule_JurisdictionProtocol>)notifiedObject
+{
+    [self.courseJurisdiction didJurisdictionWithCourseId:courseId andNotifiedObject:notifiedObject];
 }
 
 - (void)didRequestTestAllCategoryWithNotifiedObject:(id<TestModule_AllCategoryProtocol>)notifiedObject

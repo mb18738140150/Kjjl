@@ -36,7 +36,11 @@
 
 #define kNotificationOfLivingChatClick              @"livingChat"
 
+#define kNotificationOfLivingPlayBackClick          @"LivingPlayBackClick"
+
 #define kLocalNitificationOfLivingStart             @"localNotificationLivingStart"
+
+#define kNotificationOfLoginSuccess                 @"loginSuccess"
 
 #define kRCIMConnectionStatusChanged                @"RCIMConnectionStatusChanged"
 

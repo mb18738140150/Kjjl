@@ -117,6 +117,7 @@
 {
     if (indexPath.section == 0) {
         UserCenterViewController *userCenter = [[UserCenterViewController alloc] init];
+        userCenter.hidesBottomBarWhenPushed = YES;
         [self.navigationController pushViewController:userCenter animated:YES];
     }
     

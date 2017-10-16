@@ -34,7 +34,6 @@
 {
     [self.hottestModel removeAllCourses];
     
-    
     NSArray *courses = [successInfo objectForKey:@"data"];
     for (NSDictionary *dic in courses){
         CourseModel *courseModel = [[CourseModel alloc] initWithHosttestDicInfo:dic];

@@ -30,14 +30,22 @@
     // Configure the view for the selected state
 }
 
+- (void)resetSubviewsWithTitle:(NSString *)title withNCourse:(BOOL)nCourse
+{
+    self.nCourse = nCourse;
+    [self resetSubviewsWithTitle:title];
+}
+
 - (void)resetSubviewsWithTitle:(NSString *)title
 {
     [self.lineView removeFromSuperview];
     [self.titleLabel removeFromSuperview];
     [self.moreLabel removeFromSuperview];
     
-    self.lineView = [[UIView alloc] initWithFrame:CGRectMake(10, 13, 1.5, 14)];
-    self.lineView.backgroundColor = [UIColor blueColor];
+    self.lineView = [[UIView alloc] initWithFrame:CGRectMake(10, 13, 2, 14)];
+    self.lineView.backgroundColor = UIRGBColor(250, 79, 13);
+    self.lineView.layer.cornerRadius = 1;
+    self.lineView.layer.masksToBounds = YES;
     [self addSubview:self.lineView];
     
     self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.lineView.frame.origin.x + 5, 10, 100, 20)];
@@ -51,7 +59,9 @@
     self.moreLabel.font = [UIFont systemFontOfSize:14];
     self.moreLabel.textColor = kCommonMainTextColor_50;
     self.moreLabel.text = @"更多  >";
-    [self addSubview:self.moreLabel];
+    if(!self.nCourse){
+        [self addSubview:self.moreLabel];
+    }
     
 }
 

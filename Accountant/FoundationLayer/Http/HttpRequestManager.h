@@ -99,17 +99,34 @@
 
 - (void)requestTestUncollectQuestionWithId:(int)questionId andProcessDelegate:(id<HttpRequestProtocol>)delegate;
 
+- (void)requestTestJurisdictionWithId:(int)courseId andProcessDelegate:(id<HttpRequestProtocol>)delegate;
+
 - (void)reqeustTestAddQuestionHistoryWithInfo:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate;
 
 - (void)requestTestAddQuestionDetailHistoryWithInfo:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate;
 
-- (void)requestGetNotStartLivingCourseWithProcessDelegate:(id<HttpRequestProtocol>)delegate;
+- (void)requestGetNotStartLivingCourseWithInfo:(NSDictionary *)infoDic ProcessDelegate:(id<HttpRequestProtocol>)delegate;
 
 - (void)requestGetEndLivingCourseWithProcessDelegate:(id<HttpRequestProtocol>)delegate;
 
-- (void)reqeustOrderLivingCourseWithId:(int)courseId andProcessDelegate:(id<HttpRequestProtocol>)delegate;
+- (void)requestGetLivingSectionDetailWithInfo:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate;
+
+- (void)reqeustOrderLivingCourseWithInfo:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate;
+
+- (void)reqeustCancelOrderLivingCourseWithInfo:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate;
 
 - (void)reqeustBindJPushWithCId:(NSString *)CID andProcessDelegate:(id<HttpRequestProtocol>)delegate;
+
+- (void)reqeustVerifyAccountWithAccountNumber:(NSString *)AccountNumber andProcessDelegate:(id<HttpRequestProtocol>)delegate;
+
+- (void)reqeustVerifyCodeWithPhoneNumber:(NSString *)phoneNumber andProcessDelegate:(id<HttpRequestProtocol>)delegate;
+
+- (void)reqeustRegistWithdic:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate;
+
+- (void)reqeustForgetPasswordWithDic:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate;
+
+- (void)reqeustCompleteUserInfoWithDic:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate;
+
 #pragma mark - 未使用
 - (void)requestSearchKeyWord:(NSString *)keyWords;
 @end

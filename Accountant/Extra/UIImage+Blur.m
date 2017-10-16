@@ -9,6 +9,13 @@
 #import "UIImage+Blur.h"
 #import <Accelerate/Accelerate.h>
 
+#define Mask8(x) ( (x) & 0xFF )
+#define R(x) ( Mask8(x) )
+#define G(x) ( Mask8(x >> 8 ) )
+#define B(x) ( Mask8(x >> 16) )
+#define A(x) ( Mask8(x >> 24) )
+#define RGBMake(r,g,b,a)(Mask8(r) | Mask8(g) << 8 | Mask8(b) << 16 | Mask8(a) << 24)
+
 @implementation UIImage (Blur)
 
 - (UIImage *)coreBlurWithBlurNumber:(CGFloat)blur
@@ -63,6 +70,45 @@
     CGColorSpaceRelease(colorSpace);
     CGImageRelease(imageRef);
     return returnImage;
+}
+
++(UIImage *)imageGray:(UIImage *)image andRGBValue:(unsigned int)value
+{
+    CGImageRef cgImage = image.CGImage;
+    NSUInteger width = CGImageGetWidth(cgImage);
+    NSUInteger height = CGImageGetHeight(cgImage);
+    
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    uint32_t*inputPixels = (uint32_t *)calloc(width * height, sizeof(UInt32));
+    CGContextRef context = CGBitmapContextCreate(inputPixels, width, height, 8, 4 * width, colorSpace, kCGImageAlphaPremultipliedLast|kCGBitmapByteOrder32Big);
+    
+    CGContextDrawImage(context, CGRectMake(0, 0, width, height), cgImage);
+    
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            UInt32 *currentPixel = inputPixels + (i * width) + j;
+            UInt32 color = *currentPixel;
+            UInt32 thisR ,thisG, thisB ,thisA;
+            thisR = R(color);
+            thisR = value;
+            thisB = B(color);
+            thisB = 121;
+            thisG = G(color);
+            thisG = 121;
+            thisA = A(color);
+            *currentPixel = RGBMake(thisR, thisG, thisB, thisA);
+        }
+    }
+    
+    CGImageRef newImageRef = CGBitmapContextCreateImage(context);
+    UIImage * newImage = [UIImage imageWithCGImage:newImageRef];
+    
+    CGColorSpaceRelease(colorSpace);
+    CGContextRelease(context);
+    CGImageRelease(newImageRef);
+    free(inputPixels);
+    
+    return newImage;
 }
 
 @end

@@ -37,9 +37,14 @@
     NSArray *data = [successInfo objectForKey:@"chapterList"];
     [self.detailCourseModel removeAllChapters];
     self.detailCourseModel.courseModel.isCollect = [[successInfo objectForKey:@"isCollect"] boolValue];
+    self.detailCourseModel.courseModel.canDownload = [[successInfo objectForKey:@"canDownload"] intValue];
+    if ([[successInfo objectForKey:@"canDownload"] isKindOfClass:[NSNull class]]) {
+        self.detailCourseModel.courseModel.canDownload = 0;
+    }
     for (NSDictionary *tmpDic in data) {
         ChapterModel *cModel = [[ChapterModel alloc] init];
         cModel.chapterId = [[tmpDic objectForKey:@"id"] intValue];
+       
         cModel.chapterName = [tmpDic objectForKey:@"name"];
         cModel.chapterSort = [[tmpDic objectForKey:@"sort"] intValue];
         if ([tmpDic objectForKey:@"url"] == nil || [[tmpDic objectForKey:@"url"] isEqualToString:@""]) {

@@ -92,13 +92,17 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor blackColor];
-    self.chapterArray = [[CourseraManager sharedManager] getPlayChapterInfo];
-    self.chapterVideoInfoArray = [[CourseraManager sharedManager] getPlayChapterVideoInfo];
-    self.playCourseInfo = [[CourseraManager sharedManager] getPlayCourseInfo];
+    self.view.backgroundColor = [UIColor whiteColor];
+    if (!self.infoDic) {
+        self.view.backgroundColor = [UIColor blackColor];
+        self.chapterArray = [[CourseraManager sharedManager] getPlayChapterInfo];
+        self.chapterVideoInfoArray = [[CourseraManager sharedManager] getPlayChapterVideoInfo];
+        self.playCourseInfo = [[CourseraManager sharedManager] getPlayCourseInfo];
+        self.playingCourseId = [[self.playCourseInfo objectForKey:kCourseID] intValue];
+        self.playingCourseName = [self.playCourseInfo objectForKey:kCourseName];
+        [self initalTable];
+    }
     
-    self.playingCourseId = [[self.playCourseInfo objectForKey:kCourseID] intValue];
-    self.playingCourseName = [self.playCourseInfo objectForKey:kCourseName];
     
     int tableSelectSection = 0;
     int tableSelectRow = 0;
@@ -108,14 +112,19 @@
         tableSelectRow = [self getPlayLocationRowWithSection:tableSelectSection];
     }
     
-    [self initalTable];
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        NSDictionary *chapterInfo = [self.chapterArray objectAtIndex:tableSelectSection];
-        NSArray *videoInfos = [self.chapterVideoInfoArray objectAtIndex:tableSelectSection];
-        NSDictionary *videoInfo = [videoInfos objectAtIndex:tableSelectRow];
-        self.playingChapterId = [[chapterInfo objectForKey:kChapterId] intValue];
-        self.playingChapterName = [chapterInfo objectForKey:kChapterName];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        NSDictionary *videoInfo = [NSDictionary dictionary];
+        if (self.infoDic) {
+            videoInfo = self.infoDic;
+        }else
+        {
+            NSDictionary *chapterInfo = [self.chapterArray objectAtIndex:tableSelectSection];
+            NSArray *videoInfos = [self.chapterVideoInfoArray objectAtIndex:tableSelectSection];
+            videoInfo = [videoInfos objectAtIndex:tableSelectRow];
+            self.playingChapterId = [[chapterInfo objectForKey:kChapterId] intValue];
+            self.playingChapterName = [chapterInfo objectForKey:kChapterName];
+        }
         self.playingVideoId = [[videoInfo objectForKey:kVideoId] intValue];
         self.playingVideoName = [videoInfo objectForKey:kVideoName];
         
@@ -129,6 +138,8 @@
         
         self.tableDataSource.selectedRow = tableSelectRow;
         self.tableDataSource.selectedSection = tableSelectSection;
+        self.selectedRow = tableSelectRow;
+        self.selectedSection = tableSelectSection;
         [self.chapterTableView reloadData];
         
     });
@@ -193,18 +204,18 @@
 
 - (void)downLoadVides
 {
-    if ([[UserManager sharedManager] getUserLevel] != 3) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"您是试用用户，请升级成正式用户后下载观看" delegate:nil cancelButtonTitle:@"知道了" otherButtonTitles:nil];
-        [alert show];
-    }else{
-    
-        [self.videoController pausePlay];
-        DownLoadViewController *vc = [[DownLoadViewController alloc] init];
-        vc.chapterInfoArray = self.chapterArray;
-        vc.chapterVideoInfoArray = self.chapterVideoInfoArray;
-        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
-        [self presentViewController:nav animated:YES completion:nil];
-    }
+//    if ([[UserManager sharedManager] getUserLevel] != 3) {
+//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"您是试用用户，请升级成正式用户后下载观看" delegate:nil cancelButtonTitle:@"知道了" otherButtonTitles:nil];
+//        [alert show];
+//    }else{
+//    
+//    }
+    [self.videoController pausePlay];
+    DownLoadViewController *vc = [[DownLoadViewController alloc] init];
+    vc.chapterInfoArray = self.chapterArray;
+    vc.chapterVideoInfoArray = self.chapterVideoInfoArray;
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
+    [self presentViewController:nav animated:YES completion:nil];
 }
 
 - (void)addNote
@@ -215,7 +226,15 @@
 - (void)collectCourse
 {
     [SVProgressHUD show];
-    [[CourseraManager sharedManager] didRequestAddCollectCourseWithCourseId:[[self.playCourseInfo objectForKey:kCourseID] intValue] andNotifiedObject:self];
+    int courseId = 0;
+    if (self.infoDic) {
+        courseId = [[self.infoDic objectForKey:kVideoId] intValue];
+    }else
+    {
+        courseId = [[self.playCourseInfo objectForKey:kCourseID] intValue];
+    }
+    
+    [[CourseraManager sharedManager] didRequestAddCollectCourseWithCourseId:courseId andNotifiedObject:self];
 }
 
 - (void)writeNote
@@ -475,6 +494,10 @@
         cell.titleLabel.textColor = kCommonMainTextColor_50;
     }
     
+    if ([[self.playCourseInfo objectForKey:kCourseCanDownLoad] intValue] == 0) {
+        [cell hideDownloadBtn];
+    }
+    
     __weak typeof(self) weakSelf = self;
     cell.downloadBlock = ^(VideoDownloadState downloadState){
         if ([[UserManager sharedManager] getUserLevel] != 3) {
@@ -526,8 +549,8 @@
 #pragma mark - dowmload
 - (void)downLoadVide:(NSIndexPath*)indexpath
 {
-    int sec = indexpath.section;
-    int row = indexpath.row;
+    int sec = (int)indexpath.section;
+    int row = (int)indexpath.row;
     NSDictionary *chapterInfo = [self.chapterArray objectAtIndex:sec];
     NSDictionary *videoInfo = [[self.chapterVideoInfoArray objectAtIndex:sec] objectAtIndex:row];
     NSDictionary *courseInfo = self.playCourseInfo;
@@ -568,7 +591,7 @@
     NSLog(@"%@", [downLoadInfo description]);
     
     [[DownloaderManager sharedManager] TY_addDownloadTask:downLoadInfo];
-//    [[DownloaderManager sharedManager] startDownload];
+
     [SVProgressHUD showSuccessWithStatus:@"开始下载"];
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [SVProgressHUD dismiss];
@@ -595,7 +618,6 @@
         
         [self presentViewController:self.vc animated:NO completion:nil];
     }
-    
 }
 
 - (void)dismissStiop

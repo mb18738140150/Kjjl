@@ -23,6 +23,13 @@ typedef enum {
 @property (nonatomic, assign)CollectType colectType;
 
 /**
+ 请求题库权限
+ 
+ @param notifiedObject 请求成功后通知的对象
+ */
+- (void)didRequestTestJurisdictionWithcourseId:(int)courseId NotifiedObject:(id<TestModule_JurisdictionProtocol>)notifiedObject;
+
+/**
  请求题库所有类型的信息
 
  @param notifiedObject 请求成功后通知的对象

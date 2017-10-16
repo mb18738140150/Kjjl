@@ -36,12 +36,12 @@
     if (!self.collectionView) {
         
         UICollectionViewFlowLayout * layout = [[UICollectionViewFlowLayout alloc]init];
-        layout.itemSize = CGSizeMake((kScreenWidth - 15) / 2.5, 160);
+        layout.itemSize = CGSizeMake((kScreenWidth - 15) / 2.5, 150);
         layout.minimumLineSpacing = 0;
         layout.minimumInteritemSpacing = 0;
         layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
         
-        self.collectionView = [[UICollectionView alloc]initWithFrame:CGRectMake(15, 0, kScreenWidth - 15, 160) collectionViewLayout:layout];
+        self.collectionView = [[UICollectionView alloc]initWithFrame:CGRectMake(15, 0, kScreenWidth - 15, 150) collectionViewLayout:layout];
         self.collectionView.delegate = self;
         self.collectionView.dataSource = self;
         self.collectionView.backgroundColor = [UIColor whiteColor];

@@ -142,7 +142,7 @@
     [dateFormatter setDateFormat:@"yyyyMMddHHmmss"];
     NSDate *date = [NSDate date];
     NSString *str = [dateFormatter stringFromDate:date];
-    NSString *str1 = [NSString stringWithFormat:@"id%@",str];
+    NSString *str1 = [NSString stringWithFormat:@"%d%@",[[UserManager sharedManager] getUserId],str];
     return str1;
 }
 

@@ -13,5 +13,6 @@
 - (void)didDownloadSuccess;
 - (void)didDownloadFailed;
 - (void)deleteDownloadTask;
+- (void)didDownloadSuspend;
 
 @end

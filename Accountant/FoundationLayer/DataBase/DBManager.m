@@ -55,7 +55,7 @@
                                 "CREATE TABLE IF NOT EXISTS Chapter (chapterId integer(32) PRIMARY KEY NOT NULL,chapterName text(128) NOT NULL,chapterSort integer(32) NOT NULL,courseId integer(32) NOT NULL,isSingleVideo integer(1) NOT NULL,path text(32) NOT NULL);"
                                 "CREATE TABLE IF NOT EXISTS Video (videoId integer(32) PRIMARY KEY NOT NULL,videoName text(128) NOT NULL,videoSort integer(32) NOT NULL,chapterId integer(32) NOT NULL,path text(32) NOT NULL,time intrger(32) NOT NULL);"
                                 "CREATE TABLE IF NOT EXISTS LineVideo (videoId integer(32) PRIMARY KEY NOT NULL,videoName text(128) NOT NULL,path text(32) NOT NULL,time intrger(32) NOT NULL);"
-    "CREATE TABLE IF NOT EXISTS Downloading (videoId integer(32) PRIMARY KEY NOT NULL,videoName text(128) NOT NULL,path text(32) NOT NULL,videoUrl text(32) NOT NULL,fileSize text(32) NOT NULL,currentFileSize text(32) NOT NULL,infoDic text(32) NOT NULL);"
+    "CREATE TABLE IF NOT EXISTS Downloading (videoId integer(32) PRIMARY KEY NOT NULL,videoName text(128) NOT NULL,videoUrl text(32) NOT NULL,infoDic text(32) NOT NULL);"
     "CREATE TABLE IF NOT EXISTS SimulateTest (simulateId integer(32) PRIMARY KEY NOT NULL,simulateName text(128) NOT NULL,simulateQuestionCount intrger(32) NOT NULL,currentIndex intrger(32) NOT NULL,questionsStr text(128) NOT NULL,time double(32) NOT NULL);"
     "CREATE TABLE IF NOT EXISTS TestCourse (courseId integer(32) PRIMARY KEY NOT NULL,courseName text(128) NOT NULL);"
     "CREATE TABLE IF NOT EXISTS TestChapter (chapterId integer(32) PRIMARY KEY NOT NULL,chapterName text(128) NOT NULL,chapterQuestionCount intrger(32) NOT NULL,courseId intrger(32) NOT NULL);"
@@ -99,16 +99,16 @@
 }
 #pragma mark - save
 
-- (void)saveDownLoadingInfo:(DownLoadModel *)downLoadModel
+- (void)saveDownLoadingInfo:(NSDictionary *)infoDic
 {
-    if (![self.readOperation isDownLoadVideoSavesWithId:[downLoadModel.infoDic objectForKey:kVideoId]]) {
-        if ([self.writeOperation writeDownloadVideoInfo:downLoadModel]) {
+    if (![self.readOperation isDownLoadVideoSavesWithId:[infoDic objectForKey:kVideoId]]) {
+        if ([self.writeOperation writeDownloadVideoInfo:infoDic]) {
             
         }
     }else
     {
-        if ([self.writeOperation deleteDownloadVideoInfoWithId:[downLoadModel.infoDic objectForKey:kVideoId]]) {
-            if ([self.writeOperation writeDownloadVideoInfo:downLoadModel]) {
+        if ([self.writeOperation deleteDownloadVideoInfoWithId:[infoDic objectForKey:kVideoId]]) {
+            if ([self.writeOperation writeDownloadVideoInfo:infoDic]) {
                 
             }
         }

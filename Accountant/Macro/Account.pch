@@ -31,10 +31,13 @@
 #import "TestManager.h"
 #import "UIUtility.h"
 #import "NSString+MD5.h"
+#import "UIImage+Base64.h"
 #import <RongIMKit/RongIMKit.h>
 #import "UIViewController+Cloudox.h"
 #import "UINavigationController+Cloudox.h"
 #import "RCDLive.h"
 #import "ViewController.h"
+#import "HttpUploaderManager.h"
+#import "CountDown.h"
 
 #endif /* Account_h */

@@ -35,6 +35,7 @@
     }
     
     self.timeLabel = [[UILabel alloc]initWithFrame:CGRectMake(10, 10, kScreenWidth - 20, 20)];
+    self.timeLabel.textAlignment = NSTextAlignmentRight;
     if ([dic objectForKey:@"time"] && [[dic objectForKey:@"time"] length] != 0) {
         self.timeLabel.text = [dic objectForKey:@"time"];
     }else

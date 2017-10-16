@@ -16,7 +16,7 @@
 
 - (void)intialDB;
 
-- (void)saveDownLoadingInfo:(DownLoadModel *)downLoadModel;
+- (void)saveDownLoadingInfo:(NSDictionary *)infoDic;
 
 - (void)saveDownloadInfo:(NSDictionary *)infoDic;
 

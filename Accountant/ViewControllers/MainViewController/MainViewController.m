@@ -17,7 +17,7 @@
 #import "CommonMacro.h"
 #import "SVProgressHUD.h"
 #import "CourseModuleProtocol.h"
-#import "ImageModuleProtocol.h"/Users/aaa/Desktop/projects/Accountant/Accountant/ViewControllers/MainViewController/CustomCells
+#import "ImageModuleProtocol.h"
 #import "MJRefresh.h"
 #import "MainViewMacro.h"
 #import "UserManager.h"
@@ -31,7 +31,7 @@
 #import "RCDCustomerServiceViewController.h"
 
 #import "LivingChatViewController.h"
-
+#import "LivingSectionDetailViewController.h"
 //#define SERVICE_ID @"KEFU150105808199853"
 
 #define SERVICE_ID @"KEFU150336412912915"
@@ -40,7 +40,7 @@
 //#define SERVICE_ID_XIAONENG2 @"op_1000_1483495280515"
 #define OrderAlerttag 2000
 
-@interface MainViewController ()<UITableViewDelegate,CourseModule_HottestCourseProtocl,ImageModule_BannerProtocol,QuestionModule_QuestionProtocol, CourseModule_NotStartLivingCourse,UIAlertViewDelegate,UserModule_OrderLivingCourseProtocol>
+@interface MainViewController ()<UITableViewDelegate,CourseModule_HottestCourseProtocl,ImageModule_BannerProtocol,QuestionModule_QuestionProtocol, CourseModule_NotStartLivingCourse,UIAlertViewDelegate,CourseModule_LivingSectionDetail,CourseModule_LivingSectionDetail,CourseModule_AllCourseProtocol>
 
 @property (nonatomic,strong)    UITableView                     *contentTableView;
 @property (nonatomic,strong)    ContentTableViewDataSource      *contentTableSource;
@@ -51,6 +51,11 @@
 
 @property (nonatomic, assign) BOOL courseVCdidload;
 @property (nonatomic, assign) int orderCourseId;
+
+@property (nonatomic, assign)int selectLivingCourseId;// 已选中直播课id
+
+@property (nonatomic, strong)NSDictionary * selectLivingCourseInfoDic;
+
 @end
 
 @implementation MainViewController
@@ -100,6 +105,8 @@
     CGFloat alpha = fabs(offset / 64.0);
     [self.navigationController.navigationBar setBackgroundImage:[self imageWithColor:[UIRGBColor(19, 0, 160) colorWithAlphaComponent:alpha]] forBarMetrics:UIBarMetricsDefault];
     [super viewWillAppear:animated];
+    
+    [[CourseraManager sharedManager]didRequestNotStartLivingCourseWithInfo:@{@"Month":@([NSString getCurrentMonth])} NotifiedObject:self];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -109,7 +116,6 @@
     [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@""] forBarMetrics:UIBarMetricsDefault];
     [self.navigationController.navigationBar setShadowImage:nil];
     [self.navigationController.navigationBar setBarTintColor:kCommonNavigationBarColor];
-    
 }
 
 - (void)startRequest
@@ -117,10 +123,10 @@
     [SVProgressHUD show];
     [[ImageManager sharedManager] didRequestBannerImagesWithNotifiedObject:self];
     [[CourseraManager sharedManager] didRequestHottestCoursesWithNotifiedObject:self];
-    
+    [[CourseraManager sharedManager] didRequestAllCourseCategoryWithNotifiedObject:self];
     [[QuestionManager sharedManager] didRequestMainPageQuestionRequestWithNotifiedObject:self];
     
-    [[CourseraManager sharedManager]didRequestNotStartLivingCourseWithNotifiedObject:self];
+    [[CourseraManager sharedManager]didRequestNotStartLivingCourseWithInfo:@{@"Month":@([NSString getCurrentMonth])} NotifiedObject:self];
 }
 
 - (void)allCourseClick
@@ -192,31 +198,73 @@
         cellHeight = kCellHeightOfCourseTitle;
     }
     if (indexPath.section == 2 && indexPath.row != 0) {
-        cellHeight = 160;
-    }
-    
-    if (indexPath.section == 3 && indexPath.row == 0) {
-        cellHeight = kCellHeightOfCourseTitle;
-    }
-    if (indexPath.section == 3 && indexPath.row != 0) {
         cellHeight = 100;
     }
     
-    if (indexPath.section == 4 && indexPath.row == 0) {
+    if (indexPath.section == 2 && [CourseraManager sharedManager].showMore && indexPath.row == [[[[CourseraManager sharedManager]getNotStartLivingCourseArray] objectAtIndex:0] count] + 1) {
+        return kCellHeightOfCourseTitle;
+    }
+    
+    if(indexPath.section == 2 && ![CourseraManager sharedManager].showMore && indexPath.row == 4){
+        return kCellHeightOfCourseTitle;
+    }
+    
+    
+    if (indexPath.section == 3 && (indexPath.row == 0 || indexPath.row == 3)) {
         cellHeight = kCellHeightOfCourseTitle;
     }
-    if (indexPath.section == 4 && indexPath.row != 0) {
+    if (indexPath.section == 3 && indexPath.row != 0 && indexPath.row != 3) {
+        cellHeight = kCellHeightOfCourse;
+    }
+    
+    if (indexPath.section == 4) {
+        return 42 + kCellHeightOfCourse * 2 + 40;
+    }
+    
+    if (indexPath.section == 5 && indexPath.row == 0) {
+        cellHeight = kCellHeightOfCourseTitle;
+    }
+    if (indexPath.section == 5 && indexPath.row != 0) {
+//        CGFloat height;
+//        CGFloat maxHeight = 80;
+//        UIFont *font = [UIFont systemFontOfSize:16];
+//        CGFloat contentHeight = [UIUtility getHeightWithText:[[self.mainQuestionArray objectAtIndex:indexPath.row-1] objectForKey:kQuestionContent] font:font width:kScreenWidth - 40];
+//        if (contentHeight > maxHeight) {
+//            height = 80;
+//        }else{
+//            height = contentHeight;
+//        }
+//        
+//        return 10 + kHeightOfCellHeaderImage + 10 + height + 10 + kheightOfCellSeeLabel + 10;
+        
+        
         CGFloat height;
         CGFloat maxHeight = 80;
-        UIFont *font = [UIFont systemFontOfSize:16];
-        CGFloat contentHeight = [UIUtility getHeightWithText:[[self.mainQuestionArray objectAtIndex:indexPath.row-1] objectForKey:kQuestionContent] font:font width:kScreenWidth - 40];
-        if (contentHeight > maxHeight) {
+        UIFont *font = kMainFont;
+        CGFloat contentHeight = [UIUtility getSpaceLabelHeght:[[self.mainQuestionArray objectAtIndex:indexPath.row-1] objectForKey:kQuestionContent] font:font width:kScreenWidth - 40];
+        height = contentHeight;
+        if (contentHeight > 80) {
             height = 80;
-        }else{
+        }else
+        {
             height = contentHeight;
         }
         
-        return 20 + kHeightOfCellHeaderImage + 20 + height + 10 + kheightOfCellSeeLabel + 10;
+        NSDictionary * replyDic = [[[self.mainQuestionArray objectAtIndex:indexPath.row-1] objectForKey:@"replyList"] firstObject];
+        
+        CGFloat replyHeight = [UIUtility getHeightWithText:[replyDic objectForKey:@"replyCon"] font:font width:kScreenWidth - 30];
+        
+        CGFloat cellHeight = 10 + kHeightOfCellHeaderImage + 10 + height;
+        
+        if ([[[self.mainQuestionArray objectAtIndex:indexPath.row-1] objectForKey:kQuestionImgStr] count] > 0) {
+            cellHeight += 5 + 60 + 10 + 30 ;
+        }else
+        {
+            cellHeight += 10 + 30;
+        }
+        
+        return cellHeight;
+        
     }
     return cellHeight;
 }
@@ -234,19 +282,32 @@
             [self performSelector:@selector(postCourseVC:) withObject:@{@"infoDic":@{},@"nitifiName":kNotificationMoreLiving} afterDelay:1.0];
         }
     }
-    if (indexPath.section == 3 && indexPath.row == 0) {
-        [self.tabBarController setSelectedIndex:1];
+    
+    if (indexPath.section == 2 && indexPath.row != 0 && (([CourseraManager sharedManager].showMore && indexPath.row != [[[[CourseraManager sharedManager]getNotStartLivingCourseArray] objectAtIndex:0] count] + 1) || (![CourseraManager sharedManager].showMore && indexPath.row != 4))) {
+
+        [SVProgressHUD show];
+        NSDictionary *infoDic = [[[[CourseraManager sharedManager]getNotStartLivingCourseArray] objectAtIndex:0] objectAtIndex:indexPath.row - 1];
+        self.selectLivingCourseInfoDic = infoDic;
+        NSDictionary * dic = @{kCourseID:[infoDic objectForKey:kCourseID],
+                               kteacherId:@"",
+                               @"month":@(0)};
+        [[CourseraManager sharedManager] didrequestLivingSectionDetailWithInfo:dic andNotifiedObject:self];
+        NSLog(@"点击直播课");
     }
-    if (indexPath.section == 3 && indexPath.row != 0) {
+    
+    if (indexPath.section == 3 && indexPath.row != 0 && indexPath.row != 3) {
         NSDictionary *info = [[[CourseraManager sharedManager] getHottestCourseArray] objectAtIndex:indexPath.row];
         
         [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationOfCourseClick object:info];
+    }
+    if (indexPath.section == 4 && indexPath.row == 0) {
+        [self.tabBarController setSelectedIndex:2];
     }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    if (section == 2 || section == 3) {
+    if (section == 2 || section == 3 || section == 4 || section == 5) {
         return 10;
     }
     return 0;
@@ -254,7 +315,7 @@
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    if (section == 2 || section == 3) {
+    if (section == 2 || section == 3 || section == 4 || section == 5) {
         UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 2*kCellHeightOfCategoryView + 30, kScreenWidth, 10)];
         view.backgroundColor = UIRGBColor(240, 240, 240);
         return view;
@@ -289,7 +350,7 @@
     self.contentTableSource = [[ContentTableViewDataSource alloc] init];
     self.contentTableView.delegate = self;
     self.contentTableSource.catoryDataSourceArray = self.categoryArray;
-    self.contentTableSource.notStartLivingCOurseAyrray = self.notStartLivingArray;
+    
     self.contentTableView.dataSource = self.contentTableSource;
     self.contentTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.contentTableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
@@ -297,25 +358,42 @@
     }];
     
     __weak typeof(self)weakSelf = self;
+    
+    self.contentTableSource.mainCountDownBlock = ^{
+        [[CourseraManager sharedManager]didRequestNotStartLivingCourseWithInfo:@{@"Month":@([NSString getCurrentMonth])} NotifiedObject:weakSelf];
+    };
+    
+    self.contentTableSource.mainMoreCourseBlock = ^{
+        [weakSelf.tabBarController setSelectedIndex:1];
+    };
+    
     self.contentTableSource.clockBlock = ^(NSDictionary *infoDic){
         NSLog(@"%@", [infoDic description]);
         weakSelf.orderCourseId = [[infoDic objectForKey:kCourseID] intValue];
         if ([[UserManager sharedManager] isUserLogin]){
         
-            if ([[infoDic objectForKey:kLivingState] intValue] == 3) {
-                UIAlertView *orderAlert = [[UIAlertView alloc]initWithTitle:nil message:@"您还未预约，是否预约？" delegate:weakSelf cancelButtonTitle:@"否" otherButtonTitles:@"是", nil];
-                orderAlert.tag = OrderAlerttag;
-                [orderAlert show];
-            }else
-            {   
-                [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationOfLivingChatClick object:infoDic];
-                
-            }
+            [SVProgressHUD show];
+            weakSelf.selectLivingCourseId = [[infoDic objectForKey:kCourseID] intValue];
+            NSDictionary * infoDic1 = @{kCourseID:[infoDic objectForKey:kCourseID],
+                                        kteacherId:@"",
+                                        @"month":@(0)};
+            
+            [[CourseraManager sharedManager]didrequestLivingSectionDetailWithInfo:infoDic1 andNotifiedObject:weakSelf];
+            
         }else{
             
             [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationOfLoginClick object:nil];
         }
         
+    };
+    
+    self.contentTableSource.exchangeNewCourseBlock = ^{
+        [weakSelf.contentTableView reloadSections:[NSIndexSet indexSetWithIndex:3] withRowAnimation:UITableViewRowAnimationNone];
+    };
+    
+    self.contentTableSource.moreLivingCourseBlock = ^{
+        [weakSelf.contentTableView reloadSections:[NSIndexSet indexSetWithIndex:2] withRowAnimation:UITableViewRowAnimationNone];
+        [weakSelf.contentTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:2] atScrollPosition:UITableViewScrollPositionTop animated:YES];
     };
     
     [self.view addSubview:self.contentTableView];
@@ -327,36 +405,6 @@
     [SVProgressHUD dismiss];
 }
 
-#pragma mark - alertDelegate
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if (alertView.tag == OrderAlerttag) {
-        if (buttonIndex == 1) {
-            [SVProgressHUD showWithStatus:@"预约中"];
-            [[UserManager sharedManager] didRequestOrderLivingCourseOperationWithCourseId:self.orderCourseId withNotifiedObject:self];
-        }
-    }
-}
-
-#pragma mark - orderLivingCourseProtocal
-- (void)didRequestOrderLivingSuccessed
-{
-    [SVProgressHUD showWithStatus:@"预约成功"];
-    [self performSelector:@selector(orderSuccess) withObject:nil afterDelay:0.7];
-}
-
-- (void)didRequestOrderLivingFailed:(NSString *)failedInfo
-{
-    [SVProgressHUD dismiss];
-    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:nil message:failedInfo delegate:nil cancelButtonTitle:nil otherButtonTitles:nil, nil];
-    [alert show];
-    [alert performSelector:@selector(dismiss) withObject:nil afterDelay:0.7];
-}
-
-- (void)orderSuccess
-{
-    [SVProgressHUD dismiss];
-}
 #pragma mark - notification func
 - (void)courseCategoryClick:(NSNotification *)notifier
 {
@@ -411,9 +459,9 @@
 #pragma mark - notStartLivingCourse course delegate
 - (void)didRequestNotStartLivingCourseSuccessed
 {
-    self.notStartLivingArray = [[CourseraManager sharedManager]getNotStartLivingCourseArray];
+    self.notStartLivingArray = [[[CourseraManager sharedManager]getNotStartLivingCourseArray] objectAtIndex:0];
     [self requestEnd];
-    [self.contentTableView reloadData];
+    [self.contentTableView reloadSections:[NSIndexSet indexSetWithIndex:2] withRowAnimation:UITableViewRowAnimationNone];
 }
 
 - (void)didRequestNotStartLivingCourseFailed:(NSString *)failedInfo
@@ -437,7 +485,7 @@
 #pragma mark - all course category delegate
 - (void)didRequestAllCourseCategorySuccessed
 {
-    self.categoryArray = [[CourseraManager sharedManager] getAllCategoryArray];
+//    self.categoryArray = [[CourseraManager sharedManager] getAllCategoryArray];
     [self requestEnd];
     [self.contentTableView reloadData];
 }
@@ -465,6 +513,28 @@
         [SVProgressHUD dismiss];
     });
 }
+#pragma mark - LivingSectionDetailProtocal
+
+- (void)didRequestLivingSectionDetailSuccessed
+{
+    [SVProgressHUD dismiss];
+//    LivingSectionDetailViewController * livingSectionVC = [[LivingSectionDetailViewController alloc]init];
+//    livingSectionVC.courseId = self.selectLivingCourseId;
+//    livingSectionVC.hidesBottomBarWhenPushed = YES;
+//    [self.navigationController pushViewController:livingSectionVC animated:YES];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationOfLivingChatClick object:self.selectLivingCourseInfoDic];
+    
+}
+
+- (void)didRequestLivingSectionDetailFailed:(NSString *)failedInfo
+{
+    [SVProgressHUD dismiss];
+    [SVProgressHUD showErrorWithStatus:failedInfo];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [SVProgressHUD dismiss];
+    });
+}
 
 #pragma mark - navigationaction
 - (void)lookMessage
@@ -475,9 +545,7 @@
 //    chatVC.targetId = @"3273";
 //    chatVC.hidesBottomBarWhenPushed = YES;
 //    [self.navigationController pushViewController:chatVC animated:YES];
-
 //    return;
-    
     
     if ([[UserManager sharedManager] getUserId]) {
         RCDCustomerServiceViewController * chatService = [[RCDCustomerServiceViewController alloc]init];
@@ -581,5 +649,6 @@
     UIGraphicsEndImageContext();
     return imgae;
 }
+
 
 @end

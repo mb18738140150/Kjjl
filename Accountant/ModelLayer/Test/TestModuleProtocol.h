@@ -113,3 +113,11 @@
 
 @end
 
+
+@protocol TestModule_JurisdictionProtocol <NSObject>
+
+- (void)didRequestJurisdictionSuccess;
+- (void)didRequestJurisdictionFailed:(NSString *)failedInfo;
+
+@end
+
