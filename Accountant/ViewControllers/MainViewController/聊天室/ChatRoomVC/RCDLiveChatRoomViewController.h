@@ -89,6 +89,6 @@
 
 @property (nonatomic, strong)NSDictionary * infoDic;
 
-@property (nonatomic, assign)BOOL isLivingCourse;
+@property (nonatomic, assign)BOOL isLivingCourse;// 是否是直播课课程（非课程小节）
 
 @end

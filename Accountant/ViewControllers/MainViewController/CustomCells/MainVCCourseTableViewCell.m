@@ -40,7 +40,7 @@
 {
     [self.contentView removeAllSubviews];
     [self getAllDataSourseArray];
-    self.segmentC = [[HYSegmentedControl alloc] initWithOriginY:0 Titles:@[@"会计基础",@"出纳实操",@"会计实操",@"税务实操",@"考证"] delegate:self drop:NO color:UIRGBColor(250, 79, 13)];
+    self.segmentC = [[HYSegmentedControl alloc] initWithOriginY:0 Titles:@[@"基础",@"出纳",@"会计",@"税务",@"考证"] delegate:self drop:NO color:UIRGBColor(250, 79, 13)];
     [self.contentView addSubview:self.segmentC];
     
     self.tableview = [[UITableView alloc]initWithFrame:CGRectMake(0, kSegmentHeight, kScreenWidth, kCellHeightOfCourse * 2) style:UITableViewStylePlain];

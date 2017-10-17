@@ -25,6 +25,9 @@
 
 @property (nonatomic, strong)UIButton       *loginBtn;
 
+@property (nonatomic, assign)LivingState state;
+
+
 @end
 
 @implementation LivingStateView
@@ -39,7 +42,6 @@
 
 - (void)prepareUI
 {
-    
     self.backgroundColor = [UIColor blackColor];
     self.imageView = [[UIImageView alloc]initWithFrame:self.bounds];
     self.imageView.image = [UIImage imageNamed:@"已结束"];
@@ -76,6 +78,7 @@
 
 - (void)resetWithInfoDic:(NSDictionary *)infoDic andIsLogin:(BOOL)isLogin
 {
+    self.infoDic = infoDic;
     self.isLogin = isLogin;
     [self resetWithInfoDic:infoDic];
 }
@@ -89,12 +92,32 @@
 
 - (void)setStateWith:(LivingState)livingState
 {
+    self.state = livingState;
+    switch ([[self.infoDic objectForKey:kLivingState] intValue]) {
+        case 0:
+            self.state = LivingState_noStart;
+            [self.loginBtn setTitle:@"预约" forState:UIControlStateNormal];
+            break;
+        case 1:
+            self.state = LivingState_ordered;
+            [self.loginBtn setTitle:@"已预约" forState:UIControlStateNormal];
+            break;
+        case 2:
+            self.state = LivingState_living;
+            [self.loginBtn setTitle:@"播放" forState:UIControlStateNormal];
+            break;
+        case 3:
+            [self.loginBtn setTitle:@"回放" forState:UIControlStateNormal];
+            break;
+            
+        default:
+            break;
+    }
+    
     self.isLogin = [[UserManager sharedManager] isUserLogin];
     if (!self.isLogin) {
-        self.loginBtn.hidden = NO;
-    }else
-    {
-        self.loginBtn.hidden = YES;
+        self.state = LivingState_notLogin;
+        [self.loginBtn setTitle:@"请登录" forState:UIControlStateNormal];
     }
     
     if (livingState == LivingState_noStart) {
@@ -114,7 +137,7 @@
 - (void)loginClick
 {
     if (self.loginClickBlock) {
-        self.loginClickBlock();
+        self.loginClickBlock(self.state,self.infoDic);
     }
 }
 

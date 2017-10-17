@@ -57,7 +57,7 @@
         exchangeLB.textColor = kCommonMainColor;
     }else
     {
-        exchangeLB.text = @"更多直播";
+        exchangeLB.text = @"本月更多";
         exchangeLB.textColor = kCommonMainTextColor_100;
     }
     exchangeLB.font = kMainFont;
@@ -77,7 +77,7 @@
     {
         exchangeImageView.frame = CGRectMake(kScreenWidth / 2 + 5, kCellHeightOfCourseTitle / 2 - 3.5, 12, 7);
         exchangeImageView.image = [UIImage imageNamed:@"形状-down"];
-        exchangeLB.text = @"更多直播";
+        exchangeLB.text = @"本月更多";
     }
     exchangeImageView.userInteractionEnabled = YES;
     [newCourseSectionFoot addSubview:exchangeImageView];

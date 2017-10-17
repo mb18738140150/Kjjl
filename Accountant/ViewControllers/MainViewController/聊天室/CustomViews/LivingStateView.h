@@ -10,6 +10,7 @@
 
 typedef enum : NSUInteger {
     LivingState_noStart,
+    LivingState_ordered,
     LivingState_living,
     LivingState_end,
     LivingState_notLogin,
@@ -18,7 +19,7 @@ typedef enum : NSUInteger {
 @interface LivingStateView : UIView
 
 @property (nonatomic, strong)NSDictionary * infoDic;
-@property (nonatomic, copy)void(^loginClickBlock)();
+@property (nonatomic, copy)void(^loginClickBlock)(LivingState livingState,NSDictionary *infoDic);
 
 - (void)resetWithInfoDic:(NSDictionary *)infoDic andIsLogin:(BOOL)isLogin;
 

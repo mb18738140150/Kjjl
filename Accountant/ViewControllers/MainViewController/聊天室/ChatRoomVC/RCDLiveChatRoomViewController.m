@@ -466,6 +466,53 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
     [self setPlayStateViewIsLogin:NO];
 }
 
+- (void)operationStateViewClickWith:(LivingState )livingState andInfoDic:(NSDictionary *)infoDic
+{
+    __weak typeof(self)weakSelf = self;
+    switch (livingState) {
+        case LivingState_notLogin:
+        {
+            LoginViewController *login = [[LoginViewController alloc] init];
+            
+            UINavigationController * nav = [[UINavigationController alloc]initWithRootViewController:login];
+            
+            [weakSelf presentViewController:nav animated:YES completion:nil];
+        }
+            break;
+        case LivingState_noStart:
+        {
+            [SVProgressHUD show];
+            
+            weakSelf.selectOrderLivingSectionInfoDic = infoDic;
+            NSDictionary * orderDic = @{@"courseID":[infoDic objectForKey:kCourseID],
+                                        @"courseSecondID":[infoDic objectForKey:kCourseSecondID],
+                                        @"livingTime":[[[infoDic objectForKey:kLivingTime] componentsSeparatedByString:@"~"] objectAtIndex:0]};
+            [[UserManager sharedManager] didRequestOrderLivingCourseOperationWithCourseInfo:orderDic withNotifiedObject:weakSelf];
+        }
+            break;
+        case LivingState_ordered:
+        {
+            [SVProgressHUD show];
+            
+            weakSelf.selectOrderLivingSectionInfoDic = infoDic;
+            NSDictionary * orderDic = @{@"courseID":[infoDic objectForKey:kCourseID],
+                                        @"courseSecondID":[infoDic objectForKey:kCourseSecondID],
+                                        @"livingTime":[[[infoDic objectForKey:kLivingTime] componentsSeparatedByString:@"~"] objectAtIndex:0]};
+            [[UserManager sharedManager] didRequestCancelOrderLivingCourseOperationWithCourseInfo:orderDic withNotifiedObject:weakSelf];
+        }
+            break;
+        case LivingState_living:
+            [weakSelf refreshWith:infoDic];
+            break;
+        case LivingState_end:
+            [weakSelf refreshWith:infoDic];
+            break;
+            
+        default:
+            break;
+    }
+}
+
 - (void)setPlayStateViewIsLogin:(BOOL)isLogin
 {
     if (!self.stateImageView) {
@@ -473,12 +520,10 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
     }
     
     __weak typeof(self)weakSelf = self;
-    self.stateImageView.loginClickBlock = ^{
-        LoginViewController *login = [[LoginViewController alloc] init];
+    self.stateImageView.loginClickBlock = ^(LivingState livingState,NSDictionary *infoDic){
         
-        UINavigationController * nav = [[UINavigationController alloc]initWithRootViewController:login];
+        [weakSelf operationStateViewClickWith:livingState andInfoDic:infoDic];
         
-        [weakSelf presentViewController:nav animated:YES completion:nil];
     };
     
     [self.stateImageView resetWithInfoDic:self.infoDic andIsLogin:isLogin];
@@ -517,7 +562,7 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
             [self.segmentC hideTitlesWith:@[@(2),@(3)]];
             self.stateImageView.hidden = NO;
             if (![[UserManager sharedManager] isUserLogin]) {
-                [self.stateImageView setStateWith:LivingState_end];
+                [self.stateImageView setStateWith:LivingState_notLogin];
                 return;
             }
             if (self.isLivingCourse) {
@@ -619,7 +664,6 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
     
     //退出页面，弹幕停止
     [self.view stopDanmaku];
-    
 }
 
 /**
@@ -627,6 +671,10 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
  */
 - (void)dealloc {
     //    [self quitConversationViewAndClear];
+    if (self.videoController) {
+        [self.videoController pausePlay];
+        self.videoController = nil;
+    }
     [self.livingListView removeAll];
     [[NSNotificationCenter defaultCenter]removeObserver:self name:kLocalNitificationOfLivingStart object:nil];
     [self.stateImageView timerInvalidate];
@@ -1886,6 +1934,12 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
     [[CourseraManager sharedManager] refreshLivingSectionStateOrder_complateWith:self.selectOrderLivingSectionInfoDic];
     self.livingListView.dataArr= [[CourseraManager sharedManager] getLivingSectionDetailArray];
     [self.livingListView.tableView reloadData];
+    
+    NSMutableDictionary * infoDic = [[NSMutableDictionary alloc]initWithDictionary:self.selectOrderLivingSectionInfoDic];
+    [infoDic setObject:@1 forKey:kLivingState];
+    [self refreshWith:infoDic];
+    
+    
 }
 
 - (void)didRequestOrderLivingFailed:(NSString *)failedInfo
@@ -1908,6 +1962,10 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
     [[CourseraManager sharedManager] refreshLivingSectionStateOrder_complateWith:self.selectOrderLivingSectionInfoDic];
     self.livingListView.dataArr= [[CourseraManager sharedManager] getLivingSectionDetailArray];
     [self.livingListView.tableView reloadData];
+    
+    NSMutableDictionary * infoDic = [[NSMutableDictionary alloc]initWithDictionary:self.selectOrderLivingSectionInfoDic];
+    [infoDic setObject:@0 forKey:kLivingState];
+    [self refreshWith:infoDic];
 }
 
 - (void)didRequestCancelOrderLivingFailed:(NSString *)failedInfo

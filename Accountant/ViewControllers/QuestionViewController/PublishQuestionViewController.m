@@ -392,28 +392,28 @@
 - (void)button1Click
 {
     [self resetButtons];
-    [self.button1 setTitleColor:kCommonNavigationBarColor forState:UIControlStateNormal];
+    [self.button1 setTitleColor:kCommonMainColor forState:UIControlStateNormal];
     self.categoryId = 17;
 }
 
 - (void)button2Click
 {
     [self resetButtons];
-    [self.button2 setTitleColor:kCommonNavigationBarColor forState:UIControlStateNormal];
+    [self.button2 setTitleColor:kCommonMainColor forState:UIControlStateNormal];
     self.categoryId = 18;
 }
 
 - (void)button3Click
 {
     [self resetButtons];
-    [self.button3 setTitleColor:kCommonNavigationBarColor forState:UIControlStateNormal];
+    [self.button3 setTitleColor:kCommonMainColor forState:UIControlStateNormal];
     self.categoryId = 19;
 }
 
 - (void)button4Click
 {
     [self resetButtons];
-    [self.button4 setTitleColor:kCommonNavigationBarColor forState:UIControlStateNormal];
+    [self.button4 setTitleColor:kCommonMainColor forState:UIControlStateNormal];
     self.categoryId = 20;
 }
 

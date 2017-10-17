@@ -416,7 +416,7 @@
     headView.backgroundColor = kBackgroundGrayColor;
     
     UILabel * titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 25, kScreenWidth, 15)];
-    titleLabel.text = @"立即登录，查看你买过的课程";
+    titleLabel.text = @"立即登录，查看课程";
     titleLabel.textColor = kCommonMainTextColor_50;
     titleLabel.font = kMainFont;
     titleLabel.textAlignment = 1;
@@ -495,7 +495,7 @@
         if (self.monthIndexPath.row == 1) {
             // 往期回放，不显示本月课程
             
-            return [[self.livingCourseArr objectAtIndex:0] count];
+            return [[self getLivingCourseArrWithTeacher] count];
             
         }else
         {
@@ -688,7 +688,7 @@
         if (self.monthIndexPath.row == 1) {
             static NSString *courseCellName = @"liveCourseCell";
             MainLivingCourseTableViewCell * lCell = (MainLivingCourseTableViewCell *)[self getCellWithCellName:courseCellName inTableView:tableView andCellClass:[MainLivingCourseTableViewCell class]];
-            [lCell resetCellContent:[[self.livingCourseArr objectAtIndex:0] objectAtIndex:indexPath.row]];
+            [lCell resetCellContent:[[self getLivingCourseArrWithTeacher] objectAtIndex:indexPath.row]];
             
             __weak typeof(self)weakSelf = self;
             lCell.mainCountDownFinishBlock = ^{
@@ -704,7 +704,7 @@
             
             livingCell.selectionStyle = UITableViewCellSelectionStyleNone;
             
-            [livingCell resetInfoWithArray:[self getLivingCourseArr]];
+            [livingCell resetInfoWithArray:[self getLivingCourseArrWithTeacher]];
             
             livingCell.LivingCourseBlock = ^(NSDictionary *infoDic) {
                 
@@ -877,7 +877,14 @@
         {
             self.teacherId = [[self.teacherArr objectAtIndex:indexPath.row - 1] objectForKey:kteacherId];
         }
-        [self doRequestLivingcourse];
+        if (self.monthIndexPath.row == 0) {
+            [self doRequestLivingcourse];
+        }else
+        {
+            [self.teacherTableView reloadData];
+            [self.livingTableview reloadData];
+            [self refreshlivingSegment];
+        }
         [self hideLivingWithHide:NO];
         return;
     }
@@ -901,7 +908,6 @@
     
     if ([tableView isEqual:self.livingTableview]) {
         
-        
         /*
          if (![[UserManager sharedManager] isUserLogin]){
          [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationOfLoginClick object:nil];
@@ -910,8 +916,8 @@
          */
         
         if (self.monthIndexPath.row == 1) {
-
-            NSDictionary * dic = [[self.livingCourseArr objectAtIndex:0] objectAtIndex:indexPath.row];
+            
+            NSDictionary * dic = [[self getLivingCourseArrWithTeacher] objectAtIndex:indexPath.row];
             self.selectCourseInfoDic = dic;
             self.selectCurrentMonthCourseId = [[dic objectForKey:kCourseID] intValue];
             [SVProgressHUD show];
@@ -1680,7 +1686,7 @@
     return nDateStr;
 }
 
-- (NSArray *)getLivingCourseArr
+- (NSArray *)getLivingCourseArrWithTeacher
 {
     NSArray * livingCourseArr = self.livingCourseArr[0];
     NSString * teacherName = @"";

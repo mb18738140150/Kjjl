@@ -156,7 +156,6 @@
             }
         }
         
-        
         chatRoomVC.isLivingCourse = YES;
     }
     

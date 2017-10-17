@@ -10,7 +10,7 @@
 
 #define HYSegmentedControl_Height 42.0
 #define HYSegmentedControl_Width ([UIScreen mainScreen].bounds.size.width)
-#define Min_Width_4_Button ([UIScreen mainScreen].bounds.size.width / 4)
+#define Min_Width_4_Button ([UIScreen mainScreen].bounds.size.width / 5)
 
 #define Define_Tag_add 1000
 
@@ -189,13 +189,13 @@
     
     CGPoint pt = CGPointZero;
     BOOL canScrolle = NO;
-    if ((btn.tag - Define_Tag_add) >= 2 && [_array4Btn count] > 4 && [_array4Btn count] > (btn.tag - Define_Tag_add + 2)) {
+    if ((btn.tag - Define_Tag_add) >= 2 && [_array4Btn count] > 5 && [_array4Btn count] > (btn.tag - Define_Tag_add + 2)) {
         pt.x = btn.frame.origin.x - Min_Width_4_Button*1.5f;
         canScrolle = YES;
-    }else if ([_array4Btn count] > 4 && (btn.tag - Define_Tag_add + 2) >= [_array4Btn count]){
-        pt.x = (_array4Btn.count - 4) * Min_Width_4_Button;
+    }else if ([_array4Btn count] > 5 && (btn.tag - Define_Tag_add + 2) >= [_array4Btn count]){
+        pt.x = (_array4Btn.count - 5) * Min_Width_4_Button;
         canScrolle = YES;
-    }else if (_array4Btn.count > 4 && (btn.tag - Define_Tag_add) < 2){
+    }else if (_array4Btn.count > 5 && (btn.tag - Define_Tag_add) < 2){
         pt.x = 0;
         canScrolle = YES;
     }

@@ -131,6 +131,7 @@
                     vc.infoDic = info;
                     vc.hidesBottomBarWhenPushed = YES;
                     [self.navigationController pushViewController:vc animated:YES];
+                    
                 }
                 
             }else

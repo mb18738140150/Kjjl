@@ -58,7 +58,7 @@
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    return 13;
+    return 9;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
@@ -69,7 +69,7 @@
         title = @"2017";
     }else
     {
-        title = [NSString stringWithFormat:@"%ld月", (long)indexPath.row];
+        title = [NSString stringWithFormat:@"%ld月", (long)indexPath.row + 4];
     }
     [cell resetTitleWith:title];
     if ([self.selectIndexpath isEqual:indexPath]) {
@@ -86,8 +86,12 @@
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     self.selectIndexpath = indexPath;
+    int item = indexPath.item;
+    if (indexPath.item > 0) {
+        item = indexPath.item + 4;
+    }
     if (self.MonthSelectBlock) {
-        self.MonthSelectBlock((int)indexPath.item);
+        self.MonthSelectBlock(item);
     }
     [self.collectionView reloadData];
 }
