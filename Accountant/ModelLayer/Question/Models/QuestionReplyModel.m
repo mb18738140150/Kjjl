@@ -10,4 +10,12 @@
 
 @implementation QuestionReplyModel
 
+- (NSMutableArray *)askedArray
+{
+    if (!_askedArray) {
+        _askedArray = [NSMutableArray array];
+    }
+    return _askedArray;
+}
+
 @end

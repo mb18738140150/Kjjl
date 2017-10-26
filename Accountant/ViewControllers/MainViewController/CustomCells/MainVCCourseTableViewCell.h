@@ -11,9 +11,7 @@
 @interface MainVCCourseTableViewCell : UITableViewCell
 
 @property (nonatomic, copy)void(^MoreCourseClickBlock)();
-
+@property (nonatomic, strong)UILabel *liveLB;
 - (void)resetInfo;
-
-
 
 @end

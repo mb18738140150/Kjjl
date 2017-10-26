@@ -43,6 +43,7 @@
 @property (nonatomic, strong)NSString * assistantId;
 @property (nonatomic, strong)NSString * playback;
 @property (nonatomic, assign)int isFree;
+@property (nonatomic, assign)int isBack;//回放是否有权限观看
 
 
 @end

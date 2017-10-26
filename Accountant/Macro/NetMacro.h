@@ -9,8 +9,8 @@
 #ifndef NetMacro_h
 #define NetMacro_h
 
-#define kRootUrl @"http://test.kjjl100.com/kjjldata.ashx"
-//#define kRootUrl @"http://f.kjb360.cn/kjjldata.ashx"
+//#define kRootUrl @"http://test.kjjl100.com/kjjldata.ashx"
+#define kRootUrl @"http://f.kjb360.cn/kjjldata.ashx"
 //#define kRootUrl @"http://f.kjb360.cn/ceshi.ashx"
 #define kRootKJBUrl @"http://f.kjb360.cn/getdata.ashx"
 #define kMD5String @"tianmingkeji"

@@ -455,6 +455,14 @@ static const CGFloat kVideoPlayerControllerAnimationTimeInterval = 0.3f;
         case AVAudioSessionRouteChangeReasonCategoryChange:
             // called at start - also when other audio wants to play
             NSLog(@"AVAudioSessionRouteChangeReasonCategoryChange");
+            
+            if (![[AVAudioSession sharedInstance].category isEqualToString:@"AVAudioSessionCategoryPlayback"]) {
+                NSError *error = nil;
+                BOOL success = [[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategoryPlayback error: &error];
+                
+                if (!success) {/* error */}
+            }
+            
             break;
             
         default:
@@ -565,6 +573,11 @@ static const CGFloat kVideoPlayerControllerAnimationTimeInterval = 0.3f;
         int val = orientation;
         [invocation setArgument:&val atIndex:2];
         [invocation invoke];
+        
+        if (orientation == UIDeviceOrientationPortrait) {
+            ;
+        }
+        
     }
 }
 

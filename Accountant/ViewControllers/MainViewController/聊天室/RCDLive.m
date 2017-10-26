@@ -70,10 +70,12 @@ static RCDLive *__rongUIKit = nil;
   // listen receive message
   [[RCIMClient sharedRCIMClient] setReceiveMessageDelegate:self object:nil];
   [[RCIMClient sharedRCIMClient] setRCConnectionStatusChangeDelegate:self];
+    [RCIMClient sharedRCIMClient].isExclusiveSoundPlayer = YES;
 # else
   [[RCIM sharedRCIM] initWithAppKey:appKey];
   [[RCIM sharedRCIM] setConnectionStatusDelegate:self];
   [[RCIM sharedRCIM] setReceiveMessageDelegate:self];
+    [RCIM sharedRCIM].isExclusiveSoundPlayer = YES;
 #endif
 }
 
@@ -155,6 +157,7 @@ static RCDLive *__rongUIKit = nil;
     [[NSNotificationCenter defaultCenter] postNotificationName:RCDLiveKitDispatchMessageNotification
                                                         object:message
                                                       userInfo:dic_left];
+    NSLog(@"[AVAudioSession sharedInstance].category = %@", [AVAudioSession sharedInstance].category);
 }
 #endif
 

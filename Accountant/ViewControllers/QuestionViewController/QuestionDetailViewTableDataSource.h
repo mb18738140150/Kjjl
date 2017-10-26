@@ -13,5 +13,9 @@
 
 @property (nonatomic,strong) NSDictionary       *questionInfo;
 @property (nonatomic,strong) NSArray            *questionReplys;
+@property (nonatomic, copy) void (^askQuestionBlock)(NSDictionary *infoDic);
+@property (nonatomic, strong) NSMutableArray *statusArray;
+@property (nonatomic, assign) BOOL fold;
+@property (nonatomic, copy)void (^showMoreReplayBlock)(NSInteger section, BOOL fold);
 
 @end

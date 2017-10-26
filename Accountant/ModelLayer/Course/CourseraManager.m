@@ -377,7 +377,8 @@
                               kChatRoomID:jModel.chatRoomId,
                               kAssistantID:jModel.assistantId,
                               kPlayBackUrl:jModel.playback,
-                              kIsLivingCourseFree:@(jModel.isFree)};
+                              kIsLivingCourseFree:@(jModel.isFree),
+                              kIsBack:@(jModel.isBack)};
         
         
         if (jModel.playState == 3) {
@@ -454,7 +455,8 @@
                               kChatRoomID:jModel.chatRoomId,
                               kAssistantID:jModel.assistantId,
                               kPlayBackUrl:jModel.playback,
-                              kIsLivingCourseFree:@(jModel.isFree)};
+                              kIsLivingCourseFree:@(jModel.isFree),
+                              kIsBack:@(jModel.isBack)};
         [LivingSectionDetailArray addObject:dic];
     }
     return LivingSectionDetailArray;

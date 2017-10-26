@@ -15,6 +15,7 @@
 @property (nonatomic,strong) UITextField                *account;
 @property (nonatomic,strong) UITextField                *verifyTF;
 @property (nonatomic,strong) UITextField                *password;
+@property (nonatomic,strong) UITextField                *surePassword;
 @property (nonatomic,strong) UIButton                   *loginButton;
 
 @property (nonatomic,strong) UIButton                   *getVerifyBtn;
@@ -56,6 +57,7 @@ static int a = 59;
     _account.placeholder=[NSString stringWithFormat:@"请输入账号"];
     _account.delegate = self;
     _account.font = kMainFont;
+    _account.returnKeyType = UIReturnKeyDone;
     _account.textColor = kCommonMainTextColor_50;
     [accountView addSubview:_account];
     
@@ -79,6 +81,7 @@ static int a = 59;
     _verifyTF.layer.cornerRadius=5.0;
     _verifyTF.delegate = self;
     _verifyTF.font = kMainFont;
+    _verifyTF.returnKeyType = UIReturnKeyDone;
     _verifyTF.textColor = kCommonMainTextColor_50;
     [verifyView addSubview:_verifyTF];
     
@@ -116,6 +119,7 @@ static int a = 59;
     _password.delegate = self;
     _password.font = kMainFont;
     _password.textColor = kCommonMainTextColor_50;
+    _password.returnKeyType = UIReturnKeyDone;
     [passwordView addSubview:_password];
     
     UIView * passwordBottomView = [[UIView alloc]initWithFrame:CGRectMake(0, passwordView.hd_height - 1, passwordView.hd_width, 1)];
@@ -123,8 +127,33 @@ static int a = 59;
     [passwordView addSubview:passwordBottomView];
     
     
+    // 确认密码
+    UIView * surePasswordView = [[UIView alloc]initWithFrame:CGRectMake(20, CGRectGetMaxY(passwordView.frame) + 20, kScreenWidth - 40, 40)];
+    surePasswordView.backgroundColor = [UIColor whiteColor];
+    [self.view addSubview:surePasswordView];
+    
+    UIImageView * surePasswordImageView = [[UIImageView alloc]initWithFrame:CGRectMake(5, 5, kImageWidth, kImageWidth)];
+    surePasswordImageView.image = [UIImage imageNamed:@"密码"];
+    [surePasswordView addSubview:surePasswordImageView];
+    
+    _surePassword=[[UITextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(surePasswordImageView.frame) + 10, 10, kScreenWidth-40, 20)];
+    [_surePassword setBackgroundColor:[UIColor clearColor]];
+    _surePassword.secureTextEntry = YES;
+    _surePassword.placeholder=[NSString stringWithFormat:@"请再次输入密码"];
+    _surePassword.layer.cornerRadius=5.0;
+    _surePassword.delegate = self;
+    _surePassword.font = kMainFont;
+    _surePassword.returnKeyType = UIReturnKeyDone;
+    _surePassword.textColor = kCommonMainTextColor_50;
+    [surePasswordView addSubview:_surePassword];
+    
+    UIView * surePasswordBottomView = [[UIView alloc]initWithFrame:CGRectMake(0, surePasswordView.hd_height - 1, surePasswordView.hd_width, 1)];
+    surePasswordBottomView.backgroundColor = kCommonMainTextColor_200;
+    [surePasswordView addSubview:surePasswordBottomView];
+    
+    
     _loginButton=[UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [_loginButton setFrame:CGRectMake(20, CGRectGetMaxY(passwordView.frame) + 70, kScreenWidth - 40, 40)];
+    [_loginButton setFrame:CGRectMake(20, CGRectGetMaxY(surePasswordView.frame) + 70, kScreenWidth - 40, 40)];
     _loginButton.titleLabel.font = [UIFont systemFontOfSize:16];
     _loginButton.titleLabel.font = [UIFont systemFontOfSize:20];
     [_loginButton setTitle:@"立即注册" forState:UIControlStateNormal];
@@ -176,13 +205,21 @@ static int a = 59;
 //    [self.navigationController pushViewController:comVC animated:YES];
 //    return;
     
-    if (self.account.text.length == 0 || self.password.text.length == 0) {
+    if (self.account.text.length == 0 || self.password.text.length == 0 || self.surePassword.text.length == 0) {
         [SVProgressHUD showErrorWithStatus:@"手机号与密码均不能为空"];
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [SVProgressHUD dismiss];
         });
         return;
     }
+    if (![self.surePassword.text isEqualToString:self.password.text]) {
+        [SVProgressHUD showErrorWithStatus:@"两次密码输入不一致"];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [SVProgressHUD dismiss];
+        });
+        return;
+    }
+    
     if (![[[NSString stringWithFormat:@"%@231618", self.verifyTF.text] MD5_Cap] isEqualToString:[[UserManager sharedManager] getVerifyCode]]) {
         
         NSTimeInterval seconds = [[NSDate date]timeIntervalSinceDate:self.codeDate];
@@ -293,5 +330,10 @@ static int a = 59;
     // Dispose of any resources that can be recreated.
 }
 
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    [textField resignFirstResponder];
+    return YES;
+}
 
 @end

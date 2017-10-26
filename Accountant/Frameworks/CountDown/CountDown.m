@@ -101,7 +101,6 @@
     }
 }
 
-
 -(NSDate *)dateWithLongLong:(long long)longlongValue{
     long long value = longlongValue/1000;
     NSNumber *time = [NSNumber numberWithLongLong:value];
@@ -168,6 +167,6 @@
 }
 
 -(void)dealloc{
-    NSLog(@"%s dealloc",object_getClassName(self));
+//    NSLog(@"%s dealloc",object_getClassName(self));
 }
 @end

@@ -185,6 +185,12 @@
         [tmpDic setObject:model.replierUserName forKey:kReplierUserName];
         [tmpDic setObject:model.replyContent forKey:kReplyContent];
         [tmpDic setObject:model.replyTime forKey:kReplyTime];
+        
+        NSMutableArray * askedArr = [NSMutableArray array];
+        for (NSDictionary *infoDic in model.askedArray) {
+            [askedArr addObject:infoDic];
+        }
+        [tmpDic setObject:askedArr forKey:kAskedArray];
         [array addObject:tmpDic];
     }
     return array;

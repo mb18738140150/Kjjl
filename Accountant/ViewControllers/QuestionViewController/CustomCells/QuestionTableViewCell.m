@@ -213,7 +213,7 @@
     }
     
     self.bottomLineView = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.replyBountBT.frame) + 8 ,kScreenWidth,2)];
-    self.bottomLineView.backgroundColor = kTableViewCellSeparatorColor;
+    self.bottomLineView.backgroundColor = UIRGBColor(245, 245, 245);
     [self addSubview:self.bottomLineView];
     
     /*

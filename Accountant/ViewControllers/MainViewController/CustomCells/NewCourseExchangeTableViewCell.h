@@ -12,6 +12,8 @@
 
 @property (nonatomic, copy)void (^ExchangeBlock)(int number);
 @property (nonatomic, copy)void (^MoreLivingCourseBlock)(BOOL showMore);
+@property (nonatomic, strong)UILabel * exchangeLB;
+@property (nonatomic, strong)UIImageView * exchangeImageView;
 
 - (void)resetCell;
 

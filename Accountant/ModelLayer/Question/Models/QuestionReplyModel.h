@@ -14,5 +14,7 @@
 @property (nonatomic,strong) NSString   *replyTime;
 @property (nonatomic,strong) NSString   *replierHeaderImageUrl;
 @property (nonatomic,strong) NSString   *replierUserName;
+@property (nonatomic, assign) int       *replayUserId;
+@property (nonatomic, strong) NSMutableArray *askedArray;
 
 @end

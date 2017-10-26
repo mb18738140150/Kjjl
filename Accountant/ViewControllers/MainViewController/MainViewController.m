@@ -209,7 +209,6 @@
         return kCellHeightOfCourseTitle;
     }
     
-    
     if (indexPath.section == 3 && (indexPath.row == 0 || indexPath.row == 3)) {
         cellHeight = kCellHeightOfCourseTitle;
     }

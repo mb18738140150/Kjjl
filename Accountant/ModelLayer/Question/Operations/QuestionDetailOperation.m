@@ -51,9 +51,14 @@
         model.replyTime = [replyInfo objectForKey:@"replyTime"];
         model.replierUserName = [replyInfo objectForKey:@"coachName"];
         model.replierHeaderImageUrl = [replyInfo objectForKey:@"coachImg"];
+        
+        for (NSDictionary *askedDic in [replyInfo objectForKey:@"askedList"]) {
+            [model.askedArray addObject:askedDic];
+        }
+        
         [self.detailModel addQuestionReply:model];
+        
     }
-    
     
     if (isObjectNotNil(self.notifiedObject)) {
         [self.notifiedObject didQuestionRequestSuccessed];

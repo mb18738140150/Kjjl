@@ -34,6 +34,7 @@
 #define kPlayBackUrl        @"playBackUrl"
 #define kHaveJurisdiction   @"haveJurisdiction"
 #define kIsLivingCourseFree @"isLivingCOurseFree"
+#define kIsBack             @"isBack"
 
 #define kLivingCourseArr    @"livingCourseArr"
 #define kSectionArray       @"sectionArray"
@@ -93,6 +94,7 @@
 #define kReplyTime                      @"replyTime"
 #define kReplierHeaderImage             @"replierHeaderImageUrl"
 #define kReplierUserName                @"replierUserName"
+#define kAskedArray                     @"askedArray"
 
 #define kTestCategoryName               @"testCategoryName"
 #define kTestCategoryImageName          @"testCategoryImageName"

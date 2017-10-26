@@ -217,6 +217,7 @@
             self.isPlayFromLoacation = NO;
         }
         [[CourseraManager sharedManager] didRequestDetailCourseWithCourseID:[[infoDic objectForKey:kCourseID] intValue] withNotifiedObject:self];
+//        [[CourseraManager sharedManager] didRequestDetailCourseWithCourseID:164 withNotifiedObject:self];
     }
     else{
         [self requireLogin];

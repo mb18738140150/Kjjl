@@ -10,6 +10,8 @@
 
 @interface QuestionReplyTableViewCell : UITableViewCell
 
+@property (nonatomic, copy)void (^askBlock)(NSDictionary *infoDic);
+
 - (void)resetCellWithInfo:(NSDictionary *)dic;
 
 - (void)resetLivingDetailCellWithInfoDic:(NSDictionary *)infoDic;

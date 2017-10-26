@@ -89,8 +89,6 @@
         [alert show];
     }
     
-//    [[RCIM sharedRCIM]initWithAppKey:RONGCLOUD_IM_APPKEY];
-    
     [[RCDLive sharedRCDLive] initRongCloud:RONGCLOUD_IM_APPKEY];
     __weak typeof(self)weakself = self;
     if ([[UserManager sharedManager] getUserId]) {

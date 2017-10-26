@@ -147,7 +147,7 @@
     self.countDown = nil;
     self.countDown = [[CountDown alloc] init];
     __weak __typeof(self) weakSelf= self;
-    ///每秒回调一次
+    ///每分回调一次
     [self.countDown countDownWithPER_MINBlock:^{
         
         [weakSelf updateTimeInVisibleCells:courseInfo];
@@ -194,7 +194,6 @@
     });
 }
 
-
 - (void)hiddenMask
 {
     self.timeImageView.hidden = YES;
@@ -206,7 +205,6 @@
     self.timeImageView.hidden = NO;
     self.timeLabel.hidden = NO;
 }
-
 
 - (NSString *)getTimeWith:(NSString *)timeStr
 {

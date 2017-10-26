@@ -81,8 +81,6 @@
         [self playVideo];
         
     });
-    
-    
 }
 
 - (void)playVideo

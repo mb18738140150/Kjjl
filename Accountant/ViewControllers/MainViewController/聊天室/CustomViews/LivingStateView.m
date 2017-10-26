@@ -74,6 +74,18 @@
     [self.loginBtn addTarget:self action:@selector(loginClick) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.loginBtn];
     
+    UITextField * textf = [[UITextField alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, kScreenHeight)];
+    textf.backgroundColor = kCommonMainTextColor_200;
+    textf.keyboardType = UIKeyboardTypeNumberPad;
+    textf.returnKeyType = UIReturnKeyDone;
+    textf.placeholder = @"";
+    textf.textColor = kCommonMainColor;
+    textf.layer.cornerRadius = 4;
+    textf.layer.masksToBounds = YES;
+    textf.adjustsFontSizeToFitWidth = YES;
+    
+    
+    
 }
 
 - (void)resetWithInfoDic:(NSDictionary *)infoDic andIsLogin:(BOOL)isLogin
@@ -107,7 +119,12 @@
             [self.loginBtn setTitle:@"播放" forState:UIControlStateNormal];
             break;
         case 3:
+        {
             [self.loginBtn setTitle:@"回放" forState:UIControlStateNormal];
+            if ([[self.infoDic objectForKey:kPlayBackUrl] length] == 0) {
+                [self.loginBtn setTitle:@"上传中" forState:UIControlStateNormal];
+            }
+        }
             break;
             
         default:
@@ -136,6 +153,10 @@
 
 - (void)loginClick
 {
+    if ([[self.infoDic objectForKey:kPlayBackUrl] length] == 0) {
+        
+    }
+    
     if (self.loginClickBlock) {
         self.loginClickBlock(self.state,self.infoDic);
     }
@@ -143,28 +164,35 @@
 
 - (void)startTimeCountDown
 {
-    __weak typeof(self)weakSelf = self;
-    self.timer = [NSTimer timerWithTimeInterval:60 repeats:YES block:^(NSTimer * _Nonnull timer) {
-        weakSelf.minute--;
-        if (weakSelf.minute<0) {
-            weakSelf.hour--;
-            if (weakSelf.hour <0) {
-                weakSelf.hour = 0;
-                weakSelf.minute = 0;
-                [weakSelf.timer invalidate];
-                weakSelf.timer = nil;
-            }else
-            {
-                weakSelf.minute = 59;
-            }
-        }
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            weakSelf.timeLB.attributedText = [weakSelf getTimeStrWithHoour:weakSelf.hour andMinute:weakSelf.minute];
-        });
-        
-    }];
+    if (self.timer) {
+        [self.timer invalidate];
+        self.timer = nil;
+    }
+    self.timer = [NSTimer timerWithTimeInterval:60 target:self selector:@selector(timeCountDown) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:self.timer forMode:NSRunLoopCommonModes];
+    
+}
+
+- (void)timeCountDown
+{
+    __weak typeof(self)weakSelf = self;
+    
+    weakSelf.minute--;
+    if (weakSelf.minute<0) {
+        weakSelf.hour--;
+        if (weakSelf.hour <0) {
+            weakSelf.hour = 0;
+            weakSelf.minute = 0;
+            [weakSelf.timer invalidate];
+            weakSelf.timer = nil;
+        }else
+        {
+            weakSelf.minute = 59;
+        }
+    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        weakSelf.timeLB.attributedText = [weakSelf getTimeStrWithHoour:weakSelf.hour andMinute:weakSelf.minute];
+    });
 }
 
 - (void)timerInvalidate

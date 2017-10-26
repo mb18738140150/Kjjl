@@ -58,6 +58,12 @@
         }
         self.isFree = isFree.intValue;
         
+        NSNumber *isBack = [dicInfo objectForKey:@"isBack"];
+        if ([isBack isKindOfClass:[NSNull class]] ) {
+            isBack = @0;
+        }
+        self.isBack = isBack.intValue;
+        
         NSNumber *haveJurisdiction = [dicInfo objectForKey:@"haveJurisdiction"];
         if ([haveJurisdiction isKindOfClass:[NSNull class]] ) {
             haveJurisdiction = @1;

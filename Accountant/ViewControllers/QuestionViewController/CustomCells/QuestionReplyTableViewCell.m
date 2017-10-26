@@ -26,6 +26,8 @@
 
 @property (nonatomic, assign)BOOL isLivingDetail;
 
+@property (nonatomic, strong)NSDictionary * infoDic;
+
 @end
 
 @implementation QuestionReplyTableViewCell
@@ -54,7 +56,8 @@
 - (void)resetCellWithInfo:(NSDictionary *)dic
 {
     NSLog(@"%@", [dic description]);
-    
+//    self.isLivingDetail = YES;
+    self.infoDic = dic;
     [self removeAllContentViews];
     if (dic.allKeys.count == 0) {
         return;
@@ -125,12 +128,32 @@
     [self addSubview:self.questionContentLabel];
     
     
-    self.bottomLineView = [[UIView alloc] initWithFrame:CGRectMake(0, self.questionContentLabel.frame.origin.y + self.questionContentLabel.frame.size.height + 9 ,kScreenWidth,1)];
+    UIButton * askBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    askBtn.frame = CGRectMake(kScreenWidth / 2 - 30, CGRectGetMaxY(self.questionContentLabel.frame) + 10, 60, 20);
+    [askBtn setTitle:@"追问" forState:UIControlStateNormal];
+    [askBtn setTitleColor:kCommonMainOringeColor forState:UIControlStateNormal];
+    askBtn.titleLabel.font = kMainFont;
+    askBtn.layer.cornerRadius = 2;
+    askBtn.layer.masksToBounds = YES;
+    askBtn.layer.borderWidth = 1;
+    askBtn.layer.borderColor = kCommonMainOringeColor.CGColor;
+    [askBtn addTarget:self action:@selector(askAction) forControlEvents:UIControlEventTouchUpInside];
+    if (self.isLivingDetail) {
+        [self addSubview:askBtn];
+    }
+    
+    
+    self.bottomLineView = [[UIView alloc] initWithFrame:CGRectMake(0, askBtn.frame.origin.y + askBtn.frame.size.height + 9 ,kScreenWidth,1)];
     self.bottomLineView.backgroundColor = kTableViewCellSeparatorColor;
     if (!self.isLivingDetail) {
         [self addSubview:self.bottomLineView];
     }
     
 }
-
+- (void)askAction
+{
+    if (self.askBlock) {
+        self.askBlock(self.infoDic);
+    }
+}
 @end

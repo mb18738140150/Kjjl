@@ -51,36 +51,36 @@
         [newCourseSectionFoot addSubview:lineView];
     }
     
-    UILabel * exchangeLB = [[UILabel alloc]initWithFrame:CGRectMake(kScreenWidth / 2 - 60, 0, 60, kCellHeightOfCourseTitle)];
+    self.exchangeLB = [[UILabel alloc]initWithFrame:CGRectMake(kScreenWidth / 2 - 60, 0, 60, kCellHeightOfCourseTitle)];
     if (self.exChange) {
-        exchangeLB.text = @"换一批";
-        exchangeLB.textColor = kCommonMainColor;
+        _exchangeLB.text = @"换一批";
+        _exchangeLB.textColor = kCommonMainColor;
     }else
     {
-        exchangeLB.text = @"本月更多";
-        exchangeLB.textColor = kCommonMainTextColor_100;
+        _exchangeLB.text = @"本月更多";
+        _exchangeLB.textColor = kCommonMainTextColor_100;
     }
-    exchangeLB.font = kMainFont;
-    exchangeLB.textAlignment = NSTextAlignmentRight;
-    exchangeLB.userInteractionEnabled = YES;
-    [newCourseSectionFoot addSubview:exchangeLB];
+    _exchangeLB.font = kMainFont;
+    _exchangeLB.textAlignment = NSTextAlignmentRight;
+    _exchangeLB.userInteractionEnabled = YES;
+    [newCourseSectionFoot addSubview:_exchangeLB];
     
-    UIImageView * exchangeImageView = [[UIImageView alloc]initWithFrame:CGRectMake(kScreenWidth / 2 + 5, kCellHeightOfCourseTitle / 2 - 7.5, 14, 15)];
+    self.exchangeImageView = [[UIImageView alloc]initWithFrame:CGRectMake(kScreenWidth / 2 + 5, kCellHeightOfCourseTitle / 2 - 7.5, 14, 15)];
     if (self.exChange) {
-        exchangeImageView.image = [UIImage imageNamed:@"main_newCourse_exchange"];
+        _exchangeImageView.image = [UIImage imageNamed:@"main_newCourse_exchange"];
     }else if ([CourseraManager sharedManager].showMore)
     {
-        exchangeImageView.frame = CGRectMake(kScreenWidth / 2 + 5, kCellHeightOfCourseTitle / 2 - 3.5, 12, 7);
-        exchangeImageView.image = [UIImage imageNamed:@"形状-up"];
-        exchangeLB.text = @"收起";
+        _exchangeImageView.frame = CGRectMake(kScreenWidth / 2 + 5, kCellHeightOfCourseTitle / 2 - 3.5, 12, 7);
+        _exchangeImageView.image = [UIImage imageNamed:@"形状-up"];
+        _exchangeLB.text = @"收起";
     }else
     {
-        exchangeImageView.frame = CGRectMake(kScreenWidth / 2 + 5, kCellHeightOfCourseTitle / 2 - 3.5, 12, 7);
-        exchangeImageView.image = [UIImage imageNamed:@"形状-down"];
-        exchangeLB.text = @"本月更多";
+        _exchangeImageView.frame = CGRectMake(kScreenWidth / 2 + 5, kCellHeightOfCourseTitle / 2 - 3.5, 12, 7);
+        _exchangeImageView.image = [UIImage imageNamed:@"形状-down"];
+        _exchangeLB.text = @"本月更多";
     }
-    exchangeImageView.userInteractionEnabled = YES;
-    [newCourseSectionFoot addSubview:exchangeImageView];
+    _exchangeImageView.userInteractionEnabled = YES;
+    [newCourseSectionFoot addSubview:_exchangeImageView];
     
     UITapGestureRecognizer *exchangeTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(exchangeNeCourse)];
     [newCourseSectionFoot addGestureRecognizer:exchangeTap];

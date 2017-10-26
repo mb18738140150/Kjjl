@@ -18,7 +18,7 @@
 @property (nonatomic, strong)UITableView *tableview;
 @property (nonatomic, strong)HYSegmentedControl *segmentC;
 @property (nonatomic, assign)int index;
-@property (nonatomic, strong)UILabel *liveLB;
+
 @property (nonatomic, strong)UIImageView * goImageView;
 
 @property (nonatomic, strong)NSString * categoryName;
