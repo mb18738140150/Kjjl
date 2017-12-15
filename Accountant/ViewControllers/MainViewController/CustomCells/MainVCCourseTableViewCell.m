@@ -127,7 +127,7 @@
 {
     NSDictionary *dic = @{kCourseCategoryName:self.categoryName,
                           kCourseCategoryId:@(self.categoryId)};
-    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationOfMainPageCategoryClick object:dic];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationOfCategoryPageCategoryClick object:dic];
 }
 
 #pragma mark - utility
@@ -170,6 +170,7 @@
         }
         [self.dataSource addObject:dataArr];
     }
+   
     NSDictionary * infoDic = [[[CourseraManager sharedManager] getMainVCCategoryArray] objectAtIndex:0];
     self.categoryName = [infoDic objectForKey:kCourseCategoryName];
     self.categoryId = [[infoDic objectForKey:kCourseCategoryId] intValue];

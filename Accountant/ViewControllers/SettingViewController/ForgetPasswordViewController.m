@@ -49,7 +49,7 @@ static int a = 59;
     accountImageView.image = [UIImage imageNamed:@"手机(1)"];
     [accountView addSubview:accountImageView];
     
-    _account=[[UITextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(accountImageView.frame) + 10, 10, accountView.hd_width - 70, 20)];
+    _account=[[UITextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(accountImageView.frame) + 10, 0, accountView.hd_width - 35, 40)];
     [_account setBackgroundColor:[UIColor clearColor]];
     _account.placeholder=[NSString stringWithFormat:@"请输入手机号"];
     _account.delegate = self;
@@ -108,7 +108,7 @@ static int a = 59;
     passwordImageView.image = [UIImage imageNamed:@"密码"];
     [passwordView addSubview:passwordImageView];
     
-    _password=[[UITextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(passwordImageView.frame) + 10, 10, kScreenWidth-40, 20)];
+    _password=[[UITextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(passwordImageView.frame) + 10, 0, kScreenWidth-40, 40)];
     [_password setBackgroundColor:[UIColor clearColor]];
     _password.secureTextEntry = YES;
     _password.placeholder=[NSString stringWithFormat:@"请输入新的密码"];

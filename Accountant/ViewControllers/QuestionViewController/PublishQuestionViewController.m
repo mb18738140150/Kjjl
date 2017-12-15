@@ -126,6 +126,11 @@
 
 - (void)publishQuestion
 {
+    if ([[UserManager sharedManager]getUserLevel] != 3) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"暂无答疑权限，请先购买会员" delegate:nil cancelButtonTitle:@"知道了" otherButtonTitles:nil];
+        [alert show];
+        return;
+    }
     if (self.titleField.text != nil && self.contentField.text != nil && ![@""isEqualToString:self.titleField.text] && ![@"" isEqualToString:self.contentField.text]) {
         
         NSMutableString *imageStr = [[NSMutableString alloc] init];

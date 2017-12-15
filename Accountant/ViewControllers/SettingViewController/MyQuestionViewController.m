@@ -101,8 +101,6 @@
     });
 }
 
-
-
 #pragma mark - response func
 - (void)switchAlreadyReplyTable
 {
@@ -276,6 +274,7 @@
     if (tableView == self.notReplyTableView) {
         return 10 + height + 10;
     }
+    
     return 0;
 }
 #pragma mark - HYSegmentedControl 代理方法
@@ -284,3 +283,4 @@
     [self.scrollView setContentOffset:CGPointMake(index * _scrollView.hd_width, 0) animated:NO];
 }
 @end
+

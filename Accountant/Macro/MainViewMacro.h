@@ -24,6 +24,4 @@
 
 #define kCellHeightOfCourse (kImageHeightOfCourse + 50)
 
-
-
 #endif /* MainViewMacro_h */

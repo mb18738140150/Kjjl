@@ -28,7 +28,7 @@
 @property (nonatomic, assign) MFoldingSectionState sectionState;
 @property (nonatomic, strong) UITapGestureRecognizer *tapGesture;
 @property (nonatomic, strong) UIView        *bottomLineView;
-@property (nonatomic, strong) UIView *lineView;
+
 
 @end
 
@@ -275,7 +275,8 @@
     self.learnProcessView = [[ProcessView alloc]initWithFrame:CGRectMake(titleRect.origin.x, self.frame.size.height - 13, 230, 5)];
     [self addSubview:self.learnProcessView];
     
-    self.lineView = [[UIView alloc] initWithFrame:CGRectMake(25, CGRectGetMaxY(self.showStateImageView.frame), 0.7, self.frame.size.height - CGRectGetMaxY(self.showStateImageView.frame))];
+    self.lineView = [[UIView alloc] initWithFrame:CGRectMake(25, 30, 0.7, self.frame.size.height - 30)];
+    
     self.lineView.backgroundColor = [UIColor blueColor];
     [self addSubview:self.lineView];
     self.lineView.alpha = 0;
@@ -313,7 +314,7 @@
 //    [self addSubview:self.learnImageView];
     [self addGestureRecognizer:self.tapGesture];
     
-    self.lineView = [[UIView alloc] initWithFrame:CGRectMake(25, CGRectGetMaxY(self.showStateImageView.frame), 0.7, self.frame.size.height - CGRectGetMaxY(self.showStateImageView.frame))];
+    self.lineView = [[UIView alloc] initWithFrame:CGRectMake(25, 30, 0.7, self.frame.size.height - 30)];
     self.lineView.backgroundColor = [UIColor blueColor];
     [self addSubview:self.lineView];
     self.lineView.alpha = 0;

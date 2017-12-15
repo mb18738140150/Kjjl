@@ -15,7 +15,7 @@
 
 #define kNavigationBarHeight 44
 #define kTabBarHeight 49
-#define kStatusBarHeight 20
+#define kStatusBarHeight [[UIApplication sharedApplication] statusBarFrame].size.height
 
 #define UIRGBColor(r,g,b) [UIColor colorWithRed:r/255.0 green:g/255.0 blue:b/255.0 alpha:1.0]
 

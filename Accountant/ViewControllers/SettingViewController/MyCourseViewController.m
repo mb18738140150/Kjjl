@@ -17,9 +17,11 @@
 #import "NotificaitonMacro.h"
 #import "CoursecategoryTableViewCell.h"
 #import "HYSegmentedControl.h"
+#import "MyCourseTableViewCell.h"
+
 #define kHeaderViewHeight 45
 #define kSegmentHeight 42
-@interface MyCourseViewController ()<UITableViewDelegate,UITableViewDataSource,CourseModule_LearningCourseProtocol,CourseModule_CollectCourseProtocol,CourseModule_DeleteCollectCourseProtocol, HYSegmentedControlDelegate>
+@interface MyCourseViewController ()<UITableViewDelegate,UITableViewDataSource,CourseModule_LearningCourseProtocol,CourseModule_CollectCourseProtocol,CourseModule_DeleteCollectCourseProtocol, HYSegmentedControlDelegate,CourseModule_CompleteCourseProtocol>
 
 @property (nonatomic, strong)HYSegmentedControl * segmentC;
 @property (nonatomic, strong)UIScrollView * scrollView;
@@ -28,10 +30,12 @@
 @property (nonatomic,strong) UIButton                               *button1;
 @property (nonatomic,strong) UIButton                               *button2;
 
-@property (nonatomic,strong) UITableView                            *tikuTableView;
+@property (nonatomic,strong) UITableView                            *learningTableView;
+@property (nonatomic,strong) UITableView                            *completeTableView;
 @property (nonatomic,strong) UITableView                            *collectTableView;
 
 @property (nonatomic,strong) NSArray                                *learningCourseArray;
+@property (nonatomic, strong)NSArray                                *completeCourseArray;
 @property (nonatomic,strong) NSArray                                *collectCourseArray;
 
 @end
@@ -51,7 +55,7 @@
 - (void)learningCourseRequest
 {
     [SVProgressHUD show];
-    [[CourseraManager sharedManager] didRequestLearningCourseWithNotifiedObject:self];
+    [[CourseraManager sharedManager] didRequestLearningCourseWithInfoDic:@{@"type":@(0)} NotifiedObject:self];
     
 }
 
@@ -59,6 +63,11 @@
 {
     [SVProgressHUD show];
     [[CourseraManager sharedManager] didRequestCollectCourseWithNotifiedObject:self];
+}
+
+- (void)CompleteCourseRequest
+{
+    [[CourseraManager sharedManager] didRequestCompleteCourseWithInfoDic:@{@"type":@(1)} NotifiedObject:self];
 }
 
 - (void)deleteCollectCourseWithId:(int)courseId
@@ -85,7 +94,25 @@
         [SVProgressHUD dismiss];
     });
 }
+#pragma mark - complete delegate
+- (void)didRequestCompleteCourseFailed:(NSString *)failedInfo
+{
+    [SVProgressHUD dismiss];
+    [SVProgressHUD showErrorWithStatus:failedInfo];
+    [self.completeTableView.mj_header endRefreshing];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [SVProgressHUD dismiss];
+    });
+}
 
+- (void)didRequestCompleteCourseSuccessed
+{
+    [SVProgressHUD dismiss];
+    [self.completeTableView.mj_header endRefreshing];
+    self.completeCourseArray = [[CourseraManager sharedManager] getCompleteCourseInfoArray];
+    [self.completeTableView reloadData];
+}
+#pragma mark - delete delegate
 - (void)didRequestDeleteCollectCourseSuccessed
 {
     [SVProgressHUD dismiss];
@@ -106,36 +133,19 @@
 - (void)didRequestLearningCourseSuccessed
 {
     [SVProgressHUD dismiss];
-    [self.tikuTableView.mj_header endRefreshing];
+    [self.learningTableView.mj_header endRefreshing];
     self.learningCourseArray = [[CourseraManager sharedManager] getLearningCourseInfoArray];
-    [self.tikuTableView reloadData];
+    [self.learningTableView reloadData];
 }
 
 - (void)didRequestLearningCourseFailed:(NSString *)failedInfo
 {
     [SVProgressHUD dismiss];
     [SVProgressHUD showErrorWithStatus:failedInfo];
-    [self.tikuTableView.mj_header endRefreshing];
+    [self.learningTableView.mj_header endRefreshing];
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [SVProgressHUD dismiss];
     });
-}
-
-#pragma mark - response func
-- (void)switchLearningCourse
-{
-    [self.button1 setTitleColor:kCommonNavigationBarColor forState:UIControlStateNormal];
-    [self.button2 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [self.collectTableView removeFromSuperview];
-    [self.view addSubview:self.tikuTableView];
-}
-
-- (void)switchCollectCourse
-{
-    [self.button1 setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [self.button2 setTitleColor:kCommonNavigationBarColor forState:UIControlStateNormal];
-    [self.tikuTableView removeFromSuperview];
-    [self.view addSubview:self.collectTableView];
 }
 
 #pragma mark - ui
@@ -145,7 +155,7 @@
     [self.view addSubview:topView];
     topView.backgroundColor = [UIColor whiteColor];
     
-    self.navigationItem.title = @"我的收藏";
+    self.navigationItem.title = @"我的课程";
     self.edgesForExtendedLayout = UIRectEdgeNone;
     self.automaticallyAdjustsScrollViewInsets = NO;
     
@@ -162,29 +172,36 @@
 
 - (void)segmentSetup
 {
-    self.segmentC = [[HYSegmentedControl alloc] initWithOriginY:0 Titles:@[@"视频", @"题库"] delegate:self];
-//    [self.view addSubview:self.segmentC];
+    self.segmentC = [[HYSegmentedControl alloc] initWithOriginY:0 Titles:@[@"学习中", @"已学完",@"收藏"] delegate:self];
+    [self.view addSubview:self.segmentC];
 }
 
 - (void)contentViewSetup
 {
-    self.scrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, kScreenHeight - kNavigationBarHeight - kStatusBarHeight)];
-    self.scrollView.contentSize = CGSizeMake(kScreenWidth * 2, kScreenHeight - kNavigationBarHeight - kStatusBarHeight - kSegmentHeight);
+    self.scrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, CGRectGetMaxY(self.segmentC.frame), kScreenWidth, kScreenHeight - kNavigationBarHeight - kStatusBarHeight)];
+    self.scrollView.contentSize = CGSizeMake(kScreenWidth * 3, kScreenHeight - kNavigationBarHeight - kStatusBarHeight - kSegmentHeight);
     self.scrollView.scrollEnabled = NO;
     [self.view addSubview:self.scrollView];
     
-    self.tikuTableView = [[UITableView alloc] initWithFrame:CGRectMake(kScreenWidth, 0, kScreenWidth, kScreenHeight - kStatusBarHeight - kNavigationBarHeight - kHeaderViewHeight) style:UITableViewStylePlain];
-    self.tikuTableView.delegate = self;
-    self.tikuTableView.dataSource = self;
-    self.tikuTableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(learningCourseRequest)];
+    self.learningTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidth, kScreenHeight - kStatusBarHeight - kNavigationBarHeight - kHeaderViewHeight) style:UITableViewStylePlain];
+    self.learningTableView.delegate = self;
+    self.learningTableView.dataSource = self;
+    [self.learningTableView registerClass:[MyCourseTableViewCell class] forCellReuseIdentifier:@"collectVideo"];
+    self.learningTableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(learningCourseRequest)];
     
-    self.collectTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidth, kScreenHeight - kStatusBarHeight - kNavigationBarHeight) style:UITableViewStylePlain];
+    self.completeTableView = [[UITableView alloc] initWithFrame:CGRectMake(kScreenWidth, 0, kScreenWidth, kScreenHeight - kStatusBarHeight - kNavigationBarHeight) style:UITableViewStylePlain];
+    self.completeTableView.delegate = self;
+    self.completeTableView.dataSource = self;
+    [self.completeTableView registerClass:[MyCourseTableViewCell class] forCellReuseIdentifier:@"collectVideo"];
+    self.completeTableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(CompleteCourseRequest)];
+    
+    self.collectTableView = [[UITableView alloc] initWithFrame:CGRectMake(kScreenWidth * 2, 0, kScreenWidth, kScreenHeight - kStatusBarHeight - kNavigationBarHeight) style:UITableViewStylePlain];
     self.collectTableView.delegate = self;
     self.collectTableView.dataSource = self;
-    [self.collectTableView registerClass:[CoursecategoryTableViewCell class] forCellReuseIdentifier:@"collectVideo"];
+    [self.collectTableView registerClass:[MyCourseTableViewCell class] forCellReuseIdentifier:@"collectVideo"];
     self.collectTableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(collectCourseRequest)];
     
-    [self.scrollView addSubview:self.tikuTableView];
+    [self.scrollView addSubview:self.learningTableView];
     [self.scrollView addSubview:self.collectTableView];
 }
 
@@ -196,11 +213,14 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if (tableView == self.tikuTableView) {
+    if (tableView == self.learningTableView) {
         return self.learningCourseArray.count;
     }
     if (tableView == self.collectTableView) {
         return self.collectCourseArray.count;
+    }
+    if (tableView == self.completeTableView) {
+        return self.completeCourseArray.count;
     }
     return 0;
 }
@@ -208,21 +228,36 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
+    MyCourseTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:@"collectVideo" forIndexPath:indexPath];
     if ([tableView isEqual:self.collectTableView]) {
-        CoursecategoryTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:@"collectVideo" forIndexPath:indexPath];
+        cell.myCourseType = MyCourseCategoryType_collection;
         [cell resetCellContent:[self.collectCourseArray objectAtIndex:indexPath.row]];
-        
-        return cell;
-    }
-    
-    DownloadedCourseTableViewCell *cell = (DownloadedCourseTableViewCell *)[UIUtility getCellWithCellName:@"downloadedCourseCell" inTableView:tableView andCellClass:[DownloadedCourseTableViewCell class]];
-    if (tableView == self.tikuTableView) {
+    }else if ([tableView isEqual:self.completeTableView]){
+        cell.myCourseType = MyCourseCategoryType_complate;
+        [cell resetCellContent:[self.completeCourseArray objectAtIndex:indexPath.row]];
+    }else
+    {
+        cell.myCourseType = MyCourseCategoryType_learning;
         [cell resetCellContent:[self.learningCourseArray objectAtIndex:indexPath.row]];
     }
-    if (tableView == self.collectTableView) {
-        [cell resetCellContent:[self.collectCourseArray objectAtIndex:indexPath.row]];
-    }
-    [cell.courseCountLabel removeFromSuperview];
+    __weak typeof(self)weakSelf = self;
+    cell.DeleteCourseBlock = ^(NSDictionary *infoDic, MyCourseCategoryType type) {
+        switch (type) {
+            case MyCourseCategoryType_learning:
+                [weakSelf deleteLearningCourse:infoDic];
+                break;
+            case MyCourseCategoryType_complate:
+                [weakSelf deleteCompleteCourse:infoDic];
+                break;
+            case MyCourseCategoryType_collection:
+                [weakSelf deleteCollectionCourse:infoDic];
+                break;
+                
+            default:
+                break;
+        }
+    };
+    
     return cell;
 }
 
@@ -233,40 +268,63 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (tableView == self.tikuTableView) {
+    if (tableView == self.learningTableView) {
         [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationOfCourseClick object:[self.learningCourseArray objectAtIndex:indexPath.row]];
     }
     if (tableView == self.collectTableView) {
         [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationOfCourseClick object:[self.collectCourseArray objectAtIndex:indexPath.row]];
     }
-}
-
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (tableView == self.collectTableView) {
-        return YES;
-    }
-    return NO;
-}
-
-- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (tableView == self.collectTableView) {
-        return UITableViewCellEditingStyleDelete;
-    }
-    return UITableViewCellEditingStyleNone;
-}
-
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete && tableView == self.collectTableView) {
-        NSDictionary *dic = [self.collectCourseArray objectAtIndex:indexPath.row];
-        [self deleteCollectCourseWithId:[[dic objectForKey:kCourseID] intValue]];
+    if (tableView == self.completeTableView) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationOfCourseClick object:[self.completeCourseArray objectAtIndex:indexPath.row]];
     }
 }
+
+//- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    if (tableView == self.collectTableView) {
+//        return NO;
+//    }
+//    return NO;
+//}
+
+//- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    if (tableView == self.collectTableView) {
+//        return UITableViewCellEditingStyleDelete;
+//    }
+//    return UITableViewCellEditingStyleNone;
+//}
+
+//- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    if (editingStyle == UITableViewCellEditingStyleDelete && tableView == self.collectTableView) {
+//        NSDictionary *dic = [self.collectCourseArray objectAtIndex:indexPath.row];
+//        [self deleteCollectCourseWithId:[[dic objectForKey:kCourseID] intValue]];
+//    }
+//}
+
+#pragma mark - deleteCourse
+- (void)deleteLearningCourse:(NSDictionary *)infoDic
+{
+    
+}
+
+- (void)deleteCompleteCourse:(NSDictionary *)infoDic
+{
+    
+}
+
+- (void)deleteCollectionCourse:(NSDictionary *)infoDic
+{
+    [SVProgressHUD show];
+    [[CourseraManager sharedManager] didRequestDeleteCollectCourseWithCourseId:[[infoDic objectForKey:kCourseID] intValue] andNotifiedObject:self];
+}
+
 #pragma mark - HYSegmentedControl 代理方法
 - (void)hySegmentedControlSelectAtIndex:(NSInteger)index
 {
     [self.scrollView setContentOffset:CGPointMake(index * _scrollView.hd_width, 0) animated:NO];
+    
+    
 }
 @end

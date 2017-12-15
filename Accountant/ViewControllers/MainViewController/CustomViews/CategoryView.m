@@ -89,17 +89,20 @@
 {
     NSDictionary *dic = @{kCourseCategoryName:self.categoryName,
                           kCourseCategoryId:@(self.categoryId)};
-    if (self.pageType == PageMain) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationOfMainPageCategoryClick object:dic];
-    }
     if (self.pageType == PageCategory) {
         [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationOfCategoryPageCategoryClick object:dic];
+    }
+    if (self.pageType == PageMain) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationOfMainPageCategoryClick object:dic];
     }
     if (self.pageType == PageMessage) {
         NSLog(@"点击了消息中心");
     }
     if (self.pageType == PageLeft) {
         NSLog(@"点击了左上角");
+    }
+    if (self.pageType == Page_getIntegral) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationOfGetIntegralClick object:dic];
     }
 }
 

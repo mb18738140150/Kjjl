@@ -55,7 +55,7 @@
 
 - (void)requestDeleteVideoNoteWithId:(int)noteId andProcessDelegate:(id<HttpRequestProtocol>)delegate;
 
-- (void)requestLearingCourseWithProcessDelegate:(id<HttpRequestProtocol>)delegate;
+- (void)requestLearingCourseWithInfoDic:(NSDictionary *)infoDic ProcessDelegate:(id<HttpRequestProtocol>)delegate;
 
 - (void)requestCollectCourseWithProcessDelegate:(id<HttpRequestProtocol>)delegate;
 
@@ -126,6 +126,10 @@
 - (void)reqeustForgetPasswordWithDic:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate;
 
 - (void)reqeustCompleteUserInfoWithDic:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate;
+
+- (void)reqeustBindRegCodeWithCode:(NSString *)regCode andProcessDelegate:(id<HttpRequestProtocol>)delegate;
+
+- (void)requestPayOrderWith:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate;
 
 #pragma mark - 未使用
 - (void)requestSearchKeyWord:(NSString *)keyWords;

@@ -16,5 +16,4 @@
 
 @property (nonatomic,strong) AppInfoModel       *appInfoModel;
 
-
 @end

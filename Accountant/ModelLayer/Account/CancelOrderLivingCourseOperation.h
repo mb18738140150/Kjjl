@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface CancelOrderLivingCourseOperation : UIView
-- (void)didRequestCancelOrderLivingCourseWithCourseInfo:(NSDictionary * )infoDic withNotifiedObject:(id<UserModule_OrderLivingCourseProtocol>)object;
+- (void)didRequestCancelOrderLivingCourseWithCourseInfo:(NSDictionary * )infoDic withNotifiedObject:(id<UserModule_CancelOrderLivingCourseProtocol>)object;
 @end

@@ -19,11 +19,10 @@ typedef enum : NSUInteger {
 @interface ClassroomLivingTableViewCell : UITableViewCell
 @property (weak, nonatomic) IBOutlet UILabel *payTypeLB;
 
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *titleLBWidth;
 @property (weak, nonatomic) IBOutlet UIImageView *livingStateImageView;
 
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *payLB_left;
 
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *titleLBWidth;
 
 @property (weak, nonatomic) IBOutlet UIImageView *livingIconImageView;
 @property (weak, nonatomic) IBOutlet UILabel *livingTitleleLabel;

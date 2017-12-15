@@ -15,14 +15,14 @@
 #import "BindJPushOperation.h"
 #import "OrderLivingCourseOperation.h"
 #import "CancelOrderLivingCourseOperation.h"
-
+#import "BindRegCodeOperation.h"
 
 #import "VerifyCodeOperation.h"
 #import "RegistOperation.h"
 #import "ForgetPsdOperation.h"
 #import "VerifyAccountOperation.h"
 #import "CompleteUserInfoOperation.h"
-
+#import "PayCourseOperation.h"
 #import "PathUtility.h"
 
 @interface UserManager()
@@ -42,6 +42,8 @@
 @property (nonatomic, strong)ForgetPsdOperation         *forgetPsdOperation;
 @property (nonatomic, strong)VerifyAccountOperation     *verfyAccountOperation;
 @property (nonatomic, strong)CompleteUserInfoOperation  *completeOperation;
+@property (nonatomic, strong)BindRegCodeOperation       *bindRegCodeOperation;
+@property (nonatomic, strong)PayCourseOperation         *payOrderOperation;
 
 @end
 
@@ -74,6 +76,8 @@
         self.forgetPsdOperation = [[ForgetPsdOperation alloc]init];
         self.verfyAccountOperation = [[VerifyAccountOperation alloc]init];
         self.completeOperation = [[CompleteUserInfoOperation alloc]init];
+        self.bindRegCodeOperation = [[BindRegCodeOperation alloc]init];
+        self.payOrderOperation = [[PayCourseOperation alloc]init];
     }
     return self;
 }
@@ -101,6 +105,16 @@
 - (void)completeUserInfoWithDic:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_CompleteUserInfoProtocol>)object;
 {
     [self.completeOperation didRequestCompleteUserInfoWithWithDic:infoDic withNotifiedObject:object];
+}
+
+- (void)bindRegCodeWithRegCode:(NSString *)regCode withNotifiedObject:(id<UserModule_bindRegCodeProtocol>)object
+{
+    [self.bindRegCodeOperation didBindRegCodeWithWithCode:regCode withNotifiedObject:object];
+}
+
+- (void)payOrderWith:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_PayOrderProtocol>)object
+{
+    [self.payOrderOperation didRequestPayOrderWithCourseInfo:infoDic withNotifiedObject:object];
 }
 
 - (void)getVerifyCodeWithPhoneNumber:(NSString *)phoneNumber withNotifiedObject:(id<UserModule_VerifyCodeProtocol>)object
@@ -139,6 +153,16 @@
     return self.userModuleModels.currentUserModel.userID;
 }
 
+- (int)getCodeview
+{
+    return self.userModuleModels.currentUserModel.codeview;
+}
+
+- (void)changeCodeViewWith:(int)codeView
+{
+    self.userModuleModels.currentUserModel.codeview = codeView;
+}
+
 - (void)didRequestBindJPushWithCID:(NSString *)cid withNotifiedObject:(id<UserModule_BindJPushProtocol>)object
 {
     [self.bindJPushOperation didRequestBindJPushWithCID:cid withNotifiedObject:object];
@@ -150,7 +174,7 @@
     [self.orderLivingCourseOperation didRequestOrderLivingCourseWithCourseInfo:infoDic withNotifiedObject:object];
 }
 
-- (void)didRequestCancelOrderLivingCourseOperationWithCourseInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_OrderLivingCourseProtocol>)object
+- (void)didRequestCancelOrderLivingCourseOperationWithCourseInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_CancelOrderLivingCourseProtocol>)object
 {
     [self.cancelOrderLivingCOurseOperation didRequestCancelOrderLivingCourseWithCourseInfo:infoDic withNotifiedObject:object];
 }
@@ -190,6 +214,26 @@
 - (int)getUserLevel
 {
     return self.userModuleModels.currentUserModel.level;
+}
+
+- (NSString *)getLevelStr
+{
+    NSString * levelStr = @"";
+    switch (self.userModuleModels.currentUserModel.level) {
+        case 1:
+            levelStr = @"普通会员";
+            break;
+        case 2:
+            levelStr = @"试听会员";
+            break;
+        case 3:
+            levelStr = @"正式会员";
+            break;
+            
+        default:
+            break;
+    }
+    return levelStr;
 }
 
 - (NSDictionary *)getUserInfos
@@ -249,6 +293,16 @@
     [dic setObject:self.userModuleModels.appInfoModel.downloadUrl forKey:kAppUpdateInfoUrl];
     [dic setObject:@(self.userModuleModels.appInfoModel.isForce) forKey:kAppUpdateInfoIsForce];
     return dic;
+}
+
+- (NSDictionary *)getPayOrderDetailInfo
+{
+    return self.payOrderOperation.payOrderDetailInfo;
+}
+
+- (NSArray *)getMyOrderList
+{
+    return @[@[],@[],@[]];
 }
 
 @end

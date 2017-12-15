@@ -119,8 +119,8 @@
             
             if (self.drop) {
                 [btn setImage:[UIImage imageNamed:@"tiku-tra2-down"] forState:UIControlStateNormal];
-                btn.titleEdgeInsets = UIEdgeInsetsMake(0, -btn.imageView.hd_width * 1.5 + 6, 0, 0);
-                btn.imageEdgeInsets = UIEdgeInsetsMake(0, 110, 0, 0);
+//                btn.imageEdgeInsets = UIEdgeInsetsMake(0, 110, 0, 0);
+//                btn.titleEdgeInsets = UIEdgeInsetsMake(0, -btn.imageView.hd_width * 1.5 + 6, 0, 0);
                 
             }
             
@@ -214,6 +214,19 @@
         }];
     }
     
+//    if (btn.enabled == NO) {
+//        int tag = btn.tag - 1000;
+//        
+//        UIView * lineView;
+//        if (tag < _separateLineArray.count) {
+//            lineView = [_separateLineArray objectAtIndex:tag];
+//        }
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            btn.titleLabel.textColor = [UIColor whiteColor];
+//            lineView.backgroundColor = [UIColor whiteColor];
+//        });
+//    }
+    
     if (self.delegate && [self.delegate respondsToSelector:@selector(hySegmentedControlSelectAtIndex:)]) {
         self.selectIndex = btn.tag - 1000;
         [self.delegate hySegmentedControlSelectAtIndex:btn.tag - 1000];
@@ -244,12 +257,18 @@
 - (void)changeTitle:(NSString *)title withIndex:(NSInteger)index
 {
     UIButton * bt = [_array4Btn   objectAtIndex:index];
-    [bt setTitle:title forState:UIControlStateNormal];
     
-    if (self.drop) {
-        bt.titleEdgeInsets = UIEdgeInsetsMake(0, -bt.imageView.hd_width * 1.5 + 6, 0, 0);
-        bt.imageEdgeInsets = UIEdgeInsetsMake(0, 110, 0, 0);
-    }
+    CGFloat width = [UIUtility getWidthWithText:title font:kMainFont height:15];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [bt setTitle:title forState:UIControlStateNormal];
+        bt.titleLabel.hd_width = width;
+        bt.titleLabel.hd_x = (bt.hd_width - 12 - width) / 2;
+        if (self.drop) {
+            bt.titleEdgeInsets = UIEdgeInsetsMake(0, -12, 0, 12);
+            bt.imageEdgeInsets = UIEdgeInsetsMake(0,width + bt.titleLabel.hd_x, 0, 0);
+        }
+    });
+    
 }
 
 - (void)addTipWithIndex:(NSInteger)index
@@ -265,7 +284,6 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         [bt setImage:[UIImage imageNamed:@""] forState:UIControlStateNormal];
     });
-    
 }
 
 - (void)hideTitlesWith:(NSArray *)titlesArray
@@ -279,7 +297,10 @@
             lineView = [_separateLineArray objectAtIndex:tag];
             
         }
+        
         dispatch_async(dispatch_get_main_queue(), ^{
+            bt.hidden = YES;
+            lineView.hidden = YES;
             bt.titleLabel.textColor = [UIColor whiteColor];
             lineView.backgroundColor = [UIColor whiteColor];
         });
@@ -298,11 +319,29 @@
             
         }
         dispatch_async(dispatch_get_main_queue(), ^{
+            bt.hidden = NO;
+            lineView.hidden = NO;
             [bt setTitleColor:UIColorFromRGBValue(0x999999) forState:UIControlStateNormal];
             lineView.backgroundColor = UIColorFromRGBValue(0xE6E6E6);
         });
     }
 }
+
+- (void)resetColor:(UIColor *)color
+{
+    for (int i = 0; i < _array4Btn.count; i++) {
+        UIButton * bt = [_array4Btn   objectAtIndex:i];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [bt setTitleColor:color forState:UIControlStateSelected];
+            _bottomLineView.backgroundColor = color;
+        });
+    }
+}
+- (void)hideBottomLine
+{
+    _bottomLineView.hidden = YES;
+}
+
 /*
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.

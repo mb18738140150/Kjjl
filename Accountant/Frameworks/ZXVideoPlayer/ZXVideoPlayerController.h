@@ -27,6 +27,9 @@
 /// 将要切换到全屏模式
 @property (nonatomic, copy) void(^videoPlayerWillChangeToFullScreenModeBlock)();
 
+/// 非正式会员只可试听第一节5分钟
+@property (nonatomic, copy) void(^informalBlock)();
+
 - (instancetype)initWithFrame:(CGRect)frame;
 /// 展示播放器
 - (void)showInView:(UIView *)view;

@@ -82,3 +82,16 @@
 - (void)didRequestCancelOrderLivingFailed:(NSString *)failedInfo;
 
 @end
+@protocol UserModule_bindRegCodeProtocol <NSObject>
+
+- (void)didRequestbindRegCodeSuccessed;
+- (void)didRequestbindRegCodeFailed:(NSString *)failedInfo;
+
+@end
+
+@protocol UserModule_PayOrderProtocol <NSObject>
+
+- (void)didRequestPayOrderSuccessed;
+- (void)didRequestPayOrderFailed:(NSString *)failedInfo;
+
+@end

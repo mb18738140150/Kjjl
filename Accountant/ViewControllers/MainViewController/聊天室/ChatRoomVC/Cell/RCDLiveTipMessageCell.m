@@ -24,8 +24,18 @@
 //        self.tipMessageLabel.delegate = self;
         self.tipMessageLabel.userInteractionEnabled = YES;
         [self.baseContentView addSubview:self.tipMessageLabel];
-        self.tipMessageLabel.font = [UIFont systemFontOfSize:16.f];;
+        self.tipMessageLabel.font = [UIFont systemFontOfSize:14.f];;
         self.tipMessageLabel.marginInsets = UIEdgeInsetsMake(0.5f, 0.5f, 0.5f, 0.5f);
+        
+//        self.tipMessageLabel.backgroundColor = [UIColor blueColor];
+        
+        self.timeLB = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth - 5, 22)];
+        [self.baseContentView addSubview:self.timeLB];
+        self.timeLB.backgroundColor = [UIColor clearColor];
+        self.timeLB.textAlignment = NSTextAlignmentRight;
+        self.timeLB.textColor = UIRGBColor(150, 150, 150);
+        self.timeLB.font = kMainFont;
+        
     }
     return self;
 }
@@ -43,6 +53,7 @@
         RCTextMessage *notification = (RCTextMessage *)content;
         NSString *localizedMessage = [RCDLiveKitUtility formatMessage:notification];
         NSString *name=@"";
+        NSString * dateStr = @"";
         if (content.senderUserInfo) {
             
             /*
@@ -66,6 +77,11 @@
              //            {
              //            }
              */
+            NSDate *date = [NSDate dateWithTimeIntervalSince1970:model.sentTime / 1000.0];
+            NSDateFormatter * formatter = [[NSDateFormatter alloc]init];
+            formatter.dateFormat = @"HH:mm:ss";
+            dateStr = [formatter stringFromDate:date];
+            dateStr = [NSString stringWithFormat:@"%@  ", dateStr];
             
             name = [NSString stringWithFormat:@"%@:",content.senderUserInfo.name];
         }
@@ -93,13 +109,26 @@
 //        {
 //        }
         
-        [attributedString addAttribute:NSForegroundColorAttributeName value:(RCDLive_HEXCOLOR(0x1D7AF8)) range:[str rangeOfString:name]];
+        
+        [attributedString addAttribute:NSForegroundColorAttributeName value:(UIRGBColor(255, 102, 10)) range:[str rangeOfString:name]];
         if ([model.senderUserId isEqualToString:[[NSUserDefaults standardUserDefaults] objectForKey:kAssistantID]]) {
             [attributedString addAttribute:NSForegroundColorAttributeName value:(RCDLive_HEXCOLOR(0xFF0000)) range:[str rangeOfString:name]];
         }
+        [attributedString addAttribute:NSForegroundColorAttributeName value:(kMainTextColor) range:[str rangeOfString:localizedMessage]];
         
-        [attributedString addAttribute:NSForegroundColorAttributeName value:([UIColor grayColor]) range:[str rangeOfString:localizedMessage]];
+        NSMutableParagraphStyle *paraStyle = [[NSMutableParagraphStyle alloc] init];
+        paraStyle.lineBreakMode = NSLineBreakByCharWrapping;
+        paraStyle.alignment = NSTextAlignmentLeft;
+        paraStyle.lineSpacing = kUILABEL_LINE_SPACE; //设置行间距
+        paraStyle.hyphenationFactor = 1.0;
+        paraStyle.firstLineHeadIndent = 0.0;
+        paraStyle.paragraphSpacingBefore = 0.0;
+        paraStyle.headIndent = 0;
+        paraStyle.tailIndent = 0;
+//        [attributedString addAttribute:NSParagraphStyleAttributeName value:paraStyle range:[str rangeOfString:localizedMessage]];
+        
         self.tipMessageLabel.attributedText = attributedString.copy;
+        self.timeLB.text = dateStr;
     }else if ([content isMemberOfClass:[RCDLiveGiftMessage class]]){
         RCDLiveGiftMessage *notification = (RCDLiveGiftMessage *)content;
         NSString *name=@"";
@@ -123,7 +152,6 @@
     
     CGSize __labelSize = [RCDLiveTipMessageCell getTipMessageCellSize:__text];
     
-
     if (_isFullScreenMode) {
         self.tipMessageLabel.frame = CGRectMake(6,0, __labelSize.width, __labelSize.height);
 //        self.tipMessageLabel.backgroundColor = RCDLive_HEXCOLOR(0x000000);
@@ -134,6 +162,18 @@
 //        self.tipMessageLabel.backgroundColor = RCDLive_HEXCOLOR(0xBBBBBB);
 //        self.tipMessageLabel.alpha = 1;
     }
+}
+
+- (NSString *)getSpaceStr:(NSString *)name and:(NSString *)timeStr
+{
+    NSString * space = @"                        ";
+    int length = 16 - name.length - 1 - timeStr.length;
+    if (length <0) {
+        length = 0;
+    }
+    NSString *space1 = [space substringWithRange:NSMakeRange(0, length)];
+    
+    return space1;
 }
 
 - (void)attributedLabel:(RCDLiveAttributedLabel *)label didSelectLinkWithURL:(NSURL *)url
@@ -182,13 +222,16 @@
 }
 
 + (CGSize)getTipMessageCellSize:(NSString *)content{
-    CGFloat maxMessageLabelWidth = 220;
+    CGFloat maxMessageLabelWidth = kScreenWidth;
     CGSize __textSize = CGSizeZero;
     if (RCDLive_IOS_FSystenVersion < 7.0) {
-        __textSize = RCDLive_RC_MULTILINE_TEXTSIZE_LIOS7(content, [UIFont systemFontOfSize:16.0f], CGSizeMake(maxMessageLabelWidth, MAXFLOAT), NSLineBreakByTruncatingTail);
+        __textSize = RCDLive_RC_MULTILINE_TEXTSIZE_LIOS7(content, [UIFont systemFontOfSize:14.0f], CGSizeMake(maxMessageLabelWidth, MAXFLOAT), NSLineBreakByTruncatingTail);
     }else {
-        __textSize = RCDLive_RC_MULTILINE_TEXTSIZE_GEIOS7(content, [UIFont systemFontOfSize:16.0f], CGSizeMake(maxMessageLabelWidth, MAXFLOAT));
+        __textSize = RCDLive_RC_MULTILINE_TEXTSIZE_GEIOS7(content, [UIFont systemFontOfSize:14.0f], CGSizeMake(maxMessageLabelWidth, MAXFLOAT));
     }
-    __textSize = CGSizeMake(ceilf(__textSize.width)+10 , ceilf(__textSize.height)+6);    return __textSize;
+    
+//    CGFloat height = [UIUtility getLineSpaceLabelHeght:content font:kMainFont width:maxMessageLabelWidth];
+    
+    __textSize = CGSizeMake(ceilf(__textSize.width)+10 , ceilf(__textSize.height) + 6);    return __textSize;
 }
 @end

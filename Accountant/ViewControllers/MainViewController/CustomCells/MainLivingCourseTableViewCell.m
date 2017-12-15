@@ -35,6 +35,8 @@
     
     [self.contentView removeAllSubviews];
     
+    self.selectionStyle = UITableViewCellSelectionStyleNone;
+    
     self.backgroundColor = [UIColor colorWithWhite:.98 alpha:1];
     
     // 课程icon
@@ -98,8 +100,13 @@
     self.timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(kScreenWidth - 15, self.courseCoverImageView.hd_centerY - 10, 100, 20)];
     self.timeLabel.font = [UIFont systemFontOfSize:13];
     self.timeLabel.textColor = [UIColor redColor];
-    self.timeLabel.text = [self getTimeWith:[courseInfo objectForKey:kLivinglastTime]];
-    
+    if (self.livingCellType == LivingCellType_Order || self.livingCellType == LivingCellType_Living) {
+        self.timeLabel.text = [self getTime1With:[NSString stringWithFormat:@"%@", [[[courseInfo objectForKey:kLivingTime] componentsSeparatedByString:@"~"] objectAtIndex:0]]];
+    }else
+    {
+        self.timeLabel.text = [self getTimeWith:[courseInfo objectForKey:kLivinglastTime]];
+    }
+
     CGFloat width = [UIUtility getWidthWithText:self.timeLabel.text font:[UIFont systemFontOfSize:13] height:20];
     self.timeLabel.frame = CGRectMake(kScreenWidth - 15 - width, self.courseCoverImageView.hd_centerY - 10, width + 5, 20);
     
@@ -118,8 +125,22 @@
     self.playTimeLB = [[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(self.courseCoverImageView.frame) + 10, CGRectGetMaxY(self.courseCoverImageView.frame) - 20, self.hd_width - self.courseCoverImageView.hd_width - 50, 20)];
     self.playTimeLB.font = [UIFont systemFontOfSize:11];
     self.playTimeLB.textColor = kCommonMainTextColor_150;
-    self.playTimeLB.text = [courseInfo objectForKey:kLivingTime];
+    self.playTimeLB.text = [[[courseInfo objectForKey:kLivingTime] componentsSeparatedByString:@"~"] objectAtIndex:0];
     [self.contentView addSubview:self.playTimeLB];
+    
+    self.cancelBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.cancelBtn.frame = CGRectMake(kScreenWidth - 62, self.playTimeLB.hd_y - 1, 52, 21);
+    [self.cancelBtn setTitle:@"取消预约" forState:UIControlStateNormal];
+    self.cancelBtn.titleLabel.font = [UIFont systemFontOfSize:11];
+    [self.cancelBtn setTitleColor:UIColorFromRGB(0x999999) forState:UIControlStateNormal];
+    self.cancelBtn.layer.borderColor = UIColorFromRGB(0x999999).CGColor;
+    self.cancelBtn.layer.borderWidth = 1;
+    self.cancelBtn.layer.cornerRadius = 4;
+    self.cancelBtn.layer.masksToBounds = YES;
+    [self.cancelBtn addTarget:self action:@selector(cancelOrderAction) forControlEvents:UIControlEventTouchUpInside];
+    if (self.livingCellType == LivingCellType_Order) {
+        [self.contentView addSubview:self.cancelBtn];
+    }
     
     // 分割线
     self.seperateLine = [[UIView alloc]initWithFrame:CGRectMake(0, 99, kScreenWidth, 1)];
@@ -127,22 +148,38 @@
     [self.contentView addSubview:self.seperateLine];
     
     [self showMask];
-    int playType = [[courseInfo objectForKey:kLivingState] intValue];
-    switch (playType) {
-        case 0:
-            self.timeImageView.image = [UIImage imageNamed:@"main_playTime"];
-            break;
-        case 1:
-            self.timeImageView.image = [UIImage imageNamed:@"main_playing"];
-            self.timeLabel.text = @"正在直播";
-            break;
-        case 2:
-            [self hiddenMask];
-            
-            break;
-        default:
-            break;
+    
+    if (self.livingCellType == LivingCellType_nomal) {
+        ;
+        int playType = [[courseInfo objectForKey:kLivingState] intValue];
+        switch (playType) {
+            case 0:
+                self.timeImageView.image = [UIImage imageNamed:@"main_playTime"];
+                break;
+            case 1:
+                self.timeImageView.image = [UIImage imageNamed:@"main_playing"];
+                self.timeLabel.text = @"正在直播";
+                [self refreshTimeFrame];
+                break;
+            case 2:
+                [self hiddenMask];
+                
+                break;
+            default:
+                break;
+        }
     }
+    if (self.livingCellType == LivingCellType_Order || self.livingCellType == LivingCellType_Living) {
+        self.timeLabel.textColor = UIColorFromRGB(0xff4e00);
+        self.backgroundColor = [UIColor whiteColor];
+        self.courseNameLabel.text = [courseInfo objectForKey:kCourseSecondName];
+        self.timeImageView.image = [UIImage imageNamed:@"main_playTime"];
+    }
+    
+    if ([self.timeLabel.text isEqualToString:@"正在直播"] || [self.timeLabel.text isEqualToString:@"已结束"]) {
+        return;
+    }
+    
     
     self.countDown = nil;
     self.countDown = [[CountDown alloc] init];
@@ -155,42 +192,66 @@
     
 }
 
+- (void)cancelOrderAction
+{
+    if (self.cancelOrderLivingCourseBlock) {
+        self.cancelOrderLivingCourseBlock();
+    }
+}
+
+- (void)refreshTimeFrame
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        self.timeLabel.text = @"正在直播";
+        
+        CGFloat width = [UIUtility getWidthWithText:self.timeLabel.text font:[UIFont systemFontOfSize:13] height:20];
+        self.timeLabel.frame = CGRectMake(kScreenWidth - 15 - width, self.courseCoverImageView.hd_centerY - 10, width + 5, 20);
+        
+        self.timeImageView.frame = CGRectMake(self.timeLabel.hd_x - 5 - 12 , self.courseCoverImageView.hd_centerY - 7, 12, 13);
+    });
+}
+
 - (void)updateTimeInVisibleCells:(NSDictionary *)infoDic
 {
-    
+    __weak typeof(self)weakSelf = self;
     if ([[infoDic objectForKey:kLivinglastTime] length] == 0) {
         return;
     }
     
-    if (self.minute <= 0) {
-        if (self.hour <= 0) {
-            if (self.day <= 0) {
-                self.countDown = nil;
-                if (self.mainCountDownFinishBlock) {
-                    self.mainCountDownFinishBlock();
+    if (weakSelf.minute <= 0) {
+        if (weakSelf.hour <= 0) {
+            if (weakSelf.day <= 0) {
+                weakSelf.countDown = nil;
+                if (weakSelf.mainCountDownFinishBlock) {
+                    weakSelf.mainCountDownFinishBlock();
                 }
             }else
             {
-                self.day--;
-                self.hour = 23;
-                self.minute = 59;
+                weakSelf.day--;
+                weakSelf.hour = 23;
+                weakSelf.minute = 59;
             }
         }else
         {
-            self.hour--;
-            self.minute = 59;
+            weakSelf.hour--;
+            weakSelf.minute = 59;
         }
     }else{
-        self.minute--;
+        weakSelf.minute--;
     }
     
     dispatch_async(dispatch_get_main_queue(), ^{
         NSString * timeString = [NSString stringWithFormat:@"%ld天%ld小时%ld分钟",(long)self.day, (long)self.hour,(long)self.minute];
         
         if (_day == 0) {
-            timeString = [NSString stringWithFormat:@"%ld小时%ld分钟", (long)self.hour,(long)self.minute];
+            if (_hour == 0 && _minute > 0 && _minute < 15) {
+                timeString = @"即将开始";
+            }else{
+                timeString = [NSString stringWithFormat:@"%ld小时%ld分钟", (long)self.hour,(long)self.minute];
+            }
         }
-        self.timeLabel.text = timeString;
+        weakSelf.timeLabel.text = timeString;
     });
 }
 
@@ -210,7 +271,7 @@
 {
     NSDate *nowDate = [NSDate date];
     NSDateFormatter *dateFomatter = [[NSDateFormatter alloc] init];
-    dateFomatter.dateFormat = @"yyyy/MM/dd HH:mm:mm";
+    dateFomatter.dateFormat = @"yyyy/MM/dd HH:mm:ss";
     
     // 截止时间字符串格式
     NSString * expireDateStr = timeStr;
@@ -251,7 +312,65 @@
         timeString = [NSString stringWithFormat:@"%ld小时%ld分钟", (long)self.hour,(long)self.minute];
     }
     
-    if (_hour == 0 && _minute == 0) {
+    if (_day == 0 && _hour == 0 && _minute > 0 && _minute < 15) {
+        timeString = @"即将开始";
+    }
+    if (_day == 0 && _hour == 0 && _minute == 0) {
+        timeString = @"已结束";
+    }
+    
+    return timeString;
+}
+
+- (NSString *)getTime1With:(NSString *)timeStr
+{
+    NSDate *nowDate = [NSDate date];
+    NSDateFormatter *dateFomatter = [[NSDateFormatter alloc] init];
+    dateFomatter.dateFormat = @"yyyy-MM-dd HH:mm";
+    
+    // 截止时间字符串格式
+    NSString * expireDateStr = timeStr;
+    //    expireDateStr = @"2017/9/14 16:25:00";
+    // 当前时间字符串格式
+    NSString *nowDateStr = [dateFomatter stringFromDate:nowDate];
+    // 截止时间data格式
+    NSDate *expireDate = [dateFomatter dateFromString:expireDateStr];
+    // 当前时间data格式
+    nowDate = [dateFomatter dateFromString:nowDateStr];
+    // 当前日历
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    // 需要对比的时间数据
+    NSCalendarUnit unit = NSCalendarUnitYear | NSCalendarUnitMonth
+    | NSCalendarUnitDay | NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond;
+    // 对比时间差
+    NSDateComponents *dateCom = [calendar components:unit fromDate:nowDate toDate:expireDate options:0];
+    
+    self.day = dateCom.month * 30  + dateCom.day;
+    
+    self.hour = dateCom.hour;
+    
+    self.minute = dateCom.minute;
+    if (_day <= 0) {
+        _day = 0;
+    }
+    if (_hour <= 0) {
+        _hour = 0;
+    }
+    
+    if (_minute <= 0) {
+        _minute = 0;
+    }
+    
+    NSString * timeString = [NSString stringWithFormat:@"%ld天%ld小时%ld分钟",(long)self.day, (long)self.hour,(long)self.minute];
+    
+    if (_day == 0) {
+        timeString = [NSString stringWithFormat:@"%ld小时%ld分钟", (long)self.hour,(long)self.minute];
+    }
+    
+    if (_day == 0 && _hour == 0 && _minute > 0 && _minute < 15) {
+        timeString = @"即将开始";
+    }
+    if (_day == 0 && _hour == 0 && _minute == 0) {
         timeString = @"已结束";
     }
     

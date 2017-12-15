@@ -36,14 +36,19 @@
     self.payTypeLB.layer.masksToBounds = YES;
     
     [self.livingIconImageView sd_setImageWithURL:[NSURL URLWithString:[infoDic objectForKey:kTeacherPortraitUrl]] placeholderImage:[UIImage imageNamed:@"course_pic2.png"]];
+    
     self.livingTitleleLabel.text = [infoDic objectForKey:kCourseSecondName];
     
-    CGFloat width = [UIUtility getWidthWithText:self.livingTitleleLabel.text font:kMainFont height:35];
-    if (width < kScreenWidth - 75 - 20 - 30) {
-        self.titleLBWidth.constant = width + 5;
+    CGFloat width = [UIUtility getWidthWithText:[infoDic objectForKey:kCourseSecondName] font:kMainFont height:15];
+    if (width < kScreenWidth - 60 ) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.titleLBWidth.constant = width + 5;
+        });
     }else
     {
-        self.titleLBWidth.constant = kScreenWidth - 75 - 20 - 30;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.titleLBWidth.constant = kScreenWidth - 60;
+        });
     }
     
     NSString * timeStr = [[[infoDic objectForKey:kLivingTime] componentsSeparatedByString:@"~"] objectAtIndex:0];
@@ -124,16 +129,18 @@
             break;
     }
     
+    if ([[infoDic objectForKey:kLivingState] intValue] == 2 || [[infoDic objectForKey:kLivingState] intValue] == 3) {
+        return;
+    }
     
     self.countDown = nil;
     self.countDown = [[CountDown alloc] init];
     __weak __typeof(self) weakSelf= self;
-    ///每秒回调一次
+    ///每分回调一次
     [self.countDown countDownWithPER_MINBlock:^{
         
         [weakSelf updateTimeInVisibleCells:infoDic];
     }];
-    
 }
 
 - (void)updateTimeInVisibleCells:(NSDictionary *)infoDic
@@ -166,10 +173,14 @@
     }
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        self.countDowmLB.text = [NSString stringWithFormat:@"%ld天%ld小时%ld分钟", (long)self.day, (long)self.hour,(long)self.minute];
+        if (_day == 0 && _hour == 0 && _minute > 0 && _minute < 15) {
+            self.countDowmLB.text = @"即将开始";
+        }else
+        {
+            self.countDowmLB.text = [NSString stringWithFormat:@"%ld天%ld小时%ld分钟", (long)self.day, (long)self.hour,(long)self.minute];
+        }
     });
 }
-
 
 - (IBAction)playAction:(id)sender {
     
@@ -236,7 +247,9 @@
     }
     
     NSString * timeString = [NSString stringWithFormat:@"%ld天%ld小时%ld分钟", (long)self.day, (long)self.hour,(long)self.minute];
-    
+    if (_day == 0 && _hour == 0 && _minute > 0 && _minute < 15) {
+        timeString = @"即将开始";
+    }
     return timeString;
 }
 

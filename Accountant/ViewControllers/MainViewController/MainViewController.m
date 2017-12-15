@@ -178,7 +178,7 @@
 #pragma mark - notifications
 - (void)addNotifications
 {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(courseCategoryClick:) name:kNotificationOfMainPageCategoryClick object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(courseCategoryClick:) name:kNotificationOfCategoryPageCategoryClick object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(courseVCdidload:) name:kNotificationOfCourseVCdidLoad object:nil];
     
 }
@@ -270,7 +270,6 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    
     if (indexPath.section == 2 && indexPath.row == 0) {
         
         [self.tabBarController setSelectedIndex:1];
@@ -299,8 +298,15 @@
         
         [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationOfCourseClick object:info];
     }
-    if (indexPath.section == 4 && indexPath.row == 0) {
+    if (indexPath.section == 5 && indexPath.row == 0) {
         [self.tabBarController setSelectedIndex:2];
+    }
+    if (indexPath.section == 5 && indexPath.row != 0) {
+        int questionId = [[[self.contentTableSource.mainQuestionArray objectAtIndex:indexPath.row - 1] objectForKey:kQuestionId] intValue];
+        QuestionDetailViewController *detailController = [[QuestionDetailViewController alloc] init];
+        detailController.hidesBottomBarWhenPushed = YES;
+        detailController.questionId = questionId;
+        [self.navigationController pushViewController:detailController animated:YES];
     }
 }
 

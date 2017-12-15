@@ -84,8 +84,9 @@
 
  @param object 请求成功后通知的对象
  */
-- (void)didRequestLearningCourseWithNotifiedObject:(id<CourseModule_LearningCourseProtocol>)object;
+- (void)didRequestLearningCourseWithInfoDic:(NSDictionary *)infoDic NotifiedObject:(id<CourseModule_LearningCourseProtocol>)object;
 
+- (void)didRequestCompleteCourseWithInfoDic:(NSDictionary *)infoDic NotifiedObject:(id<CourseModule_CompleteCourseProtocol>)object;
 
 /**
  请求 我的 我的课程 收藏的信息
@@ -213,6 +214,13 @@
 - (NSArray *)getLivingSectionDetailArray;
 
 /**
+ 获取已预约直播课程小节
+ 
+ @return 已预约直播课程小节
+ */
+- (NSArray *)getLivingOrderedSectionDetailArray;
+
+/**
  获取所有课程信息
 
  @return 所有课程信息
@@ -287,6 +295,7 @@
  */
 - (NSArray *)getLearningCourseInfoArray;
 
+- (NSArray *)getCompleteCourseInfoArray;
 
 /**
  获取 我的 我的课程 收藏 的课程

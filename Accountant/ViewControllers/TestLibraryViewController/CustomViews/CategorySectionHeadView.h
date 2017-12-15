@@ -31,6 +31,8 @@ typedef NS_ENUM(NSUInteger, MFoldingSectionHeaderArrowPosition) {
 
 @property (nonatomic, weak)id<MFoldingSectionHeaderDelegate> tapDelegate;
 
+@property (nonatomic, strong) UIView *lineView;
+
 -(instancetype)initWithFrame:(CGRect)frame withTag:(NSInteger)tag;
 
 -(void)setupWithBackgroundColor:(UIColor *)backgroundColor

@@ -24,6 +24,8 @@
 
 @property (nonatomic, strong) NSString          *rongToken;
 
+@property (nonatomic, assign) int               codeview;
+
 /**
  1  :   普通      (啥都不能干)
  2  :   试用      (可以看部分视频)

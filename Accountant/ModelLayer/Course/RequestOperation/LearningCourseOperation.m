@@ -14,37 +14,80 @@
 
 @interface LearningCourseOperation ()<HttpRequestProtocol>
 
+@property (nonatomic, strong)NSDictionary *infoDic;
+
 @end
 
 @implementation LearningCourseOperation
 
-- (void)didRequestLearningCourseWithNotifiedObject:(id<CourseModule_LearningCourseProtocol>)object
+- (void)didRequestLearningCourseWith:(NSDictionary *)infoDic NotifiedObject:(id<CourseModule_LearningCourseProtocol>)object
 {
+    self.infoDic = infoDic;
     self.notifiedObject = object;
-    [[HttpRequestManager sharedManager] requestLearingCourseWithProcessDelegate:self];
+    [[HttpRequestManager sharedManager] requestLearingCourseWithInfoDic:infoDic ProcessDelegate:self];
+}
+
+- (void)didRequestCompleteCourseWith:(NSDictionary *)infoDic NotifiedObject:(id<CourseModule_CompleteCourseProtocol>)object
+{
+    self.infoDic = infoDic;
+    self.complateNotifiedObject = object;
+    [[HttpRequestManager sharedManager] requestLearingCourseWithInfoDic:infoDic ProcessDelegate:self];
 }
 
 - (void)didRequestSuccessed:(NSDictionary *)successInfo
 {
-    [self.learningCourseArray removeAllObjects];
-    NSArray *data = [successInfo objectForKey:@"data"];
-    for (NSDictionary *dic in data) {
-        CourseModel *model = [[CourseModel alloc] init];
-        model.courseID = [[dic objectForKey:@"id"] intValue];
-        model.courseName = [dic objectForKey:@"courseName"];
-        model.courseCover = [dic objectForKey:@"cover"];
-        [self.learningCourseArray addObject:model];
+    if ([[self.infoDic objectForKey:@"type"] intValue] == 0) {
+        [self.learningCourseArray removeAllObjects];
+        NSArray *data = [successInfo objectForKey:@"data"];
+        for (NSDictionary *dic in data) {
+            CourseModel *model = [[CourseModel alloc] init];
+            model.courseID = [[dic objectForKey:@"id"] intValue];
+            model.courseName = [dic objectForKey:@"courseName"];
+            model.courseCover = [dic objectForKey:@"cover"];
+            model.coueseTeacherName = [dic objectForKey:@"teacherName"];
+            model.learnProgress = [[dic objectForKey:@"learnProgress"] doubleValue];
+            model.lastTime = [dic objectForKey:@"lastLearnTime"];
+            [self.learningCourseArray addObject:model];
+        }
+        if (isObjectNotNil(self.notifiedObject)) {
+            [self.notifiedObject didRequestLearningCourseSuccessed];
+        }
+    }else
+    {
+        [self.completeCourseArray removeAllObjects];
+        NSArray *data = [successInfo objectForKey:@"data"];
+        for (NSDictionary *dic in data) {
+            CourseModel *model = [[CourseModel alloc] init];
+            model.courseID = [[dic objectForKey:@"id"] intValue];
+            model.courseName = [dic objectForKey:@"courseName"];
+            model.courseCover = [dic objectForKey:@"cover"];
+            model.coueseTeacherName = [dic objectForKey:@"teacherName"];
+            model.learnProgress = [[dic objectForKey:@"learnProgress"] doubleValue];
+            model.lastTime = [dic objectForKey:@"lastLearnTime"];
+            [self.completeCourseArray addObject:model];
+        }
+        if (isObjectNotNil(self.complateNotifiedObject)) {
+            [self.complateNotifiedObject didRequestCompleteCourseSuccessed];
+        }
     }
-    if (isObjectNotNil(self.notifiedObject)) {
-        [self.notifiedObject didRequestLearningCourseSuccessed];
-    }
+    
 }
 
 - (void)didRequestFailed:(NSString *)failInfo
 {
-    if (isObjectNotNil(self.notifiedObject)) {
-        [self.notifiedObject didRequestLearningCourseFailed:failInfo];
+    if ([[self.infoDic objectForKey:@"type"] intValue] == 0) {
+    
+        if (isObjectNotNil(self.notifiedObject)) {
+            [self.notifiedObject didRequestLearningCourseFailed:failInfo];
+        }
+    }else
+    {
+        if (isObjectNotNil(self.complateNotifiedObject)) {
+            [self.complateNotifiedObject didRequestCompleteCourseFailed:failInfo];
+        }
     }
+    
+    
 }
 
 @end

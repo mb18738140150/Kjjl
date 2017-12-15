@@ -40,7 +40,7 @@
     accountImageView.image = [UIImage imageNamed:@"手机(1)"];
     [accountView addSubview:accountImageView];
     
-    _account=[[UITextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(accountImageView.frame) + 10, 10, accountView.hd_width - 70, 20)];
+    _account=[[UITextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(accountImageView.frame) + 10, 00, accountView.hd_width - 35, 40)];
     [_account setBackgroundColor:[UIColor clearColor]];
     _account.placeholder=[NSString stringWithFormat:@"请输入账号"];
     _account.delegate = self;

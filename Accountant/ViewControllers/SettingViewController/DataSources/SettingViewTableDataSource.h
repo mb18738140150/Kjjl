@@ -11,6 +11,10 @@
 
 @interface SettingViewTableDataSource : NSObject<UITableViewDataSource>
 
+@property (nonatomic, copy)void(^upgradeMemberLevelBlock)();
 
+@property (nonatomic,weak) NSArray              *catoryDataSourceArray;
+
+@property (nonatomic, weak)NSArray              *dataSourceArray;
 
 @end

@@ -79,7 +79,7 @@
                     weakSelf.askQuestionBlock(infoDic);
                 }
             };
-        
+            
             [cell resetCellWithInfo:[self.questionReplys objectAtIndex:indexPath.row]];
             return cell;
         }else if ((count > 3 && [[_statusArray objectAtIndex:indexPath.section - 1] boolValue] && indexPath.row == count + 1) || (count > 3 && ![[_statusArray objectAtIndex:indexPath.section - 1] boolValue] && indexPath.row == 4)){

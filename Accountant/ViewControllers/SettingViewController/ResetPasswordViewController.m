@@ -83,9 +83,11 @@
     self.contentTableView.dataSource = self;
     self.contentTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.view addSubview:self.contentTableView];
+    self.contentTableView.tableFooterView = [self getTableFootView];
+    self.contentTableView.backgroundColor = UIColorFromRGBValue(0xeeeeee);
     
-    UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"确定" style:UIBarButtonItemStylePlain target:self action:@selector(resetPassword)];
-    self.navigationItem.rightBarButtonItem = item;
+//    UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"确定" style:UIBarButtonItemStylePlain target:self action:@selector(resetPassword)];
+//    self.navigationItem.rightBarButtonItem = item;
 }
 
 #pragma mark - 
@@ -99,7 +101,6 @@
     BOOL isMatch = [pred evaluateWithObject:password];
     
     return isMatch;
-    
 }
 
 #pragma mark - 
@@ -140,10 +141,10 @@
 //    [cell resetWithInfo:nil];
     UITableViewCell *cell = [UIUtility getCellWithCellName:inputCellName inTableView:tableView andCellClass:[UITableViewCell class]];
     
-    CGRect labelRect = CGRectMake(10, 10, 100, 30);
+    CGRect labelRect = CGRectMake(10, 10, 0, 30);
     UIFont *labelFont = [UIFont systemFontOfSize:17];
     
-    CGRect textFieldRect = CGRectMake(120, 10, 200, 30);
+    CGRect textFieldRect = CGRectMake(20, 10, kScreenWidth - 40, 30);
     
     for (UIView *view in cell.subviews) {
         if (view.tag > 100 && view.tag < 10) {
@@ -160,8 +161,9 @@
         [cell addSubview:self.oldPwdTextLabel];
         
         self.oldPwdTextField = [[UITextField alloc] initWithFrame:textFieldRect];
-        self.oldPwdTextField.placeholder = @"请填写";
+        self.oldPwdTextField.placeholder = @"请输入原始密码";
         self.oldPwdTextField.tag = 102;
+        self.oldPwdTextField.font = kMainFont;
         self.oldPwdTextField.secureTextEntry = YES;
         [cell addSubview:self.oldPwdTextField];
     }
@@ -174,8 +176,9 @@
         [cell addSubview:self.pwdTextLabel];
         
         self.pwdTextField = [[UITextField alloc] initWithFrame:textFieldRect];
-        self.pwdTextField.placeholder = @"6-20位字母数字";
+        self.pwdTextField.placeholder = @"请输入新密码（6-20位字母数字）";
         self.pwdTextField.tag = 104;
+        self.pwdTextField.font = kMainFont;
         self.pwdTextField.secureTextEntry = YES;
         [cell addSubview:self.pwdTextField];
     }
@@ -188,13 +191,14 @@
         [cell addSubview:self.pwdConfirmTextLabel];
         
         self.pwdConfirmTextField = [[UITextField alloc] initWithFrame:textFieldRect];
-        self.pwdConfirmTextField.placeholder = @"请再次填写密码";
+        self.pwdConfirmTextField.placeholder = @"请输入确认密码";
         self.pwdConfirmTextField.tag = 106;
+        self.pwdConfirmTextField.font = kMainFont;
         self.pwdConfirmTextField.secureTextEntry = YES;
         [cell addSubview:self.pwdConfirmTextField];
     }
     
-    UIView *bottomLineView = [[UIView alloc] initWithFrame:CGRectMake(20, 49, kScreenWidth, 1)];
+    UIView *bottomLineView = [[UIView alloc] initWithFrame:CGRectMake(0, 49, kScreenWidth, 1)];
     bottomLineView.tag = 110;
     bottomLineView.backgroundColor = kTableViewCellSeparatorColor;
     [cell addSubview:bottomLineView];
@@ -205,6 +209,25 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return 50;
+}
+
+- (UIView *)getTableFootView
+{
+    UIView * backView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, 80)];
+    backView.backgroundColor = UIColorFromRGBValue(0xeeeeee);
+    
+    UIButton * button = [UIButton buttonWithType:UIButtonTypeCustom];
+    button.frame = CGRectMake(20, 20, kScreenWidth - 40, 40);
+    [button setTitle:@"确认修改" forState:UIControlStateNormal];
+    [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    button.backgroundColor = UIColorFromRGBValue(0x1c71fa);
+    button.layer.cornerRadius = 5;
+    button.layer.masksToBounds = YES;
+    [backView addSubview:button];
+    [button addTarget:self action:@selector(resetPassword) forControlEvents:UIControlEventTouchUpInside];
+    
+    
+    return backView;
 }
 
 @end

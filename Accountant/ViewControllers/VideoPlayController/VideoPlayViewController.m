@@ -23,11 +23,14 @@
 #import "CategorySectionHeadView.h"
 #import "DownloaderManager.h"
 #import "DownloadRquestOperation.h"
+#import "VideoFunctionView.h"
+#import "CansultTeachersListView.h"
+#import "BuyCourseViewController.h"
 
 #import "DownloadCenterViewController.h"
 
 @interface VideoPlayViewController ()<UITableViewDelegate,UITableViewDataSource
-,CourseModule_AddCollectCourseProtocol, UIAlertViewDelegate, MFoldingSectionHeaderDelegate>
+,CourseModule_AddCollectCourseProtocol, UIAlertViewDelegate, MFoldingSectionHeaderDelegate,UIWebViewDelegate>
 
 @property (nonatomic, strong)DownloadCenterViewController * vc;
 
@@ -52,6 +55,10 @@
 @property (nonatomic,strong) UIView                             *titleView;
 
 @property (nonatomic,strong) UIButton                           *collectButton;
+@property (nonatomic, strong)UIButton                           *cantactTeacherBtn;
+
+@property (nonatomic, strong)VideoFunctionView                  *videoFunctionView;
+@property (nonatomic, strong)CansultTeachersListView            *cansultView;
 
 @property (nonatomic, strong)NSDictionary * currentVideoDic;
 
@@ -88,6 +95,7 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     self.havePresent = YES;
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
 }
 
 - (void)viewDidLoad {
@@ -182,6 +190,22 @@
         [videoInfodic setValue:[weakSelf.currentVideoDic objectForKey:kVideoURL] forKey:kVideoURL];
         [[VideoManager sharedManager]writeToDB:videoInfodic];
     };
+    
+    self.videoController.informalBlock = ^{
+        NSLog(@"到5分钟了，请判断是不是正式学员");
+        
+        if ([[weakSelf.playCourseInfo objectForKey:kCanWatch] intValue] == 0) {
+            [SVProgressHUD showErrorWithStatus:@"非正式会员只能试看5分钟，请升级套餐或购买课程继续观看"];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [SVProgressHUD dismiss];
+            });
+            [weakSelf.videoController stop];
+//            if (self.selectedSection == 0 && self.selectedRow == 0) {
+//            }
+        }
+        
+    };
+    
     [self savePlayingInfo];
     [self.videoController showInView:self.view];
     
@@ -309,7 +333,7 @@
     self.titleView.backgroundColor = [UIColor whiteColor];
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 10, 100, 30)];
     titleLabel.text = @"目 录";
-    titleLabel.textColor = kCommonNavigationBarColor;
+    titleLabel.textColor = kMainTextColor;
     titleLabel.font = [UIFont systemFontOfSize:18];
     
     UIButton *downloadButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -365,23 +389,86 @@
     
     self.chapterTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, self.titleView.frame.origin.y + self.titleView.frame.size.height, kZXVideoPlayerOriginalWidth, kScreenHeight - kZXVideoPlayerOriginalHeight - self.titleView.frame.size.height) style:UITableViewStylePlain];
     [self.chapterTableView registerClass:[CategoryDetailTableViewCell class] forCellReuseIdentifier:@"playVideoTitleCell"];
-//    self.tableDataSource = [[VideoPlayTableDataSource alloc] init];
-//    self.tableDataSource.statusArray = self.statusArray;
-//    self.tableDataSource.chapterArray = self.chapterArray;
-//    self.tableDataSource.chapterVideoInfoArray = self.chapterVideoInfoArray;
+
     self.chapterTableView.dataSource = self;
     self.chapterTableView.delegate = self;
     self.chapterTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.view addSubview:self.chapterTableView];
+    
+    __weak typeof(self)weakSelf = self;
+    // 联系老师
+#warning 此处应该为 ![[self.playCourseInfo objectForKey:kCanWatch] intValue]
+    if ([[self.playCourseInfo objectForKey:kCanWatch] intValue]) {
+        
+        BOOL isBuy = NO;
+        if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"weixin://"]]) {
+            isBuy = YES;
+        }
+#warning isbuy 
+        isBuy = YES;
+        
+        self.videoFunctionView = [[VideoFunctionView alloc]initWithFrame:CGRectMake(0, kScreenHeight - 50, kScreenWidth, 50) andIsBuy:isBuy];
+        [self.videoFunctionView refreshWithInfoDic:[NSDictionary dictionary]];
+//        [self.view addSubview:self.videoFunctionView];
+        self.videoFunctionView.cansultBlock = ^{
+            [weakSelf.videoController pausePlay];
+            AppDelegate * delegate = [UIApplication sharedApplication].delegate;
+            [delegate.window addSubview:weakSelf.cansultView];
+            
+        };
+        
+        self.videoFunctionView.buyBlock = ^{
+            BuyCourseViewController * buyVC = [[BuyCourseViewController alloc]init];
+            buyVC.infoDic = weakSelf.playCourseInfo;
+            [weakSelf.videoController pausePlay];
+            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:buyVC];
+            [weakSelf presentViewController:nav animated:YES completion:nil];
+        };
+    }
+    
+    self.cansultView = [[CansultTeachersListView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, kScreenHeight) andTeachersArr:@[@""]];
+    self.cansultView.dismissBlock = ^{
+        [weakSelf.cansultView removeFromSuperview];
+    };
+    
+}
+
+
+#pragma mark - cantactTeacher
+- (void)cantactTeacherAction:(UIButton *)button
+{
+    NSString  *qqNumber=@"1211918062";
+    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"mqq://"]]) {
+        UIWebView * webView = [[UIWebView alloc]initWithFrame:CGRectZero];
+        NSURL * url = [NSURL URLWithString:[NSString stringWithFormat:@"mqq://im/chat?chat_type=wpa&uin=%@&version=1&src_type=web",qqNumber]];
+        
+        NSURLRequest * request = [NSURLRequest requestWithURL:url];
+        webView.delegate = self;
+        [webView loadRequest:request];
+        [self.view addSubview:webView];
+    }else
+    {
+        [SVProgressHUD showErrorWithStatus:@"对不起，您还没安装QQ"];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [SVProgressHUD dismiss];
+        });
+    }
 }
 
 #pragma mark - table view delegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+//    if ([[self.playCourseInfo objectForKey:kCanWatch] intValue] == 0) {
+//        [SVProgressHUD showErrorWithStatus:@"暂无观看权限，请升级套餐或购买课程"];
+//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//            [SVProgressHUD dismiss];
+//        });
+//        return;
+//    }
+    
     NSDictionary *chapterDic = [self.chapterArray objectAtIndex:indexPath.section];
     NSArray *videoInfos = [self.chapterVideoInfoArray objectAtIndex:indexPath.section];
     NSDictionary *videoInfo = [videoInfos objectAtIndex:indexPath.row];
-    
     
     NSDictionary *history;
     if ([[chapterDic objectForKey:kIsSingleChapter] boolValue] == YES) {
@@ -415,7 +502,6 @@
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    
     NSDictionary *chapterDic = [self.chapterArray objectAtIndex:section];
     
     CategorySectionHeadView * view = [[CategorySectionHeadView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, 64) withTag:section];
@@ -430,9 +516,9 @@
         state = MFoldingSectionStateFlod;
     }
     
-    
-    [view setupVideoWithBackgroundColor:[UIColor whiteColor] titleString:[chapterDic objectForKey:kChapterName] titleColor:kCommonMainTextColor_50 titleFont:kMainFont arrowImage:[UIImage imageNamed:@"tiku_plus"] learnImage:[UIImage imageNamed:@"tiku_text"] arrowPosition:MFoldingSectionHeaderArrowPositionLeft sectionState:state];
+    [view setupVideoWithBackgroundColor:UIRGBColor(245, 245, 245) titleString:[chapterDic objectForKey:kChapterName] titleColor:kCommonMainTextColor_50 titleFont:kMainFont arrowImage:[UIImage imageNamed:@"tiku_plus"] learnImage:[UIImage imageNamed:@"tiku_text"] arrowPosition:MFoldingSectionHeaderArrowPositionLeft sectionState:state];
     view.tapDelegate = self;
+    view.lineView.hidden = YES;
     return view;
 }
 
@@ -443,9 +529,8 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 50;
+    return 35;
 }
-
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -494,14 +579,15 @@
         cell.titleLabel.textColor = kCommonMainTextColor_50;
     }
     
-    if ([[self.playCourseInfo objectForKey:kCourseCanDownLoad] intValue] == 0) {
+    if ([[UserManager sharedManager] getUserLevel] != 3) {
         [cell hideDownloadBtn];
     }
     
+    
     __weak typeof(self) weakSelf = self;
     cell.downloadBlock = ^(VideoDownloadState downloadState){
-        if ([[UserManager sharedManager] getUserLevel] != 3) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"您是试用用户，请升级成正式用户后下载观看" delegate:nil cancelButtonTitle:@"知道了" otherButtonTitles:nil];
+        if ([[self.playCourseInfo objectForKey:kCourseCanDownLoad] intValue] == 0) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"暂无下载权限，请升级套餐或购买课程" delegate:nil cancelButtonTitle:@"知道了" otherButtonTitles:nil];
             [alert show];
         }else{
             

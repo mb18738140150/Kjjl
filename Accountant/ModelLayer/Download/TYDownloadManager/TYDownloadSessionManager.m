@@ -699,6 +699,8 @@ didFinishDownloadingToURL:(NSURL *)location
         // 移动文件到下载目录
         [self createDirectory:filePath.stringByDeletingLastPathComponent];
         [self moveFileAtURL:location toPath:filePath];
+        
+        
         return;
     }
     

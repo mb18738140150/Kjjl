@@ -23,6 +23,9 @@
 #define kCourseChapterInfos @"courseChapterInfos"
 #define kCourseIsCollect    @"courseIsCollect"
 #define kCourseCanDownLoad  @"courseCanDownload"
+#define kCanWatch           @"courseCanWatch"
+#define kLearnProgress      @"courseLearnProgress"
+
 #define kLivingTime         @"livingTime"
 #define kLivinglastTime     @"lastTime"
 #define kLivingState        @"livingState"
@@ -61,6 +64,7 @@
 #define kVideoPlayTime      @"videoPlayTime"
 #define kVideoChapterId     @"videoChapterId"
 #define kVideoIsChapterVideo    @"videoIsChapterVideo"
+#define kCanDownload        @"videoCanDownload"
 
 #define kQuestionContent                @"questionContent"
 #define kQuestionQuizzerHeaderImageUrl  @"questionQuizzerHeaderImageUrl"

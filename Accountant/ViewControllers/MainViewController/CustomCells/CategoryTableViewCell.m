@@ -69,4 +69,26 @@
     
 }
 
+- (void)resetMainCategoryInfos:(NSArray *)infoArray
+{
+    self.topView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, kCellHeightOfCategoryView + 28)];
+    [self addSubview:self.topView];
+    self.topView.backgroundColor = [UIColor whiteColor];
+    for (CategoryView *view in self.categoryViews) {
+        [view removeFromSuperview];
+    }
+    for (int i = 0; i < infoArray.count; i++) {
+        CategoryView *cateView = [[CategoryView alloc] initWithFrame:CGRectMake(i%4 * ((kScreenWidth)/4), i/4 * (kCellHeightOfCategoryView+10) + 14, ((kScreenWidth)/4), kCellHeightOfCategoryView)];
+        NSDictionary *cateInfo = [infoArray objectAtIndex:i];
+        cateView.categoryId = [[cateInfo objectForKey:kCourseCategoryId] intValue];
+        cateView.pageType = self.pageType;
+        cateView.categoryName = [cateInfo objectForKey:kCourseCategoryName];
+        cateView.categoryCoverUrl = [cateInfo objectForKey:kCourseCategoryCoverUrl];
+        [cateView setupContents];
+        //        cateView.backgroundColor = kBackgroundGrayColor;
+        [_topView addSubview:cateView];
+        [self.categoryViews addObject:cateView];
+    }
+}
+
 @end

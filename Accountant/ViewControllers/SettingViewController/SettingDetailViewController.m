@@ -8,12 +8,13 @@
 
 #import "SettingDetailViewController.h"
 #import "ResetPasswordViewController.h"
+#import "ChangeEquipmentNameView.h"
 
-@interface SettingDetailViewController ()<UITableViewDelegate, UITableViewDataSource, UIAlertViewDelegate>
+@interface SettingDetailViewController ()<UITableViewDelegate, UITableViewDataSource, UIAlertViewDelegate,UserModule_bindRegCodeProtocol>
 
 @property (nonatomic, strong)UITableView * tableView;
 @property (nonatomic, strong)UILabel * cacheSize;
-
+@property (nonatomic, strong)ChangeEquipmentNameView  * changeNameView;
 @end
 
 @implementation SettingDetailViewController
@@ -68,7 +69,10 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 2;
+    if ([[UserManager sharedManager] getCodeview]) {
+        return 2;
+    }
+    return 1;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -78,7 +82,7 @@
     UITableViewCell * cell = [UIUtility getCellWithCellName:cellID inTableView:tableView andCellClass:[UITableViewCell class]];
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     
-    if (indexPath.row == 1) {
+    if (indexPath.row == 0) {
         UITableViewCell *cell1 = [tableView dequeueReusableCellWithIdentifier:cellID1];
         if (cell1 == nil) {
             cell1 = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellID1];
@@ -90,9 +94,11 @@
         self.cacheSize.text = [NSString stringWithFormat:@"缓存大小%0.2f",[self readCacheSize]] ;
         return cell1;
     }
-    if (indexPath.row == 0) {
-        cell.textLabel.text = @"修改密码";
+    
+    if (indexPath.row == 1) {
+        cell.textLabel.text = @"邀请码";
     }
+    
     return cell;
 }
 
@@ -130,16 +136,14 @@
     switch (indexPath.row) {
         case 0:
         {
-            ResetPasswordViewController *vc = [[ResetPasswordViewController alloc] init];
-            [self.navigationController pushViewController:vc animated:YES];
+            [self clearFile];
         }
             break;
         case 1:
         {
-            [self clearFile];
+            [self inviteAction];
         }
             break;
-            
         default:
             break;
     }
@@ -170,6 +174,66 @@
     }
     [self.navigationController popViewControllerAnimated:NO];
 }
+
+- (void)inviteAction
+{
+    if (self.changeNameView) {
+        AppDelegate * delegate = [UIApplication sharedApplication].delegate;
+        [delegate.window addSubview:self.changeNameView];
+        self.changeNameView.alpha = 0;
+        [UIView animateWithDuration:.3 animations:^{
+            self.changeNameView.alpha = 1;
+        }];
+    }else
+    {
+        NSArray * nibarr = [[NSBundle mainBundle]loadNibNamed:@"ChangeEquipmentNameView" owner:self options:nil];
+        self.changeNameView = [nibarr objectAtIndex:0];
+        CGRect tmpFrame = [[UIScreen mainScreen] bounds];
+        self.changeNameView.frame = tmpFrame;
+        self.changeNameView.equipmentNameTF.delegate = self.changeNameView;
+        self.changeNameView.title = @"邀请码绑定";
+        self.changeNameView.titleLabel.text = @"邀请码绑定";
+        self.changeNameView.equipmentNameTF.placeholder = @"请输入邀请码";
+        AppDelegate * delegate = [[UIApplication sharedApplication] delegate];
+        [delegate.window addSubview:self.changeNameView];
+        self.changeNameView.alpha = 0;
+        [UIView animateWithDuration:.3 animations:^{
+            self.changeNameView.alpha = 1;
+        }];
+        __weak SettingDetailViewController * meVC = self;
+        [self.changeNameView getEquipmentOption:^(NSString *name) {
+            NSLog(@"name = %@", name);
+            [meVC.changeNameView removeFromSuperview];
+            
+            [meVC inviteCode:name];
+            
+        }];
+    }
+}
+
+- (void)inviteCode:(NSString *)regaCode;
+{
+    [SVProgressHUD show];
+    [[UserManager sharedManager] bindRegCodeWithRegCode:regaCode withNotifiedObject:self];
+}
+
+#pragma mark - UserModule_bindRegCodeProtocol
+- (void)didRequestbindRegCodeSuccessed
+{
+    [SVProgressHUD dismiss];
+    [[UserManager sharedManager] changeCodeViewWith:0];
+}
+
+- (void)didRequestbindRegCodeFailed:(NSString *)failedInfo
+{
+    [SVProgressHUD dismiss];
+    
+    [SVProgressHUD showErrorWithStatus:failedInfo];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [SVProgressHUD dismiss];
+    });
+}
+
 //1. 获取缓存文件的大小
 -( float )readCacheSize
 {

@@ -161,7 +161,6 @@
     
     chatRoomVC.conversationType = ConversationType_CHATROOM;
     chatRoomVC.targetId = [NSString stringWithFormat:@"%@", [infoDic objectForKey:kChatRoomID]];
-//        chatRoomVC.targetId = @"chatRoomId-008";
     chatRoomVC.contentURL = [infoDic objectForKey:kCourseURL];
     chatRoomVC.infoDic = infoDic;
     [self presentViewController:chatRoomVC animated:YES completion:nil];

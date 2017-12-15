@@ -59,27 +59,27 @@
                 }
             }
             
-//            if ([[[CourseraManager sharedManager] getNotStartLivingCourseArray] count]) {
-//                count = 2;
-//            }
             return count;
             break;
         
         case 3:
             count = [[[CourseraManager sharedManager] getHottestCourseArray] count];
-            
-            return 4;
-            
-            if (count%2 == 0) {
-                return count/2 + 1;
-            }else{
-                return count/2 + 2;
+            if (count > 0) {
+                return 4;
+            }else
+            {
+                return 0;
             }
             
             break;
             
         case 4:
-            return 1;
+            if ([[[CourseraManager sharedManager] getMainVCCategoryArray] count] > 0) {
+                return 1;
+            }else
+            {
+                return 0;
+            }
         case 5:
             count = [[[QuestionManager sharedManager] getMainQuestionInfos] count] + 1;
             break;
@@ -95,7 +95,7 @@
         
         static NSString *courseCategoryCellName = @"courseAllCategoryCell";
         CategoryTableViewCell *cell = (CategoryTableViewCell *)[self getCellWithCellName:courseCategoryCellName inTableView:tableView andCellClass:[CategoryTableViewCell class]];
-        cell.pageType = PageMain;
+        cell.pageType = PageCategory;
         [cell resetWithCategoryInfos:self.catoryDataSourceArray];
         return cell;
     }

@@ -52,6 +52,12 @@
         }
         self.sectionId = sectionId.intValue;
         
+//        NSNumber *canDownload = [dicInfo objectForKey:@"canDownload"];
+//        if ([canDownload isKindOfClass:[NSNull class]] ) {
+//            canDownload = @0;
+//        }
+//        self.canDownload = canDownload.intValue;
+        
         NSNumber *isFree = [dicInfo objectForKey:@"isFree"];
         if ([isFree isKindOfClass:[NSNull class]] ) {
             isFree = @0;

@@ -23,6 +23,8 @@
 #import "NSDictionary+Unicode.h"
 #import "DownLoadModel.h"
 #import <RongIMKit/RongIMKit.h>
+#import "WXApi.h"
+#import "WXApiManager.h"
 
 #import "ZXVideoPlayerController.h"
 
@@ -170,7 +172,7 @@
             [alert show];
         }else{
         
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"监测到新版本" message:self.versionContent delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"立即更新", nil];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"监测到新版本" message:self.versionContent delegate:self cancelButtonTitle:@"暂不更新" otherButtonTitles:@"立即更新", nil];
             [alert show];
         }
     }
@@ -197,7 +199,7 @@
 }
 
 - (void)didRequestAppInfoFailed:(NSString *)failedInfo
-{
+{   
     
 }
 
@@ -431,9 +433,9 @@ forRemoteNotification:(NSDictionary *)userInfo
 
 - (void)loginOut{
     [[UserManager sharedManager] logout];
-    [[RCIMClient sharedRCIMClient] setReceiveMessageDelegate:nil object:nil];
-    [[RCIMClient sharedRCIMClient] setRCConnectionStatusChangeDelegate:nil];
-    [[RCIMClient sharedRCIMClient] logout];
+    [[RCIM sharedRCIM] setReceiveMessageDelegate:nil];
+    [[RCIM sharedRCIM] setConnectionStatusDelegate:nil];
+    [[RCIM sharedRCIM] logout];
     
 //    if (self.tabbarViewController.navigationController.presentedViewController) {
 //        [self.tabbarViewController.navigationController.presentedViewController dismissViewControllerAnimated:NO completion:nil
@@ -486,6 +488,42 @@ forRemoteNotification:(NSDictionary *)userInfo
         result = window.rootViewController;
     
     return result;
+}
+
+- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
+{
+    if ([url.host isEqualToString:@"alipay"]) {
+        // 支付跳转支付宝钱包进行支付，处理支付结果
+//        [[AlipaySDK defaultService] processOrderWithPaymentResult:url standbyCallback:^(NSDictionary *resultDic) {
+//            NSLog(@"result = %@",resultDic);
+//        }];
+//        
+//        // 授权跳转支付宝钱包进行支付，处理支付结果
+//        [[AlipaySDK defaultService] processAuth_V2Result:url standbyCallback:^(NSDictionary *resultDic) {
+//            NSLog(@"result = %@",resultDic);
+//            // 解析 auth code
+//            NSString *result = resultDic[@"result"];
+//            NSString *authCode = nil;
+//            if (result.length>0) {
+//                NSArray *resultArr = [result componentsSeparatedByString:@"&"];
+//                for (NSString *subResult in resultArr) {
+//                    if (subResult.length > 10 && [subResult hasPrefix:@"auth_code="]) {
+//                        authCode = [subResult substringFromIndex:10];
+//                        break;
+//                    }
+//                }
+//            }
+//            NSLog(@"授权结果 authCode = %@", authCode?:@"");
+//        }];
+    }else
+    {
+        return [WXApi handleOpenURL:url delegate:[WXApiManager sharedManager]];
+    }
+    return YES;
+}
+
+- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
+    return  [WXApi handleOpenURL:url delegate:[WXApiManager sharedManager]];
 }
 
 @end

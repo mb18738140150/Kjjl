@@ -708,6 +708,7 @@
             
             livingCell.LivingCourseBlock = ^(NSDictionary *infoDic) {
                 
+                // 直播课程信息
                 weakSelf.selectCourseInfoDic = infoDic;
                 weakSelf.selectCurrentMonthCourseId = [[infoDic objectForKey:kCourseID] intValue];
                 [SVProgressHUD show];
@@ -1417,10 +1418,12 @@
     if (self.selectCurrentMonthCourseId) {
 //        self.selectCurrentMonthCourseId = 0;
         if (self.selectCurrentMonthCourseSectionInfoDic) {
+            // 直播课小节信息
             [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationOfLivingChatClick object:self.selectCurrentMonthCourseSectionInfoDic];
             self.selectCurrentMonthCourseSectionInfoDic = nil;
         }else
         {
+            // 直播课程信息
             [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationOfLivingChatClick object:self.selectCourseInfoDic];
             self.selectCourseInfoDic = nil;
         }

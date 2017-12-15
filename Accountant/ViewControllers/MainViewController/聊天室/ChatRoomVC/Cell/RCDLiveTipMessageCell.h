@@ -18,6 +18,8 @@
  */
 @property(strong, nonatomic) RCDLiveTipLabel *tipMessageLabel;
 
+@property (strong,nonatomic)UILabel *timeLB;
+
 @property(assign, nonatomic) BOOL isFullScreenMode;
 
 /*!

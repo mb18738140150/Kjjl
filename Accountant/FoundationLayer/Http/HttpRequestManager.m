@@ -158,9 +158,9 @@
     [self startPostWithConfig:delete andProcessDelegate:delegate];
 }
 
-- (void)requestLearingCourseWithProcessDelegate:(id<HttpRequestProtocol>)delegate
+- (void)requestLearingCourseWithInfoDic:(NSDictionary *)infoDic ProcessDelegate:(id<HttpRequestProtocol>)delegate
 {
-    HttpConfigModel *learning = [HttpConfigCreator getLearningConfig];
+    HttpConfigModel *learning = [HttpConfigCreator getLearningConfig:infoDic];
     [self startPostWithConfig:learning andProcessDelegate:delegate];
 }
 
@@ -374,6 +374,18 @@
     [self startPostWithConfig:s andProcessDelegate:delegate];
 }
 
+- (void)reqeustBindRegCodeWithCode:(NSString *)regCode andProcessDelegate:(id<HttpRequestProtocol>)delegate
+{
+    HttpConfigModel * s = [HttpConfigCreator bindRegCode:regCode];
+    [self startPostWithConfig:s andProcessDelegate:delegate];
+}
+
+- (void)requestPayOrderWith:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate
+{
+    HttpConfigModel * s = [HttpConfigCreator payOrderWithInfo:infoDic];
+    [self startPostWithConfig:s andProcessDelegate:delegate];
+}
+
 #pragma mark - post method
 - (void)startPostWithConfig:(HttpConfigModel *)configModel andProcessDelegate:(__weak id<HttpRequestProtocol>)delegate
 {
@@ -409,6 +421,59 @@
             return ;
         }
     }];
+    
+    
+    
+    /*
+     NSURL * url = [NSURL URLWithString:configModel.urlString];
+     
+     // 创建请求
+     NSMutableURLRequest * request = [NSMutableURLRequest requestWithURL:url];
+     [request setHTTPMethod:@"POST"];
+     [request setHTTPBody:[[configModel.parameters jsonString] dataUsingEncoding:NSUTF8StringEncoding]];
+     
+     NSURLSession *mySession = [NSURLSession sharedSession];
+     NSURLSessionTask * task = [mySession dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+     if (error) {
+     
+     if (error.code == -1009) {
+     ;
+     }
+     // 此处如果不返回主线程的话，请求是异步线程，直接执行代理方法可能会修改程序的线程布局，就可能会导致崩溃
+     dispatch_sync(dispatch_get_main_queue(), ^{
+     
+     NSError * error1 = [NSError errorWithDomain:@"" code:10000 userInfo:@{@"Reason":@"服务器连接失败"}];
+     });
+     NSLog(@"++++++=%@", error);
+     
+     }else
+     {
+     
+     NSLog(@"+++++++++++++++++++++++++++++++++\njsonStr = %@\n++++++++++++++++", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+     NSDictionary * dic = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+     //            NSLog(@"*****%@", [dic description]);
+     // 此处如果不返回主线程的话，请求是异步线程，直接执行代理方法可能会修改程序的线程布局，就可能会导致崩溃
+     dispatch_sync(dispatch_get_main_queue(), ^{
+     
+     if (dic == nil) {
+     
+     NSError * error = [NSError errorWithDomain:@"" code:10000 userInfo:@{@"Reason":@"服务器处理失败"}];
+     
+     
+     }else
+     {
+     
+     }
+     });
+     }
+     }];
+     
+     [task resume];
+     */
+    
+
+    
+    
 }
 
 

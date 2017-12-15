@@ -64,6 +64,7 @@
     self.tableDataSource = [[QuestionDetailViewTableDataSource alloc] init];
     __weak typeof(self)weakSelf = self;
     self.tableDataSource.askQuestionBlock = ^(NSDictionary *infoDic) {
+#warning askQuestion *****
         NSLog(@"%@", infoDic);
     };
     self.tableDataSource.showMoreReplayBlock = ^(NSInteger section, BOOL fold) {

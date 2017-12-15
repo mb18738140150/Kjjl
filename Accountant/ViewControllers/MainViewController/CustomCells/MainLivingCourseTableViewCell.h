@@ -8,7 +8,16 @@
 
 #import <UIKit/UIKit.h>
 #import "DelayButton.h"
+
+typedef enum : NSUInteger {
+    LivingCellType_nomal,
+    LivingCellType_Living,
+    LivingCellType_Order,
+} LivingCellType;
+
 @interface MainLivingCourseTableViewCell : UITableViewCell
+
+@property (nonatomic, assign)LivingCellType livingCellType;
 
 @property (nonatomic,strong) UIImageView        *courseCoverImageView;
 @property (nonatomic, strong)UIImageView        *payImageView;
@@ -22,9 +31,13 @@
 @property (nonatomic, strong)UIImageView *timeImageView;
 @property (nonatomic,strong) UILabel            *timeLabel;
 @property (nonatomic, strong)UIView *seperateLine;
+@property (nonatomic, strong)UIButton *cancelBtn;
+
 
 @property (nonatomic, strong)UILabel * playTimeLB;
 @property (nonatomic, copy)void(^mainCountDownFinishBlock)();
+
+@property (nonatomic, copy)void(^cancelOrderLivingCourseBlock)();
 
 - (void)resetCellContent:(NSDictionary *)courseInfo;
 

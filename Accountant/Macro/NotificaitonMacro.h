@@ -16,6 +16,8 @@
 #define kNotificationOfMainPageCategoryClick                    @"courseMainPageCategoryClickNotification"
 #define kNotificationOfCategoryPageCategoryClick        @"courseCategoryPageCategoryClickNotification"
 
+#define kNotificationOfGetIntegralClick                 @"getIntegralClickNotification"
+
 #define kNotificationOfsubmitSimulateResult             @"submitSimulateResult"
 
 #define kNotificationOfPlayVideo                        @"playVideoNotification"

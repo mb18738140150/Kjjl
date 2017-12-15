@@ -49,22 +49,26 @@
     
     self.courseNameLB = [[UILabel alloc]initWithFrame:CGRectMake(kSpace, 60, kScreenWidth - kSpace * 2, 20)];
     self.courseNameLB.textColor = [UIColor whiteColor];
+    self.courseNameLB.font = kMainFont;
     self.courseNameLB.textAlignment = 1;
     [self addSubview:self.courseNameLB];
     
-    self.courseTeacherLB = [[UILabel alloc]initWithFrame:CGRectMake(kSpace, CGRectGetMaxY(self.courseNameLB.frame) + 2 * kSpace, kScreenWidth - kSpace * 2, 20)];
+    self.timeLB = [[UILabel alloc]initWithFrame:CGRectMake(kSpace, CGRectGetMaxY(self.courseNameLB.frame) + 2 * kSpace, kScreenWidth -2 * kSpace, 25)];
+    self.timeLB.textColor = [UIColor whiteColor];
+    self.timeLB.font = kMainFont;
+    self.timeLB.textAlignment = 1;
+    [self addSubview:self.timeLB];
+    
+    self.courseTeacherLB = [[UILabel alloc]initWithFrame:CGRectMake(kSpace, CGRectGetMaxY(self.timeLB.frame) + 2 * kSpace, kScreenWidth - kSpace * 2, 20)];
     self.courseTeacherLB.textAlignment = 1;
+    self.courseTeacherLB.font = kMainFont;
     self.courseTeacherLB.textColor = [UIColor whiteColor];
     [self addSubview:self.courseTeacherLB];
     
     
-    self.timeLB = [[UILabel alloc]initWithFrame:CGRectMake(kSpace, CGRectGetMaxY(self.courseTeacherLB.frame) + 2 * kSpace, kScreenWidth -2 * kSpace, 25)];
-    self.timeLB.textColor = [UIColor whiteColor];
-    self.timeLB.textAlignment = 1;
-    [self addSubview:self.timeLB];
     
     self.loginBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.loginBtn.frame = CGRectMake(kScreenWidth / 2 - 40, CGRectGetMaxY(self.timeLB.frame) + 10, 80, 30);
+    self.loginBtn.frame = CGRectMake(kScreenWidth / 2 - 40, CGRectGetMaxY(self.courseTeacherLB.frame) + 10, 80, 30);
     self.loginBtn.layer.cornerRadius = 4;
     self.loginBtn.layer.masksToBounds = YES;
     self.loginBtn.backgroundColor = UIRGBColor(19, 32, 255);
@@ -84,8 +88,6 @@
     textf.layer.masksToBounds = YES;
     textf.adjustsFontSizeToFitWidth = YES;
     
-    
-    
 }
 
 - (void)resetWithInfoDic:(NSDictionary *)infoDic andIsLogin:(BOOL)isLogin
@@ -98,7 +100,7 @@
 - (void)resetWithInfoDic:(NSDictionary *)infoDic
 {
     self.courseNameLB.text = [infoDic objectForKey:kCourseSecondName];
-    self.courseTeacherLB.text = [infoDic objectForKey:kCourseTeacherName];
+    self.courseTeacherLB.text = [NSString stringWithFormat:@"讲师:%@", [infoDic objectForKey:kCourseTeacherName]];
     self.timeLB.attributedText = [self getTimeWith:[[[infoDic objectForKey:kLivingTime] componentsSeparatedByString:@"~"] objectAtIndex:0]];
 }
 
@@ -120,21 +122,33 @@
             break;
         case 3:
         {
-            [self.loginBtn setTitle:@"回放" forState:UIControlStateNormal];
-            if ([[self.infoDic objectForKey:kPlayBackUrl] length] == 0) {
-                [self.loginBtn setTitle:@"上传中" forState:UIControlStateNormal];
+            if (livingState == LivingState_notJurisdiction) {
+                self.state = LivingState_notJurisdiction;
+                [self.loginBtn setTitle:@"咨询" forState:UIControlStateNormal];
+            }else if (livingState == LivingState_end){
+                
+                [self.loginBtn setTitle:@"回放" forState:UIControlStateNormal];
+                if ([[self.infoDic objectForKey:kPlayBackUrl] length] == 0) {
+                    [self.loginBtn setTitle:@"上传中" forState:UIControlStateNormal];
+                }
             }
         }
             break;
-            
+        
         default:
             break;
     }
+    
     
     self.isLogin = [[UserManager sharedManager] isUserLogin];
     if (!self.isLogin) {
         self.state = LivingState_notLogin;
         [self.loginBtn setTitle:@"请登录" forState:UIControlStateNormal];
+        self.imageView.hidden = YES;
+        if (_hour == 0 && _minute == 0) {
+            self.timeLB.text = @"已结束";
+        }
+        
     }
     
     if (livingState == LivingState_noStart) {
@@ -143,7 +157,7 @@
         self.courseNameLB.hidden = NO;
         self.timeLB.hidden = NO;
         [self startTimeCountDown];
-    }else if (livingState == LivingState_end){
+    }else if (livingState == LivingState_end || livingState == LivingState_notJurisdiction){
         self.imageView.hidden = YES;
         self.courseTeacherLB.hidden = NO;
         self.courseNameLB.hidden = NO;

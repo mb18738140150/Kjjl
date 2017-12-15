@@ -23,6 +23,17 @@
 #import "MyNoteViewController.h"
 #import "SettingDetailViewController.h"
 #import "SettingTableViewCell.h"
+#import "MyLivingCourseViewController.h"
+#import "MyOrderListViewController.h"
+#import "DiscountCouponViewController.h"
+#import "DredgeMemberViewController.h"
+#import "IntegralViewController.h"
+
+#import "RecommendDetailViewController.h"
+#import "RecommendViewController.h"
+#import "StudyPlanViewController.h"
+
+
 #define kSettingCellID @"SettingTableViewCellID"
 
 //#import "LivingChatViewController.h"
@@ -34,6 +45,9 @@
 
 @property (nonatomic,strong) SettingViewTableDataSource *tableDataSource;
 @property (nonatomic,strong) UITableView                *tableView;
+@property (nonatomic, strong)NSArray *categoryArray;
+@property (nonatomic, strong)NSArray *dataArray;
+
 
 @end
 
@@ -64,6 +78,7 @@
     [super viewDidLoad];
     
     self.view.backgroundColor = [UIColor whiteColor];
+    [self loadData];
     [self navigationViewSetup];
     [self setupContentViews];
 }
@@ -77,7 +92,7 @@
 #pragma mark - ui setup
 - (void)navigationViewSetup
 {
-    self.navigationItem.title = @"我  的";
+    self.navigationItem.title = @"我的";
 //    self.edgesForExtendedLayout = UIRectEdgeNone;
 //    self.automaticallyAdjustsScrollViewInsets = NO;
 //    self.navigationController.navigationBar.translucent = NO;
@@ -89,94 +104,289 @@
     self.navigationController.navigationBar.tintColor = kCommonNavigationBarColor;
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[UIColor whiteColor]};
     
+    UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"设置" style:UIBarButtonItemStylePlain target:self action:@selector(setupAction)];
+    self.navigationItem.rightBarButtonItem = item;
+    [self.navigationItem.rightBarButtonItem setTintColor:[UIColor whiteColor]];
+    [self.navigationItem.rightBarButtonItem setTitleTextAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:14]} forState:UIControlStateNormal];
+    [self.navigationItem.rightBarButtonItem setTitleTextAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:14]} forState:UIControlStateSelected];
+    
 }
 
 - (void)setupContentViews
 {
-    self.tableDataSource = [[SettingViewTableDataSource alloc] init];
     
-    self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, -64, kScreenWidth, kScreenHeight) style:UITableViewStylePlain];
+    self.tableDataSource = [[SettingViewTableDataSource alloc] init];
+    self.tableDataSource.catoryDataSourceArray = self.categoryArray;
+    self.tableDataSource.dataSourceArray = self.dataArray;
+    self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, -64, kScreenWidth, kScreenHeight + 64) style:UITableViewStylePlain];
     self.tableView.delegate = self;
     self.tableView.dataSource = self.tableDataSource;
     [self.tableView registerNib:[UINib nibWithNibName:@"SettingTableViewCell" bundle:nil] forCellReuseIdentifier:kSettingCellID];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.view addSubview:self.tableView];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(courseCategoryClick:) name:kNotificationOfMainPageCategoryClick object:nil];
+    
+    self.tableDataSource.upgradeMemberLevelBlock = ^{
+        [self upgradeMemberLevel];
+    };
+    
 }
+
+- (void)loadData
+{
+    self.categoryArray = @[@{kCourseCategoryName:@"课程",
+                             kCourseCategoryCoverUrl:@"icon_kc",
+                             kCourseCategoryId:@(1)},
+                           @{kCourseCategoryName:@"直播",
+                             kCourseCategoryCoverUrl:@"icon_zb",
+                             kCourseCategoryId:@(2)},
+                           @{kCourseCategoryName:@"答疑",
+                             kCourseCategoryCoverUrl:@"icon_dy",
+                             kCourseCategoryId:@(3)},
+                           @{kCourseCategoryName:@"笔记",
+                             kCourseCategoryCoverUrl:@"icon_bj",
+                             kCourseCategoryId:@(4)}
+                           ];
+    
+    
+    self.dataArray = @[@[@{@"imageName":@"icon_hy",@"title":[[UserManager sharedManager] getLevelStr],@"tip":@""}],@[@{@"imageName":@"icon_dd",@"title":@"订单",@"tip":@""},@{@"imageName":@"icon_xxjh",@"title":@"学习计划",@"tip":@""},@{@"imageName":@"icon_xz1",@"title":@"下载",@"tip":@""}],@[@{@"imageName":@"icon_jf",@"title":@"积分",@"tip":@""},@{@"imageName":@"icon_kq",@"title":@"卡券",@"tip":@""},@{@"imageName":@"icon_ewm",@"title":@"推广二维码",@"tip":@""}],@[@{@"imageName":@"icon_kf",@"title":@"客服中心",@"tip":@""}]];
+    
+}
+
+- (void)courseCategoryClick:(NSNotification *)notifier
+{
+    NSDictionary *infoDic = notifier.object;
+    switch ([[infoDic objectForKey:kCourseCategoryId] intValue]) {
+        case 1:
+        {
+            NSLog(@"课程");
+            UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:nil action:nil];
+            self.navigationItem.backBarButtonItem = item;
+            MyCourseViewController *vc = [[MyCourseViewController alloc] init];
+            vc.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:vc animated:YES];
+        }
+            break;
+        case 2:
+        {
+            NSLog(@"直播");
+            MyLivingCourseViewController * vc = [[MyLivingCourseViewController alloc]init];
+            vc.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:vc animated:YES];
+        }
+            break;
+        case 3:
+        {
+            NSLog(@"答疑");
+            UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:nil action:nil];
+            self.navigationItem.backBarButtonItem = item;
+            MyQuestionViewController *vc = [[MyQuestionViewController alloc] init];
+            vc.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:vc animated:YES];
+        }
+            break;
+        case 4:
+        {
+            NSLog(@"笔记");
+            UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:nil action:nil];
+            self.navigationItem.backBarButtonItem = item;
+            MyNoteViewController *vc = [[MyNoteViewController alloc] init];
+            vc.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:vc animated:YES];
+            
+        }
+            break;
+            
+        default:
+            break;
+    }
+}
+
+#pragma mark - upgradeMemberLevel
+- (void)upgradeMemberLevel
+{
+    DredgeMemberViewController * vc = [[DredgeMemberViewController alloc]init];
+    vc.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:vc animated:YES];
+}
+
 
 #pragma mark - table view delegate
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.section == 0) {
-        return 240;
-    }else{
-        return 50;
+    if (indexPath.section == 0 && indexPath.row == 0) {
+        return 139;
+    }else if (indexPath.section == 1)
+    {
+        return 98;
     }
+    else{
+        return 38;
+    }
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+{
+    return 7;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
+{
+    UIView * view = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, 7)];
+    view.backgroundColor = UIColorFromRGB(0xedf0f0);
+    return view;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.section == 0) {
-        UserCenterViewController *userCenter = [[UserCenterViewController alloc] init];
-        userCenter.hidesBottomBarWhenPushed = YES;
-        [self.navigationController pushViewController:userCenter animated:YES];
+    
+    switch (indexPath.section) {
+        case 0:
+        {
+            UserCenterViewController *userCenter = [[UserCenterViewController alloc] init];
+            userCenter.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:userCenter animated:YES];
+        }
+            break;
+        case 1:
+        {
+            
+        }
+            break;
+        case 2:
+        {
+            if (indexPath.row == 0) {
+                NSLog(@"订单");
+                UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:nil action:nil];
+                self.navigationItem.backBarButtonItem = item;
+                MyOrderListViewController *vc = [[MyOrderListViewController alloc] init];
+                vc.hidesBottomBarWhenPushed = YES;
+                
+                [self.navigationController pushViewController:vc animated:YES];
+            }else if (indexPath.row == 1)
+            {
+                NSLog(@"学习计划");
+                StudyPlanViewController * studyVC = [[StudyPlanViewController alloc]init];
+                studyVC.hidesBottomBarWhenPushed = YES;
+                [self.navigationController pushViewController:studyVC animated:YES];
+                
+            }else
+            {
+                NSLog(@"下载");
+                UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:nil action:nil];
+                self.navigationItem.backBarButtonItem = item;
+                DownloadCenterViewController *vc = [[DownloadCenterViewController alloc] init];
+                vc.hidesBottomBarWhenPushed = YES;
+                
+                [self.navigationController pushViewController:vc animated:YES];
+            }
+        }
+            break;
+        case 3:
+        {
+            if (indexPath.row == 0) {
+                NSLog(@"积分");
+                IntegralViewController * integralVC = [[IntegralViewController alloc]initWithNibName:@"IntegralViewController" bundle:nil];
+                integralVC.hidesBottomBarWhenPushed = YES;
+                [self.navigationController pushViewController:integralVC animated:YES];
+                
+            }else if (indexPath.row == 1)
+            {
+                NSLog(@"卡券");
+                DiscountCouponViewController * discountVC = [[DiscountCouponViewController alloc]init];
+                discountVC.myDscountCoupon = YES;
+                discountVC.hidesBottomBarWhenPushed = YES;
+                
+                [self.navigationController pushViewController:discountVC animated:YES];
+            }else
+            {
+                NSLog(@"推广二维码");
+                RecommendDetailViewController * recommenVC = [[RecommendDetailViewController alloc]init];
+                recommenVC.hidesBottomBarWhenPushed = YES;
+                [self.navigationController pushViewController:recommenVC animated:YES];
+            }
+        }
+            break;
+        case 4:
+        {
+            NSLog(@"客服中心");
+        }
+            break;
+            
+        default:
+            break;
     }
     
-    if (indexPath.section == 1 && indexPath.row == 2) {
-        UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:nil action:nil];
-        self.navigationItem.backBarButtonItem = item;
-        MyCourseViewController *vc = [[MyCourseViewController alloc] init];
-        vc.hidesBottomBarWhenPushed = YES;
-        [self.navigationController pushViewController:vc animated:YES];
-    }
-    if (indexPath.section == 1 && indexPath.row == 3) {
-        UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:nil action:nil];
-        self.navigationItem.backBarButtonItem = item;
-        HistoryViewController *vc = [[HistoryViewController alloc] init];
-        vc.hidesBottomBarWhenPushed = YES;
-        [self.navigationController pushViewController:vc animated:YES];
-    }
-    if (indexPath.section == 1 && indexPath.row == 1) {
-        UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:nil action:nil];
-        self.navigationItem.backBarButtonItem = item;
-        MyQuestionViewController *vc = [[MyQuestionViewController alloc] init];
-        vc.hidesBottomBarWhenPushed = YES;
-        [self.navigationController pushViewController:vc animated:YES];
-    }
-    if (indexPath.section == 1 && indexPath.row == 4) {
-        UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:nil action:nil];
-        self.navigationItem.backBarButtonItem = item;
-        MyNoteViewController *vc = [[MyNoteViewController alloc] init];
-        vc.hidesBottomBarWhenPushed = YES;
-        [self.navigationController pushViewController:vc animated:YES];
-    }
-    if (indexPath.section == 1 && indexPath.row == 0) {
-        UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:nil action:nil];
-        self.navigationItem.backBarButtonItem = item;
-        DownloadCenterViewController *vc = [[DownloadCenterViewController alloc] init];
-        vc.hidesBottomBarWhenPushed = YES;
-        
-        [self.navigationController pushViewController:vc animated:YES];
-    }
-    if (indexPath.section == 1 && indexPath.row == 5) {
-        UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:nil action:nil];
-        self.navigationItem.backBarButtonItem = item;
-       
-        __weak typeof(self)weakSelf = self;
-        
-        SettingDetailViewController * vc = [[SettingDetailViewController alloc]init];
-        vc.hidesBottomBarWhenPushed = YES;
-        vc.quitBlock = ^(){
-            
-            [weakSelf performSelector:@selector(changeSelectIndex) withObject:nil afterDelay:0.1];
-        };
-        [self.navigationController pushViewController:vc animated:YES];
-            
-    }
+    /*
+     
+     if (indexPath.section == 2 && indexPath.row == 2) {
+     UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:nil action:nil];
+     self.navigationItem.backBarButtonItem = item;
+     MyCourseViewController *vc = [[MyCourseViewController alloc] init];
+     vc.hidesBottomBarWhenPushed = YES;
+     [self.navigationController pushViewController:vc animated:YES];
+     }
+     if (indexPath.section == 2 && indexPath.row == 3) {
+     UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:nil action:nil];
+     self.navigationItem.backBarButtonItem = item;
+     HistoryViewController *vc = [[HistoryViewController alloc] init];
+     vc.hidesBottomBarWhenPushed = YES;
+     [self.navigationController pushViewController:vc animated:YES];
+     }
+     if (indexPath.section == 2 && indexPath.row == 1) {
+     UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:nil action:nil];
+     self.navigationItem.backBarButtonItem = item;
+     MyQuestionViewController *vc = [[MyQuestionViewController alloc] init];
+     vc.hidesBottomBarWhenPushed = YES;
+     [self.navigationController pushViewController:vc animated:YES];
+     }
+     if (indexPath.section == 2 && indexPath.row == 4) {
+     UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:nil action:nil];
+     self.navigationItem.backBarButtonItem = item;
+     MyNoteViewController *vc = [[MyNoteViewController alloc] init];
+     vc.hidesBottomBarWhenPushed = YES;
+     [self.navigationController pushViewController:vc animated:YES];
+     }
+     if (indexPath.section == 2 && indexPath.row == 0) {
+     UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:nil action:nil];
+     self.navigationItem.backBarButtonItem = item;
+     DownloadCenterViewController *vc = [[DownloadCenterViewController alloc] init];
+     vc.hidesBottomBarWhenPushed = YES;
+     
+     [self.navigationController pushViewController:vc animated:YES];
+     }
+     if (indexPath.section == 2 && indexPath.row == 5) {
+     UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:nil action:nil];
+     self.navigationItem.backBarButtonItem = item;
+     
+     __weak typeof(self)weakSelf = self;
+     
+     SettingDetailViewController * vc = [[SettingDetailViewController alloc]init];
+     vc.hidesBottomBarWhenPushed = YES;
+     vc.quitBlock = ^(){
+     
+     [weakSelf performSelector:@selector(changeSelectIndex) withObject:nil afterDelay:0.1];
+     };
+     [self.navigationController pushViewController:vc animated:YES];
+     
+     }
+     */
     
-    if (indexPath.section == 2) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"确定要退出该账号么" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"退出", nil];
-        [alert show];
-    }
+    
+}
+
+- (void)setupAction
+{
+    __weak typeof(self)weakSelf = self;
+    
+    SettingDetailViewController * vc = [[SettingDetailViewController alloc]init];
+    vc.hidesBottomBarWhenPushed = YES;
+    vc.quitBlock = ^(){
+        
+        [weakSelf performSelector:@selector(changeSelectIndex) withObject:nil afterDelay:0.1];
+    };
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 - (void)changeSelectIndex

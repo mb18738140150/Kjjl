@@ -12,7 +12,8 @@ typedef enum {
     PageMain,
     PageCategory,
     PageMessage,
-    PageLeft
+    PageLeft,
+    Page_getIntegral
 }PageType;
 
 @interface CategoryView : UIView

@@ -43,4 +43,8 @@
 
 - (void)hideTitlesWith:(NSArray *)titlesArray;
 - (void)showTitlesWith:(NSArray *)titlesArray;
+
+- (void)resetColor:(UIColor *)color;
+- (void)hideBottomLine;
+
 @end

@@ -57,6 +57,13 @@
 
 @end
 
+@protocol CourseModule_CompleteCourseProtocol <NSObject>
+
+- (void)didRequestCompleteCourseSuccessed;
+- (void)didRequestCompleteCourseFailed:(NSString *)failedInfo;
+
+@end
+
 @protocol CourseModule_CollectCourseProtocol <NSObject>
 
 - (void)didRequestCollectCourseSuccessed;

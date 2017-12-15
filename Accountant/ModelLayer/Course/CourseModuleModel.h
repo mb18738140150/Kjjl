@@ -41,6 +41,13 @@
 // 往期直播课信息
 @property (nonatomic, strong) HottestCourseModel *endLivingCourseModel;
 
+// 学习中直播课信息
+@property (nonatomic, strong) HottestCourseModel *learningLivingCourseModel;
+
+// 已预约的直播课信息
+@property (nonatomic, strong) HottestCourseModel *orderedLivingCourseModel;
+
+
 // 直播课小节信息
 @property (nonatomic, strong) HottestCourseModel *livingSectionDetailModel;
 

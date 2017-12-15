@@ -33,10 +33,11 @@
     self.automaticallyAdjustsScrollViewInsets = NO;
     
     self.navigationController.navigationBar.barTintColor = kCommonNavigationBarColor;
-    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[UIColor whiteColor]};
+    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:kMainTextColor};
     
-    UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"close-2.png"] style:UIBarButtonItemStylePlain target:self action:@selector(dissmiss)];
-    self.navigationItem.leftBarButtonItem = item;
+    TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"public-返回"] title:@""];
+    [leftBarItem addTarget:self action:@selector(dissmiss) forControlEvents:UIControlEventTouchUpInside];
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:leftBarItem];
     
     
     if (self.isShowDelete) {

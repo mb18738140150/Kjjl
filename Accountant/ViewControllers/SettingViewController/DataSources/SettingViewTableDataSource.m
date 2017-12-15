@@ -11,6 +11,8 @@
 #import "UserInfoViewCell.h"
 #import "UserManager.h"
 #import "SettingTableViewCell.h"
+#import "CategoryTableViewCell.h"
+
 #define kSettingCellID @"SettingTableViewCellID"
 
 @implementation SettingViewTableDataSource
@@ -20,15 +22,21 @@
     int count = 0;
     switch (section) {
         case 0:
-            return 1;
+            return 2;
             break;
         
         case 1:
-            return 6;
+            return 1;
             break;
             
         case 2:
-            return 0;
+            return 3;
+            break;
+        case 3:
+            return 3;
+            break;
+        case 4:
+            return 1;
             break;
             
         default:
@@ -39,72 +47,73 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.section == 0) {
+    if (indexPath.section == 0 && indexPath.row == 0) {
         static NSString *infoCellName = @"infoCell";
         UserInfoViewCell *cell = (UserInfoViewCell *)[UIUtility getCellWithCellName:infoCellName inTableView:tableView andCellClass:[UserInfoViewCell class]];
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         [cell resetCellWithInfo:[[UserManager sharedManager] getUserInfos]];
         return cell;
     }
-    if (indexPath.section == 1 && indexPath.row == 0) {
+    
+    if (indexPath.section == 0 && indexPath.row == 1) {
         SettingTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kSettingCellID forIndexPath:indexPath];
-        cell.iconImageView.image = [UIImage imageNamed:@"main-icon1"];
-        cell.titleLB.text = @"下载中心";
-        
+        NSDictionary * infoDic = self.dataSourceArray[indexPath.section][indexPath.row - 1];
+        [cell resetMemberWithInfo:infoDic andHaveNewActivty:YES];
+        __weak typeof(self)weakSelf = self;
+        cell.upgradeMemberLevelBlock = ^{
+            if (weakSelf.upgradeMemberLevelBlock) {
+                weakSelf.upgradeMemberLevelBlock();
+            }
+        };
         return cell;
     }
-    if (indexPath.section == 1 && indexPath.row == 1) {
+    
+    if (indexPath.section == 1) {
+        static NSString *courseCategoryCellName = @"courseAllCategoryCell";
+        CategoryTableViewCell *cell = (CategoryTableViewCell *)[self getCellWithCellName:courseCategoryCellName inTableView:tableView andCellClass:[CategoryTableViewCell class]];
+        cell.pageType = PageMain;
+        [cell resetMainCategoryInfos:self.catoryDataSourceArray];
+        return cell;
+    }
+    
+    if (indexPath.section == 2 ) {
         SettingTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kSettingCellID forIndexPath:indexPath];
-        cell.iconImageView.image = [UIImage imageNamed:@"main-icon3"];
-        cell.titleLB.text = @"答疑";
+        NSDictionary * infoDic = self.dataSourceArray[indexPath.section - 1][indexPath.row];
+        [cell resetcellWithInfo:infoDic andHaveNewActivty:NO];
+        return cell;
+    }
+    if (indexPath.section == 3) {
+        SettingTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kSettingCellID forIndexPath:indexPath];
+        NSDictionary * infoDic = self.dataSourceArray[indexPath.section - 1][indexPath.row];
+        [cell resetcellWithInfo:infoDic andHaveNewActivty:NO];
         return cell;
         
     }
-    if (indexPath.section == 1 && indexPath.row == 2) {
+    if (indexPath.section == 4) {
         SettingTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kSettingCellID forIndexPath:indexPath];
-        cell.iconImageView.image = [UIImage imageNamed:@"main-icon5"];
-        cell.titleLB.text = @"我的收藏";
-        return cell;
-        
-    }
-    if (indexPath.section == 1 && indexPath.row == 3) {
-        SettingTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kSettingCellID forIndexPath:indexPath];
-        cell.iconImageView.image = [UIImage imageNamed:@"main-icon6"];
-        cell.titleLB.text = @"学习记录";
-        return cell;
-        
-    }
-    if (indexPath.section == 1 && indexPath.row == 4) {
-        SettingTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kSettingCellID forIndexPath:indexPath];
-        cell.iconImageView.image = [UIImage imageNamed:@"main-icon7-拷贝"];
-        cell.titleLB.text = @"笔记";
+        NSDictionary * infoDic = self.dataSourceArray[indexPath.section - 1][indexPath.row];
+        [cell resetcellWithInfo:infoDic andHaveNewActivty:YES];
         return cell;
         
     }
     
-    if (indexPath.section == 1 && indexPath.row == 5) {
-        SettingTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kSettingCellID forIndexPath:indexPath];
-        cell.iconImageView.image = [UIImage imageNamed:@"main-icon7"];
-        cell.titleLB.text = @"设置";
-        return cell;
-        
-    }
-    
-    if (indexPath.section == 2) {
-        static NSString *logoutCellName = @"logoutCell";
-        UITableViewCell *cell = [UIUtility getCellWithCellName:logoutCellName inTableView:tableView andCellClass:[UITableViewCell class]];
-//        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-        cell.textLabel.text = @"退出登录";
-        cell.textLabel.textColor = [UIColor redColor];
-        cell.textLabel.textAlignment = NSTextAlignmentCenter;
-        return cell;
-    }
+   
     return nil;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 3;
+    return 5;
 }
 
+#pragma mark - utility
+- (UITableViewCell *)getCellWithCellName:(NSString *)reuseName inTableView:(UITableView *)table andCellClass:(Class)cellClass
+{
+    UITableViewCell *cell = [table dequeueReusableCellWithIdentifier:reuseName];
+    if (cell == nil) {
+        cell = [[cellClass alloc] init];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    }
+    return cell;
+}
 @end

@@ -78,6 +78,7 @@
     self.navigationController.navigationBar.barTintColor = kCommonNavigationBarColor;
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:kCommonMainTextColor_50};
     
+    
     UIBarButtonItem *item1 = [[UIBarButtonItem alloc] initWithTitle:@"提交" style:UIBarButtonItemStylePlain target:self action:@selector(writeNote)];
     item1.tintColor = kCommonMainTextColor_50;
     self.navigationItem.rightBarButtonItem = item1;

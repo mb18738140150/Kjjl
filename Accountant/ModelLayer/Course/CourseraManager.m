@@ -107,7 +107,7 @@
         self.collectCourseOperation.collectCourseArray = self.courseModuleModel.collectCourseArray;
         
         self.learningCourseOperation = [LearningCourseOperation new];
-        self.learningCourseOperation.learningCourseArray = self.courseModuleModel.learningCourseArray;
+        
         
         self.addCollectCourseOperation = [AddCollectCourseOperation new];
         self.deleteCollectCourseOperation = [DeleteCollectCourseOperation new];
@@ -172,9 +172,14 @@
     [self.historyCourseOperation didRequestAddHistoryCourseWithInfo:dic];
 }
 
-- (void)didRequestLearningCourseWithNotifiedObject:(id<CourseModule_LearningCourseProtocol>)object
+- (void)didRequestLearningCourseWithInfoDic:(NSDictionary *)infoDic NotifiedObject:(id<CourseModule_LearningCourseProtocol>)object
 {
-    [self.learningCourseOperation didRequestLearningCourseWithNotifiedObject:object];
+    [self.learningCourseOperation didRequestLearningCourseWith:infoDic NotifiedObject:object];
+}
+
+- (void)didRequestCompleteCourseWithInfoDic:(NSDictionary *)infoDic NotifiedObject:(id<CourseModule_CompleteCourseProtocol>)object
+{
+    [self.learningCourseOperation didRequestCompleteCourseWith:infoDic NotifiedObject:object];
 }
 
 - (void)didRequestCollectCourseWithNotifiedObject:(id<CourseModule_CollectCourseProtocol>)object
@@ -332,14 +337,14 @@
         }
     }
     
-    [noStartlivingCourseArr sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+    noStartlivingCourseArr = [[noStartlivingCourseArr sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
         NSString * time1 = [(NSDictionary *)obj1 objectForKey:kLivinglastTime];
         
         NSString * time2 = [(NSDictionary *)obj2 objectForKey:kLivinglastTime];
         
         NSComparisonResult result = [time1 compare:time2 options:NSCaseInsensitiveSearch];
         return result;
-    }];
+    }] mutableCopy];
     
     for (NSDictionary * infoDic in noStartlivingCourseArr) {
         [livingCourseArr addObject:infoDic];
@@ -462,6 +467,34 @@
     return LivingSectionDetailArray;
 }
 
+- (NSArray *)getLivingOrderedSectionDetailArray
+{
+    NSMutableArray *LivingSectionDetailArray = [[NSMutableArray alloc] init];
+    
+    for (CourseModel *jModel in self.courseModuleModel.livingSectionDetailModel.hottestCourses) {
+        NSDictionary *dic = @{kCourseID:@(jModel.courseID),
+                              kCourseTeacherName:jModel.coueseTeacherName,
+                              kLivingTime:jModel.time,
+                              kLivingState:@(jModel.playState),
+                              kTeacherDetail:jModel.teacherDetail,
+                              kTeacherPortraitUrl:jModel.teacherPortraitUrl,
+                              kLivingDetail:jModel.livingDetail,
+                              kHaveJurisdiction:@(jModel.haveJurisdiction),
+                              kCourseSecondID:@(jModel.sectionId),
+                              kCourseSecondName:jModel.courseName,
+                              kCourseURL:jModel.courseURLString,
+                              kChatRoomID:jModel.chatRoomId,
+                              kAssistantID:jModel.assistantId,
+                              kPlayBackUrl:jModel.playback,
+                              kIsLivingCourseFree:@(jModel.isFree),
+                              kIsBack:@(jModel.isBack)};
+        if (jModel.playState == 1) {
+            [LivingSectionDetailArray addObject:dic];
+        }
+    }
+    return LivingSectionDetailArray;
+}
+
 - (NSArray *)getAllCourseArray
 {
     NSMutableArray *allCourseArray = [[NSMutableArray alloc] init];
@@ -481,7 +514,8 @@
                           kCourseCover:model.courseCover,
                           kCourseName:model.courseName,
                           kCourseIsCollect:@(model.isCollect),
-                          kCourseCanDownLoad:@(model.canDownload)};
+                          kCourseCanDownLoad:@(model.canDownload),
+                          kCanWatch:@(model.canWatch)};
     return dic;
 }
 
@@ -522,6 +556,7 @@
                 [videoDic setObject:@(video.videoSort) forKey:kVideoSort];
                 [videoDic setObject:@(NO) forKey:kVideoIsChapterVideo];
                 [videoDic setObject:video.videoURLString forKey:kVideoURL];
+                
                 [videoArray addObject:videoDic];
             }
         }
@@ -683,11 +718,30 @@
 - (NSArray *)getLearningCourseInfoArray
 {
     NSMutableArray *array = [[NSMutableArray alloc] init];
-    for (CourseModel *model in self.courseModuleModel.learningCourseArray) {
+    for (CourseModel *model in self.learningCourseOperation.learningCourseArray) {
         NSMutableDictionary *dic = [[NSMutableDictionary alloc] init];
         [dic setObject:model.courseName forKey:kCourseName];
         [dic setObject:@(model.courseID) forKey:kCourseID];
         [dic setObject:model.courseCover forKey:kCourseCover];
+        [dic setObject:model.coueseTeacherName forKey:kCourseTeacherName];
+        [dic setObject:model.lastTime forKey:kLivingTime];
+        [dic setObject:@(model.learnProgress) forKey:kLearnProgress];
+        [array addObject:dic];
+    }
+    return array;
+}
+
+- (NSArray *)getCompleteCourseInfoArray
+{
+    NSMutableArray *array = [[NSMutableArray alloc] init];
+    for (CourseModel *model in self.learningCourseOperation.completeCourseArray) {
+        NSMutableDictionary *dic = [[NSMutableDictionary alloc] init];
+        [dic setObject:model.courseName forKey:kCourseName];
+        [dic setObject:@(model.courseID) forKey:kCourseID];
+        [dic setObject:model.courseCover forKey:kCourseCover];
+        [dic setObject:model.coueseTeacherName forKey:kCourseTeacherName];
+        [dic setObject:model.lastTime forKey:kLivingTime];
+        [dic setObject:@(model.learnProgress) forKey:kLearnProgress];
         [array addObject:dic];
     }
     return array;
@@ -701,6 +755,7 @@
         [dic setObject:model.courseName forKey:kCourseName];
         [dic setObject:@(model.courseID) forKey:kCourseID];
         [dic setObject:model.courseCover forKey:kCourseCover];
+        [dic setObject:model.coueseTeacherName forKey:kCourseTeacherName];
         [array addObject:dic];
     }
     return array;

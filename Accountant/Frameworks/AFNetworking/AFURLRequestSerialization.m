@@ -718,7 +718,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
 
         return NO;
     }
-
+    
     NSDictionary *fileAttributes = [[NSFileManager defaultManager] attributesOfItemAtPath:[fileURL path] error:error];
     if (!fileAttributes) {
         return NO;
@@ -917,7 +917,7 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
             }
         }
     }
-
+    
     return totalNumberOfBytesRead;
 }
 
@@ -1173,7 +1173,7 @@ typedef enum {
         });
         return YES;
     }
-
+    
     switch (_phase) {
         case AFEncapsulationBoundaryPhase:
             _phase = AFHeaderPhase;
@@ -1366,7 +1366,7 @@ typedef enum {
     if (!self) {
         return nil;
     }
-
+    
     self.format = (NSPropertyListFormat)[[decoder decodeObjectOfClass:[NSNumber class] forKey:NSStringFromSelector(@selector(format))] unsignedIntegerValue];
     self.writeOptions = [[decoder decodeObjectOfClass:[NSNumber class] forKey:NSStringFromSelector(@selector(writeOptions))] unsignedIntegerValue];
 

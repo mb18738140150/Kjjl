@@ -112,7 +112,6 @@ static void CallBack(CFRunLoopObserverRef observer, CFRunLoopActivity activity, 
         [sourse.tasks removeObjectAtIndex:0];
         [sourse.taskKeys removeObjectAtIndex:0];
     }
-    
 }
 - (void)addRunloopObserver
 {

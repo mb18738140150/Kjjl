@@ -157,9 +157,18 @@ static RCDLive *__rongUIKit = nil;
     [[NSNotificationCenter defaultCenter] postNotificationName:RCDLiveKitDispatchMessageNotification
                                                         object:message
                                                       userInfo:dic_left];
-    NSLog(@"[AVAudioSession sharedInstance].category = %@", [AVAudioSession sharedInstance].category);
 }
 #endif
+
+#if !IsUseRongCloudIMKit
+
+#else
+-(BOOL)onRCIMCustomAlertSound:(RCMessage*)message
+{
+    return YES;
+}
+#endif
+
 
 #if !IsUseRongCloudIMKit
 /**
@@ -232,6 +241,8 @@ static RCDLive *__rongUIKit = nil;
                    success:(void (^)(long messageId))successBlock
                      error:(void (^)(RCErrorCode nErrorCode,
                                      long messageId))errorBlock {
+    
+    
     
 //    if ([content isKindOfClass:[RCTextMessage class]]) {
 //        RCTextMessage *textMessage = (RCTextMessage*)content;

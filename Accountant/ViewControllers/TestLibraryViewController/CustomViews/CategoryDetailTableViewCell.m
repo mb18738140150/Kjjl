@@ -157,12 +157,27 @@
         [self resetWith:infoDic];
     }
 }
+
+// 隐藏下载按钮
 - (void)hideDownloadBtn
 {
     self.learnImageView.hidden = YES;
 }
+
+- (void)lockVideo
+{
+    self.showStateImageView.image = [UIImage imageNamed:@"课程50-50"];
+    self.lineView.hidden = YES;
+    self.learnImageView.image = [UIImage imageNamed:@"密码"];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.learnImageView.frame = CGRectMake([UIScreen mainScreen].bounds.size.width - 10 - 15, 7.5, 15, 15);
+    });
+}
+
 - (void)resetVideoCellWith:(NSDictionary *)infoDic
 {
+    
     if ([[infoDic objectForKey:@"isDownload"] intValue] == 0) {
         self.learnImageView.image = [UIImage imageGray:[UIImage imageNamed:@"下载(6)"] andRGBValue:121];
         self.downloadState = DownloadState_unDownload;
@@ -181,6 +196,9 @@
     self.learnPepleCountLB.hidden = YES;
     self.totalCountLB.hidden = YES;
     [self.bottomLineView setFrame:CGRectMake(0, 49, kScreenWidth, 1)];
+    
+    self.showStateImageView.frame = CGRectMake(17.5, 7.5, 15, 15);
+    self.learnImageView.frame = CGRectMake([UIScreen mainScreen].bounds.size.width - 10 - 25, (self.frame.size.height - 25) / 2, 25, 25);
     
     UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(downloadAction)];
     [self.learnImageView addGestureRecognizer:tap];

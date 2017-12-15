@@ -47,6 +47,10 @@
 
 - (void)completeUserInfoWithDic:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_CompleteUserInfoProtocol>)object;
 
+- (void)bindRegCodeWithRegCode:(NSString *)regCode withNotifiedObject:(id<UserModule_bindRegCodeProtocol>)object;
+
+- (void)payOrderWith:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_PayOrderProtocol>)object;
+
 /**
  请求app版本信息
 
@@ -82,7 +86,7 @@
  取消预约直播课
  
  */
-- (void)didRequestCancelOrderLivingCourseOperationWithCourseInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_OrderLivingCourseProtocol>)object;
+- (void)didRequestCancelOrderLivingCourseOperationWithCourseInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_CancelOrderLivingCourseProtocol>)object;
 
 //- (void)refreshRCDUserInfoWithNickName:(NSString *)nickName andWithPortraitUrl:(NSString *)portraitUrl;
 
@@ -93,6 +97,14 @@
  */
 - (int)getUserId;
 
+/**
+ 获取是否显示邀请码
+ 
+ @return 邀请码是否显示
+ */
+- (int)getCodeview;
+
+- (void)changeCodeViewWith:(int)codeView;
 
 /**
  获取用户名
@@ -142,6 +154,14 @@
 
 - (int)getUserLevel;
 
+- (NSString *)getLevelStr;
+
 - (NSDictionary *)getUpdateInfo;
+
+// 获取订单支付详情
+- (NSDictionary *)getPayOrderDetailInfo;
+
+// 获取我的订单列表
+- (NSArray *)getMyOrderList;
 
 @end

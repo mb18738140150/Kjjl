@@ -138,8 +138,8 @@
     askBtn.layer.borderWidth = 1;
     askBtn.layer.borderColor = kCommonMainOringeColor.CGColor;
     [askBtn addTarget:self action:@selector(askAction) forControlEvents:UIControlEventTouchUpInside];
-    if (self.isLivingDetail) {
-        [self addSubview:askBtn];
+    if (!self.isLivingDetail) {
+//        [self addSubview:askBtn];
     }
     
     

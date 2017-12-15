@@ -32,6 +32,7 @@
         model.courseID = [[dic objectForKey:@"id"] intValue];
         model.courseName = [dic objectForKey:@"courseName"];
         model.courseCover = [dic objectForKey:@"cover"];
+        model.coueseTeacherName = [dic objectForKey:@"teacherName"];
         [self.collectCourseArray addObject:model];
     }
     if (isObjectNotNil(self.notifiedObject)) {

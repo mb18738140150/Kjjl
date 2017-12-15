@@ -15,6 +15,7 @@
 - (void)setCurrentNotStartLivingCourseWithModel:(HottestCourseModel *)model;
 //- (void)setCurrentNotStartLivingSectionCourseWithModel:(HottestCourseModel *)model;
 - (void)didRequestNotStartLivingCourseWithInfo:(NSDictionary *)infoDic NotifiedObject:(id<CourseModule_NotStartLivingCourse>)object;
+
 - (int)getIsHaveJurisdiction;
 
 @end

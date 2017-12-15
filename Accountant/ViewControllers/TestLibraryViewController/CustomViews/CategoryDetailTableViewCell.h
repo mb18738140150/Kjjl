@@ -42,5 +42,6 @@ typedef enum : NSUInteger {
 - (void)resetisLast:(BOOL)islast withDicInfo:(NSDictionary *)infoDic;
 
 - (void)hideDownloadBtn;
+- (void)lockVideo;
 
 @end

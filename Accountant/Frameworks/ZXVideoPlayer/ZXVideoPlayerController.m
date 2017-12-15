@@ -178,6 +178,13 @@ static const CGFloat kVideoPlayerControllerAnimationTimeInterval = 0.3f;
     NSString *timeRmainingString = [NSString stringWithFormat:@"%02.0f:%02.0f", minutesRemaining, secondsRemaining];
     
     self.videoControl.timeLabel.text = [NSString stringWithFormat:@"%@/%@",timeElapsedString,timeRmainingString];
+    
+    if (currentTime > 300) {
+        if (self.informalBlock) {
+            self.informalBlock();
+        }
+    }
+    
 }
 
 /// 开启定时器
@@ -222,8 +229,6 @@ static const CGFloat kVideoPlayerControllerAnimationTimeInterval = 0.3f;
 /// 播放状态改变, 可配合playbakcState属性获取具体状态
 - (void)onMPMoviePlayerPlaybackStateDidChangeNotification
 {
-//    NSLog(@"MPMoviePlayer  PlaybackStateDidChange  Notification *** %ld ", (long)self.playbackState);
-    
     if (isplayed && self.playbackState == MPMoviePlaybackStatePlaying) {
         [self pause];
     }

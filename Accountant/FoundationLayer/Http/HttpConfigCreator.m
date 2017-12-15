@@ -177,10 +177,11 @@
     return delete;
 }
 
-+ (HttpConfigModel *)getLearningConfig
++ (HttpConfigModel *)getLearningConfig:(NSDictionary *)infoDic
 {
     HttpConfigModel *learning = [[HttpConfigModel alloc] init];
-    NSDictionary *dic = @{kCommand:kCommandLearningCourse};
+    NSDictionary *dic = @{kCommand:kCommandLearningCourse,
+                          @"type":[infoDic objectForKey:@"type"]};
     [self setConfigModel:learning withInfo:dic];
     return learning;
 }
@@ -536,6 +537,26 @@
                           @"qqAccount":[userInfo objectForKey:@"qqAccount"],
                           @"phoneNumber":[userInfo objectForKey:@"phoneNumber"]
                           };
+    [self setConfigModel:c withInfo:dic];
+    return c;
+}
+
++ (HttpConfigModel *)bindRegCode:(NSString *)regCode
+{
+    HttpConfigModel *c = [[HttpConfigModel alloc] init];
+    NSDictionary *dic = @{kCommand:kBindRegCode,
+                          @"regCode":regCode
+                          };
+    [self setConfigModel:c withInfo:dic];
+    return c;
+}
+
++ (HttpConfigModel *)payOrderWithInfo:(NSDictionary *)orderInfo
+{
+    HttpConfigModel * c = [[HttpConfigModel alloc]init];
+    NSDictionary * dic = @{kCommand:kPayOrder,
+                           @"orderId":[orderInfo objectForKey:@"orderId"],
+                           @"payType":[orderInfo objectForKey:@"payType"]};
     [self setConfigModel:c withInfo:dic];
     return c;
 }

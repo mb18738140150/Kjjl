@@ -14,6 +14,7 @@ typedef enum : NSUInteger {
     LivingState_living,
     LivingState_end,
     LivingState_notLogin,
+    LivingState_notJurisdiction
 } LivingState;
 
 @interface LivingStateView : UIView

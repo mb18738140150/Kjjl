@@ -41,6 +41,11 @@
     if ([[successInfo objectForKey:@"canDownload"] isKindOfClass:[NSNull class]]) {
         self.detailCourseModel.courseModel.canDownload = 0;
     }
+    self.detailCourseModel.courseModel.canWatch = [[successInfo objectForKey:@"canWatch"] intValue];
+    if ([[successInfo objectForKey:@"canWatch"] isKindOfClass:[NSNull class]]) {
+        self.detailCourseModel.courseModel.canWatch = 0;
+    }
+    
     for (NSDictionary *tmpDic in data) {
         ChapterModel *cModel = [[ChapterModel alloc] init];
         cModel.chapterId = [[tmpDic objectForKey:@"id"] intValue];

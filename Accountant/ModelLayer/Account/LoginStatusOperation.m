@@ -30,6 +30,7 @@
     self.userModel.telephone = @"";
     self.userModel.rongToken = @"";
     self.userModel.level = 0;
+    self.userModel.codeview = 1;
     [self encodeUserInfo];
 }
 
@@ -72,6 +73,10 @@
     }
     
     self.userModel.level = [[successInfo objectForKey:@"level"] intValue];
+    self.userModel.codeview = [[successInfo objectForKey:@"codeView"] intValue];
+    
+    
+    
     self.userModel.isLogin = YES;
     
     if (self.loginNotifiedObject != nil) {

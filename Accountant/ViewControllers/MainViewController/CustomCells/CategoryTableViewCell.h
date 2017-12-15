@@ -13,6 +13,8 @@
 
 - (void)resetWithCategoryInfos:(NSArray *)infoArray;
 
+- (void)resetMainCategoryInfos:(NSArray *)infoArray;
+
 @property (nonatomic,assign) PageType            pageType;
 
 @property (nonatomic, strong)UIImageView *backImageView;

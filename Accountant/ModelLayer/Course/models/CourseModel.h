@@ -30,6 +30,10 @@
 @property (nonatomic, assign)int playState;
 
 @property (nonatomic, assign)int                    canDownload;// 视频是否有下载权限
+@property (nonatomic, assign)int                    canWatch;// 视频是否有观看权限
+
+@property (nonatomic, assign)double                 learnProgress;// 学习进度
+
 // 直播课
 @property (nonatomic, strong)NSString *teacherPortraitUrl;
 @property (nonatomic, strong)NSString *teacherDetail;

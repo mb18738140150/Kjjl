@@ -33,6 +33,7 @@
 //#import "LELivePlaying.h"
 //#import "QINIULivePlaying.h"
 //#import "QCLOUDLivePlaying.h"
+#import "NSTimer+tool.h"
 
 #import "LivingChatViewController.h"
 
@@ -43,6 +44,8 @@
 #import "ZXVideo.h"
 #import "ZXVideoPlayerController.h"
 #import "HYSegmentedControl.h"
+#import "CansultTeachersListView.h"
+#import "BuyCourseViewController.h"
 
 #define kRandomColor [UIColor colorWithRed:arc4random_uniform(256) / 255.0 green:arc4random_uniform(256) / 255.0 blue:arc4random_uniform(256) / 255.0 alpha:1]
 
@@ -155,6 +158,8 @@ UIScrollViewDelegate, UINavigationControllerDelegate,RCTKInputBarControlDelegate
 
 @property (nonatomic, assign)NSInteger hySegmentedControlSelectAtIndex;
 
+@property (nonatomic, strong)CansultTeachersListView            *cansultView;
+
 @end
 
 /**
@@ -198,7 +203,7 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
     self.conversationMessageCollectionView = nil;
     self.targetId = nil;
     [self registerNotification];
-    self.defaultHistoryMessageCountOfChatRoom = 10;
+    self.defaultHistoryMessageCountOfChatRoom = 50;
 //    if ([[UserManager sharedManager] isUserLogin]) {
 //        [[RCIMClient sharedRCIMClient]setRCConnectionStatusChangeDelegate:self];
 //    }
@@ -233,13 +238,11 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    
-    
-    
     //默认进行弹幕缓存，不过量加载弹幕，如果想要同时大批量的显示弹幕，设置为yes，弹幕就不会做弹道检测和缓存
     RCDanmakuManager.isAllowOverLoad = NO;
     AppDelegate *delegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     self.userList = [NSMutableArray array];
+    
     //初始化UI
     
     [self initializedSubViews];
@@ -269,9 +272,9 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
             {
                 if ([[self.infoDic objectForKey:kIsLivingCourseFree] intValue] == 0 && [[self.infoDic objectForKey:kHaveJurisdiction] intValue] == 0) {
                     [SVProgressHUD showErrorWithStatus:@"暂无观看权限"];
+                    self.playingVideo.playUrl = @"";
                     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                         [SVProgressHUD dismiss];
-                        self.playingVideo.playUrl = @"";
                     });
                 }
             }
@@ -281,9 +284,9 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
             {
                 if ([[self.infoDic objectForKey:kIsBack] intValue] == 0) {
                     [SVProgressHUD showErrorWithStatus:@"暂无观看权限"];
+                    self.playingVideo.playUrl = @"";
                     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                         [SVProgressHUD dismiss];
-                        self.playingVideo.playUrl = @"";
                     });
                 }
             }
@@ -291,6 +294,9 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
                 
             default:
                 break;
+        }
+        if ([self cannotPlay]) {
+            self.playingVideo.playUrl = @"";
         }
         
         [self playVideo:videoInfo];
@@ -425,19 +431,21 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
 
 - (void)livingStart:(NSNotification *)notification
 {
-    if (!self.timer) {
+    if (self.timer == nil) {
         
         __weak typeof(self)weakSelf = self;
         
-        self.timer = [NSTimer timerWithTimeInterval:1 repeats:NO block:^(NSTimer * _Nonnull timer) {
+        self.timer = [NSTimer qs_scheduledTimerWithTimeInterval:2 executeBlock:^(NSTimer *timer) {
             NSDictionary * infoDic = notification.object;
+            static int a = 0;
+            NSLog(@"直播课马上开始了  %d", a);
             
             if ([[infoDic objectForKey:@"key"] isEqualToString:@"直播开始了"]) {
                 
-                NSDictionary * dic1 = @{kCourseID:[self.infoDic objectForKey:kCourseID],
-                                        kteacherId:@"",
-                                        @"month":@(0)};
-                [[CourseraManager sharedManager] didrequestLivingSectionDetailWithInfo:dic1 andNotifiedObject:self];
+//                NSDictionary * dic1 = @{kCourseID:[self.infoDic objectForKey:kCourseID],
+//                                        kteacherId:@"",
+//                                        @"month":@(0)};
+//                [[CourseraManager sharedManager] didrequestLivingSectionDetailWithInfo:dic1 andNotifiedObject:self];
                 
                 if (weakSelf.videoController.playbackState != MPMoviePlaybackStatePlaying ) {
                     [weakSelf playVideo:[NSDictionary dictionary]];
@@ -450,7 +458,7 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
                     [weakSelf.view insertSubview:weakSelf.stateImageView belowSubview:weakSelf.videoController.view];
                 }
             }
-        }];
+        } repeats:YES];
         
     }
 }
@@ -465,7 +473,6 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
             [self.view insertSubview:self.stateImageView aboveSubview:self.videoController.view];
         }else
         {
-            
             [self.timer invalidate];
             self.timer = nil;
             [self.stateImageView timerInvalidate];
@@ -505,7 +512,53 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
     
     return date;
 }
-#pragma mark - playState
+
+- (BOOL)isLivingStartCountDown:(NSDictionary *)infoDic
+{
+    NSDate *nowDate = [NSDate date];
+    NSDateFormatter *dateFomatter = [[NSDateFormatter alloc] init];
+    dateFomatter.dateFormat = @"yyyy-MM-dd HH:mm";
+    
+    // 截止时间字符串格式
+    NSString * expireDateStr = [infoDic objectForKey:kLivingTime];
+    
+    expireDateStr = [[expireDateStr componentsSeparatedByString:@"~"] objectAtIndex:0];
+    
+    //    expireDateStr = @"2017/8/17 10:25:00";
+    // 当前时间字符串格式
+    NSString *nowDateStr = [dateFomatter stringFromDate:nowDate];
+    // 截止时间data格式
+    NSDate *expireDate = [dateFomatter dateFromString:expireDateStr];
+    // 当前时间data格式
+    nowDate = [dateFomatter dateFromString:nowDateStr];
+    // 当前日历
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    // 需要对比的时间数据
+    NSCalendarUnit unit = NSCalendarUnitYear | NSCalendarUnitMonth
+    | NSCalendarUnitDay | NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond;
+    // 对比时间差
+    NSDateComponents *dateCom = [calendar components:unit fromDate:nowDate toDate:expireDate options:0];
+    
+    NSInteger hour = dateCom.month * 30 * 24  + dateCom.day * 24  + dateCom.hour;
+    NSInteger minute = dateCom.minute;
+    if (hour == 0  && minute > 0 && minute < 15) {
+        return YES;
+    }
+    
+    return NO;
+}
+
+- (BOOL)notHaveJurisdictionForBack{
+    
+    if ([[self.infoDic objectForKey:kIsBack] intValue] == 1) {
+        // 有权限看回放
+        return NO;
+    }
+    // 无权限看回放
+    return YES;
+}
+
+#pragma mark - playState-clickAction
 
 - (void)setLoginOutPlayStateView
 {
@@ -553,6 +606,35 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
         case LivingState_end:
             [weakSelf refreshWith:infoDic];
             break;
+        case LivingState_notJurisdiction:
+        {
+            UIAlertController * alertVC = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+            
+            UIAlertAction * cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
+            
+            UIAlertAction * cansultAction = [UIAlertAction actionWithTitle:@"咨询" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                [weakSelf.videoController pausePlay];
+                AppDelegate * delegate = [UIApplication sharedApplication].delegate;
+                [delegate.window addSubview:weakSelf.cansultView];
+            }];
+            UIAlertAction * payAction = [UIAlertAction actionWithTitle:@"购买" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                BuyCourseViewController * buyVC = [[BuyCourseViewController alloc]init];
+                buyVC.infoDic = weakSelf.infoDic;
+                [weakSelf.videoController pausePlay];
+                UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:buyVC];
+                [weakSelf presentViewController:nav animated:YES completion:nil];
+            }];
+            
+            [alertVC addAction:cancelAction];
+            [alertVC addAction:cansultAction];
+            
+            if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"weixin://"]]) {
+                [alertVC addAction:payAction];
+            }
+            
+            [self presentViewController:alertVC animated:YES completion:nil];
+        }
+            break;
             
         default:
             break;
@@ -576,7 +658,7 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
     self.stateImageView.userInteractionEnabled = YES;
     
     self.backBT = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.backBT.frame = CGRectMake(15, 30, 30, 30);
+    self.backBT.frame = CGRectMake(0, 30, 30, 30);
     [self.backBT setImage:[UIImage imageNamed:@"zx-video-banner-back"] forState:UIControlStateNormal];
     [self.stateImageView addSubview:self.backBT];
     [self.backBT addTarget:self action:@selector(quitConversationViewAndClear) forControlEvents:UIControlEventTouchUpInside];
@@ -593,9 +675,13 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
                 [self.segmentC showTitlesWith:@[@(2),@(3)]];
             }
             
-            // 添加本地通知
-            if ([[UserManager sharedManager] isUserLogin]) {
-                [self addLocalNotification:self.infoDic];
+            // 添加本地倒计时
+            if ([[UserManager sharedManager] isUserLogin] && [self isLivingStartCountDown:self.infoDic]) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:kLocalNitificationOfLivingStart object:@{@"key":@"直播开始了"}];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.segmentC showTitlesWith:@[@(2),@(3)]];
+                });
+                [self joinChatRoom];
             }
 //            NSLog(@"未开始");
             break;
@@ -606,13 +692,26 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
         case 3:
             [self.segmentC hideTitlesWith:@[@(2),@(3)]];
             self.stateImageView.hidden = NO;
+            // 未登录
             if (![[UserManager sharedManager] isUserLogin]) {
                 [self.stateImageView setStateWith:LivingState_notLogin];
                 return;
             }
+            
+            // 点击课程进来
             if (self.isLivingCourse || [[self.infoDic objectForKey:kPlayBackUrl] length] == 0) {
                 self.isLivingCourse = NO;
-                [self.stateImageView setStateWith:LivingState_end];
+                if ([self notHaveJurisdictionForBack]) {
+                    [self.stateImageView setStateWith:LivingState_notJurisdiction];
+                }else
+                {
+                    [self.stateImageView setStateWith:LivingState_end];
+                }
+                return;
+            }
+            
+            if ([self notHaveJurisdictionForBack]) {
+                [self.stateImageView setStateWith:LivingState_notJurisdiction];
                 return;
             }
             self.stateImageView.hidden = YES;
@@ -625,8 +724,8 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
 #pragma mark - segmentControl
 - (void)segmentSetup
 {
-    self.segmentC = [[HYSegmentedControl alloc] initWithOriginY:kZXVideoPlayerOriginalHeight Titles:@[@"目录",@"视频详情",@"聊天室", @"助教老师"] delegate:self];
-//    self.segmentC = [[HYSegmentedControl alloc] initWithOriginY:kZXVideoPlayerOriginalHeight Titles:@[@"聊天室", @"视频详情"] delegate:self];
+    self.segmentC = [[HYSegmentedControl alloc] initWithOriginY:kZXVideoPlayerOriginalHeight Titles:@[@"目录",@"详情",@"互动", @"咨询报名"] delegate:self];
+    [self.segmentC resetColor:UIRGBColor(255, 102, 10)];
     [self.view addSubview:self.segmentC];
     
     if (![[UserManager sharedManager] isUserLogin]) {
@@ -720,6 +819,8 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
         [self.videoController stop];
         self.videoController = nil;
     }
+    [self.timer invalidate];
+    self.timer = nil;
     [self.livingListView removeAll];
     [[NSNotificationCenter defaultCenter]removeObserver:self name:kLocalNitificationOfLivingStart object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotificationOfLoginSuccess object:nil];
@@ -953,6 +1054,7 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
 //        self.privateChatView.bounds.origin.y = -(kScreenHeight - 42 - kZXVideoPlayerOriginalHeight);
     }
     
+    __weak typeof(self)weakSelf = self;
     if (self.livingListView == nil) {
         self.livingListView = [[LivingCourseListView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, (kScreenHeight - 42 - kZXVideoPlayerOriginalHeight))];
         self.livingListView.backgroundColor = [UIColor whiteColor];
@@ -960,7 +1062,6 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
         self.livingListView.selectLivingSectionInfoDic = self.infoDic;
         [self.livingListView.tableView reloadData];
         
-        __weak typeof(self)weakSelf = self;
         
         self.livingListView.countDownBlock = ^(NSDictionary *infoDic) {
             if (!infoDic) {
@@ -1007,17 +1108,23 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
         [self.contentView addSubview:self.livingListView];
     }
     [self.contentView bringSubviewToFront:self.inputBar];
+    
+    self.cansultView = [[CansultTeachersListView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, kScreenHeight) andTeachersArr:@[@""]];
+    self.cansultView.dismissBlock = ^{
+        [weakSelf.cansultView removeFromSuperview];
+    };
+    
 }
-
 
 - (void)refreshWith:(NSDictionary *)infoDic
 {
+    self.infoDic = infoDic;
+    
     switch ([[self.infoDic objectForKey:kLivingState] intValue]) {
         case 0:
         case 1:
         case 2:
         {
-            
             if ([[self.infoDic objectForKey:kIsLivingCourseFree] intValue] == 0 && [[self.infoDic objectForKey:kHaveJurisdiction] intValue] == 0) {
                 [SVProgressHUD showErrorWithStatus:@"暂无观看权限"];
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -1056,7 +1163,10 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
     
     self.isLivingCourse = NO;
     
-    self.infoDic = infoDic;
+    [self.videoController stop];
+    [self.timer invalidate];
+    self.timer = nil;
+    
     self.targetId = [infoDic objectForKey:kChatRoomID];
     [self joinChatRoom];
     self.videoDetailView.infoDic = self.infoDic;
@@ -1079,7 +1189,9 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
         self.playingVideo.title = [self.infoDic objectForKey:kCourseName];
         
         NSLog(@"--- %@", videoInfo);
-        
+        if ([self cannotPlay]) {
+            self.playingVideo.playUrl = @"";
+        }
         [self playVideo:videoInfo];
         [self setPlayStateViewIsLogin:YES];
     });
@@ -1705,7 +1817,7 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
     NSLog(@"%@", rcMessage);
     
     if (rcMessage.conversationType == ConversationType_PRIVATE) {
-        [self.segmentC addTipWithIndex:2];
+        [self.segmentC addTipWithIndex:3];
     }
     
     RCDLiveMessageModel *model = [[RCDLiveMessageModel alloc] initWithMessage:rcMessage];
@@ -1792,7 +1904,6 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
 - (void)hySegmentedControlSelectAtIndex:(NSInteger)index
 {
     NSLog(@"self.conversationDataRepository.count = $$$$$$ %ld", (long)self.conversationDataRepository.count);
-    
     [self.inputBar setInputBarStatus:RCDLiveBottomBarDefaultStatus];
     [self.contentView setContentOffset:CGPointMake(kScreenWidth * index, 0) animated:YES];
     self.hySegmentedControlSelectAtIndex = index;
@@ -2105,7 +2216,6 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
     self.livingListView.dataArr = [[CourseraManager sharedManager] getLivingSectionDetailArray];
     [self.livingListView.tableView reloadData];
     
-    
     for (NSDictionary * dic in self.livingListView.dataArr) {
         if ([[dic objectForKey:kCourseSecondID] isEqual:[self.infoDic objectForKey:kCourseSecondID]]) {
             self.infoDic = dic;
@@ -2155,7 +2265,6 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
         default:
             break;
     }
-    
     
     [self.segmentC showTitlesWith:@[@(2),@(3)]];
     
@@ -2210,10 +2319,24 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
                 break;
         }
         
+        if ([self cannotPlay]) {
+            self.playingVideo.playUrl = @"";
+        }
+        
         [self playVideo:videoInfo];
         [self setPlayStateViewIsLogin:YES];
     });
     
+}
+
+- (BOOL)cannotPlay
+{
+    if (([[self.infoDic objectForKey:kLivingState] intValue] == 0 || [[self.infoDic objectForKey:kLivingState] intValue] == 1) && ![self isLivingStartCountDown:self.infoDic]) {
+        return YES;
+    }else
+    {
+        return NO;
+    }
 }
 
 - (void)didRequestLivingSectionDetailFailed:(NSString *)failedInfo

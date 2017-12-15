@@ -43,7 +43,7 @@
 
 + (HttpConfigModel *)getAllMyNoteConfig;
 
-+ (HttpConfigModel *)getLearningConfig;
++ (HttpConfigModel *)getLearningConfig:(NSDictionary *)infoDic;
 
 + (HttpConfigModel *)getCollectConfig;
 
@@ -120,5 +120,9 @@
 + (HttpConfigModel *)getVerifyAccount:(NSString *)accountNumber;
 
 + (HttpConfigModel *)completeUserInfo:(NSDictionary *)userInfo;
+
++ (HttpConfigModel *)bindRegCode:(NSString *)regCode;
+
++ (HttpConfigModel *)payOrderWithInfo:(NSDictionary *)orderInfo;
 
 @end

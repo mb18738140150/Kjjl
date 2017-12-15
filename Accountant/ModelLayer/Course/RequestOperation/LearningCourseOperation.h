@@ -12,9 +12,12 @@
 @interface LearningCourseOperation : NSObject
 
 @property (nonatomic,weak) NSMutableArray                                   *learningCourseArray;
+@property (nonatomic, weak)NSMutableArray                                   *completeCourseArray;
 
 @property (nonatomic,weak) id<CourseModule_LearningCourseProtocol>           notifiedObject;
+@property (nonatomic, weak)id<CourseModule_CompleteCourseProtocol>           complateNotifiedObject;
 
-- (void)didRequestLearningCourseWithNotifiedObject:(id<CourseModule_LearningCourseProtocol>)object;
+- (void)didRequestLearningCourseWith:(NSDictionary *)infoDic NotifiedObject:(id<CourseModule_LearningCourseProtocol>)object;
 
+- (void)didRequestCompleteCourseWith:(NSDictionary *)infoDic NotifiedObject:(id<CourseModule_CompleteCourseProtocol>)object;
 @end

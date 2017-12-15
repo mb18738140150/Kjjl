@@ -208,7 +208,7 @@
     accountImageView.image = [UIImage imageNamed:@"手机(1)"];
     [accountView addSubview:accountImageView];
     
-    _account=[[UITextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(accountImageView.frame) + 10, 10, accountView.hd_width - 70, 20)];
+    _account=[[UITextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(accountImageView.frame) + 10, 0, accountView.hd_width - 35, 40)];
     [_account setBackgroundColor:[UIColor clearColor]];
     _account.placeholder=[NSString stringWithFormat:@"请输入账号"];
     _account.delegate = self;
@@ -228,7 +228,7 @@
     passwordImageView.image = [UIImage imageNamed:@"密码"];
     [passwordView addSubview:passwordImageView];
     
-    _password=[[UITextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(passwordImageView.frame) + 10, 10, kScreenWidth-40, 20)];
+    _password=[[UITextField alloc] initWithFrame:CGRectMake(CGRectGetMaxX(passwordImageView.frame) + 10, 0, kScreenWidth-40, 40)];
     [_password setBackgroundColor:[UIColor clearColor]];
     _password.secureTextEntry = YES;
     _password.placeholder=[NSString stringWithFormat:@"请输入密码"];
@@ -242,14 +242,27 @@
     passwordBottomView.backgroundColor = kCommonMainTextColor_200;
     [passwordView addSubview:passwordBottomView];
     
-    self.closeImageView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 50, 30, 30)];
-    self.closeImageView.image = [UIImage imageNamed:@"close.png"];
-    self.closeImageView.userInteractionEnabled = YES;
+//    UIView * closeView = [[UIView alloc]initWithFrame:CGRectMake(10, 40, 50, 50)];
+//    closeView.backgroundColor = [UIColor redColor];
+//    
+//    self.closeImageView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 50, 30, 30)];
+//    self.closeImageView.image = [UIImage imageNamed:@"close.png"];
+//    self.closeImageView.userInteractionEnabled = YES;
+//    self.closeImageView.backgroundColor = [UIColor redColor];
+//    
+//    UITapGestureRecognizer *imageTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(dismissSelf)];
+//    [self.closeImageView addGestureRecognizer:imageTap];
+//    
+//    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissSelf)];
+//    [closeView addGestureRecognizer:tap];
+//    [self.view addSubview:closeView];
+//    [self.view addSubview:self.closeImageView];
     
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissSelf)];
-    
-    [self.closeImageView addGestureRecognizer:tap];
-    [self.view addSubview:self.closeImageView];
+    UIButton *closeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    closeBtn.frame = CGRectMake(20, 50, 35, 35);
+    [closeBtn setImage:[UIImage imageNamed:@"close.png"] forState:UIControlStateNormal];
+    [closeBtn addTarget:self action:@selector(dismissSelf) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:closeBtn];
     
     
     UIButton * forgetPsdBTn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -311,6 +324,7 @@
 
 - (void)dismissSelf
 {
+    NSLog(@"************");
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
