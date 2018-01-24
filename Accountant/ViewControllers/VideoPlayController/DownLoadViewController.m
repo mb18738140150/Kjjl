@@ -91,6 +91,7 @@
         [downLoadInfo setObject:[chapterInfo objectForKey:kIsSingleChapter] forKey:kIsSingleChapter];
         [downLoadInfo setObject:downloadTaskId forKey:kDownloadTaskId];
         [downLoadInfo setObject:@(DownloadTaskStateWait) forKey:kDownloadState];
+//        [downLoadInfo setObject:@(1) forKey:@"type"];
         
         NSLog(@"%@", [downLoadInfo description]);
         
@@ -129,7 +130,7 @@
     cell.nameLabel.text = [videoDic objectForKey:kVideoName];
     cell.downloadDetailLabel.text = nil;
     
-    if ([[DownloaderManager sharedManager] isVideoIsDownloadedWithVideoId:[videoDic objectForKey:kVideoId]]) {
+    if ([[DownloaderManager sharedManager] isVideoIsDownloadedWithVideoId:videoDic]) {
         cell.downloadDetailLabel.text = @"已下载";
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         return cell;
@@ -161,7 +162,7 @@
     NSString *downloadTaskId = [DownloadRquestOperation getDownloadTaskIdWitChapterId:[chapterDic objectForKey:kChapterId] andVideoId:[videoDic objectForKey:kVideoId]];
     NSString *selectedId = [NSString stringWithFormat:@"%ld_%ld",(long)indexPath.section,(long)indexPath.row];
     
-    if ([[DownloaderManager sharedManager] isVideoIsDownloadedWithVideoId:[videoDic objectForKey:kVideoId]]) {
+    if ([[DownloaderManager sharedManager] isVideoIsDownloadedWithVideoId:videoDic]) {
         return;
     }
     

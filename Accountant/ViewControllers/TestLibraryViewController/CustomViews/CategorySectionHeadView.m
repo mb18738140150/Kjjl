@@ -188,7 +188,31 @@
         }
     }
     
+    if (!self.isChapter) {
+        self.titleLabel.hd_centerY = self.hd_centerY;
+        self.showStateImageView.hd_centerY = self.hd_centerY;
+        self.totalCountLB.hidden = YES;
+        self.learnProcessView.hidden = YES;
+        self.questionCountLabel.frame = CGRectMake(kScreenWidth - 35 - 10 - 80, self.learnImageView.hd_centerY - 6, 80, 12);
+        self.questionCountLabel.textAlignment = NSTextAlignmentCenter;
+        self.lineView.backgroundColor = UIColorFromRGB(0xdddddd);
+        self.questionCountLabel.attributedText = [self getQuestionStrWith:descriptionString and:countArray[0]];
+        self.titleLabel.hd_width = kScreenWidth - 38 - 125;
+    }
+    
+    [self insertSubview:self.lineView belowSubview:self.showStateImageView];
 }
+
+
+- (NSMutableAttributedString *)getQuestionStrWith:(NSString *)str and:(NSString *)dStr
+{
+    NSMutableAttributedString * mStr = [[NSMutableAttributedString alloc]initWithString:str];
+    NSDictionary * attribute = @{NSForegroundColorAttributeName:UIColorFromRGB(0xff8400)};
+    [mStr setAttributes:attribute range:NSMakeRange(0, dStr.length)];
+    
+    return mStr;
+}
+
 
 -(void)setupVideoWithBackgroundColor:(UIColor *)backgroundColor
                          titleString:(NSString *)titleString

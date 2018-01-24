@@ -7,11 +7,11 @@
 //
 
 #import "OrderDetailViewController.h"
-
+#import "BuyDetailViewController.h"
 
 #define SPACE 10
 
-@interface OrderDetailViewController ()
+@interface OrderDetailViewController ()<UserModule_PayOrderProtocol>
 
 @property (nonatomic, strong)UIScrollView * scrollView;
 
@@ -31,6 +31,8 @@
 @property (nonatomic, strong)UILabel * realityPriceLB;
 @property (nonatomic, strong)UIView * realitySeperateView;
 @property (nonatomic, strong)UIButton * payBtn;
+
+@property (nonatomic, strong)NSDictionary * payInfoDic;
 
 @end
 
@@ -103,7 +105,7 @@
     [orderView addSubview:orderIdLabel];
     
     self.orderIdLB = [[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(orderIdLabel.frame) + 30, orderIdLabel.hd_y, orderView.hd_width - 118, 15)];
-    self.orderIdLB.text = @"26562121256323";
+    self.orderIdLB.text = [self.infoDic objectForKey:kOrderId];
     self.orderIdLB.font = kMainFont;
     self.orderIdLB.textColor = UIColorFromRGB(0x999999);
     [orderView addSubview:self.orderIdLB];
@@ -120,7 +122,7 @@
     [orderView addSubview:orderTimeLabel];
     
     self.orderTimeLB = [[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(orderTimeLabel.frame) + 30, orderTimeLabel.hd_y, orderView.hd_width - 118, 15)];
-    self.orderTimeLB.text = @"2017/11/20 20:00";
+    self.orderTimeLB.text = [self.infoDic objectForKey:kOrderTime];
     self.orderTimeLB.font = kMainFont;
     self.orderTimeLB.textColor = UIColorFromRGB(0x999999);
     [orderView addSubview:self.orderTimeLB];
@@ -136,7 +138,7 @@
     [orderView addSubview:orderStateLabel];
     
     self.orderStateLB = [[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(orderStateLabel.frame) + 30, orderStateLabel.hd_y, orderView.hd_width - 118, 15)];
-    self.orderStateLB.text = @"待付款";
+    
     self.orderStateLB.font = kMainFont;
     self.orderStateLB.textColor = UIColorFromRGB(0x999999);
     [orderView addSubview:self.orderStateLB];
@@ -159,15 +161,16 @@
     
     self.imageView = [[UIImageView alloc]initWithFrame:CGRectMake(14, 15 + CGRectGetMaxY(orderDetailSeparateView.frame), 70, 50)];
     [self.orderDetailView addSubview:self.imageView];
+    [self.imageView sd_setImageWithURL:[NSURL URLWithString:[self.infoDic objectForKey:kCourseCover]]];
     
     self.orderTitleLB = [[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(self.imageView.frame) + 11, self.imageView.hd_y, self.orderDetailView.hd_width - 14 * 2 - 70 - 11, 15)];
-    self.orderTitleLB.text = @"会员K5";
+    self.orderTitleLB.text = [self.infoDic objectForKey:kCourseName];
     self.orderTitleLB.textColor = UIColorFromRGB(0x333333);
     self.orderTitleLB.font = kMainFont;
     [self.orderDetailView addSubview:self.orderTitleLB];
     
     self.priceLB = [[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(self.imageView.frame) + 11, CGRectGetMaxY(self.orderTitleLB.frame) + 20, self.orderDetailView.hd_width - 14 * 2 - 70 - 11, 15)];
-    self.priceLB.text = @"￥4580";
+    self.priceLB.text = [NSString stringWithFormat:@"%@", [self.infoDic objectForKey:kPrice]];
     self.priceLB.textColor = UIColorFromRGB(0x666666);
     self.priceLB.font = kMainFont;
     [self.orderDetailView addSubview:self.priceLB];
@@ -184,7 +187,7 @@
     [self.orderDetailView addSubview:discountCouponLabel];
     
     self.discountCouponLB = [[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(discountCouponLabel.frame) + 30, discountCouponLabel.hd_y, self.orderDetailView.hd_width - 118, 15)];
-    self.discountCouponLB.text = @"优惠1000元";
+    self.discountCouponLB.text = [NSString stringWithFormat:@"优惠%.0f元", [[self.infoDic objectForKey:@"discountCoupon"] doubleValue]];
     self.discountCouponLB.textAlignment = NSTextAlignmentRight;
     self.discountCouponLB.font = kMainFont;
     self.discountCouponLB.textColor = UIColorFromRGB(0x999999);
@@ -201,7 +204,7 @@
     [self.orderDetailView addSubview:remarkLabel];
     
     self.remartLB = [[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(remarkLabel.frame) + 30, remarkLabel.hd_y, self.orderDetailView.hd_width - 118, 15)];
-    self.remartLB.text = @"无";
+    self.remartLB.text = [self.infoDic objectForKey:kRemark];
     self.remartLB.numberOfLines = 0;
     self.remartLB.textAlignment = NSTextAlignmentRight;
     self.remartLB.font = kMainFont;
@@ -224,7 +227,7 @@
     
     self.payBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     self.payBtn.frame = CGRectMake(self.orderDetailView.hd_width - 94 - 14, CGRectGetMaxY(self.realitySeperateView.frame) +16, 94, 36);
-    [self.payBtn setTitle:@"去付款" forState:UIControlStateNormal];
+    
     self.payBtn.backgroundColor = UIColorFromRGB(0xff4f00);
     [self.payBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     self.payBtn.titleLabel.font = kMainFont;
@@ -232,22 +235,32 @@
     self.payBtn.layer.masksToBounds = YES;
     [self.orderDetailView addSubview:self.payBtn];
     
+    if ([[self.infoDic objectForKey:kOrderStatus] intValue] == 0) {
+        self.orderStateLB.text = @"待付款";
+        [self.payBtn setTitle:@"去付款" forState:UIControlStateNormal];
+    }else
+    {
+        self.orderStateLB.text = @"交易成功";
+        [self.payBtn setTitle:@"已支付" forState:UIControlStateNormal];
+        self.payBtn.backgroundColor = UIColorFromRGB(0x999999);
+        self.payBtn.enabled = NO;
+    }
+    
     [self.payBtn addTarget:self action:@selector(payAction) forControlEvents:UIControlEventTouchUpInside];
     
     self.scrollView.contentSize = CGSizeMake(kScreenWidth, CGRectGetMaxY(self.orderDetailView.frame) + 20);
     
-    [self resetWithInfoDic:@{}];
-    
+    [self resetWithInfoDic:self.infoDic];
 }
 
 - (void)resetWithInfoDic:(NSDictionary *)infoDic
 {
-    self.remartLB.text = @"请问我购买的这个会员级别是不是最高级别呢，是不是所有的权限我都具有？都包括什么呢，能不能哭啼跟我介绍一下呢。谢谢啊，答疑我是不是一对一呢？是不是终身答疑还是只有几年时间呢，视频直播课我是不是都有权限观看与下载呢？";
+    self.remartLB.text = @"";
     CGFloat height = [UIUtility getHeightWithText:self.remartLB.text font:kMainFont width:self.remartLB.hd_width];
     if (height > 15) {
         self.remartLB.textAlignment = NSTextAlignmentLeft;
     }
-    self.realityPriceLB.attributedText = [self getRealPrice:@"实付:￥3580"];
+    [self.realityPriceLB setAttributedText: [self getRealityPrice:[NSString stringWithFormat:@"%@", [self.infoDic objectForKey:kRealityPrice]]]];
     
     [self refreshUI:height];
 }
@@ -275,7 +288,71 @@
 
 - (void)payAction
 {
-    NSLog(@"支付");
+    NSDictionary * payInfo = @{kCommand:kPayOrderFromOrderList,
+                               kOrderId:[self.infoDic objectForKey:kOrderId]};
+    [[UserManager sharedManager] payOrderWith:payInfo withNotifiedObject:self];
+}
+
+#pragma mark - payOrderDelegate
+- (void)didRequestPayOrderSuccessed
+{
+    [SVProgressHUD dismiss];
+    
+    int payType = [[self.infoDic objectForKey:@"payType"] intValue];
+    
+    switch (payType) {
+        case 1:
+            [self weichatPay];
+            break;
+        case 2:
+            [self aliPay];
+            break;
+        default:
+            break;
+    }
+}
+
+- (void)didRequestPayOrderFailed:(NSString *)failedInfo
+{
+    [SVProgressHUD dismiss];
+    [SVProgressHUD showErrorWithStatus:failedInfo];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [SVProgressHUD dismiss];
+    });
+}
+
+- (void)weichatPay
+{
+    NSDictionary * dict = [[UserManager sharedManager] getPayOrderDetailInfo];
+    NSMutableString *stamp  = [dict objectForKey:@"timestamp"];
+    
+    //调起微信支付
+    PayReq* req             = [[PayReq alloc] init];
+    req.openID              = [dict objectForKey:@"appid"];
+    req.partnerId           = [dict objectForKey:@"partnerid"];
+    req.prepayId            = [dict objectForKey:@"prepayid"];
+    req.nonceStr            = [dict objectForKey:@"noncestr"];
+    req.timeStamp           = stamp.intValue;
+    req.package             = [dict objectForKey:@"packageValue"];
+    req.sign                = [dict objectForKey:@"sign"];
+    [WXApi sendReq:req];
+}
+
+- (void)aliPay
+{
+    NSDictionary * dict = [[UserManager sharedManager] getPayOrderDetailInfo];
+    NSString * orderString = [dict objectForKey:@"orderString"];
+    [[AlipaySDK defaultService] payOrder:orderString fromScheme:@"2018011601908402" callback:^(NSDictionary *resultDic) {
+        NSLog(@"reslut = %@",resultDic);
+    }];
+}
+
+- (NSMutableAttributedString *)getRealityPrice:(NSString *)priceStr
+{
+    NSString * str = [NSString stringWithFormat:@"实付:￥%@", priceStr];
+    NSMutableAttributedString * mPriceStr = [[NSMutableAttributedString alloc]initWithString:str];
+    [mPriceStr setAttributes:@{NSForegroundColorAttributeName:UIColorFromRGB(0xff4f00)} range:NSMakeRange(3, priceStr.length + 1)];
+    return mPriceStr;
 }
 
 @end

@@ -20,6 +20,7 @@
     [coder encodeObject:self.telephone forKey:@"telephone"];
     [coder encodeObject:@(self.level) forKey:@"level"];
     [coder encodeObject:self.rongToken forKey:@"rongToken"];
+    [coder encodeObject:self.levelDetail forKey:@"levelDetail"];
     
 }
 
@@ -34,6 +35,7 @@
         self.telephone = [coder decodeObjectForKey:@"telephone"];
         self.level = [[coder decodeObjectForKey:@"level"] intValue];
         self.rongToken = [coder decodeObjectForKey:@"rongToken"];
+        self.levelDetail = [NSString stringWithFormat:@"%@", [coder decodeObjectForKey:@"levelDetail"]];
         
     }
     return self;

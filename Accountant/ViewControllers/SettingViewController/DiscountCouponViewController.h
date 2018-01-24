@@ -11,7 +11,7 @@
 @interface DiscountCouponViewController : UIViewController
 
 @property (nonatomic, copy)void(^selectDiscountCouponBlock)(NSDictionary * infoDic);
-
+@property (nonatomic, assign)double  price;
 @property (nonatomic, assign)BOOL myDscountCoupon;
 
 @end

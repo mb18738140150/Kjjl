@@ -15,10 +15,12 @@
 #import "TestRewriteWrongViewController.h"
 #import "SubCategoryCollectionViewCell.h"
 #import "SimpleHeaderCollectionViewCell.h"
-#import "TestQuestionTypeViewController.h"
+#import "TestRecordViewController.h"
 #import "CourseTypeCollectionViewCell.h"
 #import "SimulateresulrHeadCell.h"
 #import "TestCollectionViewController.h"
+#import "DailyPracticeViewController.h"
+
 #import "CourseTypeBottomCollectionViewCell.h"
 #define kCourseTypeCollectionViewCellID @"CourseTypeCollectionViewCellID"
 #define kSimulateresulrHeadCellId @"SimulateresulrHeadCellId"
@@ -36,6 +38,7 @@
 
 @property (nonatomic, assign)int section;
 @property (nonatomic, assign)int row;
+@property (nonatomic, assign)int lid;
 @property (nonatomic,strong) NSString       *cateName;
 @property (nonatomic,assign) int             cateId;
 
@@ -66,7 +69,8 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.view.backgroundColor = [UIColor whiteColor];
-    self.categoryArray = @[@"会计从业资格",@"初级会计职称",@"中级会计职称"];
+    self.categoryArray = @[@"初级会计职称",@"中级会计职称"];
+    // 初级lid：21 中级lid：112
     self.subcategoryArray1 = @[@{kTestCategoryName:@"会计基础",
                                  kTestCategoryImageName:@"classImg-1-2.png",
                                  kTestCategoryId:@(12924)},
@@ -76,26 +80,75 @@
                                @{kTestCategoryName:@"会计电算化",
                                  kTestCategoryImageName:@"classImg-1-4.png",
                                  kTestCategoryId:@(12926)}];
+    
     self.subcategoryArray2 = @[@{kTestCategoryName:@"经济法基础",
                                  kTestCategoryImageName:@"classImg-2-2.png",
-                                 kTestCategoryId:@(12927)},
+                                 kTestCategoryId:@(67),
+                                 kLID:@(21)},
                                @{kTestCategoryName:@"初级会计实务",
                                  kTestCategoryImageName:@"classImg-2-3.png",
-                                 kTestCategoryId:@(12928)}];
+                                 kTestCategoryId:@(22),
+                                 kLID:@(21)}];
     self.subcategoryArray3 = @[@{kTestCategoryName:@"中级经济法",
                                  kTestCategoryImageName:@"classImg-3-3.png",
-                                 kTestCategoryId:@(12929)},
+                                 kTestCategoryId:@(230),
+                                 kLID:@(112)},
                                @{kTestCategoryName:@"中级会计实务",
                                  kTestCategoryImageName:@"classImg-3-2.png",
-                                 kTestCategoryId:@(12930)},
+                                 kTestCategoryId:@(231),
+                                 kLID:@(112)},
                                @{kTestCategoryName:@"中级财务管理",
                                  kTestCategoryImageName:@"classImg-3-4.png",
-                                 kTestCategoryId:@(12931)}];
+                                 kTestCategoryId:@(232),
+                                 kLID:@(112)}];
     
-    self.typeDetailArray = @[@{@"title":@"章节练习", @"content":@"配合视频学习更佳哦", @"iconUrl":@"tiku-icon1"}, @{@"title":@"模拟试题", @"content":@"练习模拟试题可以预测分数哦", @"iconUrl":@"tiku-icon2"}, @{@"title":@"易错题", @"content":@"巩固学习会让基础知识更扎实哦", @"iconUrl":@"tiku-icon3"}];
-    NSDictionary * dic = self.subcategoryArray1[0];
-    self.cateId = [[dic objectForKey:kTestCategoryId] intValue];
-    self.cateName = [dic objectForKey:kTestCategoryName];
+    self.typeDetailArray = @[@{@"title":@"章节练习", @"content":@"配合视频学习更佳哦", @"iconUrl":@"tiku-icon1"}, @{@"title":@"模拟试题", @"content":@"练习模拟试题可以预测分数哦", @"iconUrl":@"tiku-icon2"}, @{@"title":@"易错题", @"content":@"巩固学习会让基础知识更扎实哦", @"iconUrl":@"icon_yct"},@{@"title":@"每日一练", @"content":@"每日一练会巩固基础知识哦", @"iconUrl":@"icon_mryl"}];
+    
+    
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:kLID]) {
+        self.lid = [[[NSUserDefaults standardUserDefaults] objectForKey:kLID] intValue];
+    }
+    int cateId = 0;
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:kTestCategoryId]) {
+        cateId = [[[NSUserDefaults standardUserDefaults] objectForKey:kTestCategoryId] intValue];
+    }
+    
+    NSLog(@"cateID = %d", cateId);
+    
+    if (cateId != 0) {
+        for (int i = 0; i < 2; i++) {
+            if (i == 0) {
+                for (int j = 0; j < self.subcategoryArray2.count; j++) {
+                    NSDictionary * infoDic = self.subcategoryArray2[j];
+                    if (cateId ==  [[infoDic objectForKey:kTestCategoryId] intValue]) {
+                        self.cateId = [[infoDic objectForKey:kTestCategoryId] intValue];
+                        self.cateName = [infoDic objectForKey:kTestCategoryName];
+                        self.section= i;
+                        self.row = j;
+                    }
+                }
+                
+            }else
+            {
+                for (int j = 0; j < self.subcategoryArray3.count; j++) {
+                    NSDictionary * infoDic = self.subcategoryArray3[j];
+                    if (cateId ==  [[infoDic objectForKey:kTestCategoryId] intValue]) {
+                        self.cateId = [[infoDic objectForKey:kTestCategoryId] intValue];
+                        self.cateName = [infoDic objectForKey:kTestCategoryName];
+                        self.section= i;
+                        self.row = j;
+                    }
+                }
+            }
+        }
+        
+    }else
+    {
+        NSDictionary * dic = self.subcategoryArray2[0];
+        self.cateId = [[dic objectForKey:kTestCategoryId] intValue];
+        self.cateName = [dic objectForKey:kTestCategoryName];
+        self.lid = [[dic objectForKey:kLID] intValue];
+    }
     
     [self navigationViewSetup];
     [self contentViewSetup];
@@ -106,17 +159,6 @@
 {
     [super viewWillAppear:animated];
     [self.questionTypeCollectionView reloadData];
-}
-
-- (void)pushTestListWithInfo:(NSDictionary *)info
-{
-    TestQuestionTypeViewController *vc = [[TestQuestionTypeViewController alloc] init];
-    vc.cateName = [info objectForKey:kTestCategoryName];
-    vc.cateId = [[info objectForKey:kTestCategoryId] intValue];
-    vc.hidesBottomBarWhenPushed = YES;
-    UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:nil action:nil];
-    self.navigationItem.backBarButtonItem = item;
-    [self.navigationController pushViewController:vc animated:YES];
 }
 
 #pragma mark - response func
@@ -212,7 +254,6 @@
     self.questionTypeCollectionView.dataSource = self;
     [self.view addSubview:self.questionTypeCollectionView];
     
-    
     self.backView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, kScreenHeight - kNavigationBarHeight - kStatusBarHeight - kTabBarHeight)];
     self.backView.backgroundColor = [UIColor colorWithWhite:0.6 alpha:0.4];
     [self.view addSubview:self.backView];
@@ -220,9 +261,7 @@
     UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(searchClick)];
     [self.backView addGestureRecognizer:tap];
     
-    
-    
-    self.collectView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidth, 380) collectionViewLayout:self.flowLayout];
+    self.collectView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidth, 280) collectionViewLayout:self.flowLayout];
     [self.collectView registerClass:[SubCategoryCollectionViewCell class] forCellWithReuseIdentifier:@"testSubCategoryCell"];
     [self.collectView registerClass:[SimpleHeaderCollectionViewCell class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"testCategoryHeader"];
     self.collectView.hidden = YES;
@@ -232,6 +271,10 @@
     [self.view addSubview:self.collectView];
     
     self.view.backgroundColor = UIRGBColor(240, 240, 240);
+    
+    self.titleLabel.text = self.cateName;
+    [self.collectView reloadData];
+    
 }
 
 #pragma mark - collect view delegate
@@ -246,21 +289,24 @@
         NSDictionary * dic = [NSDictionary dictionary];
         
         if (indexPath.section == 0) {
-            dic = [self.subcategoryArray1 objectAtIndex:indexPath.row];
-        }
-        if (indexPath.section == 1) {
             dic = [self.subcategoryArray2 objectAtIndex:indexPath.row];
         }
-        if (indexPath.section == 2) {
+        if (indexPath.section == 1) {
             dic = [self.subcategoryArray3 objectAtIndex:indexPath.row];
         }
+//        if (indexPath.section == 2) {
+//            dic = [self.subcategoryArray3 objectAtIndex:indexPath.row];
+//        }
         self.selectDic = dic;
+        self.lid = [[dic objectForKey:kLID] intValue];
         self.cateId = [[dic objectForKey:kTestCategoryId] intValue];
         self.cateName = [dic objectForKey:kTestCategoryName];
         self.titleLabel.text = self.cateName;
         [self.collectView reloadData];
         [self.questionTypeCollectionView reloadData];
         [self searchClick];
+        [[NSUserDefaults standardUserDefaults] setObject:[dic objectForKey:kTestCategoryId] forKey:kTestCategoryId];
+        [[NSUserDefaults standardUserDefaults] setObject:[dic objectForKey:kLID] forKey:kLID];
 //        [[TestManager sharedManager] didRequestTestJurisdictionWithcourseId:[[dic objectForKey:kTestCategoryId] intValue] NotifiedObject:self];
 //        [SVProgressHUD show];
         
@@ -276,7 +322,9 @@
             case 3:
                 [self easyErrorTestClick];
                 break;
-                
+            case 4:
+                [self dailyPracticeClick];
+                break;
             default:
                 break;
         }
@@ -286,7 +334,7 @@
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
 {
     if ([collectionView isEqual:self.collectView]) {
-        return 3;
+        return 2;
     }
     return 1;
 }
@@ -295,18 +343,18 @@
 {
     if ([collectionView isEqual:self.collectView]) {
         if (section == 0) {
-            return self.subcategoryArray1.count;
-        }
-        if (section == 1) {
             return self.subcategoryArray2.count;
         }
-        if (section == 2) {
+        if (section == 1) {
             return self.subcategoryArray3.count;
         }
+//        if (section == 2) {
+//            return self.subcategoryArray3.count;
+//        }
         return 0;
     }
     
-    return 5;
+    return 6;
 }
 
 - (__kindof UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
@@ -315,14 +363,14 @@
         
         SubCategoryCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"testSubCategoryCell" forIndexPath:indexPath];
         if (indexPath.section == 0) {
-            [cell resetViewWithDic:[self.subcategoryArray1 objectAtIndex:indexPath.row] indexPath:indexPath];
-        }
-        if (indexPath.section == 1) {
             [cell resetViewWithDic:[self.subcategoryArray2 objectAtIndex:indexPath.row] indexPath:indexPath];
         }
-        if (indexPath.section == 2) {
+        if (indexPath.section == 1) {
             [cell resetViewWithDic:[self.subcategoryArray3 objectAtIndex:indexPath.row] indexPath:indexPath];
         }
+//        if (indexPath.section == 2) {
+//            [cell resetViewWithDic:[self.subcategoryArray3 objectAtIndex:indexPath.row] indexPath:indexPath];
+//        }
         
         if (self.section == indexPath.section && self.row == indexPath.row) {
             cell.titleLabel.textColor = kCommonMainColor;
@@ -335,15 +383,18 @@
         SimulateresulrHeadCell * headCell = [collectionView dequeueReusableCellWithReuseIdentifier:kSimulateresulrHeadCellId forIndexPath:indexPath];
         [headCell resetScoreWithInfo:[[DBManager sharedManager] getSimulateScoreWith:@(self.cateId)]];
         return headCell;
-    }else if (indexPath.row == 4) {
+    }else if (indexPath.row == 5) {
         CourseTypeBottomCollectionViewCell * headCell = [collectionView dequeueReusableCellWithReuseIdentifier:kCourseTypeBottomCollectionViewCellid forIndexPath:indexPath];
         __weak typeof(self)weakSelf = self;
         headCell.SelectTypeBlock = ^(SelectType type){
             if (Type_wrong == type) {
                 [weakSelf reWriteClick];
-            }else
+            }else if (Type_collect == type)
             {
                 [weakSelf collectTestClick];
+            }else
+            {
+                [weakSelf recordClick];
             }
         };
         return headCell;
@@ -367,7 +418,7 @@
     {
         if (indexPath.row == 0) {
             return CGSizeMake(kScreenWidth, kCellHeightOfBanner + 25);
-        }else if (indexPath.row == 4){
+        }else if (indexPath.row == 5){
             return CGSizeMake(kScreenWidth, 115);
         }
         
@@ -401,6 +452,7 @@
     self.isHaveJurisdiction = YES;
     [SVProgressHUD dismiss];
     NSDictionary * dic = self.selectDic;
+    self.lid = [[dic objectForKey:kLID] intValue];
     self.cateId = [[dic objectForKey:kTestCategoryId] intValue];
     self.cateName = [dic objectForKey:kTestCategoryName];
     self.titleLabel.text = self.cateName;
@@ -424,6 +476,7 @@
     TestListViewController *vc = [[TestListViewController alloc] init];
     vc.categoryName = self.cateName;
     vc.courseCategoryId = self.cateId;
+    vc.lid = self.lid;
     vc.listType = TestListTypeChapterTest;
     vc.hidesBottomBarWhenPushed = YES;
     UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:nil action:nil];
@@ -436,6 +489,7 @@
     TestSimulateViewController *vc = [[TestSimulateViewController alloc] init];
     vc.cateName = self.cateName;
     vc.cateId = self.cateId;
+    vc.lid = self.lid;
     vc.hidesBottomBarWhenPushed = YES;
 //    UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:nil action:nil];
 //    self.navigationItem.backBarButtonItem = item;
@@ -446,9 +500,19 @@
 {
     TestRewriteWrongViewController * vc = [[TestRewriteWrongViewController alloc]init];
     vc.cateName = self.cateName;
-    vc.cateId = self.cateId;
+    vc.courseCategoryId = self.cateId;
+    vc.lid = self.lid;
     vc.hidesBottomBarWhenPushed = YES;
     
+    [self.navigationController pushViewController:vc animated:YES];
+}
+
+- (void)dailyPracticeClick
+{
+    DailyPracticeViewController *vc = [[DailyPracticeViewController alloc] init];
+    vc.courseCategoryId = self.cateId;
+    vc.lid = self.lid;
+    vc.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:vc animated:YES];
 }
 
@@ -456,7 +520,8 @@
 {
     TestErrorViewController *vc = [[TestErrorViewController alloc] init];
     vc.cateName = self.cateName;
-    vc.cateId = self.cateId;
+    vc.courseCategoryId = self.cateId;
+    vc.lid = self.lid;
     vc.hidesBottomBarWhenPushed = YES;
     UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:nil action:nil];
     self.navigationItem.backBarButtonItem = item;
@@ -467,10 +532,19 @@
 {
     TestCollectionViewController *vc = [[TestCollectionViewController alloc] init];
     vc.cateName = self.cateName;
-    vc.cateId = self.cateId;
+    vc.courseCategoryId = self.cateId;
+    vc.lid = self.lid;
     vc.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:vc animated:YES];
 }
 
+- (void)recordClick
+{
+    TestRecordViewController *vc = [[TestRecordViewController alloc] init];
+    vc.courseCategoryId = self.cateId;
+    vc.lid = self.lid;
+    vc.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:vc animated:YES];
+}
 
 @end

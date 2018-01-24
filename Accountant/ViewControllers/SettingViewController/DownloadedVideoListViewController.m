@@ -176,18 +176,22 @@
         NSDictionary *chapterInfo = [chapters objectAtIndex:indexPath.section];
         NSArray *videoInfos = [chapterInfo objectForKey:kChapterVideoInfos];
         NSDictionary *videoInfo = [videoInfos objectAtIndex:indexPath.row];
-        [[DBManager sharedManager] deleteVideos:videoInfo];
-        
-        NSString *docPath = [PathUtility getDocumentPath];
-        NSString *path1 = [docPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@",[self.courseInfoDic objectForKey:kCoursePath]]];
-        
-        NSString *path2 = [path1 stringByAppendingPathComponent:[NSString stringWithFormat:@"%@",[chapterInfo objectForKey:kChapterPath]]];
-        NSString *path3 = [path2 stringByAppendingPathComponent:[NSString stringWithFormat:@"%@",[videoInfo objectForKey:kVideoPath]]];
-        
-        NSFileManager *fileManager = [NSFileManager defaultManager];
-        NSError *error;
-        if ([fileManager fileExistsAtPath:path3]) {
-            [fileManager removeItemAtPath:path3 error:&error];
+        if ([[DBManager sharedManager] deleteVideos:videoInfo]) {
+            NSString *docPath = [PathUtility getDocumentPath];
+            NSString *path1 = [docPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@",[self.courseInfoDic objectForKey:kCoursePath]]];
+            
+            NSString *path2 = [path1 stringByAppendingPathComponent:[NSString stringWithFormat:@"%@",[chapterInfo objectForKey:kChapterPath]]];
+            NSString *path3 = [path2 stringByAppendingPathComponent:[NSString stringWithFormat:@"%@",[videoInfo objectForKey:kVideoPath]]];
+            
+            NSFileManager *fileManager = [NSFileManager defaultManager];
+            NSError *error;
+            if ([fileManager fileExistsAtPath:path3]) {
+                [fileManager removeItemAtPath:path3 error:&error];
+            }
+        }else
+        {
+            UIAlertView * alert = [[UIAlertView alloc] initWithTitle:nil message:@"删除失败" delegate:nil cancelButtonTitle:@"取消" otherButtonTitles:nil, nil];
+            [alert show];
         }
         
         [self refreshTables];

@@ -20,6 +20,22 @@
 
 @implementation LearningCourseOperation
 
+- (NSMutableArray *)learningCourseArray
+{
+    if (!_learningCourseArray) {
+        _learningCourseArray = [NSMutableArray array];
+    }
+    return _learningCourseArray;
+}
+
+- (NSMutableArray *)completeCourseArray
+{
+    if (!_completeCourseArray) {
+        _completeCourseArray = [NSMutableArray array];
+    }
+    return _completeCourseArray;
+}
+
 - (void)didRequestLearningCourseWith:(NSDictionary *)infoDic NotifiedObject:(id<CourseModule_LearningCourseProtocol>)object
 {
     self.infoDic = infoDic;

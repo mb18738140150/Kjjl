@@ -95,3 +95,51 @@
 - (void)didRequestPayOrderFailed:(NSString *)failedInfo;
 
 @end
+
+@protocol UserModule_discountCouponProtocol <NSObject>
+
+- (void)didRequestDiscountCouponSuccessed;
+- (void)didRequestDiscountCouponFailed:(NSString *)failedInfo;
+
+@end
+
+@protocol UserModule_OrderListProtocol <NSObject>
+
+- (void)didRequestOrderListSuccessed;
+- (void)didRequestOrderListFailed:(NSString *)failedInfo;
+
+@end
+
+@protocol UserModule_RecommendProtocol <NSObject>
+
+- (void)didRequestRecommendSuccessed;
+- (void)didRequestRecommendFailed:(NSString *)failedInfo;
+
+@end
+
+@protocol UserModule_AssistantCenterProtocol <NSObject>
+
+- (void)didRequestAssistantCenterSuccessed;
+- (void)didRequestAssistantCenterFailed:(NSString *)failedInfo;
+
+@end
+
+@protocol UserModule_LevelDetailProtocol <NSObject>
+
+- (void)didRequestLevelDetailSuccessed;
+- (void)didRequestLevelDetailFailed:(NSString *)failedInfo;
+
+@end
+
+@protocol UserModule_SubmitOperationProtocol <NSObject>
+
+- (void)didRequestSubmitOperationSuccessed;
+- (void)didRequestSubmitOperationFailed:(NSString *)failedInfo;
+
+@end
+@protocol UserModule_CommonProblem <NSObject>
+
+- (void)didRequestCommonProblemSuccessed;
+- (void)didRequestCommonProblemFailed:(NSString *)failedInfo;
+
+@end

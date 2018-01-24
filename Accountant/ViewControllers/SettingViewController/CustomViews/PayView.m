@@ -35,6 +35,7 @@
     [self.payBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     self.payBtn.titleLabel.font = kMainFont;
     [self addSubview:self.payBtn];
+    [self.payBtn addTarget:self action:@selector(payAction) forControlEvents:UIControlEventTouchUpInside];
     
 }
 - (void)setPrice:(NSString *)price
@@ -46,5 +47,11 @@
     self.priceLB.attributedText = mStr;
 }
 
+- (void)payAction
+{
+    if (self.payBlock) {
+        self.payBlock();
+    }
+}
 
 @end

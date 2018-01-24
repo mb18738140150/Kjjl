@@ -16,6 +16,12 @@
 
 @implementation DeleteCollectCourseOperation
 
+- (void)didRequestDeleteMyLearningCourseWithInfo:(NSDictionary *)infoDic andNotifiedObject:(id<CourseModule_DeleteCollectCourseProtocol>)object
+{
+    self.notifiedObject = object;
+    [[HttpRequestManager sharedManager] requestDeleteMyLearningCourseWithCourseInfo:infoDic andProcessDelegate:self];
+}
+
 - (void)didRequestDeleteCollectCourseWithId:(int)courseId andNotifiedObject:(id<CourseModule_DeleteCollectCourseProtocol>)object
 {
     self.notifiedObject = object;

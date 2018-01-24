@@ -11,6 +11,7 @@
 typedef enum : NSUInteger {
     Type_collect,
     Type_wrong,
+    Type_record
 } SelectType;
 
 @interface CourseTypeBottomCollectionViewCell : UICollectionViewCell
@@ -20,6 +21,10 @@ typedef enum : NSUInteger {
 
 @property (weak, nonatomic) IBOutlet UIView *wrongView;
 @property (weak, nonatomic) IBOutlet UILabel *wrongCountLB;
+
+@property (weak, nonatomic) IBOutlet UIView *recordView;
+@property (weak, nonatomic) IBOutlet UILabel *recordLB;
+
 
 @property (nonatomic, assign)SelectType selectType;
 

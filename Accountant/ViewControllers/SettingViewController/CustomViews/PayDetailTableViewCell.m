@@ -43,7 +43,6 @@
     {
         [self.selectBtn setImage:[UIImage imageNamed:@"icon_radio"] forState:UIControlStateNormal];
     }
-    
 }
 
 - (void)selectAction

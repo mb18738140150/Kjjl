@@ -97,7 +97,7 @@ typedef enum {
  @param sectionId 章id
  @param notifiedObject 请求成功后通知的对象
  */
-- (void)didRequestTestErrorQuestionWithSectionId:(int)sectionId andNotifiedObject:(id<TestModule_ErrorQuestionProtocol>)notifiedObject;
+- (void)didRequestTestErrorQuestionWithSectionId:(NSDictionary *)sectionId andNotifiedObject:(id<TestModule_ErrorQuestionProtocol>)notifiedObject;
 
 
 /**
@@ -123,7 +123,7 @@ typedef enum {
  @param chapterId 章id
  @param notifiedObject 请求成功后通知的对象
  */
-- (void)didRequestTestMyWrongQuestionListWithChapterId:(int)chapterId andNotifiedObject:(id<TestModule_MyWrongQuestionsListProtocol>)notifiedObject;
+- (void)didRequestTestMyWrongQuestionListWithChapterId:(NSDictionary *)chapterId andNotifiedObject:(id<TestModule_MyWrongQuestionsListProtocol>)notifiedObject;
 
 /**
  请求某一题库类别下的收藏章信息
@@ -140,7 +140,7 @@ typedef enum {
  @param chapterId 章id
  @param notifiedObject 请求成功后通知的对象
  */
-- (void)didRequestTestCollectionQuestionListWithChapterId:(int)chapterId andNotifiedObject:(id<TestModule_CollectQuestionListProtocol>)notifiedObject;
+- (void)didRequestTestCollectionQuestionListWithChapterId:(NSDictionary *)chapterId andNotifiedObject:(id<TestModule_CollectQuestionListProtocol>)notifiedObject;
 
 /**
  请求收藏某个问题
@@ -165,7 +165,7 @@ typedef enum {
 
  @param infoDic 添加的信息
  */
-- (void)didRequestAddTestHistoryWithInfo:(NSDictionary *)infoDic;
+- (void)didRequestAddTestHistoryWithInfo:(NSDictionary *)infoDic  andNotifiedObject:(id<TestModule_AddHistoryProtocol>)notifiedObject;
 
 /**
  请求添加做题记录 （具体的问题
@@ -173,6 +173,30 @@ typedef enum {
  @param infoDic 添加的信息
  */
 - (void)didRequestAddTestHistoryDetailWithInfo:(NSDictionary *)infoDic;
+
+/**
+ 请求做题记录
+ 
+ @param infoDic 添加的信息
+ */
+- (void)didRequestTestRecordWithInfo:(NSDictionary *)infoDic  andNotifiedObject:(id<TestModule_TestRecord>)notifiedObject;
+
+- (NSArray *)getTestRecord;
+
+- (void)didRequestTestRecordQoestionWithInfo:(NSDictionary *)infoDic  andNotifiedObject:(id<TestModule_TestRecordQuestion>)notifiedObject;
+
+- (NSDictionary *)getCurrentTestRecorsQuestionInfo;
+
+/**
+ 请求每日一练
+ 
+ @param infoDic 添加的信息
+ */
+- (void)didRequestTestDailyPracticeWithInfo:(NSDictionary *)infoDic  andNotifiedObject:(id<TestModule_TestDailyPractice>)notifiedObject;
+
+- (NSArray *)getTestDailyPractice;
+
+- (void)didRequestTestDailyPracticeQoestionWithInfo:(NSDictionary *)infoDic  andNotifiedObject:(id<TestModule_TestDailyPracticeQuestion>)notifiedObject;
 
 
 /**

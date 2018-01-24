@@ -12,4 +12,5 @@
 @property (nonatomic, strong)NSDictionary * infoDic;
 @property (nonatomic,strong) NSString       *cateName;
 @property (nonatomic,assign) int             cateId;
+@property (nonatomic, assign)int logId;
 @end

@@ -10,6 +10,7 @@
 
 @interface TestSimulateViewController : UIViewController
 
+@property (nonatomic, assign)int lid;
 @property (nonatomic,strong) NSString       *cateName;
 @property (nonatomic,assign) int             cateId;
 

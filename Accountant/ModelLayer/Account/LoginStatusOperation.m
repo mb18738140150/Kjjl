@@ -30,6 +30,7 @@
     self.userModel.telephone = @"";
     self.userModel.rongToken = @"";
     self.userModel.level = 0;
+    self.userModel.level = 0;
     self.userModel.codeview = 1;
     [self encodeUserInfo];
 }
@@ -74,8 +75,10 @@
     
     self.userModel.level = [[successInfo objectForKey:@"level"] intValue];
     self.userModel.codeview = [[successInfo objectForKey:@"codeView"] intValue];
-    
-    
+    self.userModel.levelDetail = @"";
+    if (![[successInfo objectForKey:@"levelDetail"] isKindOfClass:[NSNull class]] && [successInfo objectForKey:@"levelDetail"]) {
+        self.userModel.levelDetail = [successInfo objectForKey:@"levelDetail"];
+    }
     
     self.userModel.isLogin = YES;
     

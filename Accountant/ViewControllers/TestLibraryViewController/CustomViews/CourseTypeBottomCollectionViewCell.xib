@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="16B2657" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12121" systemVersion="16B2657" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -19,17 +19,17 @@
                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 <subviews>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9eX-wy-PvB">
-                        <rect key="frame" x="195" y="10" width="165" height="164"/>
+                        <rect key="frame" x="123.5" y="1" width="123" height="183"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="tiku-组-6.png" translatesAutoresizingMaskIntoConstraints="NO" id="xrC-Q6-9OI">
-                                <rect key="frame" x="67.5" y="15" width="30" height="30"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon_ctb.png" translatesAutoresizingMaskIntoConstraints="NO" id="xrC-Q6-9OI">
+                                <rect key="frame" x="46.5" y="15" width="30" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="30" id="BiW-vF-qGi"/>
                                     <constraint firstAttribute="height" constant="30" id="dkL-M3-kBj"/>
                                 </constraints>
                             </imageView>
                             <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="共有0道收藏" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IIc-1C-mmM">
-                                <rect key="frame" x="0.0" y="149" width="165" height="15"/>
+                                <rect key="frame" x="0.0" y="168" width="123" height="15"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="15" id="tHD-7z-YpC"/>
                                 </constraints>
@@ -38,7 +38,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="错题本" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AqK-on-kEX">
-                                <rect key="frame" x="0.0" y="129" width="165" height="15"/>
+                                <rect key="frame" x="0.0" y="148" width="123" height="15"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="15" id="6fV-Lb-NU1"/>
                                 </constraints>
@@ -60,22 +60,22 @@
                         </constraints>
                         <userDefinedRuntimeAttributes>
                             <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                <integer key="value" value="5"/>
+                                <integer key="value" value="0"/>
                             </userDefinedRuntimeAttribute>
                         </userDefinedRuntimeAttributes>
                     </view>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wpZ-Zx-sI0">
-                        <rect key="frame" x="10" y="10" width="165" height="164"/>
+                        <rect key="frame" x="0.0" y="1" width="122.5" height="183"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="tiku-收藏夹.png" translatesAutoresizingMaskIntoConstraints="NO" id="is9-64-rkS">
-                                <rect key="frame" x="67.5" y="15" width="30" height="30"/>
+                                <rect key="frame" x="46" y="15" width="30" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="30" id="ZkE-zA-9oT"/>
                                     <constraint firstAttribute="width" constant="30" id="myC-6A-U5H"/>
                                 </constraints>
                             </imageView>
                             <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="共有0道收藏" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Tbq-dN-T7I">
-                                <rect key="frame" x="0.0" y="149" width="165" height="15"/>
+                                <rect key="frame" x="0.0" y="168" width="122.5" height="15"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="15" id="ife-cV-sHL"/>
                                 </constraints>
@@ -84,7 +84,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="收藏夹" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5BX-D2-oJ5">
-                                <rect key="frame" x="0.0" y="129" width="165" height="15"/>
+                                <rect key="frame" x="0.0" y="148" width="122.5" height="15"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="15" id="0BW-B0-BfD"/>
                                 </constraints>
@@ -106,7 +106,54 @@
                         </constraints>
                         <userDefinedRuntimeAttributes>
                             <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                <integer key="value" value="5"/>
+                                <integer key="value" value="0"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
+                    </view>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pJ9-1z-FQd">
+                        <rect key="frame" x="247.5" y="1" width="122.5" height="182"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon_ztjl.png" translatesAutoresizingMaskIntoConstraints="NO" id="E19-hy-d5g">
+                                <rect key="frame" x="46.5" y="15" width="30" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="2zD-Ix-o3F"/>
+                                    <constraint firstAttribute="width" constant="30" id="X7b-RZ-vZC"/>
+                                </constraints>
+                            </imageView>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="共有0道收藏" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tP8-le-ruO">
+                                <rect key="frame" x="0.0" y="167" width="122.5" height="15"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="15" id="gsp-8C-tMM"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                <color key="textColor" red="0.3921568627" green="0.3921568627" blue="0.3921568627" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="做题记录" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BUb-Hc-5rS">
+                                <rect key="frame" x="0.0" y="147" width="122.5" height="15"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="15" id="2vs-1x-4dc"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <color key="textColor" red="0.1960784314" green="0.1960784314" blue="0.1960784314" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="E19-hy-d5g" firstAttribute="top" secondItem="pJ9-1z-FQd" secondAttribute="top" constant="15" id="8JF-yN-5I0"/>
+                            <constraint firstItem="tP8-le-ruO" firstAttribute="top" secondItem="BUb-Hc-5rS" secondAttribute="bottom" constant="5" id="C0U-tx-isv"/>
+                            <constraint firstItem="E19-hy-d5g" firstAttribute="centerX" secondItem="pJ9-1z-FQd" secondAttribute="centerX" id="LXb-ML-96L"/>
+                            <constraint firstItem="E19-hy-d5g" firstAttribute="centerX" secondItem="pJ9-1z-FQd" secondAttribute="centerX" id="Pge-En-a0n"/>
+                            <constraint firstAttribute="bottom" secondItem="tP8-le-ruO" secondAttribute="bottom" id="Qlk-pG-xTM"/>
+                            <constraint firstAttribute="trailing" secondItem="tP8-le-ruO" secondAttribute="trailing" id="eZ3-kN-blF"/>
+                            <constraint firstItem="BUb-Hc-5rS" firstAttribute="leading" secondItem="pJ9-1z-FQd" secondAttribute="leading" id="rsf-1I-zbS"/>
+                            <constraint firstAttribute="trailing" secondItem="BUb-Hc-5rS" secondAttribute="trailing" id="xRr-tt-W8t"/>
+                            <constraint firstItem="tP8-le-ruO" firstAttribute="leading" secondItem="pJ9-1z-FQd" secondAttribute="leading" id="xv4-fC-2mT"/>
+                        </constraints>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                <integer key="value" value="0"/>
                             </userDefinedRuntimeAttribute>
                         </userDefinedRuntimeAttributes>
                     </view>
@@ -114,27 +161,34 @@
             </view>
             <color key="backgroundColor" red="0.94117647058823528" green="0.94117647058823528" blue="0.94117647058823528" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
-                <constraint firstAttribute="bottom" secondItem="9eX-wy-PvB" secondAttribute="bottom" constant="10" id="FUt-y7-bt9"/>
-                <constraint firstAttribute="bottom" secondItem="wpZ-Zx-sI0" secondAttribute="bottom" constant="10" id="Huc-ej-V38"/>
-                <constraint firstItem="wpZ-Zx-sI0" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="10" id="aaR-3X-z8F"/>
-                <constraint firstItem="wpZ-Zx-sI0" firstAttribute="width" secondItem="9eX-wy-PvB" secondAttribute="width" id="cgu-vf-yhB"/>
-                <constraint firstItem="9eX-wy-PvB" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="10" id="f9G-Yb-54O"/>
-                <constraint firstItem="wpZ-Zx-sI0" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="10" id="jQh-Wm-LJF"/>
-                <constraint firstAttribute="trailing" secondItem="9eX-wy-PvB" secondAttribute="trailing" constant="10" id="spu-gX-rvX"/>
-                <constraint firstItem="9eX-wy-PvB" firstAttribute="leading" secondItem="wpZ-Zx-sI0" secondAttribute="trailing" constant="20" id="zst-Gj-v34"/>
+                <constraint firstItem="9eX-wy-PvB" firstAttribute="leading" secondItem="wpZ-Zx-sI0" secondAttribute="trailing" constant="1" id="0hd-ts-8KC"/>
+                <constraint firstAttribute="bottom" secondItem="wpZ-Zx-sI0" secondAttribute="bottom" id="19b-hC-ROv"/>
+                <constraint firstItem="pJ9-1z-FQd" firstAttribute="leading" secondItem="9eX-wy-PvB" secondAttribute="trailing" constant="1" id="2Uq-W9-zk9"/>
+                <constraint firstItem="9eX-wy-PvB" firstAttribute="width" secondItem="pJ9-1z-FQd" secondAttribute="width" id="3Ae-iy-8eD"/>
+                <constraint firstItem="pJ9-1z-FQd" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="1" id="AxF-O3-yRe"/>
+                <constraint firstAttribute="bottom" secondItem="9eX-wy-PvB" secondAttribute="bottom" id="FUt-y7-bt9"/>
+                <constraint firstAttribute="bottom" secondItem="pJ9-1z-FQd" secondAttribute="bottom" constant="1" id="VOm-Dp-7JT"/>
+                <constraint firstItem="wpZ-Zx-sI0" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="aaR-3X-z8F"/>
+                <constraint firstItem="wpZ-Zx-sI0" firstAttribute="width" secondItem="9eX-wy-PvB" secondAttribute="width" id="ejj-29-ySn"/>
+                <constraint firstItem="9eX-wy-PvB" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="1" id="f9G-Yb-54O"/>
+                <constraint firstItem="wpZ-Zx-sI0" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="1" id="jQh-Wm-LJF"/>
+                <constraint firstAttribute="trailing" secondItem="pJ9-1z-FQd" secondAttribute="trailing" id="rea-JA-dJf"/>
             </constraints>
             <size key="customSize" width="370" height="184"/>
             <connections>
                 <outlet property="collectCount" destination="Tbq-dN-T7I" id="GLY-o1-vzV"/>
                 <outlet property="collectView" destination="wpZ-Zx-sI0" id="55l-A2-EKW"/>
+                <outlet property="recordLB" destination="tP8-le-ruO" id="ur1-4Y-RBB"/>
+                <outlet property="recordView" destination="pJ9-1z-FQd" id="GZO-f6-YcJ"/>
                 <outlet property="wrongCountLB" destination="IIc-1C-mmM" id="ILJ-xy-nLz"/>
                 <outlet property="wrongView" destination="9eX-wy-PvB" id="Plk-OC-Bc9"/>
             </connections>
-            <point key="canvasLocation" x="59" y="60"/>
+            <point key="canvasLocation" x="-547" y="64"/>
         </collectionViewCell>
     </objects>
     <resources>
+        <image name="icon_ctb.png" width="25" height="25"/>
+        <image name="icon_ztjl.png" width="25" height="25"/>
         <image name="tiku-收藏夹.png" width="32" height="32"/>
-        <image name="tiku-组-6.png" width="32" height="32"/>
     </resources>
 </document>

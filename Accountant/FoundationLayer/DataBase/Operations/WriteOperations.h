@@ -28,11 +28,11 @@
 
 - (BOOL)writeDownloadVideoInfo:(NSDictionary *)infoDic;
 
-- (BOOL)deleteDownloadVideoInfoWithId:(NSNumber *)videoId;
+- (BOOL)deleteDownloadVideoInfoWithId:(NSDictionary *)videoInfo;
 
 // 模拟测试
 - (BOOL)writeSimulateTestInfo:(NSDictionary *)dic;
-- (BOOL)deleteSimulateTestInfo:(NSNumber *)simulateTestId;
+- (BOOL)deleteSimulateTestInfo:(NSDictionary *)simulateTestInfo;
 
 // 章节测试
 - (BOOL)writeTestChapterInfo:(NSDictionary *)dic;
@@ -47,7 +47,8 @@
 // 我的错题
 - (BOOL)writeMyWrongTestCourseInfo:(NSDictionary *)dic;
 - (BOOL)writeMyWrongTestChapterInfo:(NSDictionary *)dic;
-- (BOOL)deleteMyWrongTestChapterInfo:(NSDictionary *)dic;
+- (BOOL)writeMyWrongTestSectionInfo:(NSDictionary *)dic;
+- (BOOL)deleteMyWrongTestSectionInfo:(NSDictionary *)dic;
 
 // 搜索
 - (BOOL)writeSearchContent:(NSDictionary *)dic;

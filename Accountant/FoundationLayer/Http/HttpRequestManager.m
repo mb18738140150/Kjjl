@@ -206,6 +206,12 @@
     [self startPostWithConfig:delete andProcessDelegate:delegate];
 }
 
+- (void)requestDeleteMyLearningCourseWithCourseInfo:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate
+{
+    HttpConfigModel *delete = [HttpConfigCreator getDeleteMyCourseConfigWithCourseInfo:infoDic];
+    [self startPostWithConfig:delete andProcessDelegate:delegate];
+}
+
 - (void)requestTestSectionQuestionWithSectionId:(int)sectionId andProcessDelegate:(id<HttpRequestProtocol>)delegate
 {
     HttpConfigModel *sec = [HttpConfigCreator getTestSectionInfoWithId:sectionId];
@@ -242,9 +248,9 @@
     [self startPostWithConfig:s andProcessDelegate:delegate];
 }
 
-- (void)reqeustTestErrorQuesitonWithSectionId:(int)sectionId andProcessDelegate:(id<HttpRequestProtocol>)delegate;
+- (void)reqeustTestErrorQuesitonWithSectionId:(NSDictionary *)sectionInfo andProcessDelegate:(id<HttpRequestProtocol>)delegate;
 {
-    HttpConfigModel *s = [HttpConfigCreator getTestErrorQuestionWithSectionId:sectionId];
+    HttpConfigModel *s = [HttpConfigCreator getTestErrorQuestionWithSectionId:sectionInfo];
     [self startPostWithConfig:s andProcessDelegate:delegate];
 }
 
@@ -260,9 +266,9 @@
     [self startPostWithConfig:s andProcessDelegate:delegate];
 }
 
-- (void)reqeustTestMyWrongQuestionsWithId:(int)sectionId andProcess:(id<HttpRequestProtocol>)delegate
+- (void)reqeustTestMyWrongQuestionsWithId:(NSDictionary *)sectionInfo andProcess:(id<HttpRequestProtocol>)delegate
 {
-    HttpConfigModel *s = [HttpConfigCreator getTestMyWrongQuestionWithId:sectionId];
+    HttpConfigModel *s = [HttpConfigCreator getTestMyWrongQuestionWithId:sectionInfo ];
     [self startPostWithConfig:s andProcessDelegate:delegate];
 }
 
@@ -272,9 +278,9 @@
     [self startPostWithConfig:s andProcessDelegate:delegate];
 }
 
-- (void)requestTestTestCollectListWithChapter:(int)chapterId andProcessDelegate:(id<HttpRequestProtocol>)delegate
+- (void)requestTestTestCollectListWithChapter:(NSDictionary *)chapterInfo andProcessDelegate:(id<HttpRequestProtocol>)delegate
 {
-    HttpConfigModel *s = [HttpConfigCreator getTestCollectionQuestionListWithChapterId:chapterId];
+    HttpConfigModel *s = [HttpConfigCreator getTestCollectionQuestionListWithChapterId:chapterInfo ];
     [self startPostWithConfig:s andProcessDelegate:delegate];
 }
 
@@ -308,9 +314,39 @@
     [self startPostWithConfig:s andProcessDelegate:delegate];
 }
 
+- (void)reqeustTestRecordWithInfo:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate
+{
+    HttpConfigModel *s = [HttpConfigCreator testRecordWithInfo:infoDic];
+    [self startPostWithConfig:s andProcessDelegate:delegate];
+}
+
+- (void)reqeustTestRecordQuestionWithInfo:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate
+{
+    HttpConfigModel *s = [HttpConfigCreator testRecordQuestionWithInfo:infoDic];
+    [self startPostWithConfig:s andProcessDelegate:delegate];
+}
+
+- (void)reqeustTestDailyPracticeWithInfo:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate
+{
+    HttpConfigModel *s = [HttpConfigCreator testDailyPracticeWithInfo:infoDic];
+    [self startPostWithConfig:s andProcessDelegate:delegate];
+}
+
+- (void)reqeustTestDailyPracticeQuestionWithInfo:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate
+{
+    HttpConfigModel *s = [HttpConfigCreator testDailyPracticeQuestionWithInfo:infoDic];
+    [self startPostWithConfig:s andProcessDelegate:delegate];
+}
+
 - (void)requestGetNotStartLivingCourseWithInfo:(NSDictionary *)infoDic ProcessDelegate:(id<HttpRequestProtocol>)delegate
 {
     HttpConfigModel * s = [HttpConfigCreator getNotStartLiveingCourseWith:infoDic];
+    [self startPostWithConfig:s andProcessDelegate:delegate];
+}
+
+- (void)requestGetMyLivingCourseWithInfo:(NSDictionary *)infoDic ProcessDelegate:(id<HttpRequestProtocol>)delegate
+{
+    HttpConfigModel * s = [HttpConfigCreator getMyLiveingCourseWith:infoDic];
     [self startPostWithConfig:s andProcessDelegate:delegate];
 }
 
@@ -386,6 +422,60 @@
     [self startPostWithConfig:s andProcessDelegate:delegate];
 }
 
+- (void)requestDiscountCouponWithInfoDic:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate
+{
+    HttpConfigModel * s = [HttpConfigCreator discountCoupon];
+    [self startPostWithConfig:s andProcessDelegate:delegate];
+}
+
+- (void)requestOrderListWithInfoDic:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate
+{
+    HttpConfigModel * s = [HttpConfigCreator orderList];
+    [self startPostWithConfig:s andProcessDelegate:delegate];
+}
+
+- (void)requestRecommendWithInfoDic:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate
+{
+    HttpConfigModel * s = [HttpConfigCreator recommend];
+    [self startPostWithConfig:s andProcessDelegate:delegate];
+}
+
+- (void)requestGetRecommendWithInfoDic:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate
+{
+    HttpConfigModel * s = [HttpConfigCreator getRecommend:infoDic];
+    [self startPostWithConfig:s andProcessDelegate:delegate];
+}
+
+- (void)requestGetRecommendIntegralWithInfoDic:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate
+{
+    HttpConfigModel * s = [HttpConfigCreator getRecommendIntegral];
+    [self startPostWithConfig:s andProcessDelegate:delegate];
+}
+
+- (void)requestAssistantCenterWithInfoDic:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate
+{
+    HttpConfigModel * s = [HttpConfigCreator getAssistantCnter];
+    [self startPostWithConfig:s andProcessDelegate:delegate];
+}
+
+- (void)requestMemberLevelDetailWithProcessDelegate:(id<HttpRequestProtocol>)delegate
+{
+    HttpConfigModel * s = [HttpConfigCreator getMemberLevelDetail];
+    [self startPostWithConfig:s andProcessDelegate:delegate];
+}
+
+- (void)requestSubmitOpinionWithInfoDic:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate
+{
+    HttpConfigModel * s = [HttpConfigCreator submitOpinionWithInfo:infoDic];
+    [self startPostWithConfig:s andProcessDelegate:delegate];
+}
+
+- (void)requestCommonProblemWithProcessDelegate:(id<HttpRequestProtocol>)delegate
+{
+    HttpConfigModel * s = [HttpConfigCreator commonProblem];
+    [self startPostWithConfig:s andProcessDelegate:delegate];
+}
+
 #pragma mark - post method
 - (void)startPostWithConfig:(HttpConfigModel *)configModel andProcessDelegate:(__weak id<HttpRequestProtocol>)delegate
 {
@@ -397,7 +487,7 @@
     NSLog(@"%@",[configModel.parameters jsonString]);
     [session POST:configModel.urlString parameters:configModel.parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         int result = [[responseObject objectForKey:@"result"] intValue];
-        NSLog(@"%@",responseObject);
+        NSLog(@"%@",[responseObject description]);
         if (delegate != nil) {
             if (result == 1) {
                 [delegate didRequestSuccessed:responseObject];
@@ -415,6 +505,7 @@
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         NSLog(@"%@",error);
+        NSLog(@"****code = %ld \n*** userinfo = %@ \n***%@",error.code,error.userInfo,error.domain);
         if (delegate != nil) {
             [delegate didRequestFailed:kNetError];
         }else{

@@ -16,8 +16,10 @@
 //课程封面url
 @property (nonatomic,strong) NSString       *courseCover;
 
-//课程名称
+//课程小节名称
 @property (nonatomic,strong) NSString       *courseName;
+// 课程名称
+@property (nonatomic, strong) NSString      *name;
 
 @property (nonatomic, copy) NSString      *coueseTeacherName;
 
@@ -33,6 +35,9 @@
 @property (nonatomic, assign)int                    canWatch;// 视频是否有观看权限
 
 @property (nonatomic, assign)double                 learnProgress;// 学习进度
+
+@property (nonatomic, assign)double price;
+@property (nonatomic, assign)double oldPrice;
 
 // 直播课
 @property (nonatomic, strong)NSString *teacherPortraitUrl;

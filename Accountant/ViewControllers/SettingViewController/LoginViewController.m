@@ -16,7 +16,7 @@
 #import "VerifyAccountViewController.h"
 #define kImageWidth 25
 
-@interface LoginViewController ()<UITextFieldDelegate,UserModule_LoginProtocol,UserModule_BindJPushProtocol>
+@interface LoginViewController ()<UITextFieldDelegate,UserModule_LoginProtocol,UserModule_BindJPushProtocol,UserModule_LevelDetailProtocol,UserModule_CommonProblem,UserModule_AssistantCenterProtocol>
 
 @property (nonatomic,strong) UITextField                *account;
 @property (nonatomic,strong) UITextField                *password;
@@ -366,6 +366,9 @@
         [self dismissSelf];
         
         [self connectRongyun];
+        [self getMemberLevelDetail];
+        [self getCommonProblemList];
+        [self getAssistantLiat];
         
         if ([[NSUserDefaults standardUserDefaults] objectForKey:@"registrationID"]) {
             NSString *registrationID = [[NSUserDefaults standardUserDefaults] objectForKey:@"registrationID"];
@@ -423,6 +426,32 @@
     }];
 }
 
+- (void)getMemberLevelDetail
+{
+    [[UserManager sharedManager] didRequestLevelDetailWithNotifiedObject:self];
+}
+
+- (void)getCommonProblemList
+{
+    [[UserManager sharedManager] didRequestCommonProblemWithInfo:@{} withNotifiedObject:self];
+}
+
+- (void)getAssistantLiat
+{
+    [[UserManager sharedManager] didRequestAssistantWithInfo:@{} withNotifiedObject:self];
+}
+
+
+- (void)didRequestLevelDetailSuccessed
+{
+    
+}
+
+- (void)didRequestLevelDetailFailed:(NSString *)failedInfo
+{
+    
+}
+
 - (void)didRequestBindJPushSuccessed
 {
     
@@ -433,6 +462,25 @@
     
 }
 
+- (void)didRequestCommonProblemSuccessed
+{
+    
+}
+
+- (void)didRequestCommonProblemFailed:(NSString *)failedInfo
+{
+    
+}
+
+- (void)didRequestAssistantCenterSuccessed
+{
+    
+}
+
+- (void)didRequestAssistantCenterFailed:(NSString *)failedInfo
+{
+    
+}
 
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {

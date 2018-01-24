@@ -40,7 +40,7 @@
 //#define SERVICE_ID_XIAONENG2 @"op_1000_1483495280515"
 #define OrderAlerttag 2000
 
-@interface MainViewController ()<UITableViewDelegate,CourseModule_HottestCourseProtocl,ImageModule_BannerProtocol,QuestionModule_QuestionProtocol, CourseModule_NotStartLivingCourse,UIAlertViewDelegate,CourseModule_LivingSectionDetail,CourseModule_LivingSectionDetail,CourseModule_AllCourseProtocol>
+@interface MainViewController ()<UITableViewDelegate,CourseModule_HottestCourseProtocl,ImageModule_BannerProtocol,QuestionModule_QuestionProtocol, CourseModule_NotStartLivingCourse,UIAlertViewDelegate,CourseModule_LivingSectionDetail,CourseModule_LivingSectionDetail,CourseModule_AllCourseProtocol,UserModule_LevelDetailProtocol>
 
 @property (nonatomic,strong)    UITableView                     *contentTableView;
 @property (nonatomic,strong)    ContentTableViewDataSource      *contentTableSource;
@@ -127,6 +127,8 @@
     [[QuestionManager sharedManager] didRequestMainPageQuestionRequestWithNotifiedObject:self];
     
     [[CourseraManager sharedManager]didRequestNotStartLivingCourseWithInfo:@{@"Month":@([NSString getCurrentMonth])} NotifiedObject:self];
+    [[UserManager sharedManager] didRequestAssistantWithInfo:@{} withNotifiedObject:nil];
+    [[UserManager sharedManager]didRequestLevelDetailWithNotifiedObject:self];
 }
 
 - (void)allCourseClick
@@ -188,6 +190,7 @@
 {
     CGFloat cellHeight = 0;
     if (indexPath.section == 0 && indexPath.row == 0) {
+        return  2 * kCellHeightOfCategoryView + 30 - 20 + 10;
         return [UIImage imageGetHeight:[UIImage imageNamed:@"shouye-banner"]] + 2 * kCellHeightOfCategoryView + 30 - 20 + 10;
     }
     if (indexPath.section == 1) {
@@ -539,6 +542,16 @@
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [SVProgressHUD dismiss];
     });
+}
+
+- (void)didRequestLevelDetailSuccessed
+{
+    
+}
+
+- (void)didRequestLevelDetailFailed:(NSString *)failedInfo
+{
+    
 }
 
 #pragma mark - navigationaction

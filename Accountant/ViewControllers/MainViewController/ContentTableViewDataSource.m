@@ -93,11 +93,18 @@
 {
     if (indexPath.section == 0 && indexPath.row == 0) {
         
-        static NSString *courseCategoryCellName = @"courseAllCategoryCell";
-        CategoryTableViewCell *cell = (CategoryTableViewCell *)[self getCellWithCellName:courseCategoryCellName inTableView:tableView andCellClass:[CategoryTableViewCell class]];
-        cell.pageType = PageCategory;
-        [cell resetWithCategoryInfos:self.catoryDataSourceArray];
-        return cell;
+//        static NSString *courseCategoryCellName = @"courseAllCategoryCell";
+//        CategoryTableViewCell *cell = (CategoryTableViewCell *)[self getCellWithCellName:courseCategoryCellName inTableView:tableView andCellClass:[CategoryTableViewCell class]];
+//        cell.pageType = PageCategory;
+//        [cell resetWithCategoryInfos:self.catoryDataSourceArray];
+//        return cell;
+        
+        static NSString *bannerCellName = @"bannerCell";
+        BannerTableViewCell *bannerCell = (BannerTableViewCell *)[self getCellWithCellName:bannerCellName inTableView:tableView andCellClass:[BannerTableViewCell class]];
+        bannerCell.bannerImgUrlArray = [[ImageManager sharedManager] getBannerImgURLStrings];
+        [bannerCell resetSubviews];
+        return bannerCell;
+        
     }
     
     if (indexPath.section == 1) {

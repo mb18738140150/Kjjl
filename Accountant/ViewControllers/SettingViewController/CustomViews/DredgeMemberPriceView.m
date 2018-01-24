@@ -46,14 +46,14 @@
     self.realityPriceLB.textColor = UIColorFromRGB(0xff4f00);
     self.realityPriceLB.font = kMainFont;
     self.realityPriceLB.textAlignment = 1;
-    self.realityPriceLB.text = [NSString stringWithFormat:@"%@元", [infoDic objectForKey:@"realityPrice"]];
+    self.realityPriceLB.text = [NSString stringWithFormat:@"%@元", [infoDic objectForKey:kPrice]];
     [whiteView addSubview:self.realityPriceLB];
     
     self.priceLB = [[UILabel alloc]initWithFrame:CGRectMake(0, 10 + CGRectGetMaxY(self.realityPriceLB.frame), whiteView.hd_width, 15)];
     self.priceLB.textColor = UIColorFromRGB(0xcccccc);
     self.priceLB.font = kMainFont;
     self.priceLB.textAlignment = 1;
-    self.priceLB.attributedText = [self getPriceText:[NSString stringWithFormat:@"%@元", [infoDic objectForKey:@"price"]]];
+    self.priceLB.attributedText = [self getPriceText:[NSString stringWithFormat:@"%@元", [infoDic objectForKey:kOldPrice]]];
     [whiteView addSubview:self.priceLB];
     
     self.memberLevelLB = [[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(whiteView.frame), 1, 32, backView.hd_height - 2)];
@@ -61,9 +61,10 @@
     self.memberLevelLB.backgroundColor = UIColorFromRGB(0xf0f0f0);
     self.memberLevelLB.font = kMainFont;
     self.memberLevelLB.textAlignment = 1;
+    self.memberLevelLB.numberOfLines = 0;
     [backView addSubview:self.memberLevelLB];
-    self.memberLevelLB.text = [NSString stringWithFormat:@"%@", [infoDic objectForKey:@"memberLevel"]];
-    self.memberLevel = [NSString stringWithFormat:@"%@", [infoDic objectForKey:@"memberLevel"]];
+    self.memberLevelLB.text = [NSString stringWithFormat:@"%@", [infoDic objectForKey:kMemberLevel]];
+    self.memberLevel = [NSString stringWithFormat:@"%@", [infoDic objectForKey:kMemberLevel]];
     
     
     self.chaozhiImageView = [[UIImageView alloc]initWithFrame:CGRectMake(1, 1, 25, 13)];

@@ -83,8 +83,8 @@
 
 - (void)refreshWithInfoDic:(NSDictionary *)infoDic
 {
-    self.nowPrice.attributedText = [self getNowPriceWith:@"520"];
-    self.oldPrice.attributedText = [self getOldPaice:@"580"];
+    self.nowPrice.attributedText = [self getNowPriceWith:[NSString stringWithFormat:@"%@", [infoDic objectForKey:kPrice]]];
+    self.oldPrice.attributedText = [self getOldPaice:[NSString stringWithFormat:@"%@", [infoDic objectForKey:kOldPrice]]];
 }
 
 - (void)cansultAction

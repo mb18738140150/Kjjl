@@ -74,6 +74,20 @@
     }
 }
 
+- (void)displayLayer:(CALayer *)layer
+{
+    UIBezierPath * path = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(0, 0, 200, 300) cornerRadius:5];
+    path.lineWidth = 2;
+    path.lineJoinStyle = kCGLineJoinRound;
+    
+    CAShapeLayer *shapLayer = [[CAShapeLayer alloc]init];
+    [shapLayer setStrokeColor:UIColorFromRGB(0xff0000).CGColor];
+    [shapLayer setFillColor:UIColorFromRGB(0xfefefe).CGColor];
+    shapLayer.path = path.CGPath;
+    
+    layer.mask = shapLayer;
+}
+
 - (void)addDashLine
 {
     CAShapeLayer * shapLayer = [CAShapeLayer layer];
@@ -90,7 +104,8 @@
     CGPathRelease(path);
     
     [self.xuxianView.layer addSublayer:shapLayer];
-    
+ 
 }
+
 
 @end

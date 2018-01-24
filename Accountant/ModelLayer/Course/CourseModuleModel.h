@@ -38,6 +38,9 @@
 @property (nonatomic, strong) HottestCourseModel *notStartLivingCourseModel;
 //@property (nonatomic, strong) HottestCourseModel *notStartLivingSectionCourseModel;
 
+// 我的直播课信息
+@property (nonatomic, strong) HottestCourseModel *myLivingCourseModel;
+
 // 往期直播课信息
 @property (nonatomic, strong) HottestCourseModel *endLivingCourseModel;
 

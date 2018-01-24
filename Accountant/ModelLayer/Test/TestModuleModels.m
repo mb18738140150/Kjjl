@@ -18,6 +18,7 @@
         self.testChapterArray = [[NSMutableArray alloc] init];
         self.testSimulateArray = [[NSMutableArray alloc] init];
         self.testErrorArray = [[NSMutableArray alloc] init];
+        self.simulateArray = [[NSMutableArray alloc] init];
         self.currentTestSection = [[TestSectionModel alloc] init];
         self.currentSimulateModel = [[TestSimulateModel alloc] init];
         self.currentSimulateWrongModel = [[TestSimulateModel alloc]init];

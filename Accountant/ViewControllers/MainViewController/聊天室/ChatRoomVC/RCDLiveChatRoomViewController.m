@@ -46,6 +46,7 @@
 #import "HYSegmentedControl.h"
 #import "CansultTeachersListView.h"
 #import "BuyCourseViewController.h"
+#import "LivingCourseBackDownLoadViewController.h"
 
 #define kRandomColor [UIColor colorWithRed:arc4random_uniform(256) / 255.0 green:arc4random_uniform(256) / 255.0 blue:arc4random_uniform(256) / 255.0 alpha:1]
 
@@ -58,7 +59,7 @@
 @interface RCDLiveChatRoomViewController () <
 UICollectionViewDelegate, UICollectionViewDataSource,
 UICollectionViewDelegateFlowLayout, RCDLiveMessageCellDelegate, UIGestureRecognizerDelegate,
-UIScrollViewDelegate, UINavigationControllerDelegate,RCTKInputBarControlDelegate,RCConnectionStatusChangeDelegate,UIAlertViewDelegate,HYSegmentedControlDelegate,UserModule_OrderLivingCourseProtocol,CourseModule_LivingSectionDetail>
+UIScrollViewDelegate, UINavigationControllerDelegate,RCTKInputBarControlDelegate,RCConnectionStatusChangeDelegate,UIAlertViewDelegate,HYSegmentedControlDelegate,UserModule_OrderLivingCourseProtocol,CourseModule_LivingSectionDetail,UIWebViewDelegate>
 
 @property(nonatomic, strong)RCDLiveCollectionViewHeader *collectionViewHeader;
 
@@ -70,6 +71,7 @@ UIScrollViewDelegate, UINavigationControllerDelegate,RCTKInputBarControlDelegate
 @property (nonatomic, strong)LivingChatViewController * chatVC;
 @property (nonatomic, strong)LivingCourseListView              *livingListView;
 
+@property (nonatomic, strong)UIButton * downLoadBtn;
 
 /**
  *  存储长按返回的消息的model
@@ -270,6 +272,7 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
             case 1:
             case 2:
             {
+                self.downLoadBtn.hidden = YES;
                 if ([[self.infoDic objectForKey:kIsLivingCourseFree] intValue] == 0 && [[self.infoDic objectForKey:kHaveJurisdiction] intValue] == 0) {
                     [SVProgressHUD showErrorWithStatus:@"暂无观看权限"];
                     self.playingVideo.playUrl = @"";
@@ -282,7 +285,9 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
                 break;
             case 3:
             {
+                self.downLoadBtn.hidden = NO;
                 if ([[self.infoDic objectForKey:kIsBack] intValue] == 0) {
+                    self.downLoadBtn.hidden = YES;
                     [SVProgressHUD showErrorWithStatus:@"暂无观看权限"];
                     self.playingVideo.playUrl = @"";
                     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -541,7 +546,7 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
     
     NSInteger hour = dateCom.month * 30 * 24  + dateCom.day * 24  + dateCom.hour;
     NSInteger minute = dateCom.minute;
-    if (hour == 0  && minute > 0 && minute < 15) {
+    if (hour == 0  && minute > 0 && minute < 20) {
         return YES;
     }
     
@@ -620,6 +625,7 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
             UIAlertAction * payAction = [UIAlertAction actionWithTitle:@"购买" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
                 BuyCourseViewController * buyVC = [[BuyCourseViewController alloc]init];
                 buyVC.infoDic = weakSelf.infoDic;
+                buyVC.isLiving = YES;
                 [weakSelf.videoController pausePlay];
                 UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:buyVC];
                 [weakSelf presentViewController:nav animated:YES completion:nil];
@@ -728,6 +734,15 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
     [self.segmentC resetColor:UIRGBColor(255, 102, 10)];
     [self.view addSubview:self.segmentC];
     
+    self.downLoadBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    _downLoadBtn.frame = CGRectMake(kScreenWidth - 70, kZXVideoPlayerOriginalHeight, 60, 42);
+    [_downLoadBtn setTitle:@"下载" forState:UIControlStateNormal];
+    _downLoadBtn.titleLabel.font = [UIFont systemFontOfSize:12];
+    [_downLoadBtn setTitleColor:UIColorFromRGB(0x999999) forState:UIControlStateNormal];
+    [_downLoadBtn addTarget:self action:@selector(downLoadVides) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:self.downLoadBtn];
+    self.downLoadBtn.hidden = YES;
+    
     if (![[UserManager sharedManager] isUserLogin]) {
         [self.segmentC hideTitlesWith:@[@(2),@(3)]];
     }
@@ -735,7 +750,6 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
 
 - (void)haveLogin:(NSNotification *)notification
 {
-    
     [SVProgressHUD show];
     NSDictionary * dic1 = @{kCourseID:[self.infoDic objectForKey:kCourseID],
                             kteacherId:@"",
@@ -1109,12 +1123,36 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
     }
     [self.contentView bringSubviewToFront:self.inputBar];
     
-    self.cansultView = [[CansultTeachersListView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, kScreenHeight) andTeachersArr:@[@""]];
+    self.cansultView = [[CansultTeachersListView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, kScreenHeight) andTeachersArr:[[UserManager sharedManager] getAssistantList]];
     self.cansultView.dismissBlock = ^{
         [weakSelf.cansultView removeFromSuperview];
     };
-    
+    self.cansultView.cansultBlock = ^(NSDictionary *infoDic) {
+        [weakSelf cantactTeacherAction:infoDic];
+    };
 }
+
+#pragma mark - cantactTeacher
+- (void)cantactTeacherAction:(NSDictionary *)teacherInfo
+{
+    NSString  *qqNumber=[teacherInfo objectForKey:@"assistantQQ"];
+    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"mqq://"]]) {
+        UIWebView * webView = [[UIWebView alloc]initWithFrame:CGRectZero];
+        NSURL * url = [NSURL URLWithString:[NSString stringWithFormat:@"mqq://im/chat?chat_type=wpa&uin=%@&version=1&src_type=web",qqNumber]];
+        
+        NSURLRequest * request = [NSURLRequest requestWithURL:url];
+        webView.delegate = self;
+        [webView loadRequest:request];
+        [self.view addSubview:webView];
+    }else
+    {
+        [SVProgressHUD showErrorWithStatus:@"对不起，您还没安装QQ"];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [SVProgressHUD dismiss];
+        });
+    }
+}
+
 
 - (void)refreshWith:(NSDictionary *)infoDic
 {
@@ -1125,6 +1163,7 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
         case 1:
         case 2:
         {
+            self.downLoadBtn.hidden = YES;
             if ([[self.infoDic objectForKey:kIsLivingCourseFree] intValue] == 0 && [[self.infoDic objectForKey:kHaveJurisdiction] intValue] == 0) {
                 [SVProgressHUD showErrorWithStatus:@"暂无观看权限"];
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -1139,7 +1178,9 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
             break;
         case 3:
         {
+            self.downLoadBtn.hidden = NO;
             if ([[self.infoDic objectForKey:kIsBack] intValue] == 0) {
+                self.downLoadBtn.hidden = YES;
                 [SVProgressHUD showErrorWithStatus:@"暂无观看权限"];
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                     [SVProgressHUD dismiss];
@@ -2238,6 +2279,7 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
         case 1:
         case 2:
         {
+            self.downLoadBtn.hidden = YES;
             if ([[self.infoDic objectForKey:kIsLivingCourseFree] intValue] == 0 && [[self.infoDic objectForKey:kHaveJurisdiction] intValue] == 0) {
                 [SVProgressHUD showErrorWithStatus:@"暂无观看权限"];
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -2251,7 +2293,9 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
             break;
         case 3:
         {
+            self.downLoadBtn.hidden = NO;
             if ([[self.infoDic objectForKey:kIsBack] intValue] == 0) {
+                self.downLoadBtn.hidden = YES;
                 [SVProgressHUD showErrorWithStatus:@"暂无观看权限"];
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                     [SVProgressHUD dismiss];
@@ -2293,6 +2337,7 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
             case 1:
             case 2:
             {
+                self.downLoadBtn.hidden = YES;
                 if ([[self.infoDic objectForKey:kIsLivingCourseFree] intValue] == 0 && [[self.infoDic objectForKey:kHaveJurisdiction] intValue] == 0) {
                     [SVProgressHUD showErrorWithStatus:@"暂无观看权限"];
                     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -2305,7 +2350,9 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
                 break;
             case 3:
             {
+                self.downLoadBtn.hidden = NO;
                 if ([[self.infoDic objectForKey:kIsBack] intValue] == 0) {
+                    self.downLoadBtn.hidden = YES;
                     [SVProgressHUD showErrorWithStatus:@"暂无观看权限"];
                     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                         [SVProgressHUD dismiss];
@@ -2356,7 +2403,15 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
     
 }
 
-
+#pragma mark - downLoadVides
+- (void)downLoadVides
+{
+    LivingCourseBackDownLoadViewController * backDownLoadVC = [[LivingCourseBackDownLoadViewController alloc]init];
+    backDownLoadVC.videoInfoArray = [[CourseraManager sharedManager] getLivingSectionBackDetailArray];
+    [self.videoController pause];
+    UINavigationController * nav = [[UINavigationController alloc]initWithRootViewController:backDownLoadVC];
+    [self presentViewController:nav animated:YES completion:nil];
+}
 
 @end
 

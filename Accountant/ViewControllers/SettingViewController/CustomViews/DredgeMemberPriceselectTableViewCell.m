@@ -19,6 +19,14 @@
 
 @implementation DredgeMemberPriceselectTableViewCell
 
+- (NSMutableArray *)dataArray
+{
+    if (!_dataArray) {
+        _dataArray = [NSMutableArray array];
+    }
+    return _dataArray;
+}
+
 - (void)awakeFromNib {
     [super awakeFromNib];
     // Initialization code
@@ -53,10 +61,10 @@
     
     self.dredgePaiceViewArray = [NSMutableArray array];
     __weak typeof(self)weakSelf = self;
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < self.dataArray.count; i++) {
         DredgeMemberPriceView * dredgeView = [[DredgeMemberPriceView alloc]initWithFrame:CGRectMake(kScreenWidth / 2 * (i%2),50 + i/2*80 + (i/2 + 1)*10, kScreenWidth / 2, 80) andInfoDic:self.dataArray[i]];
         
-        if ([[self.dataArray[i] objectForKey:@"memberLevel"] isEqualToString:self.memberLevel]) {
+        if ([[self.dataArray[i] objectForKey:kMemberLevel] isEqualToString:self.memberLevel]) {
             dredgeView.selectType = DredgeMemberPrice_Select;
         }
         
@@ -72,18 +80,18 @@
 
 - (void)loadData
 {
-    self.dataArray = [NSMutableArray array];
+    self.dataArray = [[[UserManager sharedManager] getLevelDetailList] mutableCopy];
     
-    NSDictionary * k1 = @{@"realityPrice":@(1180),@"price":@(1680),@"memberLevel":@"K1",@"chaozhi":@(0)};
-    NSDictionary * k2 = @{@"realityPrice":@(2180),@"price":@(2980),@"memberLevel":@"K2",@"chaozhi":@(0)};
-    NSDictionary * k3 = @{@"realityPrice":@(2580),@"price":@(3580),@"memberLevel":@"K3",@"chaozhi":@(1)};
-    NSDictionary * k4 = @{@"realityPrice":@(2980),@"price":@(3980),@"memberLevel":@"K4",@"chaozhi":@(0)};
-    NSDictionary * k5 = @{@"realityPrice":@(3580),@"price":@(4980),@"memberLevel":@"K5",@"chaozhi":@(1)};
-    [self.dataArray addObject:k1];
-    [self.dataArray addObject:k2];
-    [self.dataArray addObject:k3];
-    [self.dataArray addObject:k4];
-    [self.dataArray addObject:k5];
+//    NSDictionary * k1 = @{@"realityPrice":@(1180),@"price":@(1680),@"memberLevel":@"K1",@"chaozhi":@(0)};
+//    NSDictionary * k2 = @{@"realityPrice":@(2180),@"price":@(2980),@"memberLevel":@"K2",@"chaozhi":@(0)};
+//    NSDictionary * k3 = @{@"realityPrice":@(2580),@"price":@(3580),@"memberLevel":@"K3",@"chaozhi":@(1)};
+//    NSDictionary * k4 = @{@"realityPrice":@(2980),@"price":@(3980),@"memberLevel":@"K4",@"chaozhi":@(0)};
+//    NSDictionary * k5 = @{@"realityPrice":@(3580),@"price":@(4980),@"memberLevel":@"K5",@"chaozhi":@(1)};
+//    [self.dataArray addObject:k1];
+//    [self.dataArray addObject:k2];
+//    [self.dataArray addObject:k3];
+//    [self.dataArray addObject:k4];
+//    [self.dataArray addObject:k5];
 }
 
 
@@ -92,7 +100,7 @@
 {
     for (DredgeMemberPriceView * dredgeView in self.dredgePaiceViewArray) {
         
-        if (![[dredgeView.infoDic objectForKey:@"memberLevel"] isEqualToString:memberLevel]) {
+        if (![[dredgeView.infoDic objectForKey:kMemberLevel] isEqualToString:memberLevel]) {
             [dredgeView resetView];
         }else
         {

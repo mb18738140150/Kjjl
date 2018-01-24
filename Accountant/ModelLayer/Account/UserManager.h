@@ -36,20 +36,25 @@
  */
 - (void)resetPasswordWithOldPassword:(NSString *)oldPwd andNewPwd:(NSString *)newPwd withNotifiedObject:(id<UserModule_ResetPwdProtocol>)object;
 
+
+// 注册
 - (void)registWithDic:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_RegistProtocol>)object;
 
 
+// 忘记密码
 - (void)forgetPsdWithDic:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_ForgetPasswordProtocol>)object;
 
+// 获取验证码
 - (void)getVerifyCodeWithPhoneNumber:(NSString *)phoneNumber withNotifiedObject:(id<UserModule_VerifyCodeProtocol>)object;
 
 - (void)getVerifyAccountWithAccountNumber:(NSString *)accountNumber withNotifiedObject:(id<UserModule_VerifyAccountProtocol>)object;
 
+// 完善个人信息
 - (void)completeUserInfoWithDic:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_CompleteUserInfoProtocol>)object;
 
 - (void)bindRegCodeWithRegCode:(NSString *)regCode withNotifiedObject:(id<UserModule_bindRegCodeProtocol>)object;
 
-- (void)payOrderWith:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_PayOrderProtocol>)object;
+
 
 /**
  请求app版本信息
@@ -158,10 +163,49 @@
 
 - (NSDictionary *)getUpdateInfo;
 
+// 支付订单
+- (void)payOrderWith:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_PayOrderProtocol>)object;
 // 获取订单支付详情
 - (NSDictionary *)getPayOrderDetailInfo;
 
 // 获取我的订单列表
+- (void)didRequestOrderListWithCourseInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_OrderListProtocol>)object;
 - (NSArray *)getMyOrderList;
+
+/**
+ 获取优惠券
+ 
+ */
+- (void)didRequestMyDiscountCouponWithCourseInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_discountCouponProtocol>)object;
+- (NSArray *)getAllDiscountCoupon;
+- (NSArray *)getNormalDiscountCoupon;
+- (NSArray *)getexpireDiscountCoupon;
+- (NSArray *)getCannotUseDiscountCoupon:(double)price;
+- (NSArray *)getHaveUsedDiscountCoupon;
+
+// 获取我的积分
+- (void)didRequestIntegralWithCourseInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_RecommendProtocol>)object;
+- (void)didRequestGetIntegralWithCourseInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_RecommendProtocol>)object;
+- (void)didRequestGetRecommendIntegralWithCourseInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_RecommendProtocol>)object;
+- (int)getIntegral;
+- (NSDictionary *)getRecommendIntegral;
+
+// 客服信息
+- (void)didRequestAssistantWithInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_AssistantCenterProtocol>)object;
+- (NSArray *)getAssistantList;
+- (NSArray *)getTelephoneList;
+
+// 会员详情信息
+- (void)didRequestLevelDetailWithNotifiedObject:(id<UserModule_LevelDetailProtocol>)object;
+- (NSArray *)getLevelDetailList;
+
+// 意见反馈
+- (void)didRequestSubmitOpinionWithInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_SubmitOperationProtocol>)object;
+
+
+// 常见问题
+- (void)didRequestCommonProblemWithInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_CommonProblem>)object;
+- (NSArray *)getCommonProblemList;
+
 
 @end

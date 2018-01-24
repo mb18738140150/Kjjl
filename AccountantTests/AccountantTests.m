@@ -41,7 +41,7 @@
                                                   kVideoName:@"videoName",
                                                   kVideoSort:@(999),
                                                   kVideoPath:@"videoPath"}];*/
-    NSLog(@"------%d",[[DBManager sharedManager] isVideoDownload:@(387)]);
+//    NSLog(@"------%d",[[DBManager sharedManager] isVideoDownload:@(387)]);
     NSLog(@"%@",[DateUtility getCurrentFormatDateString]);
     NSLog(@"%@",[DateUtility getDateIdString]);
 //    NSLog(@"write result %d",b);

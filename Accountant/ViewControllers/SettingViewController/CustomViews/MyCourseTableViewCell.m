@@ -41,30 +41,37 @@
     [self.contentView addSubview:self.courseNameLabel];
     
     // 讲师
-    self.teacherIconImageView = [[UIImageView alloc]initWithFrame:CGRectMake(CGRectGetMaxX(self.courseCoverImageView.frame) + 10, 73, 14, 14)];
+    self.teacherIconImageView = [[UIImageView alloc]initWithFrame:CGRectMake(CGRectGetMaxX(self.courseCoverImageView.frame) + 12, 73, 11, 11)];
     self.teacherIconImageView.image = [UIImage imageNamed:@"shouye-人"];
     [self.contentView addSubview:self.teacherIconImageView];
     
     self.teacherNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.teacherIconImageView.frame) + 5, 70, 60, 20)];
-    self.teacherNameLabel.font = [UIFont systemFontOfSize:14];
+    self.teacherNameLabel.font = [UIFont systemFontOfSize:11];
     self.teacherNameLabel.textColor = [UIColor grayColor];
-    self.teacherNameLabel.text = [courseInfo objectForKey:kCourseTeacherName];
+    self.teacherNameLabel.text = [NSString stringWithFormat:@"%@", [courseInfo objectForKey:kCourseTeacherName]];
     [self.contentView addSubview:self.teacherNameLabel];
     
-    // 进度
-    self.progresslabel = [[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(self.courseCoverImageView.frame) + 10, self.maskView.hd_centerY + 5, self.maskView.hd_width, 15)];
-    self.progresslabel.textColor = [UIColor whiteColor];
-    self.progresslabel.font = kMainFont;
-    self.progresslabel.textAlignment = 1;
-    [self.contentView addSubview:self.progresslabel];
+    // 上次学习时间
+    self.lastTimeLB = [[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(self.courseCoverImageView.frame) + 10, self.courseCoverImageView.hd_centerY + 5, 200, 15)];
+    self.lastTimeLB.textColor = UIColorFromRGB(0xaaaaaa);
+    self.lastTimeLB.font = [UIFont systemFontOfSize:12];
+    [self.contentView addSubview:self.lastTimeLB];
     
-    self.learnProcessView = [[ProcessView alloc]initWithFrame:CGRectMake(CGRectGetMaxX(self.courseCoverImageView.frame) + 10, self.frame.size.height - 13, 230, 5)];
+    // 进度
+    
+    self.learnProcessView = [[ProcessView alloc]initWithFrame:CGRectMake(CGRectGetMaxX(self.courseCoverImageView.frame) + 10, self.frame.size.height - 13, 115, 5)];
     self.learnProcessView.progress = 0.8;
     [self.contentView addSubview:self.learnProcessView];
     
+    self.progresslabel = [[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(self.learnProcessView.frame) + 10, self.learnProcessView.hd_y - 5, 80, 15)];
+    self.progresslabel.textColor = UIColorFromRGB(0xff4e00);
+    self.progresslabel.font = [UIFont systemFontOfSize:11];
+    [self.contentView addSubview:self.progresslabel];
     
     self.courseStateLabel = [[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(self.courseCoverImageView.frame) + 10, 70, 60, 20)];
     self.courseStateLabel.text = @"已学完";
+    self.courseStateLabel.font = [UIFont systemFontOfSize:11];
+    self.courseStateLabel.textColor = UIColorFromRGB(0xaaaaaa);
     [self.contentView addSubview:self.courseStateLabel];
     
     // 删除
@@ -106,7 +113,7 @@
 {
     self.teacherNameLabel.hidden = YES;
     self.teacherIconImageView.hidden = YES;
-    
+    self.lastTimeLB.hidden = YES;
     self.progresslabel.hidden = YES;
     self.learnProcessView.hidden = YES;
 }
@@ -116,10 +123,15 @@
     self.teacherNameLabel.hidden = YES;
     self.teacherIconImageView.hidden = YES;
     self.courseStateLabel.hidden = YES;
+    
+    self.learnProcessView.progress = [[self.infoDic objectForKey:kLearnProgress] doubleValue];
+    self.progresslabel.text = [NSString stringWithFormat:@"已学%.0f%%", [[self.infoDic objectForKey:kLearnProgress] doubleValue] * 100];
+    self.lastTimeLB.text = [self.infoDic objectForKey:kLivingTime];
 }
 
 - (void)resetCollection:(NSDictionary *)infoDic
 {
+    self.lastTimeLB.hidden = YES;
     self.progresslabel.hidden = YES;
     self.learnProcessView.hidden = YES;
     self.courseStateLabel.hidden = YES;
@@ -127,7 +139,7 @@
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
-
+    
     // Configure the view for the selected state
 }
 

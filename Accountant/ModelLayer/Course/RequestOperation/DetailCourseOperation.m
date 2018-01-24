@@ -46,6 +46,17 @@
         self.detailCourseModel.courseModel.canWatch = 0;
     }
     
+    self.detailCourseModel.courseModel.price = [[successInfo objectForKey:@"price"] doubleValue];
+    if ([[successInfo objectForKey:@"price"] isKindOfClass:[NSNull class]]) {
+        self.detailCourseModel.courseModel.price = 0;
+    }
+    
+    self.detailCourseModel.courseModel.oldPrice = [[successInfo objectForKey:@"oldPrice"] intValue];
+    if ([[successInfo objectForKey:@"oldPrice"] isKindOfClass:[NSNull class]]) {
+        self.detailCourseModel.courseModel.oldPrice = 0;
+    }
+    
+    
     for (NSDictionary *tmpDic in data) {
         ChapterModel *cModel = [[ChapterModel alloc] init];
         cModel.chapterId = [[tmpDic objectForKey:@"id"] intValue];

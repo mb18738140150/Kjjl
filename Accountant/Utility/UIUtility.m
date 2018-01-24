@@ -176,4 +176,19 @@
     }
 }
 
++ (void)codefileData:(NSString *)filePath
+{
+    NSData * fileData = [NSData dataWithContentsOfFile:filePath];
+    NSData * subData = [fileData subdataWithRange:NSMakeRange(0, 3)];
+    char * bytes = (char *)[subData bytes];
+    for (int i = 0; i < [subData length]; i++) {
+        *bytes = *(bytes) ^ 1;
+        bytes++;
+    }
+    NSFileHandle * fileHandle = [NSFileHandle fileHandleForUpdatingAtPath:filePath];
+    [fileHandle seekToFileOffset:0];
+    [fileHandle writeData:subData];
+    [fileHandle closeFile];
+}
+
 @end

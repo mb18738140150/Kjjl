@@ -28,7 +28,7 @@
 #define bottomButtonwidht (kScreenWidth-3) / 3
 #define bottomButtonHeight kTabBarHeight - 1
 
-@interface TestSimulateQuestionViewController ()<UITableViewDelegate,UITableViewDataSource,TestModule_SimulateScoreProtocol,UIGestureRecognizerDelegate, TestModule_CollectQuestionProtocol, TestModuleQuestionCollection, TestModule_UncollectQuestionProtocol, UITextViewDelegate>
+@interface TestSimulateQuestionViewController ()<UITableViewDelegate,UITableViewDataSource,TestModule_SimulateScoreProtocol,UIGestureRecognizerDelegate, TestModule_CollectQuestionProtocol, TestModuleQuestionCollection, TestModule_UncollectQuestionProtocol, UITextViewDelegate,UIAlertViewDelegate>
 
 @property (nonatomic,strong) UITableView            *contentTableView;
 
@@ -101,10 +101,29 @@
 
 - (void)resetquestionInfo
 {
-    NSDictionary * infoDic = [[DBManager sharedManager]getSimulateTestWith:[self.infoDic objectForKey:kTestSimulateId]];
+    NSDictionary * infoDic = [[DBManager sharedManager]getSimulateTestWith:self.infoDic];
     
     if (infoDic) {
         
+        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:nil message:@"是否按上次进度继续做题" delegate:self cancelButtonTitle:@"从新做" otherButtonTitles:@"继续上次", nil];
+        [alert show];
+        
+    }else
+    {
+        [[TestManager sharedManager] resetCurrentQuestionInfos];
+        self.totalCount = [[TestManager sharedManager] getTestSimulateTotalCount];
+    }
+    
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 0) {
+        [[TestManager sharedManager] resetCurrentQuestionInfos];
+        self.totalCount = [[TestManager sharedManager] getTestSimulateTotalCount];
+    }else
+    {
+        NSDictionary * infoDic = [[DBManager sharedManager]getSimulateTestWith:self.infoDic];
         NSArray * questionsArr = [infoDic objectForKey:@"questionsStr"];
         for (int i = 0; i < questionsArr.count; i++) {
             NSDictionary * quesrionInfoDic = [questionsArr objectAtIndex:i];
@@ -115,12 +134,10 @@
         
         [[TestManager sharedManager] resetCurrentQuestionInfoswith:[[infoDic objectForKey:@"currentIndex"] intValue]];
         self.totalCount = [[TestManager sharedManager] getTestSimulateTotalCount];
-    }else
-    {
-        [[TestManager sharedManager] resetCurrentQuestionInfos];
-        self.totalCount = [[TestManager sharedManager] getTestSimulateTotalCount];
     }
     
+    [self reloadQuestionInfo];
+    [self reloadCurrentTableView];
     
 }
 
@@ -143,13 +160,13 @@ static bool isFirstCailiaoQuestion;
     self.currentQuestionIndex = [[TestManager sharedManager] getCurrentQuestionIndex];
     
     NSString *type = [self.questionInfoDic objectForKey:kTestQuestionType];
-    if ([type isEqualToString:@"单选"] || [type isEqualToString:@"判断"]) {
+    if ([type isEqualToString:@"单选题"] || [type isEqualToString:@"判断题"]) {
         self.isClickShowAnswer = YES;
     }else{
         self.isClickShowAnswer = NO;
     }
     
-    NSLog(@"%@", [self.questionInfoDic description]);
+//    NSLog(@" *** [self.questionInfoDic description] = %@ questionId = %@\n\n\n", self.questionInfoDic ,[self.questionInfoDic objectForKey:kQuestionId]);
     
     if (![[self.questionInfoDic objectForKey:kQuestionCaseInfo] isEqualToString:@""]) {
         self.slideBlockView.hidden = NO;
@@ -193,6 +210,7 @@ static bool isFirstCailiaoQuestion;
 
 - (void)submitQuestion
 {
+    [self saveQuestionAnswersToDB];
     if (self.selectedArray.count == 0) {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"请先选择答案" delegate:nil cancelButtonTitle:@"知道了" otherButtonTitles:nil];
         [alert show];
@@ -208,6 +226,15 @@ static bool isFirstCailiaoQuestion;
     [[TestManager sharedManager] submitSimulateAnswers:self.selectedArray andQuestionIndex:self.currentQuestionIndex];
     
     [self addQuestionDetailHistory];
+    
+    NSMutableString *myStr = [[NSMutableString alloc] init];
+    for (NSNumber *number in self.selectedArray) {
+        [myStr appendString:[NSString stringWithFormat:@"%@",number]];
+    }
+    
+    if (![myStr isEqualToString:[self.questionInfoDic objectForKey:kTestQuestionCorrectAnswersId]]) {
+        [[TestManager sharedManager] didRequestTestAddMyWrongQuestionWithQuestionId:[[self.questionInfoDic objectForKey:kTestQuestionId] intValue]];
+    }
     
     if (self.currentQuestionIndex < self.totalCount-1){
         [self nextQuestion];
@@ -406,10 +433,32 @@ static bool isFirstCailiaoQuestion;
     }else{
         isCorrect = NO;
     }
-    NSDictionary *dic = @{kTestAddDetailHistoryLogId:@([[TestManager sharedManager] getLogId]),
+    NSNumber *qType = @0;
+    NSString * questionType = [self.questionInfoDic objectForKey:kTestQuestionType];
+    if ([questionType isEqualToString:@"单选题"]) {
+        qType = @1;
+    }else if ([questionType isEqualToString:@"多选题"])
+    {
+        qType = @2;
+    }else if ([questionType isEqualToString:@"判断题"])
+    {
+        qType = @3;
+    }else
+    {
+        qType = @4;
+    }
+    
+    NSDictionary *dic = @{kLID:[self.questionInfoDic objectForKey:kLID],
+                          kKID:[self.questionInfoDic objectForKey:kKID],
+                          kTestSimulateId:[self.questionInfoDic objectForKey:kTestSimulateId],
+                          kTestChapterId:[self.questionInfoDic objectForKey:kTestChapterId],
+                          kTestSectionId:[self.questionInfoDic objectForKey:kTestSectionId],
+                          kTestAddDetailHistoryLogId:@([[TestManager sharedManager] getLogId]),
                           kTestQuestionId:[self.questionInfoDic objectForKey:kTestQuestionId],
-                          kTestAnserId:[self getSelectedAnswersIdString],
-                          kTestQuestionResult:@(isCorrect)};
+                          kTestQuestionCorrectAnswersId:[self.questionInfoDic objectForKey:kTestQuestionCorrectAnswersId],
+                          kTestMyanswer:[self getSelectedAnswersIdString],
+                          kTestQuestionType:qType,
+                          kTestIsEasyWrong:[self.questionInfoDic objectForKey:kTestIsEasyWrong]};
     [[TestManager sharedManager] didRequestAddTestHistoryDetailWithInfo:dic];
 }
 
@@ -514,7 +563,7 @@ static bool isFirstCailiaoQuestion;
     }
     
     [self saveQuestionAnswersToDB];
-    
+    [[TestManager sharedManager] resetCurrentQuestionInfos];
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -775,7 +824,7 @@ static bool isFirstCailiaoQuestion;
 - (void)reWrite:(NSNotification *)notification
 {
 
-    NSDictionary * infoDic = [[DBManager sharedManager]getSimulateTestWith:[self.infoDic objectForKey:kTestSimulateId]];
+    NSDictionary * infoDic = [[DBManager sharedManager]getSimulateTestWith:self.infoDic];
     
     if (infoDic) {
         
@@ -804,6 +853,7 @@ static bool isFirstCailiaoQuestion;
     [infoDic setObject:[self.infoDic objectForKey:kTestSimulateId] forKey:kTestSimulateId];
     [infoDic setObject:[self.infoDic objectForKey:kTestSimulateQuestionCount] forKey:kTestSimulateQuestionCount];
     [infoDic setObject:[self.infoDic objectForKey:kTestSimulateName] forKey:kTestSimulateName];
+    [infoDic setObject:[self.infoDic objectForKey:@"type"] forKey:@"type"];
     [infoDic setObject:@(self.currentQuestionIndex) forKey:@"currentIndex"];
     NSDate *date = [NSDate date];
     [infoDic setObject:@([date timeIntervalSince1970]) forKey:@"time"];

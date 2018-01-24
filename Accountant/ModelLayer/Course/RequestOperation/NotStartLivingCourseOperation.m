@@ -13,6 +13,10 @@
 @interface NotStartLivingCourseOperation ()<HttpRequestProtocol>
 @property (nonatomic,weak) HottestCourseModel       *hottestModel;
 
+@property (nonatomic, weak)HottestCourseModel       *myHostModel;
+
+@property (nonatomic, assign)int command;
+
 @property (nonatomic,assign)int haveJurisdiction;
 @end
 
@@ -24,10 +28,23 @@
     self.hottestModel = model;
 }
 
+- (void)setMyLivingCourseWithModel:(HottestCourseModel *)model
+{
+    self.myHostModel = model;
+}
+
 - (void)didRequestNotStartLivingCourseWithInfo:(NSDictionary *)infoDic NotifiedObject:(id<CourseModule_NotStartLivingCourse>)delegate
 {
+    self.command = 31;
     self.notifiedObject = delegate;
     [[HttpRequestManager sharedManager] requestGetNotStartLivingCourseWithInfo:infoDic ProcessDelegate:self];
+}
+
+- (void)didRequestMyLivingCourseWithInfo:(NSDictionary *)infoDic NotifiedObject:(id<CourseModule_MyLivingCourse>)object
+{
+    self.command = 47;
+    self.myNotifiedObject = object;
+    [[HttpRequestManager sharedManager] requestGetMyLivingCourseWithInfo:infoDic ProcessDelegate:self];
 }
 
 #pragma mark - http delegate
@@ -35,31 +52,55 @@
 {
     NSLog(@"successInfo = %@", [successInfo description]);
     
-    [self.hottestModel removeAllCourses];
-    
-    self.haveJurisdiction = [[successInfo objectForKey:@"haveJurisdiction"] intValue];
-    NSArray *courses = [successInfo objectForKey:@"data"];
-    for (NSDictionary *dic in courses){
-        CourseModel *courseModel = [[CourseModel alloc] initWithHosttestDicInfo:dic];
-        [self.hottestModel addCourse:courseModel];
+    if (self.command == 31) {
+        [self.hottestModel removeAllCourses];
+        
+        self.haveJurisdiction = [[successInfo objectForKey:@"haveJurisdiction"] intValue];
+        NSArray *courses = [successInfo objectForKey:@"data"];
+        for (NSDictionary *dic in courses){
+            CourseModel *courseModel = [[CourseModel alloc] initWithHosttestDicInfo:dic];
+            [self.hottestModel addCourse:courseModel];
+        }
+        
+        NSArray *SectionCourses = [successInfo objectForKey:@"teacherData"];
+        for (NSDictionary *dic in SectionCourses){
+            TeacherModel *teacherModel = [[TeacherModel alloc] initWithInfoDic:dic];
+            [self.hottestModel addTeacher:teacherModel];
+        }
+        
+        if (self.notifiedObject != nil) {
+            [self.notifiedObject didRequestNotStartLivingCourseSuccessed];
+        }
+    }else
+    {
+        [self.myHostModel removeAllCourses];
+        
+        NSArray *courses = [successInfo objectForKey:@"data"];
+        for (NSDictionary *dic in courses){
+            CourseModel *courseModel = [[CourseModel alloc] initWithHosttestDicInfo:dic];
+            [self.myHostModel addCourse:courseModel];
+        }
+        
+        if (self.myNotifiedObject != nil) {
+            [self.myNotifiedObject didRequestMyLivingCourseSuccessed];
+        }
     }
     
-    NSArray *SectionCourses = [successInfo objectForKey:@"teacherData"];
-    for (NSDictionary *dic in SectionCourses){
-        TeacherModel *teacherModel = [[TeacherModel alloc] initWithInfoDic:dic];
-        [self.hottestModel addTeacher:teacherModel];
-    }
-    
-    if (self.notifiedObject != nil) {
-        [self.notifiedObject didRequestNotStartLivingCourseSuccessed];
-    }
 }
 
 - (void)didRequestFailed:(NSString *)failInfo
 {
-    [self.hottestModel removeAllCourses];
-    if (self.notifiedObject != nil) {
-        [self.notifiedObject didRequestNotStartLivingCourseFailed:failInfo];
+    if (self.command == 31) {
+        [self.hottestModel removeAllCourses];
+        if (self.notifiedObject != nil) {
+            [self.notifiedObject didRequestNotStartLivingCourseFailed:failInfo];
+        }
+    }else
+    {
+        [self.myHostModel removeAllCourses];
+        if (self.myNotifiedObject != nil) {
+            [self.myNotifiedObject didRequestMyLivingCourseFailed:failInfo];
+        }
     }
 }
 

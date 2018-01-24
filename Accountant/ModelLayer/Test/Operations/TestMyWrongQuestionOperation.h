@@ -15,7 +15,7 @@
 
 @property (nonatomic,weak) id<TestModule_MyWrongQuestionInfoProtocol>      notifiedObject;
 @property (nonatomic,weak) NSMutableArray       *myWrongChapterArray;
-
+@property (nonatomic,weak) NSMutableArray                           *simulateArray;
 
 - (void)didRequesMyWrongChapterWithCategoryId:(int)cateId andNotifiedObject:(id<TestModule_MyWrongQuestionInfoProtocol>)object;
 

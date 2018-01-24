@@ -55,6 +55,8 @@
 
 + (HttpConfigModel *)getDeleteCollectCourseConfigWithCourseId:(int)courseId;
 
++ (HttpConfigModel *)getDeleteMyCourseConfigWithCourseInfo:(NSDictionary *)infoDic;
+
 + (HttpConfigModel *)getAddVideoNoteConfigWithInfo:(NSDictionary *)info;
 
 + (HttpConfigModel *)getDeleteVideoNoteConfigWithId:(int)noteId;
@@ -77,17 +79,17 @@
 
 + (HttpConfigModel *)getTestErrorInfoWithId:(int)cateId;
 
-+ (HttpConfigModel *)getTestErrorQuestionWithSectionId:(int)sectionId;
++ (HttpConfigModel *)getTestErrorQuestionWithSectionId:(NSDictionary *)sectionInfo;
 
 + (HttpConfigModel *)getTestAddMyWrongQuestionWithQuestionId:(int)questionId;
 
 + (HttpConfigModel *)getTestMyWrongChapterListWithCategoryId:(int)cateId;
 
-+ (HttpConfigModel *)getTestMyWrongQuestionWithId:(int)sectionId;
++ (HttpConfigModel *)getTestMyWrongQuestionWithId:(NSDictionary *)sectionInfo;
 
 +(HttpConfigModel *)getTestCollectionInfoWithCategoryId:(int)cateId;
 
-+(HttpConfigModel *)getTestCollectionQuestionListWithChapterId:(int)chapterId;
++(HttpConfigModel *)getTestCollectionQuestionListWithChapterId:(NSDictionary *)chapterInfo;
 
 + (HttpConfigModel *)getTestCollectQuestionWithQuestionId:(int)questionId;
 
@@ -100,6 +102,8 @@
 + (HttpConfigModel *)getTestHistoryDetailConfigWithInfo:(NSDictionary *)infoDic;
 
 + (HttpConfigModel *)getNotStartLiveingCourseWith:(NSDictionary *)infoDic;
+
++ (HttpConfigModel *)getMyLiveingCourseWith:(NSDictionary *)infoDic;
 
 + (HttpConfigModel *)getEndLivingCourse;
 
@@ -124,5 +128,31 @@
 + (HttpConfigModel *)bindRegCode:(NSString *)regCode;
 
 + (HttpConfigModel *)payOrderWithInfo:(NSDictionary *)orderInfo;
+
++ (HttpConfigModel *)discountCoupon;
+
++ (HttpConfigModel *)orderList;
+
++ (HttpConfigModel *)recommend;
+
++ (HttpConfigModel *)getRecommend:(NSDictionary *)infoDic;
+
++ (HttpConfigModel *)getRecommendIntegral;
+
++ (HttpConfigModel *)getAssistantCnter;
+
++ (HttpConfigModel *)getMemberLevelDetail;
+
++ (HttpConfigModel *)submitOpinionWithInfo:(NSDictionary *)infoDic;
+
++ (HttpConfigModel *)commonProblem;
+
++ (HttpConfigModel *)testRecordWithInfo:(NSDictionary *)infoDic;
+
++ (HttpConfigModel *)testRecordQuestionWithInfo:(NSDictionary *)infoDic;
+
++ (HttpConfigModel *)testDailyPracticeWithInfo:(NSDictionary *)infoDic;
+
++ (HttpConfigModel *)testDailyPracticeQuestionWithInfo:(NSDictionary *)infoDic;
 
 @end

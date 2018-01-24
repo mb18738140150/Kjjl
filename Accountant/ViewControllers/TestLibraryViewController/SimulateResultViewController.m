@@ -38,6 +38,7 @@
     self.materailArr = [NSMutableArray array];
     
     self.dataDic = [[TestManager sharedManager]getSimulateresult];
+    
     self.singleArr = [self.dataDic objectForKey:kSinglequistionArr];
     self.mutipleArr = [self.dataDic objectForKey:kMultiplequistionArr];
     self.judgeQuestionArr = [self.dataDic objectForKey:kJudgequistionArr];

@@ -12,9 +12,16 @@
 @interface NotStartLivingCourseOperation : NSObject
 
 @property (nonatomic,weak) id<CourseModule_NotStartLivingCourse>              notifiedObject;
+@property (nonatomic, weak)id<CourseModule_MyLivingCourse>                   myNotifiedObject;
+
 - (void)setCurrentNotStartLivingCourseWithModel:(HottestCourseModel *)model;
+
+- (void)setMyLivingCourseWithModel:(HottestCourseModel *)model;
+
 //- (void)setCurrentNotStartLivingSectionCourseWithModel:(HottestCourseModel *)model;
 - (void)didRequestNotStartLivingCourseWithInfo:(NSDictionary *)infoDic NotifiedObject:(id<CourseModule_NotStartLivingCourse>)object;
+
+- (void)didRequestMyLivingCourseWithInfo:(NSDictionary *)infoDic NotifiedObject:(id<CourseModule_MyLivingCourse>)object;
 
 - (int)getIsHaveJurisdiction;
 

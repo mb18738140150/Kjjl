@@ -11,8 +11,8 @@
 
 @interface LearningCourseOperation : NSObject
 
-@property (nonatomic,weak) NSMutableArray                                   *learningCourseArray;
-@property (nonatomic, weak)NSMutableArray                                   *completeCourseArray;
+@property (nonatomic,strong) NSMutableArray                                   *learningCourseArray;
+@property (nonatomic, strong)NSMutableArray                                   *completeCourseArray;
 
 @property (nonatomic,weak) id<CourseModule_LearningCourseProtocol>           notifiedObject;
 @property (nonatomic, weak)id<CourseModule_CompleteCourseProtocol>           complateNotifiedObject;

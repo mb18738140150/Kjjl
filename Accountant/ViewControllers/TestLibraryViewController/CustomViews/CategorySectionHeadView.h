@@ -33,6 +33,8 @@ typedef NS_ENUM(NSUInteger, MFoldingSectionHeaderArrowPosition) {
 
 @property (nonatomic, strong) UIView *lineView;
 
+@property (nonatomic, assign)BOOL   isChapter;
+
 -(instancetype)initWithFrame:(CGRect)frame withTag:(NSInteger)tag;
 
 -(void)setupWithBackgroundColor:(UIColor *)backgroundColor

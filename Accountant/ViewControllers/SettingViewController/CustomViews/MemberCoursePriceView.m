@@ -54,7 +54,6 @@
     self.titleLB.textAlignment = 1;
     self.titleLB.font = [UIFont systemFontOfSize:12];
     [self addSubview:self.titleLB];
-    
 }
 
 - (void)resetWithTitle:(NSString *)title
@@ -62,11 +61,13 @@
     self.imageView.hidden = YES;
     self.titleLB.text = title;
 }
+
 - (void)resetWithImage:(UIImage *)image
 {
     self.titleLB.hidden = YES;
     self.imageView.image = image;
 }
+
 - (void)resetWithImage:(UIImage *)image andTitle:(NSString *)title
 {
     self.imageView.image = image;

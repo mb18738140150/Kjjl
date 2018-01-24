@@ -121,3 +121,30 @@
 
 @end
 
+@protocol TestModule_TestRecord <NSObject>
+
+- (void)didRequestTestRecordSuccess;
+- (void)didRequestTestRecordFailed:(NSString *)failedInfo;
+
+@end
+
+@protocol TestModule_TestRecordQuestion <NSObject>
+
+- (void)didRequestTestRecordQuestionSuccess;
+- (void)didRequestTestRecordQuestionFailed:(NSString *)failedInfo;
+
+@end
+
+@protocol TestModule_TestDailyPractice <NSObject>
+
+- (void)didRequestTestDailyPracticeSuccess;
+- (void)didRequestTestDailyPracticeFailed:(NSString *)failedInfo;
+
+@end
+
+@protocol TestModule_TestDailyPracticeQuestion <NSObject>
+
+- (void)didRequestTestDailyPracticeQuestionSuccess;
+- (void)didRequestTestDailyPracticeQuestionFailed:(NSString *)failedInfo;
+
+@end

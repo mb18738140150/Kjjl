@@ -9,13 +9,15 @@
 #import "BuyDetailViewController.h"
 #import "PayDetailTableViewCell.h"
 #import "WXApi.h"
+#import "DredgeMemberSelectDCTableViewCell.h"
+#import "DiscountCouponViewController.h"
 
 @interface BuyDetailViewController ()<UITableViewDelegate, UITableViewDataSource,UserModule_PayOrderProtocol>
 
 @property (nonatomic, strong)NSMutableArray *payTypeArray;
 @property (nonatomic, strong)UITableView *tableview;
 @property (nonatomic, strong)UIButton *payBtn;
-
+@property (nonatomic, strong)NSDictionary * discountCouponIinfo;
 @property (nonatomic, assign)PayType payType;
 
 @end
@@ -68,7 +70,7 @@
     NSDictionary * weichatInfoDic = @{@"imageName":@"icon_wxzf",@"title":@"微信支付",@"payType":@(PayType_weichat)};
     NSDictionary * aliPayInfoDic = @{@"imageName":@"icon_zfb",@"title":@"支付宝支付",@"payType":@(PayType_alipay)};
     [self.payTypeArray addObject:weichatInfoDic];
-    [self.payTypeArray addObject:aliPayInfoDic];
+//    [self.payTypeArray addObject:aliPayInfoDic];
 }
 
 - (void)prepareUI
@@ -77,6 +79,7 @@
     self.tableview.delegate = self;
     self.tableview.dataSource = self;
     [self.tableview registerClass:[PayDetailTableViewCell class] forCellReuseIdentifier:@"cellID"];
+    [self.tableview registerClass:[DredgeMemberSelectDCTableViewCell class] forCellReuseIdentifier:@"DredgeMemberSelectDCTableViewCellID"];
     [self.view addSubview:self.tableview];
     
     self.payBtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -100,8 +103,19 @@
     return 1;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 48;
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    if (indexPath.row == 1) {
+        DredgeMemberSelectDCTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:@"DredgeMemberSelectDCTableViewCellID" forIndexPath:indexPath];
+        [cell resetCell:self.discountCouponIinfo];
+        return cell;
+    }
+    
     PayDetailTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:@"cellID" forIndexPath:indexPath];
     
     if (self.payType == [[self.payTypeArray[indexPath.row] objectForKey:@"payType"] integerValue]) {
@@ -126,6 +140,19 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    __weak typeof(self)weakSelf = self;
+    if (indexPath.row == 1) {
+        DiscountCouponViewController * vc = [[DiscountCouponViewController alloc]init];
+        vc.myDscountCoupon = NO;
+        vc.price = [[self.infoDic objectForKey:kPrice] doubleValue];
+        vc.selectDiscountCouponBlock = ^(NSDictionary *infoDic) {
+            weakSelf.discountCouponIinfo = infoDic;
+            [weakSelf.tableview reloadData];
+            
+        };
+        [self.navigationController pushViewController:vc animated:YES];
+        return;
+    }
     NSDictionary *infoDic = [self.payTypeArray objectAtIndex:indexPath.row];
     if ([[infoDic objectForKey:@"payType"] integerValue] != self.payType) {
         self.payType = [[infoDic objectForKey:@"payType"] integerValue];
@@ -135,23 +162,42 @@
 
 - (void)payAction
 {
-    if (self.payType == PayType_weichat) {
-        NSLog(@"微信支付");
-        
-        [[UserManager sharedManager] payOrderWith:@{@"orderId":[self.infoDic objectForKey:kCourseID],@"payType":@(0)} withNotifiedObject:self];
-        
+    NSString * orderId = @"";
+    if (self.payCourseType == PayCourseType_Course) {
+        orderId = [self.infoDic objectForKey:kCourseID];
+    }else if (self.payCourseType == PayCourseType_LivingCourse)
+    {
+        orderId = [self.infoDic objectForKey:kCourseID];
     }
     else
     {
-        NSLog(@"支付宝支付");
-        
-        [[UserManager sharedManager] payOrderWith:@{@"orderId":[self.infoDic objectForKey:kCourseID],@"payType":@(1)} withNotifiedObject:self];
+        orderId = [self.infoDic objectForKey:kMemberLevelId];
     }
+    
+    NSString * disCOuntCouponId = @"";
+    if ([self.discountCouponIinfo objectForKey:@"discountCouponId"]) {
+        disCOuntCouponId = [self.discountCouponIinfo objectForKey:@"discountCouponId"];
+    }
+    
+    NSNumber *payType = @1;
+    if (self.payType == PayType_weichat) {
+    }
+    else
+    {
+        payType = @2;
+    }
+    NSDictionary * infoDic = @{@"courseId":orderId,
+                               @"payType":payType,
+                               @"courseType":@(self.payCourseType),
+                               @"discountCouponId":disCOuntCouponId};
+    [[UserManager sharedManager] payOrderWith:infoDic withNotifiedObject:self];
+    [SVProgressHUD show];
 }
 
 #pragma mark - payOrderDelegate
 - (void)didRequestPayOrderSuccessed
 {
+    [SVProgressHUD dismiss];
     switch (self.payType) {
         case PayType_weichat:
             [self weichatPay];
@@ -166,7 +212,11 @@
 
 - (void)didRequestPayOrderFailed:(NSString *)failedInfo
 {
-    
+    [SVProgressHUD dismiss];
+    [SVProgressHUD showErrorWithStatus:failedInfo];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [SVProgressHUD dismiss];
+    });
 }
 
 - (void)weichatPay
@@ -176,11 +226,12 @@
     
     //调起微信支付
     PayReq* req             = [[PayReq alloc] init];
+    req.openID              = [dict objectForKey:@"appid"];
     req.partnerId           = [dict objectForKey:@"partnerid"];
     req.prepayId            = [dict objectForKey:@"prepayid"];
     req.nonceStr            = [dict objectForKey:@"noncestr"];
     req.timeStamp           = stamp.intValue;
-    req.package             = [dict objectForKey:@"package"];
+    req.package             = [dict objectForKey:@"packageValue"];
     req.sign                = [dict objectForKey:@"sign"];
     [WXApi sendReq:req];
     
@@ -188,7 +239,11 @@
 
 - (void)aliPay
 {
-    
+    NSDictionary * dict = [[UserManager sharedManager] getPayOrderDetailInfo];
+    NSString * orderString = [dict objectForKey:@"orderString"];
+    [[AlipaySDK defaultService] payOrder:orderString fromScheme:@"2018011601908402" callback:^(NSDictionary *resultDic) {
+        NSLog(@"reslut = %@",resultDic);
+    }];
 }
 
 @end

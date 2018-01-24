@@ -15,4 +15,6 @@
 
 - (void)didRequestDeleteCollectCourseWithId:(int)courseId andNotifiedObject:(id<CourseModule_DeleteCollectCourseProtocol>)object;
 
+- (void)didRequestDeleteMyLearningCourseWithInfo:(NSDictionary *)infoDic andNotifiedObject:(id<CourseModule_DeleteCollectCourseProtocol>)object;
+
 @end

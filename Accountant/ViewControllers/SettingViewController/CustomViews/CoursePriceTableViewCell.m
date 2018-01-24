@@ -54,20 +54,20 @@
     self.priceLB.textColor = UIColorFromRGB(0xfd760e);
     self.priceLB.textAlignment = 1;
     [self.contentView addSubview:self.priceLB];
-    self.priceLB.text = [NSString stringWithFormat:@"%@", [infoDic objectForKey:kCourseID]];
+    self.priceLB.text = [NSString stringWithFormat:@"%@", [infoDic objectForKey:kPrice]];
     CGFloat priceLBWidth = [UIUtility getWidthWithText:[NSString stringWithFormat:@"%@", [infoDic objectForKey:kCourseID]] font:[UIFont systemFontOfSize:17] height:15];
     self.priceLB.hd_width = priceLBWidth + 20;
     
-    self.oldPriceLB = [[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(self.priceLB.frame), self.priceLB.hd_y + 4, 100, 11)];
+    self.oldPriceLB = [[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(self.priceLB.frame), self.priceLB.hd_y + 4, 100, 15)];
     self.oldPriceLB.textColor = UIColorFromRGB(0x999999);
     self.oldPriceLB.font = kMainFont;
-    self.oldPriceLB.attributedText = [self getOldPaice:[NSString stringWithFormat:@"%@", [infoDic objectForKey:kCourseID]]];
+    self.oldPriceLB.attributedText = [self getOldPaice:[NSString stringWithFormat:@"%@", [infoDic objectForKey:kOldPrice]]];
     [self.contentView addSubview:self.oldPriceLB];
     
     self.totalPriceLB = [[UILabel alloc]initWithFrame:CGRectMake(10, 100, kScreenWidth / 2, 60)];
     self.totalPriceLB.font = kMainFont;
     self.totalPriceLB.textColor = UIColorFromRGB(0x999999);
-    self.totalPriceLB.text = [NSString stringWithFormat:@"总价: ￥%@", [NSString stringWithFormat:@"%@", [infoDic objectForKey:kCourseID]]];
+    self.totalPriceLB.text = [NSString stringWithFormat:@"总价: ￥%@", [NSString stringWithFormat:@"%@", [infoDic objectForKey:kPrice]]];
     [self.contentView addSubview:self.totalPriceLB];
     
     self.buyBtn = [UIButton buttonWithType:UIButtonTypeCustom];

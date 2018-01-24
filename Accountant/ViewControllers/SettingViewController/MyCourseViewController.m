@@ -116,7 +116,21 @@
 - (void)didRequestDeleteCollectCourseSuccessed
 {
     [SVProgressHUD dismiss];
-    [self collectCourseRequest];
+    
+    switch (self.segmentC.selectIndex) {
+        case 0:
+            [self learningCourseRequest];
+            break;
+        case 1:
+            [self CompleteCourseRequest];
+            break;
+        case 2:
+            [self collectCourseRequest];
+            break;
+            
+        default:
+            break;
+    }
 }
 
 - (void)didRequestDeleteCollectCourseFailed:(NSString *)failedInfo
@@ -178,30 +192,31 @@
 
 - (void)contentViewSetup
 {
-    self.scrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, CGRectGetMaxY(self.segmentC.frame), kScreenWidth, kScreenHeight - kNavigationBarHeight - kStatusBarHeight)];
+    self.scrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, CGRectGetMaxY(self.segmentC.frame), kScreenWidth, kScreenHeight - kNavigationBarHeight - kStatusBarHeight - kSegmentHeight)];
     self.scrollView.contentSize = CGSizeMake(kScreenWidth * 3, kScreenHeight - kNavigationBarHeight - kStatusBarHeight - kSegmentHeight);
     self.scrollView.scrollEnabled = NO;
     [self.view addSubview:self.scrollView];
     
-    self.learningTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidth, kScreenHeight - kStatusBarHeight - kNavigationBarHeight - kHeaderViewHeight) style:UITableViewStylePlain];
+    self.learningTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidth, kScreenHeight - kStatusBarHeight - kNavigationBarHeight - kSegmentHeight) style:UITableViewStylePlain];
     self.learningTableView.delegate = self;
     self.learningTableView.dataSource = self;
     [self.learningTableView registerClass:[MyCourseTableViewCell class] forCellReuseIdentifier:@"collectVideo"];
     self.learningTableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(learningCourseRequest)];
     
-    self.completeTableView = [[UITableView alloc] initWithFrame:CGRectMake(kScreenWidth, 0, kScreenWidth, kScreenHeight - kStatusBarHeight - kNavigationBarHeight) style:UITableViewStylePlain];
+    self.completeTableView = [[UITableView alloc] initWithFrame:CGRectMake(kScreenWidth, 0, kScreenWidth, kScreenHeight - kStatusBarHeight - kNavigationBarHeight - kSegmentHeight) style:UITableViewStylePlain];
     self.completeTableView.delegate = self;
     self.completeTableView.dataSource = self;
     [self.completeTableView registerClass:[MyCourseTableViewCell class] forCellReuseIdentifier:@"collectVideo"];
     self.completeTableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(CompleteCourseRequest)];
     
-    self.collectTableView = [[UITableView alloc] initWithFrame:CGRectMake(kScreenWidth * 2, 0, kScreenWidth, kScreenHeight - kStatusBarHeight - kNavigationBarHeight) style:UITableViewStylePlain];
+    self.collectTableView = [[UITableView alloc] initWithFrame:CGRectMake(kScreenWidth * 2, 0, kScreenWidth, kScreenHeight - kStatusBarHeight - kNavigationBarHeight - kSegmentHeight) style:UITableViewStylePlain];
     self.collectTableView.delegate = self;
     self.collectTableView.dataSource = self;
     [self.collectTableView registerClass:[MyCourseTableViewCell class] forCellReuseIdentifier:@"collectVideo"];
     self.collectTableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(collectCourseRequest)];
     
     [self.scrollView addSubview:self.learningTableView];
+    [self.scrollView addSubview:self.completeTableView];
     [self.scrollView addSubview:self.collectTableView];
 }
 
@@ -306,12 +321,19 @@
 #pragma mark - deleteCourse
 - (void)deleteLearningCourse:(NSDictionary *)infoDic
 {
-    
+    NSDictionary * dic = @{kCourseID:[infoDic objectForKey:kCourseID],
+                           @"type":@(0)};
+    [SVProgressHUD show];
+    [[CourseraManager sharedManager] didRequestDeleteMyLearningCourseWithCourseInfo:dic andNotifiedObject:self];
 }
 
 - (void)deleteCompleteCourse:(NSDictionary *)infoDic
 {
+    NSDictionary * dic = @{kCourseID:[infoDic objectForKey:kCourseID],
+                           @"type":@(1)};
     
+    [SVProgressHUD show];
+    [[CourseraManager sharedManager] didRequestDeleteMyLearningCourseWithCourseInfo:dic andNotifiedObject:self];
 }
 
 - (void)deleteCollectionCourse:(NSDictionary *)infoDic
@@ -323,8 +345,21 @@
 #pragma mark - HYSegmentedControl 代理方法
 - (void)hySegmentedControlSelectAtIndex:(NSInteger)index
 {
+    if (index == 1) {
+        if (self.completeCourseArray.count == 0) {
+            [self CompleteCourseRequest];
+        }else
+        {
+            [self.completeTableView reloadData];
+        }
+    }else if (index == 2)
+    {
+        [self.collectTableView reloadData];
+    }else
+    {
+        [self.learningTableView reloadData];
+    }
+    
     [self.scrollView setContentOffset:CGPointMake(index * _scrollView.hd_width, 0) animated:NO];
-    
-    
 }
 @end

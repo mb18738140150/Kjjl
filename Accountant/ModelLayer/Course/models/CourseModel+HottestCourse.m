@@ -14,10 +14,21 @@
 {
     if (self = [super init]) {
         self.courseName = [dicInfo objectForKey:@"courseName"];
+        
+        if (![[dicInfo objectForKey:@"name"] isKindOfClass:[NSNull class]] && [dicInfo objectForKey:@"name"]) {
+            self.name = [dicInfo objectForKey:@"name"];
+        }
         if (![[dicInfo objectForKey:@"courseUrl"] isKindOfClass:[NSNull class]] && [dicInfo objectForKey:@"courseUrl"]) {
             self.courseURLString = [dicInfo objectForKey:@"courseUrl"];
         }
-        self.courseCover = [dicInfo objectForKey:@"cover"];
+        
+        if (![[dicInfo objectForKey:@"cover"] isKindOfClass:[NSNull class]] && [dicInfo objectForKey:@"cover"]) {
+            self.courseCover = [dicInfo objectForKey:@"cover"];
+        }else
+        {
+            self.courseCover = @"";
+        }
+        
         self.courseID = [[dicInfo objectForKey:@"id"] intValue];
         self.coueseTeacherName = [dicInfo objectForKey:@"teacherName"];
         if ([self.coueseTeacherName isKindOfClass:[NSNull class]] || !self.coueseTeacherName) {

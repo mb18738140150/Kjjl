@@ -13,7 +13,7 @@
 #import "TestChapterQuestionViewController.h"
 #import "CategoryDetailTableViewCell.h"
 #define  kCategoryDetailCellId @"CategoryDetailTableViewCellID"
-@interface TestListViewController ()<UITableViewDelegate,UITableViewDataSource, MFoldingSectionHeaderDelegate,UIGestureRecognizerDelegate,TestModule_SectionQuestionProtocol,TestModule_ChapterInfoProtocol>
+@interface TestListViewController ()<UITableViewDelegate,UITableViewDataSource, MFoldingSectionHeaderDelegate,UIGestureRecognizerDelegate,TestModule_SectionQuestionProtocol,TestModule_ChapterInfoProtocol,TestModule_AddHistoryProtocol>
 
 @property (nonatomic, strong)UITableView *contentTableView;
 @property (nonatomic, strong) NSMutableArray *statusArray;
@@ -23,7 +23,7 @@
 @property (nonatomic,assign) int                                     selectSection;
 @property (nonatomic,assign) int                                     selectRow;
 @property (nonatomic, strong)FailView * failView;
-
+@property (nonatomic, assign)int logId;
 
 @property (nonatomic, strong)NSDictionary * currentCourseInfoDic;
 @property (nonatomic, strong)NSMutableDictionary *currentDBCourseInfoDic;
@@ -94,13 +94,31 @@
     NSDictionary *dic = [self.testChapterInfoArray objectAtIndex:self.selectSection];
     NSArray *array = [dic objectForKey:kTestChapterSectionArray];
     NSDictionary *secDic = [array objectAtIndex:self.selectRow];
-    NSDictionary *d = @{kTestAddHistoryType:@(1),
+    NSDictionary *d = @{kLID:@(self.lid),
+                        kKID:@(self.courseCategoryId),
+                        kTestSimulateId:@(0),
                         kTestChapterId:@([[dic objectForKey:kTestChapterId] intValue]),
                         kTestSectionId:@([[secDic objectForKey:kTestSectionId] intValue]),
-                        kTestSimulateId:@(0)};
-    [[TestManager sharedManager] didRequestAddTestHistoryWithInfo:d];
+                        kLogName:@"章节练习"};
+    [[TestManager sharedManager] didRequestAddTestHistoryWithInfo:d andNotifiedObject:self];
 }
-
+- (void)didRequestAddHistorySuccess
+{
+    NSDictionary *dic = [self.testChapterInfoArray objectAtIndex:self.selectSection];
+    NSArray *array = [dic objectForKey:kTestChapterSectionArray];
+    NSDictionary *secDic = [array objectAtIndex:self.selectRow];
+    self.logId = [[TestManager sharedManager] getLogId];
+    [self requestSectionQuestionsWithSectionId:[[secDic objectForKey:kTestSectionId] intValue]];
+}
+- (void)didRequestAddHistoryFailed:(NSString *)failedInfo
+{
+    [SVProgressHUD dismiss];
+    [self.contentTableView.mj_header endRefreshing];
+    [SVProgressHUD showErrorWithStatus:failedInfo];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [SVProgressHUD dismiss];
+    });
+}
 
 #pragma mark - test delegate
 - (void)didRequestChapterInfoSuccess
@@ -138,9 +156,9 @@
     TestChapterQuestionViewController *vc = [[TestChapterQuestionViewController alloc] init];
     vc.questionType = TestQuestionTypeChapter;
     vc.hidesBottomBarWhenPushed = YES;
+    vc.logId = self.logId;
     vc.currentDBourseInfoDic = self.currentDBCourseInfoDic;
     vc.currentsectionQuestionInfoDic = self.currentSectionQuestionInfoDic;
-    [self addHistory];
     
     [self.navigationController pushViewController:vc animated:YES];
 }
@@ -261,6 +279,7 @@
     NSInteger writeQuestionCount = [self getChapterWriteQuestionCount:section];
     
     NSDictionary *dic = [self.testChapterInfoArray objectAtIndex:section];
+    view.isChapter = YES;
     [view setupWithBackgroundColor:[UIColor whiteColor] titleString:[dic objectForKey:kTestChapterName] titleColor:kMainTextColor_100 titleFont:kMainFont descriptionString:[NSString stringWithFormat:@"%d/%d", writeQuestionCount, chapterQuestionCount] descriptionColor:kMainTextColor_100 descriptionFont:[UIFont systemFontOfSize:12] peopleCountString:@"" peopleCountColor:kMainTextColor_100 peopleCountFont:[UIFont systemFontOfSize:12] arrowImage:[UIImage imageNamed:@"tiku_plus"] learnImage:[UIImage imageNamed:@"tiku_text"] arrowPosition:MFoldingSectionHeaderArrowPositionLeft sectionState:state];
     view.tapDelegate = self;
     return view;
@@ -404,7 +423,8 @@
         }
         
     }
-    [self requestSectionQuestionsWithSectionId:[[secDic objectForKey:kTestSectionId] intValue]];
+    [SVProgressHUD show];
+    [self addHistory];
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 #pragma mark - YUFoldingSectionHeaderDelegate

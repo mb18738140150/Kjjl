@@ -41,8 +41,8 @@
     self.goImageView.image = [UIImage imageNamed:@"icon_gd"];
     [self.contentView addSubview:self.goImageView];
     
-    if ([infoDic objectForKey:@"discount"]) {
-        self.detailLB.text = [NSString stringWithFormat:@"%@",[infoDic objectForKey:@"discount"]];
+    if ([infoDic objectForKey:kPrice]) {
+        self.detailLB.text = [NSString stringWithFormat:@"-%@",[infoDic objectForKey:kPrice]];
         self.goImageView.image = [UIImage imageNamed:@" icon_radio_s"];
     }
     

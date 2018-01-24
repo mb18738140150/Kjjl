@@ -16,6 +16,6 @@
 
 @property (nonatomic,weak) TestSectionModel                                 *currentTestSection;
 
-- (void)didRequestErrorQuestionWithSectionId:(int)sectionId andNotifiedObject:(id<TestModule_ErrorQuestionProtocol>)object;
+- (void)didRequestErrorQuestionWithSectionId:(NSDictionary *)sectionInfo andNotifiedObject:(id<TestModule_ErrorQuestionProtocol>)object;
 
 @end

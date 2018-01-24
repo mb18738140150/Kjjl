@@ -51,21 +51,23 @@
 
 - (void)initalTables
 {
-    NSString *initalTablesSql = @"CREATE TABLE IF NOT EXISTS Course (courseName text(128) NOT NULL,courseId integer(32) PRIMARY KEY NOT NULL,courseCoverImage text(128) NOT NULL,path text(32) NOT NULL);"
-                                "CREATE TABLE IF NOT EXISTS Chapter (chapterId integer(32) PRIMARY KEY NOT NULL,chapterName text(128) NOT NULL,chapterSort integer(32) NOT NULL,courseId integer(32) NOT NULL,isSingleVideo integer(1) NOT NULL,path text(32) NOT NULL);"
-                                "CREATE TABLE IF NOT EXISTS Video (videoId integer(32) PRIMARY KEY NOT NULL,videoName text(128) NOT NULL,videoSort integer(32) NOT NULL,chapterId integer(32) NOT NULL,path text(32) NOT NULL,time intrger(32) NOT NULL);"
-                                "CREATE TABLE IF NOT EXISTS LineVideo (videoId integer(32) PRIMARY KEY NOT NULL,videoName text(128) NOT NULL,path text(32) NOT NULL,time intrger(32) NOT NULL);"
-    "CREATE TABLE IF NOT EXISTS Downloading (videoId integer(32) PRIMARY KEY NOT NULL,videoName text(128) NOT NULL,videoUrl text(32) NOT NULL,infoDic text(32) NOT NULL);"
-    "CREATE TABLE IF NOT EXISTS SimulateTest (simulateId integer(32) PRIMARY KEY NOT NULL,simulateName text(128) NOT NULL,simulateQuestionCount intrger(32) NOT NULL,currentIndex intrger(32) NOT NULL,questionsStr text(128) NOT NULL,time double(32) NOT NULL);"
+    NSString *initalTablesSql = @"CREATE TABLE IF NOT EXISTS Course (id integer PRIMARY KEY autoincrement,courseName text(128) NOT NULL,courseId integer(32) NOT NULL,courseCoverImage text(128) NOT NULL,path text(32) NOT NULL,type integer(32) NOT NULL);"
+    "CREATE TABLE IF NOT EXISTS Chapter (id integer PRIMARY KEY autoincrement,chapterId integer(32) NOT NULL,chapterName text(128) NOT NULL,chapterSort integer(32) NOT NULL,courseId integer(32) NOT NULL,isSingleVideo integer(1) NOT NULL,path text(32) NOT NULL,type integer(32) NOT NULL);"
+    "CREATE TABLE IF NOT EXISTS Video (id integer PRIMARY KEY autoincrement,videoId integer(32) NOT NULL,videoName text(128) NOT NULL,videoSort integer(32) NOT NULL,chapterId integer(32) NOT NULL,path text(32) NOT NULL,time intrger(32) NOT NULL,type integer(32) NOT NULL);"
+    "CREATE TABLE IF NOT EXISTS LineVideo (videoId integer(32) PRIMARY KEY NOT NULL,videoName text(128) NOT NULL,path text(32) NOT NULL,time intrger(32) NOT NULL);"
+    "CREATE TABLE IF NOT EXISTS Downloading (id integer PRIMARY KEY autoincrement,videoId integer(32) NOT NULL,videoName text(128) NOT NULL,videoUrl text(32) NOT NULL,infoDic text(32) NOT NULL,type integer(32) NOT NULL);"
+    "CREATE TABLE IF NOT EXISTS SimulateTest (id integer PRIMARY KEY autoincrement,simulateId integer(32) NOT NULL,simulateName text(128) NOT NULL,simulateQuestionCount intrger(32) NOT NULL,currentIndex intrger(32) NOT NULL,questionsStr text(128) NOT NULL,time double(32) NOT NULL,type text(128) NOT NULL);"
     "CREATE TABLE IF NOT EXISTS TestCourse (courseId integer(32) PRIMARY KEY NOT NULL,courseName text(128) NOT NULL);"
     "CREATE TABLE IF NOT EXISTS TestChapter (chapterId integer(32) PRIMARY KEY NOT NULL,chapterName text(128) NOT NULL,chapterQuestionCount intrger(32) NOT NULL,courseId intrger(32) NOT NULL);"
     "CREATE TABLE IF NOT EXISTS TestSection (sectionId integer(32) PRIMARY KEY NOT NULL,sectionName text(128) NOT NULL,sectionQuestionCount intrger(32) NOT NULL,currentIndex intrger(32) NOT NULL,questionsStr text(128) NOT NULL,time intrger(32) NOT NULL,chapterId intrger(32) NOT NULL);"
     "CREATE TABLE IF NOT EXISTS SimulateScore (courseId integer(32) PRIMARY KEY NOT NULL,courseName text(128) NOT NULL,totalCount integer(32) NOT NULL,rightCount integer(32) NOT NULL,wrongCount integer(32) NOT NULL);"
     "CREATE TABLE IF NOT EXISTS MyWrongTestCourse (courseId integer(32) PRIMARY KEY NOT NULL,courseName text(128) NOT NULL);"
-    "CREATE TABLE IF NOT EXISTS MyWrongTestChapter (chapterId integer(32) NOT NULL,chapterName text(128) NOT NULL,chapterQuestionCount intrger(32) NOT NULL,courseId intrger(32) NOT NULL,currentIndex intrger(32) NOT NULL,questionsStr text(128) NOT NULL,time intrger(32) NOT NULL,type text(128) NOT NULL);"
+    "CREATE TABLE IF NOT EXISTS MyWrongTestChapter (id integer PRIMARY KEY autoincrement,chapterId integer(32) NOT NULL,chapterName text(128) NOT NULL,chapterQuestionCount intrger(32) NOT NULL,courseId intrger(32) NOT NULL,type text(128) NOT NULL);"
+    "CREATE TABLE IF NOT EXISTS MyWrongTestSection (id integer PRIMARY KEY autoincrement,sectionId integer(32) NOT NULL,sectionName text(128) NOT NULL,sectionQuestionCount intrger(32) NOT NULL,currentIndex intrger(32) NOT NULL,questionsStr text(128) NOT NULL,time intrger(32) NOT NULL,chapterId intrger(32) NOT NULL,type text(128) NOT NULL);"
     "CREATE TABLE IF NOT EXISTS SearchHistory (title text(128) NOT NULL,type text(128) NOT NULL,time double(32) NOT NULL);";
     BOOL isCreate = [self.dataBase executeStatements:initalTablesSql];
     if (!isCreate) {
+        NSLog(@"***********创建表失败********");
     }
 }
 
@@ -89,25 +91,25 @@
     return [self.readOperation getLineCourseInfoWithVideoId:videoId];
 }
 
-- (void)deleteVideos:(NSDictionary *)videoInfo
+- (BOOL)deleteVideos:(NSDictionary *)videoInfo
 {
-    [self.writeOperation deleteVideoInfo:videoInfo];
+    return [self.writeOperation deleteVideoInfo:videoInfo];
 }
-- (void)deletedownLoadVideoWithId:(NSNumber *)videoId;
+- (void)deletedownLoadVideoWithId:(NSDictionary *)videoInfo;
 {
-    [self.writeOperation deleteDownloadVideoInfoWithId:videoId];
+    [self.writeOperation deleteDownloadVideoInfoWithId:videoInfo];
 }
 #pragma mark - save
 
 - (void)saveDownLoadingInfo:(NSDictionary *)infoDic
 {
-    if (![self.readOperation isDownLoadVideoSavesWithId:[infoDic objectForKey:kVideoId]]) {
+    if (![self.readOperation isDownLoadVideoSavesWithId:infoDic]) {
         if ([self.writeOperation writeDownloadVideoInfo:infoDic]) {
             
         }
     }else
     {
-        if ([self.writeOperation deleteDownloadVideoInfoWithId:[infoDic objectForKey:kVideoId]]) {
+        if ([self.writeOperation deleteDownloadVideoInfoWithId:infoDic]) {
             if ([self.writeOperation writeDownloadVideoInfo:infoDic]) {
                 
             }
@@ -131,13 +133,13 @@
     int videoSort = [[infoDic objectForKey:kVideoSort] intValue];
     NSString *videoPath = [infoDic objectForKey:kVideoPath];*/
     
-    if (![self.readOperation isCourseSavedWithId:[infoDic objectForKey:kCourseID]]) {
+    if (![self.readOperation isCourseSavedWithId:infoDic]) {
         [self.writeOperation writeCourseInfo:infoDic];
     }
-    if (![self.readOperation isChapterSavedWithId:[infoDic objectForKey:kChapterId]]) {
+    if (![self.readOperation isChapterSavedWithId:infoDic]) {
         [self.writeOperation writeChapterInfo:infoDic];
     }
-    if (![self.readOperation isVideoSavedWithId:[infoDic objectForKey:kVideoId]]) {
+    if (![self.readOperation isVideoSavedWithId:infoDic]) {
         [self.writeOperation writeVideoInfo:infoDic];
     }else
     {
@@ -145,8 +147,6 @@
             [self.writeOperation writeVideoInfo:infoDic];
         }
     }
-    
-    
 }
 
 - (void)saveLineVideoInfo:(NSDictionary *)infoDic
@@ -161,19 +161,19 @@
     }
 }
 
-- (BOOL)isVideoDownload:(NSNumber *)videoId
+- (BOOL)isVideoDownload:(NSDictionary *)videoInfo
 {
-    return [self.readOperation isVideoSavedWithId:videoId];
+    return [self.readOperation isVideoSavedWithId:videoInfo];
 }
-- (BOOL)isExitDownloadingVideo:(NSNumber *)videoId
+- (BOOL)isExitDownloadingVideo:(NSDictionary *)videoInfo
 {
-    return [self.readOperation isDownLoadVideoSavesWithId:videoId];
+    return [self.readOperation isDownLoadVideoSavesWithId:videoInfo];
 }
 
 - (void)saveSimulateTestInfo:(NSDictionary *)infoDic
 {
-    if ([self.readOperation isSimulateTestSavedWithId:[infoDic objectForKey:kTestSimulateId]]) {
-        if ([self.writeOperation deleteSimulateTestInfo:[infoDic objectForKey:kTestSimulateId]])
+    if ([self.readOperation isSimulateTestSavedWithId:infoDic]) {
+        if ([self.writeOperation deleteSimulateTestInfo:infoDic])
         {
             [self.writeOperation writeSimulateTestInfo:infoDic];
         }
@@ -181,19 +181,24 @@
     {
         [self.writeOperation writeSimulateTestInfo:infoDic];
     }
-    
 }
 
-- (NSDictionary *)getSimulateTestWith:(NSNumber *)simulateTestId
+- (NSDictionary *)getSimulateTestWith:(NSDictionary *)simulateTestInfo
 {
-    NSDictionary * dic = [self.readOperation getSimulateTestInfoWithid:simulateTestId];
+    NSDictionary * dic = [self.readOperation getSimulateTestInfoWithid:simulateTestInfo];
     return dic;
 }
 
-- (void)deleteSimulateTestInfo:(NSNumber *)simulateTestId
+- (void)deleteSimulateTestInfo:(NSDictionary *)simulateTestInfo
 {
-    [self.writeOperation deleteSimulateTestInfo:simulateTestId];
+    [self.writeOperation deleteSimulateTestInfo:simulateTestInfo];
 }
+
+- (NSArray *)getSimulateTestInfoWith:(NSString *)type
+{
+    return [self.readOperation getSimulateTestInfoWith:type];
+}
+
 // 章节测试
 - (void)saveTestCourseInfo:(NSDictionary *)infoDic{
     
@@ -245,10 +250,14 @@
     }
     if (![self.readOperation isMyWrongTestChapterSavedWithId:infoDic]) {
         [self.writeOperation writeMyWrongTestChapterInfo:infoDic];
+    }
+    if (![self.readOperation isMyWrongTestSectionSavedWithInfo:infoDic]) {
+        [self.writeOperation writeMyWrongTestSectionInfo:infoDic];
     }else
     {
-        [self.writeOperation deleteMyWrongTestChapterInfo:infoDic];
-        [self.writeOperation writeMyWrongTestChapterInfo:infoDic];
+        if ([self.writeOperation deleteMyWrongTestSectionInfo:infoDic]) {
+            [self.writeOperation writeMyWrongTestSectionInfo:infoDic];
+        }
     }
     
 }

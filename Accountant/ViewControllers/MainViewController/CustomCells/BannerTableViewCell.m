@@ -48,32 +48,32 @@
     [self.titleImageView removeFromSuperview];
     [self.detailsLB removeFromSuperview];
     [self.bannerScrollView removeFromSuperview];
-    self.bannerScrollView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0, 0, kScreenWidth, kCellHeightOfBanner) imageNamesGroup:self.bannerImgUrlArray];
+    self.bannerScrollView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0, 0, kScreenWidth, 2 * kCellHeightOfCategoryView + 30 - 20 + 10) imageNamesGroup:self.bannerImgUrlArray];
     self.bannerScrollView.autoScrollTimeInterval = 10;
-//    [self addSubview:self.bannerScrollView];
+    [self addSubview:self.bannerScrollView];
     
     self.backgroundColor = [UIColor colorWithWhite:0.95 alpha:1];
     
     self.backView = [[UIView alloc]initWithFrame:CGRectMake(0, 10, kScreenWidth, 50)];
-    [self addSubview:self.backView];
+//    [self addSubview:self.backView];
     self.backView.backgroundColor = [UIColor whiteColor];
     
     self.titleImageView = [[UIImageView alloc]initWithFrame:CGRectMake(15, 15, 100, 20)];
     self.titleImageView.image = [UIImage imageNamed:@"shouye-头条通知"];
-    [self.backView addSubview:self.titleImageView];
+//    [self.backView addSubview:self.titleImageView];
     self.titleImageView.userInteractionEnabled = YES;
     
     self.detailsLB = [[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(self.titleImageView.frame) + 20, 10, kScreenWidth - 15 - 100 - 20 - 20, 30)];
     self.detailsLB.text = @"会计教练旗下APP考必备已经上线啦";
     self.detailsLB.textColor = [UIColor colorWithWhite:0.2 alpha:1];
     self.detailsLB.font = [UIFont systemFontOfSize:12];
-    [self.backView addSubview:self.detailsLB];
+//    [self.backView addSubview:self.detailsLB];
     
 }
 
 - (void)setupView
 {
-    self.bannerScrollView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0, 0, kScreenWidth, kCellHeightOfBanner) imageNamesGroup:self.bannerImgUrlArray];
+    self.bannerScrollView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0, 0, kScreenWidth, 2 * kCellHeightOfCategoryView + 30 - 20 + 10) imageNamesGroup:self.bannerImgUrlArray];
     self.bannerScrollView.autoScrollTimeInterval = 10;
     [self addSubview:self.bannerScrollView];
 }

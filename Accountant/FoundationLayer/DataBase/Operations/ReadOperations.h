@@ -15,10 +15,10 @@
 
 @property (nonatomic,weak)  FMDatabase      *dataBase;
 
-- (BOOL)isDownLoadVideoSavesWithId:(NSNumber *)videoId;
-- (BOOL)isCourseSavedWithId:(NSNumber *)courseId;
-- (BOOL)isChapterSavedWithId:(NSNumber *)chapterId;
-- (BOOL)isVideoSavedWithId:(NSNumber *)videoId;
+- (BOOL)isDownLoadVideoSavesWithId:(NSDictionary *)videoInfo;
+- (BOOL)isCourseSavedWithId:(NSDictionary *)courseInfo;
+- (BOOL)isChapterSavedWithId:(NSDictionary *)chapterInfo;
+- (BOOL)isVideoSavedWithId:(NSDictionary *)videoInfo;
 - (BOOL)isLineVideoSavedWithId:(NSNumber *)videoId;
 - (NSArray *)getDownloadCoursesInfos;
 
@@ -29,9 +29,10 @@
 - (NSDictionary *)getLineCourseInfoWithVideoId:(NSNumber *)videoId;
 
 // 模拟测试
-- (BOOL)isSimulateTestSavedWithId:(NSNumber *)simulateTestId;
+- (BOOL)isSimulateTestSavedWithId:(NSDictionary *)simulateTestInfo;
+- (NSArray *)getSimulateTestInfoWith:(NSString *)type;
 - (NSDictionary *)getSimulateTestInfo;
-- (NSDictionary *)getSimulateTestInfoWithid:(NSNumber *)simulateTestId;
+- (NSDictionary *)getSimulateTestInfoWithid:(NSDictionary *)simulateTestInfo;
 
 // 章节测试
 - (NSDictionary *)getTestCourseInfo:(NSNumber *)courseId;
@@ -47,6 +48,7 @@
 - (NSDictionary *)getMyWrongTestCourseInfo:(NSNumber *)courseId type:(NSString *)type;
 - (BOOL)isMyWrongTestCourseSavedWithId:(NSNumber *)courseId;
 - (BOOL)isMyWrongTestChapterSavedWithId:(NSDictionary *)infoDic;
+- (BOOL)isMyWrongTestSectionSavedWithInfo:(NSDictionary *)infoDic;
 
 // 搜索
 - (NSArray *)getSearchHistoryWithType:(NSString *)type;

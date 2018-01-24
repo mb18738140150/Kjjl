@@ -37,6 +37,12 @@
     
     for (NSDictionary *dic in data) {
         TestQuestionModel *questionModel = [[TestQuestionModel alloc] init];
+        questionModel.lid = [[dic objectForKey:@"directionId"] intValue];
+        questionModel.kid = [[dic objectForKey:@"subjectId"] intValue];
+        questionModel.cid = [[dic objectForKey:@"chapterId"] intValue];
+        questionModel.uid = [[dic objectForKey:@"unitId"] intValue];
+        questionModel.sid = [[dic objectForKey:@"simulationId"] intValue];
+        questionModel.isEasyWrong = [[dic objectForKey:@"isEasyWrong"] intValue];
         questionModel.questionId = [[dic objectForKey:@"id"] intValue];
         questionModel.questionType = [dic objectForKey:@"questionType"];
         questionModel.questionContent = [dic objectForKey:@"question"];
@@ -46,32 +52,57 @@
         questionModel.caseInfo = [UIUtility judgeStr:[dic objectForKey:@"caseInfo"]];
         NSString *a = [dic objectForKey:@"answer"];
         NSString *str = [dic objectForKey:@"items"];
-        NSArray *array = [str componentsSeparatedByString:@"<p>"];
-        for (NSString *str1 in array) {
-            NSArray *subArray = [str1 componentsSeparatedByString:@"</p>"];
-            for (NSString *answerStr in subArray) {
-                if ([answerStr class] != [NSNull class] && answerStr != nil && ![answerStr isEqualToString:@""]) {
-                    TestAnswerModel *answer = [[TestAnswerModel alloc] init];
-                    answer.answerContent = answerStr;
-                    unichar c = [answerStr characterAtIndex:0];
-                    answer.answerId = [NSString stringWithFormat:@"%c",c];
-                    if ([a containsString:answer.answerId]) {
-                        answer.isCorrectAnswer = YES;
-                    }else{
-                        answer.isCorrectAnswer = NO;
-                    }
-                    [questionModel.answers addObject:answer];
-                    
+        NSArray *array = [str componentsSeparatedByString:@"|"];
+        
+        for (int i = 0; i < array.count; i++) {
+            NSString * answerStr = [array objectAtIndex:i];
+            if ([answerStr class] != [NSNull class] && answerStr != nil && ![answerStr isEqualToString:@""]) {
+                TestAnswerModel *answer = [[TestAnswerModel alloc] init];
+                answer.answerContent = answerStr;
+                unichar c = [answerStr characterAtIndex:0];
+                answer.answerId = [NSString stringWithFormat:@"%c",c];
+                if ([a containsString:answer.answerId]) {
+                    answer.isCorrectAnswer = YES;
+                }else{
+                    answer.isCorrectAnswer = NO;
                 }
+                if ([questionModel.questionType isEqualToString:@"判断题"]  ) {
+                    if (i < 2) {
+                        [questionModel.answers addObject:answer];
+                    }
+                }else
+                {
+                    [questionModel.answers addObject:answer];
+                }
+                
             }
         }
         
-        if ([questionModel.questionType isEqualToString:@"单选"]) {
+//        for (NSString *str1 in array) {
+//            NSArray *subArray = [str1 componentsSeparatedByString:@"</p>"];
+//            for (NSString *answerStr in subArray) {
+//                if ([answerStr class] != [NSNull class] && answerStr != nil && ![answerStr isEqualToString:@""]) {
+//                    TestAnswerModel *answer = [[TestAnswerModel alloc] init];
+//                    answer.answerContent = answerStr;
+//                    unichar c = [answerStr characterAtIndex:0];
+//                    answer.answerId = [NSString stringWithFormat:@"%c",c];
+//                    if ([a containsString:answer.answerId]) {
+//                        answer.isCorrectAnswer = YES;
+//                    }else{
+//                        answer.isCorrectAnswer = NO;
+//                    }
+//                    [questionModel.answers addObject:answer];
+//                    
+//                }
+//            }
+//        }
+        
+        if ([questionModel.questionType isEqualToString:@"单选题"]) {
             [singleQuestionArr addObject:questionModel];
-        }else if ([questionModel.questionType isEqualToString:@"判断"])
+        }else if ([questionModel.questionType isEqualToString:@"判断题"])
         {
             [judgeQuestionArr addObject:questionModel];
-        }else if ([questionModel.questionType isEqualToString:@"多选"])
+        }else if ([questionModel.questionType isEqualToString:@"多选题"])
         {
             [multipleQuestionArr addObject:questionModel];
         }else

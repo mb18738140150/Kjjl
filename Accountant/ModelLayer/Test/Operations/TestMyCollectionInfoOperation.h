@@ -14,7 +14,7 @@
 @property (nonatomic,weak) id<TestModule_CollectQuestionInfoProtocol>          collectInfoNotifiedObject;
 
 @property (nonatomic,weak) NSMutableArray                           *collectChapterArray;
-
+@property (nonatomic,weak) NSMutableArray                           *simulateArray;
 - (void)didRequestCollectInfoWithCategoryId:(int)cateId andNotifiedObject:(id<TestModule_CollectQuestionInfoProtocol>)object;
 
 @end

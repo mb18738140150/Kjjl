@@ -14,7 +14,7 @@
 #define kDiscountCouponCellID @"discountCouponCellID"
 
 
-@interface DiscountCouponViewController ()<UITableViewDelegate, UITableViewDataSource,HYSegmentedControlDelegate>
+@interface DiscountCouponViewController ()<UITableViewDelegate, UITableViewDataSource,HYSegmentedControlDelegate,UserModule_discountCouponProtocol>
 
 @property (nonatomic, strong)HYSegmentedControl * segmentC;
 @property (nonatomic, strong)UITableView *tableView;
@@ -45,7 +45,6 @@
 
 - (void)navigationViewSetup
 {
-    
     UIView * topView = [[UIView alloc]initWithFrame:CGRectMake(0, -64, kScreenWidth, 64)];
     [self.view addSubview:topView];
     topView.backgroundColor = [UIColor whiteColor];
@@ -69,7 +68,8 @@
 
 - (void)loadData
 {
-    
+    [SVProgressHUD show];
+    [[UserManager sharedManager] didRequestMyDiscountCouponWithCourseInfo:@{} withNotifiedObject:self];
 }
 
 - (void)tableViewSetup
@@ -88,19 +88,47 @@
     self.tableView.backgroundColor = UIColorFromRGB(0xedf0f0);
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
+    __weak typeof(self)weakSelf = self;
+    self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
+        [weakSelf loadData];
+    }];
     [self.tableView registerNib:[UINib nibWithNibName:@"DiscountCouponTableViewCell" bundle:nil] forCellReuseIdentifier:kDiscountCouponCellID];
     [self.view addSubview:self.tableView];
     
 }
 
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    if (self.myDscountCoupon) {
+        return 1;
+    }else
+    {
+        if (self.dataSourseArry.count > 1) {
+            if ([self.dataSourseArry[1] count] > 0) {
+                return 2;
+            }else
+            {
+                return 1;
+            }
+        }
+        
+    }
+    return 0;
+}
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 3;
+    if (self.myDscountCoupon) {
+        return self.dataSourseArry.count;
+    }else
+    {
+        return [self.dataSourseArry[section] count];
+    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    __weak typeof(self)weakSelf = self;
+//    __weak typeof(self)weakSelf = self;
     
     DiscountCouponTableViewCell * lCell = [tableView dequeueReusableCellWithIdentifier:kDiscountCouponCellID forIndexPath:indexPath];
     if (self.myDscountCoupon) {
@@ -124,7 +152,19 @@
             break;
     }
     
-    [lCell resetWithInfo:@{}];
+    UIButton * btn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [lCell addSubview:btn];
+    btn.layer.cornerRadius = 4;
+    btn.layer.masksToBounds = YES;
+    
+    if (self.myDscountCoupon) {
+        [lCell resetWithInfo:self.dataSourseArry[indexPath.row]];
+    }else
+    {
+        NSDictionary * infoDic = self.dataSourseArry[indexPath.section][indexPath.row];
+        [lCell resetWithInfo:infoDic];
+    }
+    
     lCell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     if (self.indexPath == indexPath) {
@@ -146,15 +186,16 @@
 {
     if (self.myDscountCoupon) {
         DiscountCouponDetailViewController * detailVc = [[DiscountCouponDetailViewController alloc]init];
-        [detailVc refreshUIWith:@{}];
+        [detailVc refreshUIWith:self.dataSourseArry[indexPath.row]];
         [self.navigationController pushViewController:detailVc animated:YES];
         return;
     }
     
     self.indexPath = indexPath;
     
-    if (self.selectDiscountCouponBlock) {
-        self.selectDiscountCouponBlock(@{});
+    if (indexPath.section == 0 && self.selectDiscountCouponBlock) {
+        NSDictionary * infoDic = [self.dataSourseArry[indexPath.section] objectAtIndex:indexPath.row];
+        self.selectDiscountCouponBlock(@{kPrice:[infoDic objectForKey:kPrice]});
     }
     [self.tableView reloadData];
     [self.navigationController popViewControllerAnimated:YES];
@@ -192,6 +233,9 @@
     titleLabel.font = [UIFont systemFontOfSize:12];
     titleLabel.textAlignment = 1;
     titleLabel.text = [NSString stringWithFormat:@"可使用的优惠券(%ld张)", self.dataSourseArry.count];
+    if (section == 1) {
+        titleLabel.text = [NSString stringWithFormat:@"不可使用的优惠券(%ld张)", self.dataSourseArry.count];
+    }
     CGFloat width = [UIUtility getWidthWithText:titleLabel.text font:[UIFont systemFontOfSize:12] height:16];
     titleLabel.frame = CGRectMake(headView.hd_centerX - (width + 20) / 2, 12, width + 20, 16);
     [headView addSubview:titleLabel];
@@ -199,9 +243,72 @@
     return headView;
 }
 
+#pragma mark - hySegmentedControlDelegate
 - (void)hySegmentedControlSelectAtIndex:(NSInteger)index
 {
     [self.tableView reloadData];
+    switch (index) {
+        case 0:
+            self.dataSourseArry = [[[UserManager sharedManager] getAllDiscountCoupon] mutableCopy];
+            break;
+        case 1:
+            self.dataSourseArry = [[[UserManager sharedManager] getNormalDiscountCoupon] mutableCopy];
+            break;
+        case 2:
+            self.dataSourseArry = [[[UserManager sharedManager] getHaveUsedDiscountCoupon] mutableCopy];
+            break;
+        case 3:
+            self.dataSourseArry = [[[UserManager sharedManager] getexpireDiscountCoupon] mutableCopy];
+            break;
+            
+        default:
+            break;
+    }
+    [self.tableView reloadData];
+}
+
+#pragma mark - discountCouponDelegate
+- (void)didRequestDiscountCouponSuccessed
+{
+    [SVProgressHUD dismiss];
+    if ([self.tableView.mj_header isRefreshing]) {
+        [self.tableView.mj_header endRefreshing];
+    }
+    if (self.myDscountCoupon) {
+        switch (self.segmentC.selectIndex) {
+            case 0:
+                self.dataSourseArry = [[[UserManager sharedManager] getAllDiscountCoupon] mutableCopy];
+                break;
+            case 1:
+                self.dataSourseArry = [[[UserManager sharedManager] getNormalDiscountCoupon] mutableCopy];
+                break;
+            case 2:
+                self.dataSourseArry = [[[UserManager sharedManager] getHaveUsedDiscountCoupon] mutableCopy];
+                break;
+            case 3:
+                self.dataSourseArry = [[[UserManager sharedManager] getexpireDiscountCoupon] mutableCopy];
+                break;
+                
+            default:
+                break;
+        }
+    }else
+    {
+        self.dataSourseArry = [[[UserManager sharedManager] getCannotUseDiscountCoupon:self.price] mutableCopy];
+    }
+    [self.tableView reloadData];
+}
+
+- (void)didRequestDiscountCouponFailed:(NSString *)failedInfo
+{
+    [SVProgressHUD dismiss];
+    if ([self.tableView.mj_header isRefreshing]) {
+        [self.tableView.mj_header endRefreshing];
+    }
+    [SVProgressHUD showErrorWithStatus:failedInfo];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        [SVProgressHUD dismiss];
+    });
 }
 
 

@@ -10,7 +10,8 @@
 
 typedef enum:NSInteger {
     MemberLevel_K1,
-    MemberLevel_K2,
+    MemberLevel_K2_c,
+    MemberLevel_K2_z,
     MemberLevel_K3,
     MemberLevel_K4,
     MemberLevel_K5,
@@ -19,8 +20,8 @@ typedef enum:NSInteger {
 @interface MemberDetailView : UIView
 
 @property (nonatomic, copy)void (^memberCansultBlock)();
-@property (nonatomic, copy)void (^memberBuyBlock)(MemberLevel level);
+@property (nonatomic, copy)void (^memberBuyBlock)(NSDictionary *infoDic);
 
-- (void)refreshUIWith:(MemberLevel)memberLevel;
+- (void)refreshUIWith:(MemberLevel)memberLevel andInfoDic:(NSDictionary *)infoDic;
 
 @end

@@ -23,7 +23,7 @@
 #define bottomButtonwidht (kScreenWidth-3) / 3
 #define bottomButtonHeight kTabBarHeight - 1
 
-@interface TestChapterQuestionViewController ()<UITableViewDelegate,UITableViewDataSource,UIGestureRecognizerDelegate,TestModuleQuestionCollection,TestModule_CollectQuestionProtocol,TestModule_UncollectQuestionProtocol>
+@interface TestChapterQuestionViewController ()<UITableViewDelegate,UITableViewDataSource,UIGestureRecognizerDelegate,TestModuleQuestionCollection,TestModule_CollectQuestionProtocol,TestModule_UncollectQuestionProtocol,UIAlertViewDelegate>
 
 @property (nonatomic,strong) UITableView            *contentTableView;
 
@@ -95,7 +95,6 @@
     [self.contentTableView removeGestureRecognizer:_rightGesture];
 }
 
-
 - (void)resetquestionInfo
 {
     
@@ -103,6 +102,24 @@
     
     if (infoDic) {
         
+        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:nil message:@"是否按上次进度继续做题" delegate:self cancelButtonTitle:@"从新做" otherButtonTitles:@"继续上次", nil];
+        [alert show];
+        
+    }else
+    {
+        [[TestManager sharedManager] resetCurrentQuestionInfos];
+        self.totalCount = [[TestManager sharedManager] getTestSectionTotalCount];
+    }
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 0) {
+        [[TestManager sharedManager] resetCurrentQuestionInfos];
+        self.totalCount = [[TestManager sharedManager] getTestSectionTotalCount];
+    }else
+    {
+        NSDictionary * infoDic = self.currentsectionQuestionInfoDic;
         NSArray * questionsArr = [infoDic objectForKey:@"questionsStr"];
         for (int i = 0; i < questionsArr.count; i++) {
             NSDictionary * quesrionInfoDic = [questionsArr objectAtIndex:i];
@@ -118,11 +135,11 @@
         {
             [[TestManager sharedManager] resetCurrentQuestionInfoswith:[[infoDic objectForKey:@"currentIndex"] intValue]];
         }
-    }else
-    {
-        [[TestManager sharedManager] resetCurrentQuestionInfos];
-        self.totalCount = [[TestManager sharedManager] getTestSectionTotalCount];
     }
+    
+    [self reloadQuestionInfo];
+    [self reloadCurrentTableView];
+    
 }
 
 - (void)submitQuestion
@@ -141,7 +158,9 @@
     }];
     
     [[TestManager sharedManager] submitAnswers:self.selectedArray andQuestionIndex:self.currentQuestionIndex];
-    [self addQuestionDetailHistory];
+    if (self.questionType == TestQuestionTypeChapter) {
+        [self addQuestionDetailHistory];
+    }
     NSMutableString *myStr = [[NSMutableString alloc] init];
     for (NSNumber *number in self.selectedArray) {
         [myStr appendString:[NSString stringWithFormat:@"%@",number]];
@@ -168,13 +187,16 @@
     self.currentQuestionIndex = [[TestManager sharedManager] getCurrentQuestionIndex];
     
     NSString *type = [self.questionInfoDic objectForKey:kTestQuestionType];
-    if ([type isEqualToString:@"单选"] || [type isEqualToString:@"判断"]) {
+    if ([type isEqualToString:@"单选题"] || [type isEqualToString:@"判断题"]) {
         self.isClickShowAnswer = YES;
     }else{
         self.isClickShowAnswer = NO;
     }
     
     self.isShowAnswer = [[self.questionInfoDic objectForKey:kTestQuestionIsShowAnswer] boolValue];
+    if (self.questionType == TestQuestionTypeRecord) {
+        self.isShowAnswer = YES;
+    }
     
     if ([[self.questionInfoDic objectForKey:kTestQuestionIsAnswered] boolValue]) {
         self.selectedArray = [[self.questionInfoDic objectForKey:kTestQuestionSelectedAnswers] mutableCopy];
@@ -254,10 +276,34 @@
     }else{
         isCorrect = NO;
     }
-    NSDictionary *dic = @{kTestAddDetailHistoryLogId:@([[TestManager sharedManager] getLogId]),
+    
+    NSNumber *qType = @0;
+    NSString * questionType = [self.questionInfoDic objectForKey:kTestQuestionType];
+    if ([questionType isEqualToString:@"单选题"]) {
+        qType = @1;
+    }else if ([questionType isEqualToString:@"多选题"])
+    {
+        qType = @2;
+    }else if ([questionType isEqualToString:@"判断题"])
+    {
+        qType = @3;
+    }else
+    {
+        qType = @4;
+    }
+    
+    NSDictionary *dic = @{kLID:[self.questionInfoDic objectForKey:kLID],
+                          kKID:[self.questionInfoDic objectForKey:kKID],
+                          kTestSimulateId:[self.questionInfoDic objectForKey:kTestSimulateId],
+                          kTestChapterId:[self.questionInfoDic objectForKey:kTestChapterId],
+                          kTestSectionId:[self.questionInfoDic objectForKey:kTestSectionId],
+                          kTestAddDetailHistoryLogId:@([[TestManager sharedManager] getLogId]),
                           kTestQuestionId:[self.questionInfoDic objectForKey:kTestQuestionId],
-                          kTestAnserId:[self getSelectedAnswersIdString],
-                          kTestQuestionResult:@(isCorrect)};
+                          kTestQuestionCorrectAnswersId:[self.questionInfoDic objectForKey:kTestQuestionCorrectAnswersId],
+                          kTestMyanswer:[self getSelectedAnswersIdString],
+                          kTestQuestionType:qType,
+                          kTestIsEasyWrong:[self.questionInfoDic objectForKey:kTestIsEasyWrong]};
+    
     [[TestManager sharedManager] didRequestAddTestHistoryDetailWithInfo:dic];
 }
 
@@ -345,24 +391,7 @@
 }
 - (void)backAction:(UIButton *)button
 {
-    
-    switch (self.questionType) {
-        case TestQuestionTypeChapter:
-            [self saveChapter];
-            break;
-        case TestQuestionTypeMyWrong:
-            [self saveMyWrong];
-            break;
-        case TestQuestionTypeError:
-            [self saveEasyError];
-            break;
-        case TestQuestionTypeCollect:
-            [self saveCollect];
-            break;
-        default:
-            break;
-    }
-    
+    [[TestManager sharedManager] resetCurrentQuestionInfos];
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -477,9 +506,34 @@
                 
             }
             [self submitQuestion];
+            [self saveProgress];
             [tableView reloadData];
         }
-        
+    }
+}
+
+- (void)saveProgress
+{
+    switch (self.questionType) {
+        case TestQuestionTypeChapter:
+            [self saveChapter];
+            break;
+        case TestQuestionTypeMyWrong:
+            [self saveMyWrong];
+            break;
+        case TestQuestionTypeError:
+            [self saveEasyError];
+            break;
+        case TestQuestionTypeCollect:
+            [self saveCollect];
+            break;
+        case TestQuestionTypeRecord:
+            break;
+        case TestQuestionTypeDailyPractice:
+            break;
+            
+        default:
+            break;
     }
 }
 
@@ -533,6 +587,12 @@
         if (indexPath.section == 3) {
             TestQuestionResultTableViewCell *cell = (TestQuestionResultTableViewCell *)[UIUtility getCellWithCellName:@"testResultCell" inTableView:tableView andCellClass:[TestQuestionResultTableViewCell class]];
             cell.backgroundColor = kBackgroundGrayColor;
+            if (self.questionType == TestQuestionTypeRecord) {
+                cell.isRecord = YES;
+            }else
+            {
+                cell.isRecord = NO;
+            }
             [cell resetWithInfo:self.questionInfoDic];
             return cell;
         }
@@ -583,7 +643,6 @@
     if (indexPath.section == 5) {
         return kHeightOfTestNextQuestionCell;
     }
-    
     
     return 0;
 }
@@ -655,7 +714,10 @@
         array = [NSArray array];
     }
     [self.currentDBourseInfoDic setObject:[array JSONString] forKey:@"questionsStr"];
-    
+    if ([self.currentDBourseInfoDic objectForKey:kTestSimulateId]) {
+        [[DBManager sharedManager] saveSimulateTestInfo:self.currentDBourseInfoDic];
+        return;
+    }
     [[DBManager sharedManager] saveMyWrongTestCourseInfo:self.currentDBourseInfoDic];
 }
 
@@ -679,7 +741,10 @@
     }
     [self.currentDBourseInfoDic setObject:[array JSONString] forKey:@"questionsStr"];
     
-    
+    if ([self.currentDBourseInfoDic objectForKey:kTestSimulateId]) {
+        [[DBManager sharedManager] saveSimulateTestInfo:self.currentDBourseInfoDic];
+        return;
+    }
     [[DBManager sharedManager] saveMyWrongTestCourseInfo:self.currentDBourseInfoDic];
 }
 
@@ -703,7 +768,10 @@
     }
     [self.currentDBourseInfoDic setObject:[array JSONString] forKey:@"questionsStr"];
     
-    
+    if ([self.currentDBourseInfoDic objectForKey:kTestSimulateId]) {
+        [[DBManager sharedManager] saveSimulateTestInfo:self.currentDBourseInfoDic];
+        return;
+    }
     [[DBManager sharedManager] saveMyWrongTestCourseInfo:self.currentDBourseInfoDic];
 }
 

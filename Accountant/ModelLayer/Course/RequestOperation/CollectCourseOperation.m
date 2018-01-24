@@ -17,6 +17,14 @@
 
 @implementation CollectCourseOperation
 
+- (NSMutableArray *)collectCourseArray
+{
+    if (!_collectCourseArray) {
+        _collectCourseArray = [NSMutableArray array];
+    }
+    return _collectCourseArray;
+}
+
 - (void)didRequestCollectCourseWithNotifiedObject:(id<CourseModule_CollectCourseProtocol>)object
 {
     self.notifiedObject = object;
@@ -33,6 +41,9 @@
         model.courseName = [dic objectForKey:@"courseName"];
         model.courseCover = [dic objectForKey:@"cover"];
         model.coueseTeacherName = [dic objectForKey:@"teacherName"];
+        if ([model.coueseTeacherName isKindOfClass:[NSNull class]]) {
+            model.coueseTeacherName = @"";
+        }
         [self.collectCourseArray addObject:model];
     }
     if (isObjectNotNil(self.notifiedObject)) {

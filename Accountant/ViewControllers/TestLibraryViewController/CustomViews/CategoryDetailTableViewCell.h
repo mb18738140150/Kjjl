@@ -14,7 +14,8 @@ typedef enum : NSUInteger {
     CellType_myWrong,
     CellType_easyWrong,
     CellType_collect,
-    CellType_video
+    CellType_video,
+    CellType_Simulate
 } CellType;
 
 typedef enum : NSUInteger {

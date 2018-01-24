@@ -11,5 +11,6 @@
 @interface OrderDetailViewController : UIViewController
 
 @property (nonatomic, strong)NSString * orderId;
+@property (nonatomic, strong)NSDictionary * infoDic;
 
 @end

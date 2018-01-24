@@ -17,6 +17,7 @@ typedef enum {
 
 @property (nonatomic,assign) TestListType    listType;
 
+@property (nonatomic, assign)int lid;
 @property (nonatomic,assign) int                         courseCategoryId;
 
 @property (nonatomic,strong) NSString                   *categoryName;

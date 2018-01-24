@@ -26,7 +26,7 @@
 #import "LivingChatViewController.h"
 #import "RCDLiveChatRoomViewController.h"
 
-@interface TabbarViewController ()<UITabBarControllerDelegate,CourseModule_DetailCourseProtocol>
+@interface TabbarViewController ()<UITabBarControllerDelegate,CourseModule_DetailCourseProtocol,UserModule_AssistantCenterProtocol>
 
 @property (nonatomic,strong) MainViewController             *mainViewController;
 @property (nonatomic,strong) SettingViewController          *settingViewController;
@@ -199,28 +199,29 @@
 
 - (void)courseClick:(NSNotification *)notification
 {
-    if ([[UserManager sharedManager] isUserLogin]) {
-        NSDictionary *infoDic = notification.object;
-        [infoDic objectForKey:kCourseID];
-        BOOL isStartFromLoaction = [[infoDic objectForKey:kCourseIsStartFromLoaction] boolValue];
-        [CourseraManager sharedManager].courseModuleModel.detailCourseModel.courseModel.courseID = [[infoDic objectForKey:kCourseID] intValue];
-        [CourseraManager sharedManager].courseModuleModel.detailCourseModel.courseModel.courseName =[infoDic objectForKey:kCourseName];
-        [CourseraManager sharedManager].courseModuleModel.detailCourseModel.courseModel.courseCover = [infoDic objectForKey:kCourseCover];
-        [SVProgressHUD show];
-        
-        if (isStartFromLoaction) {
-            self.isPlayFromLoacation = YES;
-            self.chapterId = [[infoDic objectForKey:kChapterId] intValue];
-            self.videoId = [[infoDic objectForKey:kVideoId] intValue];
-        }else{
-            self.isPlayFromLoacation = NO;
-        }
-        [[CourseraManager sharedManager] didRequestDetailCourseWithCourseID:[[infoDic objectForKey:kCourseID] intValue] withNotifiedObject:self];
-//        [[CourseraManager sharedManager] didRequestDetailCourseWithCourseID:164 withNotifiedObject:self];
+    NSDictionary *infoDic = notification.object;
+    [infoDic objectForKey:kCourseID];
+    BOOL isStartFromLoaction = [[infoDic objectForKey:kCourseIsStartFromLoaction] boolValue];
+    [CourseraManager sharedManager].courseModuleModel.detailCourseModel.courseModel.courseID = [[infoDic objectForKey:kCourseID] intValue];
+    [CourseraManager sharedManager].courseModuleModel.detailCourseModel.courseModel.courseName =[infoDic objectForKey:kCourseName];
+    [CourseraManager sharedManager].courseModuleModel.detailCourseModel.courseModel.courseCover = [infoDic objectForKey:kCourseCover];
+    [SVProgressHUD show];
+    
+    if (isStartFromLoaction) {
+        self.isPlayFromLoacation = YES;
+        self.chapterId = [[infoDic objectForKey:kChapterId] intValue];
+        self.videoId = [[infoDic objectForKey:kVideoId] intValue];
+    }else{
+        self.isPlayFromLoacation = NO;
     }
-    else{
-        [self requireLogin];
-    }
+    [[UserManager sharedManager] didRequestAssistantWithInfo:@{} withNotifiedObject:self];
+    [[CourseraManager sharedManager] didRequestDetailCourseWithCourseID:[[infoDic objectForKey:kCourseID] intValue] withNotifiedObject:self];
+    //        [[CourseraManager sharedManager] didRequestDetailCourseWithCourseID:164 withNotifiedObject:self];
+//    if ([[UserManager sharedManager] isUserLogin]) {
+//    }
+//    else{
+//        [self requireLogin];
+//    }
     
 }
 
@@ -305,6 +306,17 @@
         [SVProgressHUD dismiss];
         [self.navigationController popViewControllerAnimated:YES];
     });
+}
+
+#pragma mark - assistantCenter protocol
+- (void)didRequestAssistantCenterSuccessed
+{
+    
+}
+
+- (void)didRequestAssistantCenterFailed:(NSString *)failedInfo
+{
+    
 }
 
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations

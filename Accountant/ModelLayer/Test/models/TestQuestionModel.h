@@ -25,6 +25,15 @@ typedef enum {
 @property (nonatomic,strong) NSString               *correctAnswerIds;
 @property (nonatomic,strong) NSString               *selectedAnswerIds;
 @property (nonatomic, copy) NSString * caseInfo;
+@property (nonatomic, copy) NSString * myAnswer;
+@property (nonatomic, assign)int isResponse;
+
+@property (nonatomic, assign)int lid;//接收时对应 directionId：职称id
+@property (nonatomic, assign)int kid;//接收时对应 subjectId：科目id
+@property (nonatomic, assign)int cid;//接收时对应 chapterId：章id
+@property (nonatomic, assign)int uid;//接收时对应 unitId：节id
+@property (nonatomic, assign)int sid;//接收时对应 simulationId：模拟卷id
+@property (nonatomic, assign)int isEasyWrong;
 
 @property (nonatomic,assign) BOOL                    questionIsAnswered;// 是否一作答
 @property (nonatomic, assign) BOOL                   questionIsShowAnswer;//是否显示答案及解析

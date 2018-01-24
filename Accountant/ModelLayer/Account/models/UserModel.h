@@ -33,4 +33,6 @@
  */
 @property (nonatomic,assign) int                 level;
 
+@property (nonatomic, copy)NSString                *levelDetail;
+
 @end

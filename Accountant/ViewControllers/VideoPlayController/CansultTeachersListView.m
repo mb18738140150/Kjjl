@@ -19,6 +19,12 @@
 
 @implementation CansultTeachersListView
 
+- (void)setTeachersArray:(NSArray *)teachersArray
+{
+    _teachersArray = teachersArray;
+    [self.tableView reloadData];
+}
+
 - (instancetype)initWithFrame:(CGRect)frame andTeachersArr:(NSArray *)array
 {
     if (self = [super initWithFrame:frame]) {
@@ -36,8 +42,6 @@
     UITapGestureRecognizer *backTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(dismissAction)];
     [backView addGestureRecognizer:backTap];
     
-    self.teachersArray = @[@""];
-    
     self.tableView = [[UITableView alloc]initWithFrame:CGRectMake(0, kScreenHeight - self.teachersArray.count * 50 - 50 - 80, kScreenWidth, self.teachersArray.count * 50 + 50 + 80) style:UITableViewStylePlain];
     self.tableView.backgroundColor = [UIColor whiteColor];
     self.tableView.delegate = self;
@@ -49,7 +53,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 1;
+    return self.teachersArray.count;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -60,9 +64,10 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     SettingTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kSettingCellID forIndexPath:indexPath];
-    cell.iconImageView.image = [UIImage imageNamed:@"img_tx"];
-    cell.titleLB.text = @"张三";
+    NSDictionary * teacherInfo = self.teachersArray[indexPath.row];
+    [cell.iconImageView sd_setImageWithURL:[NSURL URLWithString:[teacherInfo objectForKey:@"assistantIconUrl"]] placeholderImage:[UIImage imageNamed:@"img_tx"]];
     
+    cell.titleLB.text = [teacherInfo objectForKey:@"assistantName"];
     return cell;
 }
 
@@ -80,6 +85,9 @@
     
     UILabel * contentLB = [[UILabel alloc]initWithFrame:CGRectMake(15, CGRectGetMaxY(titleLB.frame) + 5, kScreenWidth - 30, 40)];
     contentLB.text = @"可在此咨询关于课程的内容、价格、售前、售后服务等相关信息";
+    if (self.teachersArray.count == 0) {
+        contentLB.text = @"暂无助教老师信息";
+    }
     contentLB.numberOfLines = 0;
     contentLB.textColor = kCommonMainTextColor_150;
     contentLB.font = kMainFont;
@@ -97,6 +105,13 @@
     [cancelBtn setTitle:@"取消" forState:UIControlStateNormal];
     [cancelBtn addTarget:self action:@selector(dismissAction) forControlEvents:UIControlEventTouchUpInside];
     return cancelBtn;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (self.cansultBlock) {
+        self.cansultBlock(self.teachersArray[indexPath.row]);
+    }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath

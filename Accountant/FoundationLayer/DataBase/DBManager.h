@@ -22,7 +22,7 @@
 
 - (void)saveLineVideoInfo:(NSDictionary *)infoDic;
 
-- (BOOL)isVideoDownload:(NSNumber *)videoId;
+- (BOOL)isVideoDownload:(NSDictionary *)videoInfo;
 
 - (NSArray *)getDownloadedCourseInfo;
 
@@ -32,14 +32,15 @@
 
 - (NSDictionary *)getLineVideoInfoWithVideoId:(NSNumber *)videoId;
 
-- (void)deleteVideos:(NSDictionary *)videoInfo;
-- (void)deletedownLoadVideoWithId:(NSNumber *)videoId;
-- (BOOL)isExitDownloadingVideo:(NSNumber *)videoId;
+- (BOOL)deleteVideos:(NSDictionary *)videoInfo;
+- (void)deletedownLoadVideoWithId:(NSDictionary *)videoInfo;
+- (BOOL)isExitDownloadingVideo:(NSDictionary *)videoInfo;
 
 // 模拟题
 - (void)saveSimulateTestInfo:(NSDictionary *)infoDic;
-- (NSDictionary *)getSimulateTestWith:(NSNumber *)simulateTestId;
-- (void)deleteSimulateTestInfo:(NSNumber *)simulateTestId;
+- (NSDictionary *)getSimulateTestWith:(NSDictionary *)simulateTestInfo;
+- (void)deleteSimulateTestInfo:(NSDictionary *)simulateTestInfo;
+- (NSArray *)getSimulateTestInfoWith:(NSString *)type;
 
 // 章节测试
 - (void)saveTestCourseInfo:(NSDictionary *)infoDic;

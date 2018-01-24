@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 typedef enum : NSUInteger {
+    PayType_normal,
     PayType_weichat,
     PayType_alipay,
 } PayType;

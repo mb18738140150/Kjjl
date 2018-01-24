@@ -46,11 +46,14 @@
 @property (nonatomic, strong)MemberCoursePriceView *zjzcView;
 @property (nonatomic, strong)MemberCoursePriceView *zckjsView;
 
+@property (nonatomic, strong)UIImageView * detailImageView;
+
 @property (nonatomic, strong)UIView * bottomView;
 @property (nonatomic, strong)UIButton *cansultBtn;
 @property (nonatomic, strong)UIButton *buyBtn;
 
 @property (nonatomic, assign)MemberLevel level;
+@property (nonatomic, strong)NSDictionary * infoDic;
 
 @end
 
@@ -199,6 +202,9 @@
 
 - (void)addBottomView
 {
+    self.detailImageView = [[UIImageView alloc]initWithFrame:CGRectMake(kSpace - 1, 0, kScreenWidth - 2 * kSpace + 2, CGRectGetMaxY(self.zcksView.frame))];
+    [self.scrollView addSubview:self.detailImageView];
+    
     self.bottomView = [[UIView alloc]initWithFrame:CGRectMake(kSpace, CGRectGetMaxY(self.zcksView.frame), kScreenWidth - 2 * kSpace, 61)];
     [self.scrollView addSubview:self.bottomView];
     
@@ -251,34 +257,39 @@
 - (void)buyAction
 {
     if (self.memberBuyBlock) {
-        self.memberBuyBlock(self.level);
+        self.memberBuyBlock(self.infoDic);
     }
 }
 
-- (void)refreshUIWith:(MemberLevel)memberLevel
+- (void)refreshUIWith:(MemberLevel)memberLevel andInfoDic:(NSDictionary *)infoDic
 {
     self.level = memberLevel;
+    self.infoDic = infoDic;
+    [self.detailImageView sd_setImageWithURL:[NSURL URLWithString:[infoDic objectForKey:kMemberLevelDetailIconUrl]]];
     
-    switch (memberLevel) {
-        case MemberLevel_K1:
-            [self refreshMemberLevelK1];
-            break;
-        case MemberLevel_K2:
-            [self refreshMemberLevelK2];
-            break;
-        case MemberLevel_K3:
-            [self refreshMemberLevelK3];
-            break;
-        case MemberLevel_K4:
-            [self refreshMemberLevelK4];
-            break;
-        case MemberLevel_K5:
-            [self refreshMemberLevelK5];
-            break;
-            
-        default:
-            break;
-    }
+//    switch (memberLevel) {
+//        case MemberLevel_K1:
+//            [self refreshMemberLevelK1];
+//            break;
+//        case MemberLevel_K2_c:
+//            [self refreshMemberLevelK2];
+//            break;
+//        case MemberLevel_K2_z:
+//            [self refreshMemberLevelK2];
+//            break;
+//        case MemberLevel_K3:
+//            [self refreshMemberLevelK3];
+//            break;
+//        case MemberLevel_K4:
+//            [self refreshMemberLevelK4];
+//            break;
+//        case MemberLevel_K5:
+//            [self refreshMemberLevelK5];
+//            break;
+//            
+//        default:
+//            break;
+//    }
 }
 
 - (void)refreshMemberLevelK1

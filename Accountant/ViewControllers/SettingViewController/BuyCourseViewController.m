@@ -17,7 +17,7 @@
 #define kCoursePriceCellID @"CoursePriceCellID"
 #define kMemberCellId @"MemberCellId"
 
-@interface BuyCourseViewController ()<UITableViewDelegate, UITableViewDataSource>
+@interface BuyCourseViewController ()<UITableViewDelegate, UITableViewDataSource,UIWebViewDelegate>
 
 @property (nonatomic, strong)UITableView * tableView;
 @property (nonatomic, strong)CansultTeachersListView            *cansultView;
@@ -53,12 +53,15 @@
     [cansultBtn addTarget:self action:@selector(cansultAction) forControlEvents:UIControlEventTouchUpInside];
     
     __weak typeof(self)weakSelf = self;
-    self.cansultView = [[CansultTeachersListView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, kScreenHeight) andTeachersArr:@[@""]];
+    self.cansultView = [[CansultTeachersListView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, kScreenHeight) andTeachersArr:[[UserManager sharedManager] getAssistantList]];
     self.cansultView.dismissBlock = ^{
         [weakSelf.cansultView removeFromSuperview];
     };
-    
+    self.cansultView.cansultBlock = ^(NSDictionary *infoDic) {
+        [weakSelf cantactTeacherAction:infoDic];
+    };
 }
+
 
 - (void)navigationViewSetup
 {
@@ -80,6 +83,27 @@
 {
     [self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
+#pragma mark - cantactTeacher
+- (void)cantactTeacherAction:(NSDictionary *)teacherInfo
+{
+    NSString  *qqNumber=[teacherInfo objectForKey:@"assistantQQ"];
+    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"mqq://"]]) {
+        UIWebView * webView = [[UIWebView alloc]initWithFrame:CGRectZero];
+        NSURL * url = [NSURL URLWithString:[NSString stringWithFormat:@"mqq://im/chat?chat_type=wpa&uin=%@&version=1&src_type=web",qqNumber]];
+        
+        NSURLRequest * request = [NSURLRequest requestWithURL:url];
+        webView.delegate = self;
+        [webView loadRequest:request];
+        [self.view addSubview:webView];
+    }else
+    {
+        [SVProgressHUD showErrorWithStatus:@"对不起，您还没安装QQ"];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [SVProgressHUD dismiss];
+        });
+    }
+}
+
 
 - (void)cansultAction
 {
@@ -166,6 +190,12 @@
 {
     BuyDetailViewController *buyVC = [[BuyDetailViewController alloc]init];
     buyVC.infoDic = infoDic;
+    if (self.isLiving) {
+        buyVC.payCourseType = PayCourseType_LivingCourse;
+    }else
+    {
+        buyVC.payCourseType = PayCourseType_Course;
+    }
     [self.navigationController pushViewController:buyVC animated:YES];
 }
 

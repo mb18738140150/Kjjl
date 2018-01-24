@@ -23,6 +23,8 @@ typedef enum : NSUInteger {
 @property (nonatomic, strong)UIImageView *teacherIconImageView;
 @property (nonatomic, strong)UILabel *teacherNameLabel;
 
+
+@property (nonatomic, strong)UILabel * lastTimeLB;
 @property (nonatomic, strong)UILabel * progresslabel;
 @property (nonatomic, strong)ProcessView *learnProcessView;
 @property (nonatomic,strong) UILabel            *courseStateLabel;

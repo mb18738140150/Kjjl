@@ -18,6 +18,9 @@
     
     UITapGestureRecognizer * wrongTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(click:)];
     [self.wrongView addGestureRecognizer:wrongTap];
+    
+    UITapGestureRecognizer * recordTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(click:)];
+    [self.recordView addGestureRecognizer:recordTap];
 }
 
 - (void)click:(UITapGestureRecognizer *)sender
@@ -25,9 +28,12 @@
     if (self.SelectTypeBlock) {
         if ([sender.view isEqual:self.collectView]) {
             self.SelectTypeBlock(Type_collect);
-        }else
+        }else if ([sender.view isEqual:self.wrongView])
         {
             self.SelectTypeBlock(Type_wrong);
+        }else
+        {
+            self.SelectTypeBlock(Type_record);
         }
     }
 }

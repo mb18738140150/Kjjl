@@ -88,6 +88,8 @@
 
 - (void)didRequestCompleteCourseWithInfoDic:(NSDictionary *)infoDic NotifiedObject:(id<CourseModule_CompleteCourseProtocol>)object;
 
+- (void)didRequestDeleteMyLearningCourseWithCourseInfo:(NSDictionary *)infoDic andNotifiedObject:(id<CourseModule_DeleteCollectCourseProtocol>)object;
+
 /**
  请求 我的 我的课程 收藏的信息
 
@@ -141,6 +143,15 @@
  @param delegate 请求成功后通知的对象
  */
 - (void)didRequestNotStartLivingCourseWithInfo:(NSDictionary *)infoDic NotifiedObject:(id<CourseModule_NotStartLivingCourse>)delegate;
+
+
+/**
+ 请求我的直播接口
+ 
+ @param delegate 请求成功后通知的对象
+ */
+- (void)didRequestMyLivingCourseWithInfo:(NSDictionary *)infoDic NotifiedObject:(id<CourseModule_MyLivingCourse>)delegate;
+
 /**
  请求往期直播接口
  
@@ -193,6 +204,13 @@
 - (NSArray *)getNotStartLivingCourseArray;
 
 /**
+ 获取我的直播课程
+ 
+ @return 未开始直播课程
+ */
+- (NSArray *)getMyLivingCourseArray;
+
+/**
  获取直播课程老师信息
  
  @return 直播课程老师信息
@@ -212,6 +230,13 @@
  @return 直播课程小节
  */
 - (NSArray *)getLivingSectionDetailArray;
+
+/**
+ 获取直播回放课程小节
+ 
+ @return 直播回放课程小节
+ */
+- (NSArray *)getLivingSectionBackDetailArray;
 
 /**
  获取已预约直播课程小节
@@ -312,5 +337,7 @@
 - (void )refreshLivingSectionStateOrder_complate:(int)index;
 
 - (void )refreshLivingSectionStateOrder_complateWith:(NSDictionary *)infoDic;
+
+
 
 @end

@@ -57,31 +57,26 @@
         self.myLabel.attributedText = [self getMyresultString:NO];
     }
     
-    //    self.correctTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.correctLabel.frame.origin.y + self.correctLabel.frame.size.height, bgViewSize.width/2, bgViewSize.height/2)];
-    //    self.correctTextLabel.text = @"正确答案";
-    //    self.correctTextLabel.font = kMainFont;
-    //    self.correctTextLabel.textColor = kMainTextColor_100;
-    //    self.correctTextLabel.textAlignment = NSTextAlignmentCenter;
-    //    [self.bgView addSubview:self.correctTextLabel];
-    //
-    //    self.myLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.correctLabel.frame.origin.x+self.correctLabel.frame.size.width, 0, bgViewSize.width/2, bgViewSize.height/2)];
-    //    self.myLabel.textColor = UIRGBColor(0, 165, 128);
-    //    self.myLabel.font = [UIFont systemFontOfSize:20];
-    //    self.myLabel.textAlignment = NSTextAlignmentCenter;
-    //    NSArray *selectedArray = [infoDic objectForKey:kTestQuestionSelectedAnswers];
-    //    NSMutableString *myStr = [[NSMutableString alloc] init];
-    //    for (NSNumber *number in selectedArray) {
-    //        [myStr appendString:[NSString stringWithFormat:@"%@",number]];
-    //    }
-    //    self.myLabel.text = myStr;
-    //    [self.bgView addSubview:self.myLabel];
-    //
-    //    self.myTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.correctTextLabel.frame.origin.x+self.correctTextLabel.frame.size.width, self.myLabel.frame.origin.y + self.myLabel.frame.size.height, bgViewSize.width/2, bgViewSize.height/2)];
-    //    self.myTextLabel.text = @"我的答案";
-    //    self.myTextLabel.font = kMainFont;
-    //    self.myTextLabel.textColor = kMainTextColor_100;
-    //    self.myTextLabel.textAlignment = NSTextAlignmentCenter;
-    //    [self.bgView addSubview:self.myTextLabel];
+    if (self.isRecord) {
+        if ([[infoDic objectForKey:kTestQuestionCorrectAnswersId] isEqualToString:[infoDic objectForKey:kTestMyanswer]]) {
+            self.myLabel.attributedText = [self getMyresultString:YES];
+        }else
+        {
+            self.myLabel.attributedText = [self getMyresultString:NO];
+        }
+        if (![[infoDic objectForKey:kTestIsResponse] intValue]) {
+            self.myLabel.attributedText = [self getMyresultStringNOresponse];
+        }
+    }
+    
+}
+
+- (NSMutableAttributedString *)getMyresultStringNOresponse
+{
+    NSMutableAttributedString * mStr = [[NSMutableAttributedString alloc]initWithString:@"未作答"];
+    NSDictionary * attribute = @{NSForegroundColorAttributeName:kCommonMainColor};
+    [mStr setAttributes:attribute range:NSMakeRange(0, 3)];
+    return mStr;
 }
 
 - (NSMutableAttributedString *)getMyresultString:(BOOL)right

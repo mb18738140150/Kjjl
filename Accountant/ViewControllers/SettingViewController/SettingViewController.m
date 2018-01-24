@@ -32,7 +32,7 @@
 #import "RecommendDetailViewController.h"
 #import "RecommendViewController.h"
 #import "StudyPlanViewController.h"
-
+#import "AssistantViewController.h"
 
 #define kSettingCellID @"SettingTableViewCellID"
 
@@ -40,7 +40,7 @@
 
 #define headerImageName @"stuhead"
 
-@interface SettingViewController ()<UITableViewDelegate,UIAlertViewDelegate>
+@interface SettingViewController ()<UITableViewDelegate,UIAlertViewDelegate,UserModule_CommonProblem>
 
 
 @property (nonatomic,strong) SettingViewTableDataSource *tableDataSource;
@@ -86,7 +86,6 @@
 - (void)logout
 {
     [[UserManager sharedManager] logout];
-    [self.navigationController.tabBarController setSelectedIndex:0];
 }
 
 #pragma mark - ui setup
@@ -126,9 +125,9 @@
     [self.view addSubview:self.tableView];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(courseCategoryClick:) name:kNotificationOfMainPageCategoryClick object:nil];
-    
+    __weak typeof(self)weakSelf = self;
     self.tableDataSource.upgradeMemberLevelBlock = ^{
-        [self upgradeMemberLevel];
+        [weakSelf upgradeMemberLevel];
     };
     
 }
@@ -150,8 +149,7 @@
                            ];
     
     
-    self.dataArray = @[@[@{@"imageName":@"icon_hy",@"title":[[UserManager sharedManager] getLevelStr],@"tip":@""}],@[@{@"imageName":@"icon_dd",@"title":@"订单",@"tip":@""},@{@"imageName":@"icon_xxjh",@"title":@"学习计划",@"tip":@""},@{@"imageName":@"icon_xz1",@"title":@"下载",@"tip":@""}],@[@{@"imageName":@"icon_jf",@"title":@"积分",@"tip":@""},@{@"imageName":@"icon_kq",@"title":@"卡券",@"tip":@""},@{@"imageName":@"icon_ewm",@"title":@"推广二维码",@"tip":@""}],@[@{@"imageName":@"icon_kf",@"title":@"客服中心",@"tip":@""}]];
-    
+    self.dataArray = @[@[@{@"imageName":@"icon_hy",@"title":[[UserManager sharedManager] getLevelStr],@"tip":@""}],@[@{@"imageName":@"icon_dd",@"title":@"订单",@"tip":@""},@{@"imageName":@"icon_xz1",@"title":@"下载",@"tip":@""}],@[@{@"imageName":@"icon_jf",@"title":@"积分",@"tip":@""},@{@"imageName":@"icon_kq",@"title":@"卡券",@"tip":@""},@{@"imageName":@"icon_ewm",@"title":@"推广二维码",@"tip":@""}],@[@{@"imageName":@"icon_kf",@"title":@"客服中心",@"tip":@""}]];
 }
 
 - (void)courseCategoryClick:(NSNotification *)notifier
@@ -211,7 +209,6 @@
     [self.navigationController pushViewController:vc animated:YES];
 }
 
-
 #pragma mark - table view delegate
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -244,9 +241,16 @@
     switch (indexPath.section) {
         case 0:
         {
-            UserCenterViewController *userCenter = [[UserCenterViewController alloc] init];
-            userCenter.hidesBottomBarWhenPushed = YES;
-            [self.navigationController pushViewController:userCenter animated:YES];
+            if (indexPath.row == 0) {
+                UserCenterViewController *userCenter = [[UserCenterViewController alloc] init];
+                userCenter.hidesBottomBarWhenPushed = YES;
+                [self.navigationController pushViewController:userCenter animated:YES];
+            }else
+            {
+                if ([WXApi isWXAppSupportApi] && [WXApi isWXAppInstalled]) {
+                    [self upgradeMemberLevel];
+                }
+            }
         }
             break;
         case 1:
@@ -256,22 +260,29 @@
             break;
         case 2:
         {
-            if (indexPath.row == 0) {
-                NSLog(@"订单");
+            NSDictionary * infoDic = [NSDictionary dictionary];
+            if ([WXApi isWXAppInstalled] && [WXApi isWXAppSupportApi]) {
+                infoDic = [self.dataArray[indexPath.section - 1] objectAtIndex:indexPath.row];
+            }else
+            {
+                infoDic = [self.dataArray[indexPath.section - 1] objectAtIndex:indexPath.row + 1];
+            }
+            
+            NSString * title = [infoDic objectForKey:@"title"];
+            if ([title isEqualToString:@"订单"]) {
                 UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:nil action:nil];
                 self.navigationItem.backBarButtonItem = item;
                 MyOrderListViewController *vc = [[MyOrderListViewController alloc] init];
                 vc.hidesBottomBarWhenPushed = YES;
                 
                 [self.navigationController pushViewController:vc animated:YES];
-            }else if (indexPath.row == 1)
+            }else if ([title isEqualToString:@"学习计划"])
             {
                 NSLog(@"学习计划");
                 StudyPlanViewController * studyVC = [[StudyPlanViewController alloc]init];
                 studyVC.hidesBottomBarWhenPushed = YES;
                 [self.navigationController pushViewController:studyVC animated:YES];
-                
-            }else
+            }else if ([title isEqualToString:@"下载"])
             {
                 NSLog(@"下载");
                 UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:nil action:nil];
@@ -311,6 +322,8 @@
         case 4:
         {
             NSLog(@"客服中心");
+            [SVProgressHUD show];
+            [[UserManager sharedManager] didRequestCommonProblemWithInfo:@{} withNotifiedObject:self];
         }
             break;
             
@@ -376,6 +389,8 @@
     
 }
 
+
+
 - (void)setupAction
 {
     __weak typeof(self)weakSelf = self;
@@ -383,8 +398,9 @@
     SettingDetailViewController * vc = [[SettingDetailViewController alloc]init];
     vc.hidesBottomBarWhenPushed = YES;
     vc.quitBlock = ^(){
-        
+        [weakSelf logout];
         [weakSelf performSelector:@selector(changeSelectIndex) withObject:nil afterDelay:0.1];
+        
     };
     [self.navigationController pushViewController:vc animated:YES];
 }
@@ -400,6 +416,23 @@
     if (buttonIndex == 1) {
         [self logout];
     }
+}
+
+#pragma mark - commonProblemDelegate
+- (void)didRequestCommonProblemSuccessed
+{
+    [SVProgressHUD dismiss];
+    AssistantViewController * assistantVC = [[AssistantViewController alloc]init];
+    assistantVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:assistantVC animated:YES];
+}
+
+- (void)didRequestCommonProblemFailed:(NSString *)failedInfo
+{
+    [SVProgressHUD dismiss];
+    AssistantViewController * assistantVC = [[AssistantViewController alloc]init];
+    assistantVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:assistantVC animated:YES];
 }
 
 @end

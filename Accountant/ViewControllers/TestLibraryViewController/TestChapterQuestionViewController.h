@@ -14,12 +14,14 @@ typedef enum {
     TestQuestionTypeChapter,
     TestQuestionTypeMyWrong,
     TestQuestionTypeCollect,
+    TestQuestionTypeRecord,
+    TestQuestionTypeDailyPractice
 }TestQuestionViewType;
 
 @interface TestChapterQuestionViewController : UIViewController
 
 @property (nonatomic,assign) TestQuestionViewType                questionType;
-
+@property (nonatomic, assign)int logId;
 @property (nonatomic, strong)NSMutableDictionary *currentDBourseInfoDic;
 @property (nonatomic, strong)NSDictionary * currentsectionQuestionInfoDic;
 

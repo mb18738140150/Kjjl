@@ -39,5 +39,6 @@
 #import "ViewController.h"
 #import "HttpUploaderManager.h"
 #import "CountDown.h"
-
+#import "WXApi.h"
+#import <AlipaySDK/AlipaySDK.h>
 #endif /* Account_h */

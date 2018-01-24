@@ -9,7 +9,7 @@
 #import "MSegmentControl.h"
 
 #define kBtnTag 10000
-#define kBtnWidth (kScreenWidth - 4) / 5
+#define kBtnWidth (kScreenWidth - 4) / 6
 
 @interface MSegmentControl ()
 
@@ -49,6 +49,7 @@
     backView.backgroundColor = UIColorFromRGB(0xcccccc);
     [self addSubview:backView];
     
+    NSArray * memberDetailList = [[UserManager sharedManager]getLevelDetailList];
     for (int i = 0; i < self.items.count; i++) {
         UIButton * button = [UIButton buttonWithType:UIButtonTypeCustom];
         button.frame = CGRectMake((kBtnWidth + 1) * i, 1, kBtnWidth, 48);
@@ -61,17 +62,19 @@
             [button setTitleColor:UIColorFromRGB(0x666666) forState:UIControlStateNormal];
         }
         [button setTitle:self.items[i] forState:UIControlStateNormal];
+        button.titleLabel.numberOfLines = 0;
+        button.titleLabel.textAlignment = NSTextAlignmentCenter;
         button.tag = kBtnTag + i;
         [backView addSubview:button];
         [button addTarget:self action:@selector(clickAction:) forControlEvents:UIControlEventTouchUpInside];
         [self.btnArr addObject:button];
         
-        if (i == 2 || i == _items.count - 1) {
+        NSDictionary * infoDic = memberDetailList[i];
+        if ([[infoDic objectForKey:@"chaozhi"] intValue] == 1) {
             UIImageView * imageview = [[UIImageView alloc]initWithFrame:CGRectMake(CGRectGetMaxX(button.frame) - 23, button.hd_y - 3, 20, 25)];
             imageview.image = [UIImage imageNamed:@"icon_bq"];
             [backView addSubview:imageview];
         }
-        
     }
     
     self.arrowImage = [[UIImageView alloc]initWithFrame:CGRectMake(kBtnWidth / 2, 61, 8, 8)];

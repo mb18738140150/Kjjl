@@ -25,6 +25,9 @@
 #define kCourseCanDownLoad  @"courseCanDownload"
 #define kCanWatch           @"courseCanWatch"
 #define kLearnProgress      @"courseLearnProgress"
+#define kPrice              @"price"
+#define kOldPrice           @"oldPrice"
+#define kRealityPrice       @"realityPrice"
 
 #define kLivingTime         @"livingTime"
 #define kLivinglastTime     @"lastTime"
@@ -87,6 +90,12 @@
 #define kUserHeaderImageUrl             @"userHeaderImageUrl"
 #define kUserTelephone                  @"userTelephone"
 #define kUserLevel                      @"userLevel"
+#define kUserLevelDetail                @"levelDetail"
+
+#define kMemberLevel                    @"memberLevel"
+#define kMemberLevelId                  @"memberID"
+#define kMemberLevelDetailIconUrl       @"memberDeUrl"
+
 
 #define kCourseCategoryName             @"courseCategoryName"
 #define kCourseCategoryId               @"courseCategoryId"
@@ -137,6 +146,14 @@
 #define kTestAddDetailHistoryLogId      @"testAddQuestionLogId"
 #define kQuestionCaseInfo               @"testSimulateQuestionCaseInfo"
 
+#define kTestIsEasyWrong                @"isEasyWrong"
+#define kLogName                        @"logName"
+#define kLID                            @"directionId"
+#define kKID                            @"subjectId"
+#define kTestMyanswer                   @"myAnswer"
+#define kTestIsResponse                 @"isResponse"
+
+
 #define kRightquistionArr               @"rightquestionarr"
 #define kWrongquistionArr               @"wrongquestionarr"
 #define kSinglequistionArr              @"singlequestionarr"
@@ -161,6 +178,13 @@
 #define kDBErrorType_Mywrong            @"myWrong"
 #define kDBErrorType_Easywrong            @"easyWrong"
 #define kDBErrorType_Collect            @"colection"
+
+#define kOrderId                        @"orderID"
+#define kOrderTime                      @"orderTime"
+#define kOrderDetail                    @"orderDetail"
+#define kRemark                         @"remark"
+#define kDeadLineTime                   @"deadLineTime"
+#define kOrderStatus                    @"orderStatus"
 
 #endif /* CommonMacro_h */
 

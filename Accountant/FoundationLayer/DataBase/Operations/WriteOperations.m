@@ -14,35 +14,35 @@
 - (BOOL)writeDownloadVideoInfo:(NSDictionary *)infoDic
 {
     NSDictionary * dic = infoDic;
-    BOOL isSuccess = [self.dataBase executeUpdate:@"insert into Downloading (videoId,videoName,videoUrl,infoDic) values (?,?,?,?)",[dic objectForKey:kVideoId],[dic objectForKey:kVideoName],[dic objectForKey:kVideoURL],[infoDic JSONString]];
+    BOOL isSuccess = [self.dataBase executeUpdate:@"insert into Downloading (videoId,videoName,videoUrl,infoDic,type) values (?,?,?,?,?)",[dic objectForKey:kVideoId],[dic objectForKey:kVideoName],[dic objectForKey:kVideoURL],[infoDic JSONString],[infoDic objectForKey:@"type"]];
     
     return isSuccess;
 }
 
-- (BOOL)deleteDownloadVideoInfoWithId:(NSNumber *)videoId
+- (BOOL)deleteDownloadVideoInfoWithId:(NSDictionary *)videoInfo
 {
     BOOL isSuccess = NO;
-    isSuccess = [self.dataBase executeUpdate:@"DELETE FROM Downloading where videoId = ?",videoId];
+    isSuccess = [self.dataBase executeUpdate:@"DELETE FROM Downloading where videoId = ? and type = ?",[videoInfo objectForKey:kVideoId],[videoInfo objectForKey:@"type"]];
     return isSuccess;
 }
 
 - (BOOL)writeVideoInfo:(NSDictionary *)dic
 {
-    BOOL isSuccess = [self.dataBase executeUpdate:@"insert into Video (videoId,videoName,videoSort,chapterId,path,time) values (?,?,?,?,?,?)",[dic objectForKey:kVideoId],[dic objectForKey:kVideoName],[dic objectForKey:kVideoSort],[dic objectForKey:kChapterId],[dic objectForKey:kVideoPath],[dic objectForKey:kVideoPlayTime]];
+    BOOL isSuccess = [self.dataBase executeUpdate:@"insert into Video (videoId,videoName,videoSort,chapterId,path,time,type) values (?,?,?,?,?,?,?)",[dic objectForKey:kVideoId],[dic objectForKey:kVideoName],[dic objectForKey:kVideoSort],[dic objectForKey:kChapterId],[dic objectForKey:kVideoPath],[dic objectForKey:kVideoPlayTime],[dic objectForKey:@"type"]];
     
     return isSuccess;
 }
 
 - (BOOL)writeChapterInfo:(NSDictionary *)dic
 {
-    BOOL isSuccess = [self.dataBase executeUpdate:@"insert into Chapter (chapterId,chapterName,chapterSort,isSingleVideo,courseId,path) values (?,?,?,?,?,?)",[dic objectForKey:kChapterId],[dic objectForKey:kChapterName],[dic objectForKey:kChapterSort],[dic objectForKey:kIsSingleChapter],[dic objectForKey:kCourseID],[dic objectForKey:kChapterPath]];
+    BOOL isSuccess = [self.dataBase executeUpdate:@"insert into Chapter (chapterId,chapterName,chapterSort,isSingleVideo,courseId,path,type) values (?,?,?,?,?,?,?)",[dic objectForKey:kChapterId],[dic objectForKey:kChapterName],[dic objectForKey:kChapterSort],[dic objectForKey:kIsSingleChapter],[dic objectForKey:kCourseID],[dic objectForKey:kChapterPath],[dic objectForKey:@"type"]];
     
     return isSuccess;
 }
 
 - (BOOL)writeCourseInfo:(NSDictionary *)dic
 {
-    BOOL isSuccess = [self.dataBase executeUpdate:@"INSERT INTO Course (courseId,courseName,courseCoverImage,path) VALUES (?,?,?,?)",[dic objectForKey:kCourseID],[dic objectForKey:kCourseName],[dic objectForKey:kCourseCover],[dic objectForKey:kCoursePath]];
+    BOOL isSuccess = [self.dataBase executeUpdate:@"INSERT INTO Course (courseId,courseName,courseCoverImage,path,type) VALUES (?,?,?,?,?)",[dic objectForKey:kCourseID],[dic objectForKey:kCourseName],[dic objectForKey:kCourseCover],[dic objectForKey:kCoursePath],[dic objectForKey:@"type"]];
     
     return isSuccess;
 }
@@ -61,7 +61,7 @@
     }else{
         isSuccess = [self.dataBase executeUpdate:@"DELETE FROM Video where videoId = ?",[dic objectForKey:kVideoId]];
     }*/
-    isSuccess = [self.dataBase executeUpdate:@"DELETE FROM Video where videoId = ?",[dic objectForKey:kVideoId]];
+    isSuccess = [self.dataBase executeUpdate:@"DELETE FROM Video where videoId = ? and type = ?",[dic objectForKey:kVideoId],[dic objectForKey:@"type"]];
     return isSuccess;
 }
 
@@ -79,13 +79,13 @@
 // 模拟测试
 - (BOOL)writeSimulateTestInfo:(NSDictionary *)dic
 {
-    BOOL isSuccess = [self.dataBase executeUpdate:@"insert into SimulateTest (simulateId,simulateName,simulateQuestionCount,currentIndex,questionsStr,time) values (?,?,?,?,?,?)", [dic objectForKey:kTestSimulateId],[dic objectForKey:kTestSimulateName],[dic objectForKey:kTestSimulateQuestionCount],[dic objectForKey:@"currentIndex"],[dic objectForKey:@"questionsStr"],[dic objectForKey:@"time"]];
+    BOOL isSuccess = [self.dataBase executeUpdate:@"insert into SimulateTest (simulateId,simulateName,simulateQuestionCount,currentIndex,questionsStr,time,type) values (?,?,?,?,?,?,?)", [dic objectForKey:kTestSimulateId],[dic objectForKey:kTestSimulateName],[dic objectForKey:kTestSimulateQuestionCount],[dic objectForKey:@"currentIndex"],[dic objectForKey:@"questionsStr"],[dic objectForKey:@"time"],[dic objectForKey:@"type"]];
     return isSuccess;
 }
-- (BOOL)deleteSimulateTestInfo:(NSNumber *)simulateTestId
+- (BOOL)deleteSimulateTestInfo:(NSDictionary *)simulateTestInfo
 {
     BOOL isSuccess = NO;
-    isSuccess = [self.dataBase executeUpdate:@"DELETE FROM SimulateTest where simulateId = ?",simulateTestId];
+    isSuccess = [self.dataBase executeUpdate:@"DELETE FROM SimulateTest where simulateId = ? and type = ?",[simulateTestInfo objectForKey:kTestSimulateId],[simulateTestInfo objectForKey:@"type"]];
     return isSuccess;
 }
 
@@ -136,15 +136,22 @@
 }
 - (BOOL)writeMyWrongTestChapterInfo:(NSDictionary *)dic
 {
-    BOOL isSuccess = [self.dataBase executeUpdate:@"insert into MyWrongTestChapter (chapterId,chapterName,chapterQuestionCount,currentIndex,questionsStr,time,courseId,type) values (?,?,?,?,?,?,?,?)", [dic objectForKey:kTestChapterId],[dic objectForKey:kTestChapterName],[dic objectForKey:kTestChapterQuestionCount],[dic objectForKey:@"currentIndex"],[dic objectForKey:@"questionsStr"],[dic objectForKey:@"time"],[dic objectForKey:kCourseID], [dic objectForKey:@"type"]];
+    BOOL isSuccess = [self.dataBase executeUpdate:@"insert into MyWrongTestChapter (chapterId,chapterName,chapterQuestionCount,courseId,type) values (?,?,?,?,?)", [dic objectForKey:kTestChapterId],[dic objectForKey:kTestChapterName],[dic objectForKey:kTestChapterQuestionCount],[dic objectForKey:kCourseID],[dic objectForKey:@"type"]];
     return isSuccess;
 }
-- (BOOL)deleteMyWrongTestChapterInfo:(NSDictionary *)dic
+
+- (BOOL)writeMyWrongTestSectionInfo:(NSDictionary *)dic
+{
+    BOOL isSuccess = [self.dataBase executeUpdate:@"insert into MyWrongTestSection (sectionId,sectionName,sectionQuestionCount,currentIndex,questionsStr,time,chapterId,type) values (?,?,?,?,?,?,?,?)", [dic objectForKey:kTestSectionId],[dic objectForKey:kTestSectionName],[dic objectForKey:kTestSectionQuestionCount],[dic objectForKey:@"currentIndex"],[dic objectForKey:@"questionsStr"],[dic objectForKey:@"time"],[dic objectForKey:kTestChapterId], [dic objectForKey:@"type"]];
+    return isSuccess;
+}
+- (BOOL)deleteMyWrongTestSectionInfo:(NSDictionary *)dic
 {
     BOOL isSuccess = NO;
-    isSuccess = [self.dataBase executeUpdate:@"DELETE FROM MyWrongTestChapter where chapterId = ? and type = ?",[dic objectForKey:kTestChapterId], [dic objectForKey:@"type"]];
+    isSuccess = [self.dataBase executeUpdate:@"DELETE FROM MyWrongTestSection where sectionId = ? and type = ?",[dic objectForKey:kTestSectionId], [dic objectForKey:@"type"]];
     return isSuccess;
 }
+
 
 // 搜索
 - (BOOL)writeSearchContent:(NSDictionary *)dic

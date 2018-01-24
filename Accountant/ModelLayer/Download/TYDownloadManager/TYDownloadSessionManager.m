@@ -131,6 +131,7 @@
                 _session = [NSURLSession sessionWithConfiguration:configure delegate:self delegateQueue:self.queue];
             }else{
                 _session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration backgroundSessionConfiguration:_backgroundConfigure]delegate:self delegateQueue:self.queue];
+                
             }
         }else {
             _session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:self delegateQueue:self.queue];
@@ -164,6 +165,8 @@
     }
     return _downloadingModelDic;
 }
+
+
 
 - (NSMutableArray *)waitingDownloadModels
 {
@@ -700,7 +703,6 @@ didFinishDownloadingToURL:(NSURL *)location
         [self createDirectory:filePath.stringByDeletingLastPathComponent];
         [self moveFileAtURL:location toPath:filePath];
         
-        
         return;
     }
     
@@ -726,7 +728,7 @@ didFinishDownloadingToURL:(NSURL *)location
         }
         return;
     }
-
+    
     NSData *resumeData = nil;
     if (error) {
         resumeData = [error.userInfo objectForKey:NSURLSessionDownloadTaskResumeData];

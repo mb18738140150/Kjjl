@@ -9,10 +9,12 @@
 #ifndef NetMacro_h
 #define NetMacro_h
 
-#define kRootUrl @"http://test.kjjl100.com/kjjldata.ashx"
+// 会计教练
 //#define kRootUrl @"http://f.kjb360.cn/kjjldata.ashx"
-//#define kRootUrl @"http://f.kjb360.cn/ceshi.ashx"
-#define kRootKJBUrl @"http://f.kjb360.cn/getdata.ashx"
+#define kRootUrl @"http://test.kjjl100.com/kjjldata.ashx"
+// 题库
+//#define kRootKJBUrl @"http://f.kjb360.cn/getdata.ashx"
+#define kRootKJBUrl @"http://test.kjjl100.com/getdata.ashx"
 #define kMD5String @"tianmingkeji"
 
 
@@ -51,6 +53,10 @@
 #define kCommandTestUncollectQuestion   @"11"
 #define kCommandTestAddHistory          @"16"
 #define kCommandTestAddHistoryDetail    @"17"
+#define kCommandTestRecord              @"18"
+#define kCommandTestRecordQuestion      @"19"
+#define kCommandTestDailyPractice       @"20"
+
 #define kCommandAddMyWrongQuestion      @"12"
 #define kCommandHistory                 @"21"
 #define kCommandAddHistory              @"22"
@@ -77,5 +83,17 @@
 #define kCommandCancelOrderLivingCourse       @"43"
 #define kBindRegCode                    @"44"
 #define kPayOrder                       @"46"
+#define kCommandMyLivingCourse          @"47"
+#define kDiscountCoupon                 @"48"
+#define kOrderList                      @"49"
+#define kCommandDeleteMyLearningCourse     @"50"
+#define kRecommend                      @"51"
+#define kGetRecommend                   @"52"
+#define kGetRecommendIntegral           @"53"
+#define kCommandMemberLevelDetail              @"54"
+#define kAssistantCenter                @"55"
+#define kPayOrderFromOrderList          @"56"
+#define kSubmitOpinion                  @"57"
+#define kCommonProblem                  @"58"
 
 #endif /* NetMacro_h */

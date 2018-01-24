@@ -13,7 +13,7 @@
 
 @property (nonatomic,weak) id<TestModule_ErrorInfoProtocol>          notifiedObject;
 @property (nonatomic,weak) NSMutableArray                           *errorChapterArray;
-
+@property (nonatomic,weak) NSMutableArray                           *simulateArray;
 - (void)didRequestErrorInfoWithCategoryId:(int)cateId andNotifiedObject:(id<TestModule_ErrorInfoProtocol>)object;
 
 @end

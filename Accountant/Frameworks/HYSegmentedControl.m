@@ -71,6 +71,9 @@
 
 - (id)initWithOriginX:(CGFloat)X OriginY:(CGFloat)y Titles:(NSArray *)titles delegate:(id)delegate
 {
+    if (titles.count == 0) {
+        return nil;
+    }
     CGRect rect4View = CGRectMake(X, y, HYSegmentedControl_Width , HYSegmentedControl_Height);
     if (self = [super initWithFrame:rect4View]) {
         

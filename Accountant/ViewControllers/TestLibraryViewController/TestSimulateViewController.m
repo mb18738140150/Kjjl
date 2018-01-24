@@ -14,13 +14,13 @@
 #import "TestSimulateQuestionViewController.h"
 #import "TestSimulateListTableViewCell.h"
 
-@interface TestSimulateViewController ()<UICollectionViewDelegate,UICollectionViewDataSource,TestModule_SimulateInfoProtocol,TestModule_SimulateQuestionProtocol,UIGestureRecognizerDelegate>
+@interface TestSimulateViewController ()<UICollectionViewDelegate,UICollectionViewDataSource,TestModule_SimulateInfoProtocol,TestModule_SimulateQuestionProtocol,UIGestureRecognizerDelegate,TestModule_AddHistoryProtocol>
 
 @property (nonatomic,strong) UICollectionView                            *simulateTableView;
 @property (nonatomic,strong) NSArray                                *testSimulateInfoArray;
 @property (nonatomic,assign) int                                     selectedRow;
 @property (nonatomic, strong)FailView * failView;
-
+@property (nonatomic, assign)int logId;
 
 @end
 
@@ -60,11 +60,29 @@
 - (void)addHistory
 {
     NSDictionary *dic = [self.testSimulateInfoArray objectAtIndex:self.selectedRow];
-    NSDictionary *d = @{kTestAddHistoryType:@(2),
+    NSDictionary *d = @{kLID:@(self.lid),
+                        kKID:@(self.cateId),
+                        kTestSimulateId:@([[dic objectForKey:kTestSimulateId] intValue]),
                         kTestChapterId:@(0),
                         kTestSectionId:@(0),
-                        kTestSimulateId:[dic objectForKey:kTestSimulateId]};
-    [[TestManager sharedManager] didRequestAddTestHistoryWithInfo:d];
+                        kLogName:@"模拟测试"};
+    [[TestManager sharedManager] didRequestAddTestHistoryWithInfo:d  andNotifiedObject:self];
+}
+
+- (void)didRequestAddHistorySuccess
+{
+    NSDictionary *dic = [self.testSimulateInfoArray objectAtIndex:self.selectedRow];
+    self.logId = [[TestManager sharedManager] getLogId];
+    [self startAnswer:dic];
+}
+- (void)didRequestAddHistoryFailed:(NSString *)failedInfo
+{
+    [SVProgressHUD dismiss];
+    [self.simulateTableView.mj_header endRefreshing];
+    [SVProgressHUD showErrorWithStatus:failedInfo];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [SVProgressHUD dismiss];
+    });
 }
 
 #pragma mark - delegate
@@ -101,10 +119,9 @@
 - (void)didRequestSimulateQuestionSuccess
 {
     [SVProgressHUD dismiss];
-    [self addHistory];
     TestSimulateQuestionViewController *vc = [[TestSimulateQuestionViewController alloc] init];
     vc.hidesBottomBarWhenPushed = YES;
-    
+    vc.logId = self.logId;
     NSDictionary * dic = [self.testSimulateInfoArray objectAtIndex:self.selectedRow];
     vc.infoDic = dic;
     vc.cateName = self.cateName;
@@ -138,17 +155,19 @@
     
     __weak TestSimulateViewController * weakSelf = self;
     cell.StartAnswer = ^{
-        [weakSelf startAnswer:dic withindexpath:indexPath];
+        weakSelf.selectedRow = indexPath.item;
+        [weakSelf.simulateTableView deselectItemAtIndexPath:indexPath animated:YES];
+        [weakSelf addHistory];
     };
     
     return cell;
 }
 
-- (void)startAnswer:(NSDictionary *)dic withindexpath:(NSIndexPath *)indexPath
+- (void)startAnswer:(NSDictionary *)dic
 {
-    self.selectedRow = (int)indexPath.row;
+    
     [self requestSimulateQuestionWithId:[[dic objectForKey:kTestSimulateId] intValue]];
-    [self.simulateTableView deselectItemAtIndexPath:indexPath animated:YES];
+    
 }
 
 #pragma mark - ui

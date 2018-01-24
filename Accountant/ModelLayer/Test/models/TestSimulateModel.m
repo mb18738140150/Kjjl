@@ -52,9 +52,9 @@
             [self.wrongQuestionArr addObject:model];
         }
         
-        if ([model.questionType isEqualToString:@"单选"]) {
+        if ([model.questionType isEqualToString:@"单选题"]) {
             [self.singleQuestionArr addObject:model];
-        }else if ([model.questionType isEqualToString:@"判断"])
+        }else if ([model.questionType isEqualToString:@"判断题"])
         {
             [self.judgeQuestionArr addObject:model];
         }else

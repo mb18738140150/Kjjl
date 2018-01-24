@@ -10,6 +10,7 @@
 
 @interface BuyCourseViewController : UIViewController
 
+@property (nonatomic, assign)BOOL isLiving;
 @property (nonatomic, strong)NSDictionary * infoDic;
 
 @end

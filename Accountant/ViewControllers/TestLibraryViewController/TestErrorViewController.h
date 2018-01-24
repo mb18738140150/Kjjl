@@ -10,7 +10,8 @@
 
 @interface TestErrorViewController : UIViewController
 
+@property (nonatomic, assign)int lid;
 @property (nonatomic,strong) NSString       *cateName;
-@property (nonatomic,assign) int             cateId;
+@property (nonatomic,assign) int             courseCategoryId;
 
 @end

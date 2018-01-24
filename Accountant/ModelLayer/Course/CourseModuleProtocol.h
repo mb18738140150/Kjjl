@@ -113,6 +113,13 @@
 
 @end
 
+@protocol CourseModule_MyLivingCourse <NSObject>
+
+- (void)didRequestMyLivingCourseSuccessed;
+- (void)didRequestMyLivingCourseFailed:(NSString *)failedInfo;
+
+@end
+
 @protocol CourseModule_EndLivingCourse <NSObject>
 
 - (void)didRequestEndLivingCourseSuccessed;

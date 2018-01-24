@@ -27,10 +27,25 @@
         self.tipImageView.hidden = NO;
     }
     
-    self.iconImageView.image = [UIImage imageNamed:[infoDic objectForKey:@"imageName"]];
-    self.titleLB.text = [infoDic objectForKey:@"title"];
-    self.tipDetailLB.text = [infoDic objectForKey:@"tip"];
+    if ([WXApi isWXAppSupportApi] && [WXApi isWXAppInstalled]) {
+        self.memberLevelBtn.hidden = NO;
+    }else
+    {
+        self.memberLevelBtn.hidden = YES;
+    }
     
+    self.iconImageView.image = [UIImage imageNamed:[infoDic objectForKey:@"imageName"]];
+    
+    self.titleLB.text = [[UserManager sharedManager] getLevelStr];
+    if (self.titleLB.text.length > 0 && [self.titleLB.text containsString:@"会员"]) {
+        self.titleLB.text = [NSString stringWithFormat:@"超级会员(%@)", self.titleLB.text];
+    }
+    
+    if ([self.titleLB.text isEqualToString:@"K5"]) {
+        self.memberLevelBtn.hidden = YES;
+    }
+    
+    self.tipDetailLB.text = [infoDic objectForKey:@"tip"];
 }
 
 - (void)resetcellWithInfo:(NSDictionary *)infoDic andHaveNewActivty:(BOOL)haveActivity

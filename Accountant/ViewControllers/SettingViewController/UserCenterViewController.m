@@ -20,6 +20,7 @@
 #import "AppDelegate.h"
 #import "ChangeBindViewController.h"
 #import "ResetPasswordViewController.h"
+#import "DredgeMemberViewController.h"
 
 #define headerImageName @"stuhead"
 
@@ -107,7 +108,6 @@
     
     cell.textLabel.text = [self.userDisplayNameArray objectAtIndex:indexPath.row];
     if (indexPath.row == 4) {
-        
         cell.backgroundColor = UIColorFromRGBValue(0xedf0f0);
         UIView * backView = [[UIView alloc]initWithFrame:CGRectMake(0, 17, kScreenWidth, 40)];
         backView.backgroundColor = [UIColor whiteColor];
@@ -125,15 +125,36 @@
         upBtn.backgroundColor = UIColorFromRGBValue(0xffa116);
         upBtn.layer.cornerRadius = 4;
         upBtn.layer.masksToBounds = YES;
-        [backView addSubview:upBtn];
+        [upBtn addTarget:self action:@selector(upgradeMemberLevel) forControlEvents:UIControlEventTouchUpInside];
+        if ([WXApi isWXAppSupportApi] && [WXApi isWXAppInstalled]) {
+            [backView addSubview:upBtn];
+        }
         
         int level = [[self.userInfos objectForKey:[self.userDisplayKeyArray objectAtIndex:indexPath.row]] intValue];
+        
         if (level == 1) {
             titlabel.text = @"普通用户";
         }else if (level == 2){
             titlabel.text = @"试用会员";
         }else{
-            titlabel.text = @"正式会员";
+            if ([self isHaveMemberLevel]) {
+                titlabel.text = [self.userInfos objectForKey:@"levelDetail"];
+                
+                if ([titlabel.text isEqualToString:@"K5"] ) {
+                    upBtn.hidden = YES;
+                }else
+                {
+                    if ([WXApi isWXAppSupportApi] && [WXApi isWXAppInstalled]) {
+                        upBtn.hidden = NO;
+                    }else
+                    {
+                        upBtn.hidden = YES;
+                    }
+                }
+            }else
+            {
+                titlabel.text = @"正式会员";
+            }
         }
         
     }else if(indexPath.row == 5){
@@ -446,7 +467,17 @@
     [[HttpUploaderManager sharedManager]uploadImage:UIImagePNGRepresentation(image) withProcessDelegate:self];
 }
 
-
+- (BOOL)isHaveMemberLevel
+{
+    NSString * levelDetail = [self.userInfos objectForKey:@"levelDetail"];
+    if ([levelDetail isEqualToString:@"K1"] || [levelDetail isEqualToString:@"K2"] || [levelDetail isEqualToString:@"K3"] || [levelDetail isEqualToString:@"K4"] || [levelDetail isEqualToString:@"K5"]) {
+        return YES;
+    }else
+    {
+        return NO;
+    }
+    
+}
 
 #pragma mark - uploadImageProtocol
 - (void)didUploadSuccess:(NSDictionary *)successInfo
@@ -474,6 +505,13 @@
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [SVProgressHUD dismiss];
     });
+}
+
+- (void)upgradeMemberLevel
+{
+    DredgeMemberViewController * vc = [[DredgeMemberViewController alloc]init];
+    vc.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 @end

@@ -16,6 +16,6 @@
 
 @property (nonatomic,weak) TestSectionModel                                 *currentTestSection;
 
-- (void)didRequestMyWrongQuestionListWithChapterId:(int)chapterId andNotifiedObject:(id<TestModule_MyWrongQuestionsListProtocol>)object;
+- (void)didRequestMyWrongQuestionListWithChapterId:(NSDictionary *)chapterId andNotifiedObject:(id<TestModule_MyWrongQuestionsListProtocol>)object;
 
 @end

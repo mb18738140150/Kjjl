@@ -30,5 +30,9 @@
 + (NSString *)judgeStr:(id)str;
 
 + (NSMutableAttributedString *)getLineSpaceLabelStr:(NSMutableAttributedString *)content withFont:(UIFont *)font;
+
 + (CGFloat)getLineSpaceLabelHeght:(NSString *)content font:(UIFont *)font width:(CGFloat)width;
+
++ (void)codefileData:(NSString *)filePath;
+
 @end

@@ -32,8 +32,10 @@ typedef enum {
 //模拟题列表
 @property (nonatomic,strong) NSMutableArray         *testSimulateArray;
 
-//易错题和我的错题章节列表
+//易错题、收藏夹和我的错题章节列表(包括章节与模拟)
 @property (nonatomic,strong) NSMutableArray         *testErrorArray;
+@property (nonatomic, strong) NSMutableArray        *simulateArray;
+
 
 //章节、易错题和我的错题  
 @property (nonatomic,strong) TestSectionModel       *currentTestSection;

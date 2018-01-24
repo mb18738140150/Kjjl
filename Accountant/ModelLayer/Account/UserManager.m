@@ -16,7 +16,8 @@
 #import "OrderLivingCourseOperation.h"
 #import "CancelOrderLivingCourseOperation.h"
 #import "BindRegCodeOperation.h"
-
+#import "DiscountCouponOperation.h"
+#import "OrderListOperation.h"
 #import "VerifyCodeOperation.h"
 #import "RegistOperation.h"
 #import "ForgetPsdOperation.h"
@@ -24,6 +25,11 @@
 #import "CompleteUserInfoOperation.h"
 #import "PayCourseOperation.h"
 #import "PathUtility.h"
+#import "RecommendOperation.h"
+#import "AssistantCenterOperation.h"
+#import "MemberLevelDetail.h"
+#import "SubmitOpinionOperation.h"
+#import "CommonProblemOperation.h"
 
 @interface UserManager()
 
@@ -44,6 +50,13 @@
 @property (nonatomic, strong)CompleteUserInfoOperation  *completeOperation;
 @property (nonatomic, strong)BindRegCodeOperation       *bindRegCodeOperation;
 @property (nonatomic, strong)PayCourseOperation         *payOrderOperation;
+@property (nonatomic, strong)DiscountCouponOperation    *discountCouponOperation;
+@property (nonatomic, strong)OrderListOperation         *orderListOperation;
+@property (nonatomic, strong)RecommendOperation         *recommendOperation;
+@property (nonatomic, strong)AssistantCenterOperation   *assistantCenterOperation;
+@property (nonatomic, strong)MemberLevelDetail          *memberLevelDetailOperation;
+@property (nonatomic, strong)SubmitOpinionOperation     *submitOpinionOperation;
+@property (nonatomic, strong)CommonProblemOperation     *commonProblemOperation;
 
 @end
 
@@ -78,6 +91,13 @@
         self.completeOperation = [[CompleteUserInfoOperation alloc]init];
         self.bindRegCodeOperation = [[BindRegCodeOperation alloc]init];
         self.payOrderOperation = [[PayCourseOperation alloc]init];
+        self.discountCouponOperation = [[DiscountCouponOperation alloc]init];
+        self.orderListOperation = [[OrderListOperation alloc]init];
+        self.recommendOperation = [[RecommendOperation alloc]init];
+        self.assistantCenterOperation = [[AssistantCenterOperation alloc]init];
+        self.memberLevelDetailOperation = [[MemberLevelDetail alloc]init];
+        self.submitOpinionOperation = [[SubmitOpinionOperation alloc]init];
+        self.commonProblemOperation = [[CommonProblemOperation alloc]init];
     }
     return self;
 }
@@ -130,6 +150,50 @@
 - (void)didRequestAppVersionInfoWithNotifiedObject:(id<UserModule_AppInfoProtocol>)object
 {
     [self.infoOperation didRequestAppInfoWithNotifedObject:object];
+}
+
+- (void)didRequestOrderListWithCourseInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_OrderListProtocol>)object
+{
+    [self.orderListOperation didRequestOrderListWithCourseInfo:infoDic withNotifiedObject:object];
+}
+
+- (void)didRequestMyDiscountCouponWithCourseInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_discountCouponProtocol>)object
+{
+    [self.discountCouponOperation didRequestDiscountCouponWithCourseInfo:infoDic withNotifiedObject:object];
+}
+
+- (void)didRequestIntegralWithCourseInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_RecommendProtocol>)object
+{
+    [self.recommendOperation didRequestIntegralWithCourseInfo:infoDic withNotifiedObject:object];
+}
+
+- (void)didRequestGetIntegralWithCourseInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_RecommendProtocol>)object
+{
+    [self.recommendOperation didRequestGetIntegralWithCourseInfo:infoDic withNotifiedObject:object];
+}
+- (void)didRequestGetRecommendIntegralWithCourseInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_RecommendProtocol>)object
+{
+    [self.recommendOperation didRequestGetRecommendIntegralWithCourseInfo:infoDic withNotifiedObject:object];
+}
+
+- (void)didRequestAssistantWithInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_AssistantCenterProtocol>)object
+{
+    [self.assistantCenterOperation didRequestAssistantWithInfo:infoDic withNotifiedObject:object];
+}
+
+- (void)didRequestLevelDetailWithNotifiedObject:(id<UserModule_LevelDetailProtocol>)object
+{
+    [self.memberLevelDetailOperation didRequestMemberLevelDetailWithNotifiedObject:object];
+}
+
+- (void)didRequestSubmitOpinionWithInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_SubmitOperationProtocol>)object
+{
+    [self.submitOpinionOperation didRequestSubmitOpinionWithInfo:infoDic withNotifiedObject:object];
+}
+
+- (void)didRequestCommonProblemWithInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_CommonProblem>)object
+{
+    [self.commonProblemOperation didRequestCommonProblemWithNotifiedObject:object];
 }
 
 - (void)logout
@@ -227,13 +291,31 @@
             levelStr = @"试听会员";
             break;
         case 3:
-            levelStr = @"正式会员";
+        {
+            if ([self isHaveMemberLevel]) {
+                levelStr = self.userModuleModels.currentUserModel.levelDetail;
+            }else
+            {
+                levelStr = @"正式会员";
+            }
+        }
             break;
             
         default:
             break;
     }
     return levelStr;
+}
+
+- (BOOL)isHaveMemberLevel
+{
+    NSString * levelDetail = self.userModuleModels.currentUserModel.levelDetail ;
+    if ([levelDetail isEqualToString:@"K1"] || [levelDetail isEqualToString:@"K2"] || [levelDetail isEqualToString:@"K3"] || [levelDetail isEqualToString:@"K4"] || [levelDetail isEqualToString:@"K5"]) {
+        return YES;
+    }else
+    {
+        return NO;
+    }
 }
 
 - (NSDictionary *)getUserInfos
@@ -246,6 +328,7 @@
     [dic setObject:self.userModuleModels.currentUserModel.headImageUrl forKey:kUserHeaderImageUrl];
     [dic setObject:self.userModuleModels.currentUserModel.telephone forKey:kUserTelephone];
     [dic setObject:@(self.userModuleModels.currentUserModel.level) forKey:kUserLevel];
+    [dic setObject:self.userModuleModels.currentUserModel.levelDetail forKey:kUserLevelDetail];
 //    dic setObject:self.userModuleModels.currentUserModel. forKey:<#(nonnull id<NSCopying>)#>
     return dic;
 }
@@ -302,7 +385,110 @@
 
 - (NSArray *)getMyOrderList
 {
-    return @[@[],@[],@[]];
+    NSMutableArray *dataArr = [NSMutableArray array];
+    NSMutableArray * allOrderArr = [NSMutableArray array];
+    NSMutableArray * notPayOrderArr = [NSMutableArray array];
+    NSMutableArray * complateOrderArr = [NSMutableArray array];
+    
+    for (NSDictionary * orderInfo in self.orderListOperation.orderList) {
+        [allOrderArr addObject:orderInfo];
+        if ([[orderInfo objectForKey:kOrderStatus] intValue] == 1) {
+            [complateOrderArr addObject:orderInfo];
+        }else
+        {
+            [notPayOrderArr addObject:orderInfo];
+        }
+    }
+    [dataArr addObject:allOrderArr];
+    [dataArr addObject:notPayOrderArr];
+    [dataArr addObject:complateOrderArr];
+    
+    return dataArr;
+}
+
+- (NSArray *)getAllDiscountCoupon
+{
+    return self.discountCouponOperation.discountCouponArray;
+}
+- (NSArray *)getNormalDiscountCoupon
+{
+    NSMutableArray * array = [NSMutableArray array];
+    for (NSDictionary * infoDic in self.discountCouponOperation.discountCouponArray) {
+        if ([[infoDic objectForKey:@"useType"] intValue] == 0) {
+            [array addObject:infoDic];
+        }
+    }
+    
+    return array;
+}
+- (NSArray *)getexpireDiscountCoupon
+{
+    NSMutableArray * array = [NSMutableArray array];
+    for (NSDictionary * infoDic in self.discountCouponOperation.discountCouponArray) {
+        if ([[infoDic objectForKey:@"useType"] intValue] == 2) {
+            [array addObject:infoDic];
+        }
+    }
+    return array;
+}
+- (NSArray *)getCannotUseDiscountCoupon:(double)price
+{
+    NSMutableArray * array = [NSMutableArray array];
+    
+    NSMutableArray * canUseArray = [NSMutableArray array];
+    NSMutableArray *cannotArray = [NSMutableArray array];
+    for (NSDictionary * infoDic in self.discountCouponOperation.discountCouponArray) {
+        if ([[infoDic objectForKey:@"useType"] intValue] == 0 &&  [[infoDic objectForKey:@"manPrice"] doubleValue] <= price) {
+            [canUseArray addObject:infoDic];
+        }else if ([[infoDic objectForKey:@"useType"] intValue] == 0)
+        {
+            [cannotArray addObject:infoDic];
+        }
+        
+    }
+    [array addObject:canUseArray];
+    [array addObject:cannotArray];
+    return array;
+}
+- (NSArray *)getHaveUsedDiscountCoupon
+{
+    NSMutableArray * array = [NSMutableArray array];
+    for (NSDictionary * infoDic in self.discountCouponOperation.discountCouponArray) {
+        if ([[infoDic objectForKey:@"useType"] intValue] == 1) {
+            [array addObject:infoDic];
+        }
+        
+    }
+    return array;
+}
+
+- (int)getIntegral
+{
+    return self.recommendOperation.integral;
+}
+- (NSDictionary *)getRecommendIntegral
+{
+    return self.recommendOperation.recommendInfo;
+}
+
+- (NSArray *)getAssistantList
+{
+    return self.assistantCenterOperation.assistantList;
+}
+
+- (NSArray *)getTelephoneList
+{
+    return self.assistantCenterOperation.telephoneNumberList;
+}
+
+- (NSArray *)getLevelDetailList
+{
+    return self.memberLevelDetailOperation.memberLevelDetailList;
+}
+
+- (NSArray *)getCommonProblemList
+{
+    return self.commonProblemOperation.commonProblemList;
 }
 
 @end

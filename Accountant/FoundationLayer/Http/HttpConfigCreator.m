@@ -249,6 +249,16 @@
     return delete;
 }
 
++ (HttpConfigModel *)getDeleteMyCourseConfigWithCourseInfo:(NSDictionary *)infoDic
+{
+    HttpConfigModel *delete = [[HttpConfigModel alloc] init];
+    NSDictionary *dic = @{kCommand:kCommandDeleteMyLearningCourse,
+                          @"id":[infoDic objectForKey:kCourseID],
+                          @"type":[infoDic objectForKey:@"type"]};
+    [self setConfigModel:delete withInfo:dic];
+    return delete;
+}
+
 + (HttpConfigModel *)getTestAllCategoryConfig
 {
     HttpConfigModel *cate = [[HttpConfigModel alloc] init];
@@ -292,7 +302,7 @@
     NSDictionary *dic = @{kCommand:kCommandTestSimulateQuestion,
                           @"id":@(testId),
                           @"type":@"newsimus",
-                          @"category":@(2)};
+                          @"category":@(3)};
     [self setKJBConfigModel:c withInfo:dic];
     return c;
 }
@@ -327,13 +337,13 @@
 
 }
 
-+ (HttpConfigModel *)getTestErrorQuestionWithSectionId:(int)sectionId
++ (HttpConfigModel *)getTestErrorQuestionWithSectionId:(NSDictionary *)sectionInfo
 {
     HttpConfigModel *c = [[HttpConfigModel alloc] init];
     NSDictionary *dic = @{kCommand:kCommandTestErrorQuestion,
-                          @"id":@(sectionId),
+                          @"id":[sectionInfo objectForKey:kTestSectionId],
                           @"type":@"easywrong",
-                          @"category":@(2)};
+                          @"category":[sectionInfo objectForKey:@"category"]};
     [self setKJBConfigModel:c withInfo:dic];
     return c;
 }
@@ -360,13 +370,13 @@
     return c;
 }
 
-+ (HttpConfigModel *)getTestMyWrongQuestionWithId:(int)sectionId
++ (HttpConfigModel *)getTestMyWrongQuestionWithId:(NSDictionary *)sectionInfo
 {
     HttpConfigModel *c = [[HttpConfigModel alloc] init];
     NSDictionary *dic = @{kCommand:kCommandTestMyWrongQuestion,
-                          @"id":@(sectionId),
+                          @"id":[sectionInfo objectForKey:kTestSectionId],
                           @"type":@"wrongbook",
-                          @"category":@(2)};
+                          @"category":[sectionInfo objectForKey:@"category"]};
     [self setKJBConfigModel:c withInfo:dic];
     return c;
 }
@@ -382,13 +392,13 @@
     return c;
 }
 
-+(HttpConfigModel *)getTestCollectionQuestionListWithChapterId:(int)chapterId
++(HttpConfigModel *)getTestCollectionQuestionListWithChapterId:(NSDictionary *)chapterInfo
 {
     HttpConfigModel *c = [[HttpConfigModel alloc] init];
     NSDictionary *dic = @{kCommand:kCommandTestCollectionQuestion,
-                          @"id":@(chapterId),
+                          @"id":[chapterInfo objectForKey:kTestSectionId],
                           @"type":@"bookmarks",
-                          @"category":@(2)};
+                          @"category":[chapterInfo objectForKey:@"category"]};
     [self setKJBConfigModel:c withInfo:dic];
     return c;
 }
@@ -429,12 +439,12 @@
 {
     HttpConfigModel *c = [[HttpConfigModel alloc] init];
     NSDictionary *dic = @{kCommand:kCommandTestAddHistory,
-                          @"testType":[infoDic objectForKey:kTestAddHistoryType],
-                          @"chapterId":[infoDic objectForKey:kTestChapterId],
-                          @"unitId":[infoDic objectForKey:kTestSectionId],
-                          @"simuId":[infoDic objectForKey:kTestSimulateId],
-                          @"beginTime":[DateUtility getCurrentDateString],
-                          @"endTime":[DateUtility getCurrentDateString]};
+                          @"lid":[infoDic objectForKey:kLID],
+                          @"kid":[infoDic objectForKey:kKID],
+                          @"sid":[infoDic objectForKey:kTestSimulateId],
+                          @"cid":[infoDic objectForKey:kTestChapterId],
+                          @"uid":[infoDic objectForKey:kTestSectionId],
+                          @"logName":[infoDic objectForKey:kLogName]};
     [self setKJBConfigModel:c withInfo:dic];
     return c;
 }
@@ -444,9 +454,16 @@
     HttpConfigModel *c = [[HttpConfigModel alloc] init];
     NSDictionary *dic = @{kCommand:kCommandTestAddHistoryDetail,
                           @"logId":[infoDic objectForKey:kTestAddDetailHistoryLogId],
-                          @"testId":[infoDic objectForKey:kTestQuestionId],
-                          @"answer":[infoDic objectForKey:kTestAnserId],
-                          @"resultCode":@([[infoDic objectForKey:kTestQuestionResult] intValue])};
+                          @"lid":[infoDic objectForKey:kLID],
+                          @"kid":[infoDic objectForKey:kKID],
+                          @"sid":[infoDic objectForKey:kTestSimulateId],
+                          @"cid":[infoDic objectForKey:kTestChapterId],
+                          @"uid":[infoDic objectForKey:kTestSectionId],
+                          @"paperId":[infoDic objectForKey:kTestQuestionId],
+                          @"answer":[infoDic objectForKey:kTestQuestionCorrectAnswersId],
+                          @"logAnswer":[infoDic objectForKey:kTestMyanswer],
+                          @"topicId":[infoDic objectForKey:kTestQuestionType],
+                          @"iseasywrong":[infoDic objectForKey:kTestIsEasyWrong]};
     [self setKJBConfigModel:c withInfo:dic];
     return c;
 }
@@ -458,6 +475,15 @@
                           @"userId":@"0",
                           @"Type":@(2),
                           @"Month":[infoDic objectForKey:@"Month"]};
+    [self setConfigModel:c withInfo:dic];
+    return c;
+}
+
+
++ (HttpConfigModel *)getMyLiveingCourseWith:(NSDictionary *)infoDic
+{
+    HttpConfigModel *c = [[HttpConfigModel alloc] init];
+    NSDictionary *dic = @{kCommand:kCommandMyLivingCourse};
     [self setConfigModel:c withInfo:dic];
     return c;
 }
@@ -554,10 +580,21 @@
 + (HttpConfigModel *)payOrderWithInfo:(NSDictionary *)orderInfo
 {
     HttpConfigModel * c = [[HttpConfigModel alloc]init];
-    NSDictionary * dic = @{kCommand:kPayOrder,
-                           @"orderId":[orderInfo objectForKey:@"orderId"],
-                           @"payType":[orderInfo objectForKey:@"payType"]};
-    [self setConfigModel:c withInfo:dic];
+    
+    if ([orderInfo objectForKey:kCommand] && [[orderInfo objectForKey:kCommand] length] > 0) {
+        NSDictionary * dic = @{kCommand:[orderInfo objectForKey:kCommand],
+                               @"orderId":[orderInfo objectForKey:kOrderId]};
+        [self setConfigModel:c withInfo:dic];
+    }else
+    {
+        NSDictionary * dic = @{kCommand:kPayOrder,
+                               @"courseId":[orderInfo objectForKey:@"courseId"],
+                               @"payType":[orderInfo objectForKey:@"payType"],
+                               @"courseType":[orderInfo objectForKey:@"courseType"],
+                               @"discountCouponId":[orderInfo objectForKey:@"discountCouponId"]};
+        [self setConfigModel:c withInfo:dic];
+    }
+    
     return c;
 }
 
@@ -594,6 +631,118 @@
     return c;
 }
 
++ (HttpConfigModel *)discountCoupon
+{
+    HttpConfigModel *c = [[HttpConfigModel alloc] init];
+    NSDictionary *dic = @{kCommand:kDiscountCoupon};
+    [self setConfigModel:c withInfo:dic];
+    return c;
+}
+
++ (HttpConfigModel *)orderList
+{
+    HttpConfigModel *c = [[HttpConfigModel alloc] init];
+    NSDictionary *dic = @{kCommand:kOrderList};
+    [self setConfigModel:c withInfo:dic];
+    return c;
+}
+
++ (HttpConfigModel *)recommend
+{
+    HttpConfigModel *c = [[HttpConfigModel alloc] init];
+    NSDictionary *dic = @{kCommand:kRecommend};
+    [self setConfigModel:c withInfo:dic];
+    return c;
+}
+
++ (HttpConfigModel *)getRecommend:(NSDictionary *)infoDic
+{
+    HttpConfigModel *c = [[HttpConfigModel alloc] init];
+    NSDictionary *dic = @{kCommand:kGetRecommend,
+                          @"type":[infoDic objectForKey:@"type"]};
+    [self setConfigModel:c withInfo:dic];
+    return c;
+}
+
++ (HttpConfigModel *)getRecommendIntegral
+{
+    HttpConfigModel *c = [[HttpConfigModel alloc] init];
+    NSDictionary *dic = @{kCommand:kGetRecommendIntegral};
+    [self setConfigModel:c withInfo:dic];
+    return c;
+}
+
++ (HttpConfigModel *)getAssistantCnter
+{
+    HttpConfigModel *c = [[HttpConfigModel alloc] init];
+    NSDictionary *dic = @{kCommand:kAssistantCenter};
+    [self setConfigModel:c withInfo:dic];
+    return c;
+}
+
++ (HttpConfigModel *)getMemberLevelDetail
+{
+    HttpConfigModel *c = [[HttpConfigModel alloc] init];
+    NSDictionary *dic = @{kCommand:kCommandMemberLevelDetail};
+    [self setConfigModel:c withInfo:dic];
+    return c;
+}
+
++ (HttpConfigModel *)submitOpinionWithInfo:(NSDictionary *)infoDic
+{
+    HttpConfigModel *c = [[HttpConfigModel alloc] init];
+    NSDictionary *dic = @{kCommand:kSubmitOpinion,
+                          @"opinion":[infoDic objectForKey:@"opinion"]};
+    [self setConfigModel:c withInfo:dic];
+    return c;
+}
+
++ (HttpConfigModel *)commonProblem
+{
+    HttpConfigModel *c = [[HttpConfigModel alloc] init];
+    NSDictionary *dic = @{kCommand:kCommonProblem};
+    [self setConfigModel:c withInfo:dic];
+    return c;
+}
+
++ (HttpConfigModel *)testRecordWithInfo:(NSDictionary *)infoDic
+{
+    HttpConfigModel *c = [[HttpConfigModel alloc] init];
+    NSDictionary *dic = @{kCommand:kCommandTestRecord,
+                          @"kid":[infoDic objectForKey:kTestCategoryId]};
+    [self setKJBConfigModel:c withInfo:dic];
+    return c;
+}
+
++ (HttpConfigModel *)testRecordQuestionWithInfo:(NSDictionary *)infoDic
+{
+    HttpConfigModel *c = [[HttpConfigModel alloc] init];
+    NSDictionary *dic = @{kCommand:kCommandTestRecordQuestion,
+                          @"logId":[infoDic objectForKey:@"logId"]};
+    [self setKJBConfigModel:c withInfo:dic];
+    return c;
+}
+
++ (HttpConfigModel *)testDailyPracticeWithInfo:(NSDictionary *)infoDic
+{
+    HttpConfigModel *c = [[HttpConfigModel alloc] init];
+    NSDictionary *dic = @{kCommand:kCommandTestDailyPractice,
+                          @"kid":[infoDic objectForKey:kTestCategoryId]};
+    [self setKJBConfigModel:c withInfo:dic];
+    return c;
+}
+
++ (HttpConfigModel *)testDailyPracticeQuestionWithInfo:(NSDictionary *)infoDic
+{
+    HttpConfigModel *c = [[HttpConfigModel alloc] init];
+    NSDictionary *dic = @{kCommand:kCommandTestErrorQuestion,
+                          @"id":[infoDic objectForKey:kTestSectionId],
+                          @"type":@"dailyPractice",
+                          @"category":[infoDic objectForKey:@"category"]};
+    [self setKJBConfigModel:c withInfo:dic];
+    return c;
+}
+
 #pragma mark - utility
 + (void)setConfigModel:(HttpConfigModel *)configModel withInfo:(NSDictionary *)parameters
 {
@@ -602,7 +751,10 @@
         [dic setObject:@([[UserManager sharedManager] getUserId]) forKey:@"userId"];
         configModel.parameters = dic;
     }else{
-        configModel.parameters = parameters;
+        NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithDictionary:parameters];
+        [dic setObject:@(0) forKey:@"userId"];
+        configModel.parameters = dic;
+        
     }
     
     NSString *str = [NSString stringWithFormat:@"%@%@",[configModel.parameters jsonString],kMD5String];

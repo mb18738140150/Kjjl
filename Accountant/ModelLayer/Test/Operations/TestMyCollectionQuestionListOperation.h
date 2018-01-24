@@ -15,6 +15,6 @@
 @property (nonatomic, weak)id<TestModule_CollectQuestionListProtocol>notifiedObject;
 @property (nonatomic, weak)TestSectionModel * currentTestSection;
 
-- (void)didRequestTestMyCollectionQuestionListWithChapterId:(int)chapterId andNotifiedObject:(id<TestModule_CollectQuestionListProtocol>)object;
+- (void)didRequestTestMyCollectionQuestionListWithChapterId:(NSDictionary *)chapterId andNotifiedObject:(id<TestModule_CollectQuestionListProtocol>)object;
 
 @end

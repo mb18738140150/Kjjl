@@ -107,7 +107,7 @@ typedef enum {
  @param videoId 视频id
  @return 是否下载
  */
-- (BOOL)isVideoIsDownloadedWithVideoId:(NSNumber *)videoId;
+- (BOOL)isVideoIsDownloadedWithVideoId:(NSDictionary *)videoInfo;
 
 /**
  获取某一视频是否已经下载

@@ -26,11 +26,13 @@
 #import "VideoFunctionView.h"
 #import "CansultTeachersListView.h"
 #import "BuyCourseViewController.h"
+#import "VideoStateView.h"
+#import "LoginViewController.h"
 
 #import "DownloadCenterViewController.h"
 
 @interface VideoPlayViewController ()<UITableViewDelegate,UITableViewDataSource
-,CourseModule_AddCollectCourseProtocol, UIAlertViewDelegate, MFoldingSectionHeaderDelegate,UIWebViewDelegate>
+,CourseModule_AddCollectCourseProtocol, UIAlertViewDelegate, MFoldingSectionHeaderDelegate,UIWebViewDelegate,CourseModule_DetailCourseProtocol>
 
 @property (nonatomic, strong)DownloadCenterViewController * vc;
 
@@ -65,6 +67,9 @@
 @property (nonatomic, strong) NSMutableArray *statusArray;
 @property (nonatomic,assign) NSInteger               selectedSection;
 @property (nonatomic,assign) NSInteger               selectedRow;
+
+
+@property (nonatomic, strong)VideoStateView                        *videoStateView;
 
 @property (nonatomic, assign)BOOL havePresent;//记录重复点击
 
@@ -111,7 +116,11 @@
         [self initalTable];
     }
     
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(haveLogin:) name:kNotificationOfLoginSuccess object:nil];
+}
+
+- (void)playVideo
+{
     int tableSelectSection = 0;
     int tableSelectRow = 0;
     
@@ -119,7 +128,6 @@
         tableSelectSection = [self getPlayLocationSection];
         tableSelectRow = [self getPlayLocationRowWithSection:tableSelectSection];
     }
-    
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         NSDictionary *videoInfo = [NSDictionary dictionary];
@@ -142,7 +150,7 @@
         
         NSLog(@"--- %@", videoInfo);
         
-        [self playVideo:videoInfo];
+        [self playVideoInfo:videoInfo];
         
         self.tableDataSource.selectedRow = tableSelectRow;
         self.tableDataSource.selectedSection = tableSelectSection;
@@ -153,7 +161,14 @@
     });
 }
 
-- (void)playVideo:(NSDictionary *)videoInfo;
+- (void)haveLogin:(NSNotification *)notification
+{
+    [self.videoStateView removeFromSuperview];
+    [[CourseraManager sharedManager] didRequestDetailCourseWithCourseID:[[self.playCourseInfo objectForKey:kCourseID] intValue] withNotifiedObject:self];
+}
+
+
+- (void)playVideoInfo:(NSDictionary *)videoInfo;
 {
     if (self.videoController) {
         [self.videoController changePlayer];
@@ -192,23 +207,22 @@
     };
     
     self.videoController.informalBlock = ^{
-        NSLog(@"到5分钟了，请判断是不是正式学员");
+        NSLog(@"试看结束，请判断是不是正式学员");
         
         if ([[weakSelf.playCourseInfo objectForKey:kCanWatch] intValue] == 0) {
-            [SVProgressHUD showErrorWithStatus:@"非正式会员只能试看5分钟，请升级套餐或购买课程继续观看"];
+            [SVProgressHUD showErrorWithStatus:@"试看结束，请升级套餐或购买课程继续观看"];
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [SVProgressHUD dismiss];
             });
             [weakSelf.videoController stop];
-//            if (self.selectedSection == 0 && self.selectedRow == 0) {
-//            }
+
         }
         
     };
     
     [self savePlayingInfo];
     [self.videoController showInView:self.view];
-    
+    [self.view insertSubview:self.videoController.view belowSubview:self.videoStateView];
 }
 
 - (void)addHistory:(NSDictionary *)info
@@ -329,6 +343,28 @@
 
 - (void)initalTable
 {
+    __weak typeof(self)weakSelf = self;
+    self.videoStateView = [[VideoStateView alloc] initWithFrame:CGRectMake(0, 0, kZXVideoPlayerOriginalWidth, kZXVideoPlayerOriginalHeight)];
+    [self.view addSubview:self.videoStateView];
+    self.videoStateView.loginClickBlock = ^(VideoState videoState, NSDictionary *infoDic) {
+        LoginViewController *login = [[LoginViewController alloc] init];
+        
+        UINavigationController * nav = [[UINavigationController alloc]initWithRootViewController:login];
+        
+        [weakSelf presentViewController:nav animated:YES completion:nil];
+    };
+    self.videoStateView.BackClickBlock = ^{
+        [weakSelf dismissViewControllerAnimated:YES completion:nil];
+    };
+    
+    if (![[UserManager sharedManager] isUserLogin]) {
+        self.videoStateView.hidden = NO;
+    }else
+    {
+        self.videoStateView.hidden = YES;
+        [self playVideo];
+    }
+    
     self.titleView = [[UIView alloc] initWithFrame:CGRectMake(0, kZXVideoPlayerOriginalHeight, kScreenWidth, 50)];
     self.titleView.backgroundColor = [UIColor whiteColor];
     UILabel *titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, 10, 100, 30)];
@@ -340,14 +376,14 @@
     downloadButton.frame = CGRectMake(kScreenWidth - 70, 10, 60, 30);
     [downloadButton setTitle:@"下载" forState:UIControlStateNormal];
     downloadButton.titleLabel.font = [UIFont systemFontOfSize:15];
-    [downloadButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [downloadButton setTitleColor:UIColorFromRGB(0x333333) forState:UIControlStateNormal];
     [downloadButton addTarget:self action:@selector(downLoadVides) forControlEvents:UIControlEventTouchUpInside];
     
     UIButton *noteButton = [UIButton buttonWithType: UIButtonTypeCustom];
     noteButton.frame = CGRectMake(kScreenWidth - 70, 10, 60, 30);
     [noteButton setTitle:@"笔记" forState:UIControlStateNormal];
     noteButton.titleLabel.font = [UIFont systemFontOfSize:15];
-    [noteButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [noteButton setTitleColor:UIColorFromRGB(0x333333) forState:UIControlStateNormal];
     [noteButton addTarget:self action:@selector(writeNote) forControlEvents:UIControlEventTouchUpInside];
     
     self.collectButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -355,10 +391,10 @@
     self.collectButton.titleLabel.font =[UIFont systemFontOfSize:15];
     if ([[self.playCourseInfo objectForKey:kCourseIsCollect] boolValue]) {
         [self.collectButton setTitle:@"已收藏" forState:UIControlStateNormal];
-        [self.collectButton setTitleColor:kCommonMainTextColor_100 forState:UIControlStateNormal];
+        [self.collectButton setTitleColor:UIColorFromRGB(0x999999) forState:UIControlStateNormal];
     }else{
         [self.collectButton setTitle:@"收藏" forState:UIControlStateNormal];
-        [self.collectButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [self.collectButton setTitleColor:UIColorFromRGB(0x333333) forState:UIControlStateNormal];
         [self.collectButton addTarget:self action:@selector(collectCourse) forControlEvents:UIControlEventTouchUpInside];
     }
     
@@ -395,24 +431,24 @@
     self.chapterTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.view addSubview:self.chapterTableView];
     
-    __weak typeof(self)weakSelf = self;
     // 联系老师
-#warning 此处应该为 ![[self.playCourseInfo objectForKey:kCanWatch] intValue]
-    if ([[self.playCourseInfo objectForKey:kCanWatch] intValue]) {
+
+    if (![[self.playCourseInfo objectForKey:kCanWatch] intValue]) {
         
         BOOL isBuy = NO;
-        if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"weixin://"]]) {
+        if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"weixin://"]] && [WXApi isWXAppInstalled] && [WXApi isWXAppSupportApi]) {
             isBuy = YES;
         }
-#warning isbuy 
-        isBuy = YES;
         
         self.videoFunctionView = [[VideoFunctionView alloc]initWithFrame:CGRectMake(0, kScreenHeight - 50, kScreenWidth, 50) andIsBuy:isBuy];
-        [self.videoFunctionView refreshWithInfoDic:[NSDictionary dictionary]];
-//        [self.view addSubview:self.videoFunctionView];
+        [self.videoFunctionView refreshWithInfoDic:self.playCourseInfo];
+        if (isBuy) {
+            [self.view addSubview:self.videoFunctionView];
+        }
         self.videoFunctionView.cansultBlock = ^{
             [weakSelf.videoController pausePlay];
             AppDelegate * delegate = [UIApplication sharedApplication].delegate;
+            weakSelf.cansultView.teachersArray  = [[UserManager sharedManager] getAssistantList];
             [delegate.window addSubview:weakSelf.cansultView];
             
         };
@@ -426,18 +462,20 @@
         };
     }
     
-    self.cansultView = [[CansultTeachersListView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, kScreenHeight) andTeachersArr:@[@""]];
+    self.cansultView = [[CansultTeachersListView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, kScreenHeight) andTeachersArr:[[UserManager sharedManager] getAssistantList]];
     self.cansultView.dismissBlock = ^{
         [weakSelf.cansultView removeFromSuperview];
+    };
+    self.cansultView.cansultBlock = ^(NSDictionary *infoDic) {
+        [weakSelf cantactTeacherAction:infoDic];
     };
     
 }
 
-
 #pragma mark - cantactTeacher
-- (void)cantactTeacherAction:(UIButton *)button
+- (void)cantactTeacherAction:(NSDictionary *)teacherInfo
 {
-    NSString  *qqNumber=@"1211918062";
+    NSString  *qqNumber=[teacherInfo objectForKey:@"assistantQQ"];
     if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"mqq://"]]) {
         UIWebView * webView = [[UIWebView alloc]initWithFrame:CGRectZero];
         NSURL * url = [NSURL URLWithString:[NSString stringWithFormat:@"mqq://im/chat?chat_type=wpa&uin=%@&version=1&src_type=web",qqNumber]];
@@ -458,13 +496,21 @@
 #pragma mark - table view delegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-//    if ([[self.playCourseInfo objectForKey:kCanWatch] intValue] == 0) {
-//        [SVProgressHUD showErrorWithStatus:@"暂无观看权限，请升级套餐或购买课程"];
-//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//            [SVProgressHUD dismiss];
-//        });
-//        return;
-//    }
+    if (![[UserManager sharedManager] isUserLogin]) {
+        [SVProgressHUD showErrorWithStatus:@"请先登录"];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [SVProgressHUD dismiss];
+        });
+        return;
+    }
+    
+    if ([[self.playCourseInfo objectForKey:kCanWatch] intValue] == 0) {
+        [SVProgressHUD showErrorWithStatus:@"暂无观看权限"];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [SVProgressHUD dismiss];
+        });
+        return;
+    }
     
     NSDictionary *chapterDic = [self.chapterArray objectAtIndex:indexPath.section];
     NSArray *videoInfos = [self.chapterVideoInfoArray objectAtIndex:indexPath.section];
@@ -491,7 +537,7 @@
     self.playingVideo.playUrl = [videoInfo objectForKey:kVideoURL];
     self.playingVideo.title = [videoInfo objectForKey:kVideoName];
     
-    [self playVideo:videoInfo];
+    [self playVideoInfo:videoInfo];
     
     self.selectedSection = indexPath.section;
     self.selectedRow = indexPath.row;
@@ -555,8 +601,9 @@
     NSMutableDictionary * mVideoInfo = [[NSMutableDictionary alloc]initWithDictionary:videoInfo];
     
     [mVideoInfo setObject:@(0) forKey:@"isDownload"];
+    [mVideoInfo setObject:@(1) forKey:@"type"];
     
-    if ([[DownloaderManager sharedManager] isVideoIsDownloadedWithVideoId:[videoInfo objectForKey:kVideoId]]) {
+    if ([[DownloaderManager sharedManager] isVideoIsDownloadedWithVideoId:mVideoInfo]) {
         [mVideoInfo setObject:@(1) forKey:@"isDownload"];
     }
     
@@ -580,7 +627,8 @@
     }
     
     if ([[UserManager sharedManager] getUserLevel] != 3) {
-        [cell hideDownloadBtn];
+
+        [cell lockVideo];
     }
     
     
@@ -632,6 +680,29 @@
     }
 }
 
+#pragma mark - CourseDetail delegate
+- (void)didRequestCourseDetailSuccessed
+{
+    [SVProgressHUD dismiss];
+    self.chapterArray = [[CourseraManager sharedManager] getPlayChapterInfo];
+    self.chapterVideoInfoArray = [[CourseraManager sharedManager] getPlayChapterVideoInfo];
+    self.playCourseInfo = [[CourseraManager sharedManager] getPlayCourseInfo];
+    self.playingCourseId = [[self.playCourseInfo objectForKey:kCourseID] intValue];
+    self.playingCourseName = [self.playCourseInfo objectForKey:kCourseName];
+    [self.chapterTableView reloadData];
+    [self playVideo];
+}
+
+- (void)didRequestCourseDetailFailed:(NSString *)failedInfo
+{
+    [SVProgressHUD dismiss];
+    [SVProgressHUD showErrorWithStatus:failedInfo];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [SVProgressHUD dismiss];
+        [self.navigationController popViewControllerAnimated:YES];
+    });
+}
+
 #pragma mark - dowmload
 - (void)downLoadVide:(NSIndexPath*)indexpath
 {
@@ -642,7 +713,7 @@
     NSDictionary *courseInfo = self.playCourseInfo;
     NSString *downloadTaskId = [DownloadRquestOperation getDownloadTaskIdWitChapterId:[chapterInfo objectForKey:kChapterId] andVideoId:[videoInfo objectForKey:kVideoId]];
     
-    if ([[DownloaderManager sharedManager] isVideoIsDownloadedWithVideoId:[videoInfo objectForKey:kVideoId]] || [[DownloaderManager sharedManager] TY_isTaskAddToDownloadedQueue:[videoInfo objectForKey:kVideoURL]]) {
+    if ([[DownloaderManager sharedManager] isVideoIsDownloadedWithVideoId:videoInfo] || [[DownloaderManager sharedManager] TY_isTaskAddToDownloadedQueue:[videoInfo objectForKey:kVideoURL]]) {
         
         [self pushDownloadCenter];
         return;
@@ -662,7 +733,6 @@
     [downLoadInfo setObject:[videoInfo objectForKey:kVideoSort] forKey:kVideoSort];
     
     
-    
     [downLoadInfo setObject:[videoInfo objectForKey:kVideoURL] forKey:kVideoURL];
     [downLoadInfo setObject:@(0) forKey:kVideoPlayTime];
     [downLoadInfo setObject:videoPath forKey:kVideoPath];
@@ -673,6 +743,7 @@
     [downLoadInfo setObject:[chapterInfo objectForKey:kIsSingleChapter] forKey:kIsSingleChapter];
     [downLoadInfo setObject:downloadTaskId forKey:kDownloadTaskId];
     [downLoadInfo setObject:@(DownloadTaskStateWait) forKey:kDownloadState];
+    [downLoadInfo setObject:@(1) forKey:@"type"];
     
     NSLog(@"%@", [downLoadInfo description]);
     
@@ -709,6 +780,11 @@
 - (void)dismissStiop
 {
     [self.videoController backstop];
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotificationOfLoginSuccess object:nil];
 }
 
 @end

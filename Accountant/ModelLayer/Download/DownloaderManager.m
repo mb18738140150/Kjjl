@@ -240,7 +240,7 @@
                 model.downLoadState = DownloadStatePause;
                 model.resumeData = resumeData;
                 [model.resumeData writeToFile:model.filePath atomically:YES];
-                [[DBManager sharedManager] saveDownLoadingInfo:model];
+                [[DBManager sharedManager] saveDownLoadingInfo:model.infoDic];
                 [self.downLoadwaitModelsArr addObject:model];
                 [self.downloadingModelsArray removeObject:model];
                 [self startDownload];
@@ -275,7 +275,7 @@
         [(NSURLSessionDownloadTask *)model.downloadTask cancelByProducingResumeData:^(NSData * _Nullable resumeData) {
             @synchronized (self) {
                 model.downLoadState = DownloadStatePause;
-                [[DBManager sharedManager] deletedownLoadVideoWithId:[model.infoDic objectForKey:kVideoId]];
+                [[DBManager sharedManager] deletedownLoadVideoWithId:model.infoDic];
                 NSDictionary * dic = model.infoDic;
                 NSString *docPath = [PathUtility getDocumentPath];
                 NSString *path1 = [docPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@",[dic objectForKey:kCoursePath]]];
@@ -309,7 +309,7 @@
     {
         @synchronized (self) {
             model.downLoadState = DownloadStatePause;
-            [[DBManager sharedManager] deletedownLoadVideoWithId:[model.infoDic objectForKey:kVideoId]];
+            [[DBManager sharedManager] deletedownLoadVideoWithId:model.infoDic];
             NSDictionary * dic = model.infoDic;
             NSString *docPath = [PathUtility getDocumentPath];
             NSString *path1 = [docPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@",[dic objectForKey:kCoursePath]]];
@@ -351,7 +351,6 @@
         [self.processDownloadDelegate deleteDownloadTask];
     };
 }
-
 
 
 - (void)writeToDBWith:(NSDictionary *)dic
@@ -401,7 +400,6 @@
 {
     return self.isDownloadPause;
 }
-
 
 #pragma mark - download delegate
 
@@ -479,7 +477,7 @@
 - (void)TY_addDownloadTask:(NSMutableDictionary *)dic
 {
     
-    if (![[DBManager sharedManager] isExitDownloadingVideo:[dic objectForKey:kVideoId]]) {
+    if (![[DBManager sharedManager] isExitDownloadingVideo:dic]) {
         [[DBManager sharedManager] saveDownLoadingInfo:dic];
     }
     
@@ -513,7 +511,7 @@
 - (void)writeDB:(NSDictionary *)dic
 {
     NSLog(@"下载完成 dic = %@", dic);
-    [[DBManager sharedManager] deletedownLoadVideoWithId:[dic objectForKey:kVideoId]];
+    [[DBManager sharedManager] deletedownLoadVideoWithId:dic];
     [[DBManager sharedManager] saveDownloadInfo:dic];
 }
 
@@ -551,9 +549,9 @@
     }
 }
 
-- (BOOL)isVideoIsDownloadedWithVideoId:(NSNumber *)videoId
+- (BOOL)isVideoIsDownloadedWithVideoId:(NSDictionary *)videoInfo
 {
-    BOOL isDownloaded = [[DBManager sharedManager] isVideoDownload:videoId];
+    BOOL isDownloaded = [[DBManager sharedManager] isVideoDownload:videoInfo];
     return isDownloaded;
 }
 
@@ -576,7 +574,7 @@
 {
     TYDownloadSessionManager *manager = [TYDownloadSessionManager manager];
     [manager deleteFileWithDownloadModel:model];
-    [[DBManager sharedManager] deletedownLoadVideoWithId:[model.infoDic objectForKey:kVideoId]];
+    [[DBManager sharedManager] deletedownLoadVideoWithId:model.infoDic];
 }
 
 @end

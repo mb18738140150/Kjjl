@@ -48,7 +48,7 @@
     if (!_learnPepleCountLB) {
         _learnPepleCountLB = [[UILabel alloc]initWithFrame:CGRectZero];
         _learnPepleCountLB.backgroundColor = [UIColor clearColor];
-        _learnPepleCountLB.textAlignment = NSTextAlignmentLeft;
+        _learnPepleCountLB.textAlignment = NSTextAlignmentCenter;
         _learnPepleCountLB.textColor = kMainTextColor_100;
         _learnPepleCountLB.font = [UIFont systemFontOfSize:12];
     }
@@ -90,7 +90,7 @@
 {
     if (!_bottomLineView) {
         _bottomLineView = [[UIView alloc]initWithFrame:CGRectZero];
-        _bottomLineView.backgroundColor = kBackgroundGrayColor;
+        _bottomLineView.backgroundColor = UIColorFromRGB(0xdddddd);
     }
     return _bottomLineView;
 }
@@ -99,6 +99,7 @@
 {
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     [self removeAllSubviews];
+    self.backgroundColor = [UIColor whiteColor];
     
     self.lineView = [[UIView alloc]initWithFrame:CGRectMake(25, 0, 0.7, self.hd_height)];
     self.lineView.backgroundColor = [UIColor blueColor];
@@ -123,7 +124,7 @@
     [self.learnPepleCountLB setFrame:learnPeopleRect];
     [self.learnImageView setFrame:learnImageRect];
     [self.totalCountLB setFrame:CGRectMake(self.learnImageView.hd_x - 100, self.learnImageView.hd_y, 90, 25)];
-    [self.bottomLineView setFrame:CGRectMake(0, 63, kScreenWidth, 1)];
+    [self.bottomLineView setFrame:CGRectMake(0, 63, kScreenWidth, 0.5)];
     
     self.learnImageView.userInteractionEnabled = YES;
     [self addSubview:self.showStateImageView];
@@ -144,18 +145,66 @@
         return;
     }
     
+    if (self.cellType == CellType_Simulate) {
+        [self resetSimulateInfo:infoDic];
+        return;
+    }
+    
     self.titleLabel.text = [infoDic objectForKey:kTestSectionName];
-    self.questionCountLabel.text = [NSString stringWithFormat:@"%@/%@", [infoDic objectForKey:@"currentIndex"], [infoDic objectForKey:kTestSectionQuestionCount]];
+    NSString *str = [NSString stringWithFormat:@"%@/%@", [infoDic objectForKey:@"currentIndex"], [infoDic objectForKey:kTestSectionQuestionCount]];
+    self.questionCountLabel.attributedText = [self getQuestionStrWith:str and:[NSString stringWithFormat:@"%@", [infoDic objectForKey:@"currentIndex"]]];
     self.learnPepleCountLB.text = @"";
     self.totalCountLB.text = [NSString stringWithFormat:@"%@", [infoDic objectForKey:kTestSectionQuestionCount]];
     self.learnProcessView = [[ProcessView alloc]initWithFrame:CGRectMake(titleRect.origin.x, self.frame.size.height - 13, 230, 5)];
     self.learnProcessView.progress = [[infoDic objectForKey:@"currentIndex"] integerValue] * 1.0 / [[infoDic objectForKey:kTestSectionQuestionCount] integerValue];
     [self addSubview:self.learnProcessView];
     
-    if (self.cellType == CellType_myWrong) {
-        [self addSubview:self.bottomLineView];
-        [self resetWith:infoDic];
+    if (self.cellType != CellType_chapterTest) {
+        if (islast) {
+            self.lineView.hd_height = self.hd_height / 2;
+        }else
+        {
+            [self addSubview:self.bottomLineView];
+        }
+        self.lineView.backgroundColor = UIColorFromRGB(0xdddddd);
+        self.showStateImageView.hd_centerY = self.learnImageView.hd_centerY;
+        self.titleLabel.hd_centerY = self.learnImageView.hd_centerY;
+        self.titleLabel.hd_width = kScreenWidth - 38 - 125;
+        self.totalCountLB.hidden = YES;
+        self.questionCountLabel.frame = CGRectMake(kScreenWidth - 35 - 10 - 80, self.learnImageView.hd_centerY - 6, 80, 12);
+        self.questionCountLabel.textAlignment = NSTextAlignmentCenter;
+        self.learnProcessView.hidden = YES;
+        self.backgroundColor = UIColorFromRGB(0xf9f9f9);
     }
+}
+
+
+- (void)resetSimulateInfo:(NSDictionary *)infoDic
+{
+    self.titleLabel.text = [infoDic objectForKey:kTestSimulateName];
+    NSString *str = [NSString stringWithFormat:@"%@/%@", [infoDic objectForKey:@"currentIndex"], [infoDic objectForKey:kTestSimulateQuestionCount]];
+    self.questionCountLabel.attributedText = [self getQuestionStrWith:str and:[NSString stringWithFormat:@"%@", [infoDic objectForKey:@"currentIndex"]]];
+    self.learnPepleCountLB.text = @"";
+    self.totalCountLB.text = [NSString stringWithFormat:@"%@", [infoDic objectForKey:kTestSimulateQuestionCount]];
+    
+    self.lineView.hidden = YES;
+    self.showStateImageView.image = [UIImage imageNamed:@"icon_misj"];
+    self.showStateImageView.frame = CGRectMake(10, 10, 20, 20);
+    self.showStateImageView.hd_centerY = self.learnImageView.hd_centerY;
+    self.titleLabel.hd_centerY = self.learnImageView.hd_centerY;
+    self.titleLabel.hd_width = kScreenWidth - 38 - 125;
+    self.totalCountLB.hidden = YES;
+    self.questionCountLabel.frame = CGRectMake(kScreenWidth - 35 - 10 - 80, self.learnImageView.hd_centerY - 6, 80, 12);
+    self.questionCountLabel.textAlignment = NSTextAlignmentCenter;
+}
+
+- (NSMutableAttributedString *)getQuestionStrWith:(NSString *)str and:(NSString *)dStr
+{
+    NSMutableAttributedString * mStr = [[NSMutableAttributedString alloc]initWithString:str];
+    NSDictionary * attribute = @{NSForegroundColorAttributeName:UIColorFromRGB(0xff8400)};
+    [mStr setAttributes:attribute range:NSMakeRange(0, dStr.length)];
+    
+    return mStr;
 }
 
 // 隐藏下载按钮
@@ -191,6 +240,8 @@
     
     [self.learnImageView setFrame:learnImageRect];
     
+    self.lineView.hidden = YES;
+    self.showStateImageView.image = [UIImage imageNamed:@"课程50-50"];
     self.titleLabel.text = [infoDic objectForKey:kVideoName];
     self.questionCountLabel.hidden = YES;
     self.learnPepleCountLB.hidden = YES;
@@ -205,21 +256,6 @@
     
 }
 
-- (void)resetWith:(NSDictionary *)infoDic
-{
-    self.lineView.hidden = YES;
-    self.showStateImageView.frame = CGRectMake(15, 10, 20, 20);
-    self.showStateImageView.image = [UIImage imageNamed:@"tiku_plus"];
-    self.titleLabel.text = [infoDic objectForKey:kTestChapterName];
-    self.questionCountLabel.text = [NSString stringWithFormat:@"%@/%@", [infoDic objectForKey:@"currentIndex"], [infoDic objectForKey:kTestChapterQuestionCount]];
-    self.learnPepleCountLB.text = @"";
-    self.learnImageView.image = [UIImage imageNamed:@"tiku_text@2x"];
-    self.totalCountLB.text = [NSString stringWithFormat:@"%@", [infoDic objectForKey:kTestChapterQuestionCount]];
-    
-    self.learnProcessView.progress = [[infoDic objectForKey:@"currentIndex"] integerValue] * 1.0 / [[infoDic objectForKey:kTestChapterQuestionCount] integerValue];
-    [self addSubview:self.learnProcessView];
-    
-}
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];

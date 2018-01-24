@@ -31,6 +31,5 @@ typedef enum : NSUInteger {
 
 @property (weak, nonatomic) IBOutlet UIImageView *useStateImageView;
 
-
 - (void)resetWithInfo:(NSDictionary *)infoDic;
 @end

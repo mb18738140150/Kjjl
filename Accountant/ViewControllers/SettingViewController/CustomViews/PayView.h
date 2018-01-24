@@ -15,4 +15,6 @@
 
 @property (nonatomic, strong)NSString * price;
 
+@property (nonatomic, copy)void(^payBlock)();
+
 @end

@@ -27,7 +27,7 @@
 
 @property (nonatomic,strong) UIView                             *titleView;
 
-
+@property (nonatomic, strong)NSString * filePath;
 
 @end
 
@@ -67,6 +67,10 @@
         NSLog(@"%@",error);
     }
     
+//    self.filePath = toPath;
+//    [UIUtility codefileData:toPath];
+    
+    
     NSURL *pathUrl = [NSURL fileURLWithPath:toPath];
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -94,7 +98,7 @@
     __weak typeof(self) weakSelf = self;
     self.videoController.videoPlayerGoBackBlock = ^{
         __strong typeof(self) strongSelf = weakSelf;
-        
+//        [UIUtility codefileData:weakSelf.filePath];
         [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
         [weakSelf dismissViewControllerAnimated:YES completion:nil];
         
@@ -189,11 +193,16 @@
     if ([fileManager fileExistsAtPath:toPath]) {
         [fileManager removeItemAtPath:toPath error:nil];
     }
-//    [fileManager copyItemAtPath:path3 toPath:toPath error:&error];
     [fileManager linkItemAtPath:path3 toPath:toPath error:&error];
+    
     if (error) {
         NSLog(@"%@",error);
     }
+    
+    UIDynamicAnimator * animator = [[UIDynamicAnimator alloc]init];
+    
+//    self.filePath = toPath;
+//    [UIUtility codefileData:self.filePath];
     
     NSURL *pathUrl = [NSURL fileURLWithPath:toPath];
     

@@ -30,10 +30,18 @@
             break;
             
         case 2:
+        {
+            if ([WXApi isWXAppInstalled] && [WXApi isWXAppSupportApi]) {
+                return 2;
+            }else
+            {
+                return 1;
+            }
+        }
             return 3;
             break;
         case 3:
-            return 3;
+            return 0;
             break;
         case 4:
             return 1;
@@ -58,7 +66,7 @@
     if (indexPath.section == 0 && indexPath.row == 1) {
         SettingTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kSettingCellID forIndexPath:indexPath];
         NSDictionary * infoDic = self.dataSourceArray[indexPath.section][indexPath.row - 1];
-        [cell resetMemberWithInfo:infoDic andHaveNewActivty:YES];
+        [cell resetMemberWithInfo:infoDic andHaveNewActivty:NO];
         __weak typeof(self)weakSelf = self;
         cell.upgradeMemberLevelBlock = ^{
             if (weakSelf.upgradeMemberLevelBlock) {
@@ -78,7 +86,13 @@
     
     if (indexPath.section == 2 ) {
         SettingTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kSettingCellID forIndexPath:indexPath];
-        NSDictionary * infoDic = self.dataSourceArray[indexPath.section - 1][indexPath.row];
+        NSDictionary * infoDic = [NSDictionary dictionary];
+        if ([WXApi isWXAppSupportApi] && [WXApi isWXAppInstalled]) {
+            infoDic = self.dataSourceArray[indexPath.section - 1][indexPath.row];
+        }else
+        {
+            infoDic = self.dataSourceArray[indexPath.section - 1][indexPath.row + 1];
+        }
         [cell resetcellWithInfo:infoDic andHaveNewActivty:NO];
         return cell;
     }
@@ -92,7 +106,7 @@
     if (indexPath.section == 4) {
         SettingTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kSettingCellID forIndexPath:indexPath];
         NSDictionary * infoDic = self.dataSourceArray[indexPath.section - 1][indexPath.row];
-        [cell resetcellWithInfo:infoDic andHaveNewActivty:YES];
+        [cell resetcellWithInfo:infoDic andHaveNewActivty:NO];
         return cell;
         
     }

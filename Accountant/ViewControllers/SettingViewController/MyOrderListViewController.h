@@ -10,4 +10,6 @@
 
 @interface MyOrderListViewController : UIViewController
 
+@property (nonatomic, strong)NSDictionary * infoDic;
+
 @end
