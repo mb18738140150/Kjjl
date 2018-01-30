@@ -79,7 +79,6 @@
 - (void)loadData
 {
     [[CourseraManager sharedManager] didRequestMyLivingCourseWithInfo:@{} NotifiedObject:self];
-    
     [SVProgressHUD show];
 }
 
@@ -109,7 +108,6 @@
     }];
     [self.tableView registerClass:[MainLivingCourseTableViewCell class] forCellReuseIdentifier:@"mainCellId"];
     [self.view addSubview:self.tableView];
-    
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section

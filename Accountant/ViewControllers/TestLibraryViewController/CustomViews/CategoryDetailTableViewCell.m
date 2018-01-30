@@ -86,6 +86,22 @@
     return _showStateImageView;
 }
 
+- (UIButton *)shikanBtn
+{
+    if (!_shikanBtn) {
+        _shikanBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        _shikanBtn.backgroundColor = [UIColor whiteColor];
+        [_shikanBtn setTitle:@"试看" forState:UIControlStateNormal];
+        _shikanBtn.titleLabel.font = [UIFont systemFontOfSize:12];
+        [_shikanBtn setTitleColor:UIColorFromRGB(0xff740e) forState:UIControlStateNormal];
+        _shikanBtn.layer.cornerRadius = 2;
+        _shikanBtn.layer.masksToBounds = YES;
+//        _shikanBtn.layer.borderColor = UIColorFromRGB(0x999999).CGColor;
+//        _shikanBtn.layer.borderWidth = 1;
+    }
+    return _shikanBtn;
+}
+
 - (UIView *)bottomLineView
 {
     if (!_bottomLineView) {
@@ -117,6 +133,7 @@
     CGRect questionCountRect = CGRectMake(titleRect.origin.x,  CGRectGetMaxY(titleRect) + YUFoldingMargin, labelWidth1, labelHeight1);
     CGRect learnPeopleRect = CGRectMake(CGRectGetMaxX(questionCountRect) + 5,  CGRectGetMaxY(titleRect) + YUFoldingMargin, 100, labelHeight1);
     CGRect learnImageRect = CGRectMake([UIScreen mainScreen].bounds.size.width - 10 - 25, (self.frame.size.height - 25) / 2, 25, 25);
+    CGRect shikanBtnRect = CGRectMake([UIScreen mainScreen].bounds.size.width - 10 - 40, (self.frame.size.height - 25) / 2, 40, 25);
     
     [self.showStateImageView setFrame:arrowRect];
     [self.titleLabel setFrame:titleRect];
@@ -125,6 +142,8 @@
     [self.learnImageView setFrame:learnImageRect];
     [self.totalCountLB setFrame:CGRectMake(self.learnImageView.hd_x - 100, self.learnImageView.hd_y, 90, 25)];
     [self.bottomLineView setFrame:CGRectMake(0, 63, kScreenWidth, 0.5)];
+    [self.shikanBtn setFrame:shikanBtnRect];
+    self.shikanBtn.hidden = YES;
     
     self.learnImageView.userInteractionEnabled = YES;
     [self addSubview:self.showStateImageView];
@@ -132,7 +151,10 @@
     [self addSubview:self.questionCountLabel];
     [self addSubview:self.learnPepleCountLB];
     [self addSubview:self.learnImageView];
+    [self addSubview:self.shikanBtn];
     [self addSubview:self.totalCountLB];
+    
+    [self.shikanBtn addTarget:self action:@selector(shikan) forControlEvents:UIControlEventTouchUpInside];
     
     self.showStateImageView.image = [UIImage imageNamed:@"tiku_point"];
     self.learnImageView.image = [UIImage imageNamed:@"tiku_text@2x"];
@@ -155,7 +177,7 @@
     self.questionCountLabel.attributedText = [self getQuestionStrWith:str and:[NSString stringWithFormat:@"%@", [infoDic objectForKey:@"currentIndex"]]];
     self.learnPepleCountLB.text = @"";
     self.totalCountLB.text = [NSString stringWithFormat:@"%@", [infoDic objectForKey:kTestSectionQuestionCount]];
-    self.learnProcessView = [[ProcessView alloc]initWithFrame:CGRectMake(titleRect.origin.x, self.frame.size.height - 13, 230, 5)];
+    self.learnProcessView = [[ProcessView alloc]initWithFrame:CGRectMake(titleRect.origin.x, self.frame.size.height - 13, 230, 3)];
     self.learnProcessView.progress = [[infoDic objectForKey:@"currentIndex"] integerValue] * 1.0 / [[infoDic objectForKey:kTestSectionQuestionCount] integerValue];
     [self addSubview:self.learnProcessView];
     
@@ -211,6 +233,18 @@
 - (void)hideDownloadBtn
 {
     self.learnImageView.hidden = YES;
+}
+
+- (void)shikanAction
+{
+    self.shikanBtn.hidden = NO;
+}
+
+- (void)shikan
+{
+    if (self.shikanBlock) {
+        self.shikanBlock();
+    }
 }
 
 - (void)lockVideo

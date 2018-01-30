@@ -90,6 +90,7 @@
     self.telTableview.delegate = self;
     self.telTableview.dataSource = self;
     self.telTableview.separatorStyle = UITableViewCellSeparatorStyleNone;
+    [self.telTableview registerClass:[UITableViewCell class] forCellReuseIdentifier:@"cellID"];
     [self addSubview:self.telTableview];
     
     NSArray * assistantArray = [[UserManager sharedManager] getTelephoneList];
@@ -120,7 +121,6 @@
     [telephoneBtn setTitleColor:UIColorFromRGB(0x666666) forState:UIControlStateNormal];
     [telephoneBtn setTitle:@"热线电话" forState:UIControlStateNormal];
     telephoneBtn.titleLabel.font = kMainFont;
-    [self.telTableview registerClass:[UITableViewCell class] forCellReuseIdentifier:@"cellID"];
     [bottomView addSubview:telephoneBtn];
     
     UIButton * assistantBtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -155,8 +155,8 @@
     if ([tableView isEqual:self.telTableview]) {
         NSArray * teachersArray = [[UserManager sharedManager] getTelephoneList];
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cellID" forIndexPath:indexPath];
-        NSString * telephoneStr = teachersArray[indexPath.row];
-        
+        NSString * telephoneStr = [teachersArray[indexPath.row] objectForKey:@"telephoneNumber"];
+        ;
         UIView * topLine = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, 1)];
         topLine.backgroundColor = UIColorFromRGB(0xedf0f0);
         [cell.contentView addSubview:topLine];
@@ -185,7 +185,7 @@
 {
     if ([tableView isEqual:self.telTableview]) {
         if (self.telephoneBlock) {
-            self.telephoneBlock(self.teldataArray[indexPath.row]);
+            self.telephoneBlock([self.teldataArray[indexPath.row] objectForKey:@"telephoneNumber"]);
         }
     }else
     {

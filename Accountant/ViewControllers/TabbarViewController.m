@@ -277,18 +277,18 @@
             [self setSelectedIndex:0];
         }
     }
-    if ([nav.topViewController class] == [TestLibraryViewController class]) {
-        if (![[UserManager sharedManager] isUserLogin]) {
-            [self requireLogin];
-            [self setSelectedIndex:0];
-        }
-    }
-    if ([nav.topViewController class] == [QuestionViewController class]) {
-        if (![[UserManager sharedManager] isUserLogin]) {
-            [self requireLogin];
-            [self setSelectedIndex:0];
-        }
-    }
+//    if ([nav.topViewController class] == [TestLibraryViewController class]) {
+//        if (![[UserManager sharedManager] isUserLogin]) {
+//            [self requireLogin];
+//            [self setSelectedIndex:0];
+//        }
+//    }
+//    if ([nav.topViewController class] == [QuestionViewController class]) {
+//        if (![[UserManager sharedManager] isUserLogin]) {
+//            [self requireLogin];
+//            [self setSelectedIndex:0];
+//        }
+//    }
 }
 
 #pragma mark - course detail func

@@ -46,7 +46,7 @@
     UIButton * cansultBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     cansultBtn.frame = CGRectMake(0, kScreenHeight - 50 - self.navigationController.navigationBar.hd_height - 20, kScreenWidth, 50);
     [cansultBtn setTitle:@"点击咨询" forState:UIControlStateNormal];
-    [cansultBtn setTitleColor:UIColorFromRGB(0x666666) forState:UIControlStateNormal];
+    [cansultBtn setTitleColor:UIColorFromRGB(0xff740e) forState:UIControlStateNormal];
     cansultBtn.backgroundColor = UIColorFromRGB(0xf2f2f2);
     cansultBtn.titleLabel.font = kMainFont;
     [self.view addSubview:cansultBtn];

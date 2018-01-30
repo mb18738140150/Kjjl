@@ -35,7 +35,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
     [self navigationViewSetup];
     [self loadData];
     [self tableViewSetup];

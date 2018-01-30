@@ -524,7 +524,9 @@
                               kIsLivingCourseFree:@(jModel.isFree),
                               kIsBack:@(jModel.isBack),
                               kCourseName:jModel.name,
-                              kCourseCover:jModel.courseCover};
+                              kCourseCover:jModel.courseCover,
+                              kPrice:@(jModel.price),
+                              kOldPrice:@(jModel.oldPrice)};
         [LivingSectionDetailArray addObject:dic];
     }
     return LivingSectionDetailArray;
@@ -678,7 +680,7 @@
             [tmpDic2 setObject:@(courseSecondModel.categorySecondId) forKey:kCourseSecondID];
             [tmpDic2 setObject:courseSecondModel.categorySecondName forKey:kCourseSecondName];
             [tmpDic2 setObject:courseSecondModel.categorySecondImageUrl forKey:kCourseSecondCover];
-            
+            [tmpDic2 setObject:@(1) forKey:kIsFold];
             NSMutableArray * array2 = [[NSMutableArray alloc]init];
             for (CourseModel *courseModel in courseSecondModel.categroryCoursesArray) {
                 NSMutableDictionary * tmpDic3 = [[NSMutableDictionary alloc]init];

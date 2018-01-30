@@ -93,12 +93,12 @@
 {
     NSDictionary* info = [aNotification userInfo];
     CGSize kbSize = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size;//得到鍵盤的高度
-    self.contentField.frame = CGRectMake(20, self.imageView1.frame.origin.y + self.imageView1.frame.size.height + 10, kScreenWidth - 40, kScreenHeight - kStatusBarHeight - kNavigationBarHeight - kbSize.height - self.imageView1.frame.origin.y - self.imageView1.frame.size.height - 40);
+    self.contentField.frame = CGRectMake(20, 90, kScreenWidth - 40, kScreenHeight - kStatusBarHeight - kNavigationBarHeight - kbSize.height - 150 - 40);
 }
 
 - (void)keyboardWillBeHidden:(NSNotification*)aNotification
 {
-    self.contentField.frame = CGRectMake(20, self.imageView1.frame.origin.y + self.imageView1.frame.size.height + 10, kScreenWidth - 40, kScreenHeight - kStatusBarHeight - kNavigationBarHeight - kTabBarHeight - self.imageView1.frame.origin.y - self.imageView1.frame.size.height - 40);
+    self.contentField.frame = CGRectMake(20, 90, kScreenWidth - 40, kScreenHeight - kStatusBarHeight - kNavigationBarHeight - kTabBarHeight - 150 - 40);
     //do something
 }
 
@@ -112,6 +112,7 @@
     self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:kCommonMainTextColor_50};
     
     UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"发布" style:UIBarButtonItemStylePlain target:self action:@selector(publishQuestion)];
+    [item setTitleTextAttributes:@{NSForegroundColorAttributeName:UIColorFromRGB(0xFF671D)} forState:UIControlStateNormal];
     self.navigationItem.rightBarButtonItem = item;
     [self.navigationItem.rightBarButtonItem setTintColor:kCommonMainTextColor_50];
     TeamHitBarButtonItem * leftBarItem = [TeamHitBarButtonItem leftButtonWithImage:[UIImage imageNamed:@"public-返回"] title:@""];
@@ -241,30 +242,30 @@
     [self.resignControl addSubview:self.button4];
     
     
-    self.imageView1 = [[PublishImageView alloc] initWithFrame:CGRectMake(20, 90, 60, 60)];
+    self.contentField = [[UITextView alloc] initWithFrame:CGRectMake(20, 90, kScreenWidth - 40, kScreenHeight - kStatusBarHeight - kNavigationBarHeight - kTabBarHeight - 150 - 40)];
+    
+    self.contentField.layer.borderWidth = 1;
+    self.contentField.layer.borderColor = kTableViewCellSeparatorColor.CGColor;
+    self.contentField.layer.cornerRadius = 5;
+    [self.resignControl addSubview:self.contentField];
+    
+    self.imageView1 = [[PublishImageView alloc] initWithFrame:CGRectMake(20, CGRectGetMaxY(self.contentField.frame) + 10, 60, 60)];
     UITapGestureRecognizer *tap1 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(addImageClickFunc1)];
     [self.imageView1 addGestureRecognizer:tap1];
     self.imageView1.userInteractionEnabled = YES;
     
-    self.imageView2 = [[PublishImageView alloc] initWithFrame:CGRectMake(100, 90, 60, 60)];
+    self.imageView2 = [[PublishImageView alloc] initWithFrame:CGRectMake(100, CGRectGetMaxY(self.contentField.frame) + 10, 60, 60)];
     UITapGestureRecognizer *tap2 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(addImageClickFunc2)];
     [self.imageView2 addGestureRecognizer:tap2];
     self.imageView2.userInteractionEnabled = YES;
     
-    self.imageView3 = [[PublishImageView alloc] initWithFrame:CGRectMake(180, 90, 60, 60)];
+    self.imageView3 = [[PublishImageView alloc] initWithFrame:CGRectMake(180, CGRectGetMaxY(self.contentField.frame) + 10, 60, 60)];
     UITapGestureRecognizer *tap3 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(addImageClickFunc3)];
     [self.imageView3 addGestureRecognizer:tap3];
     self.imageView3.userInteractionEnabled = YES;
     
     [self resetImageViews];
     
-    self.contentField = [[UITextView alloc] initWithFrame:CGRectMake(20, self.imageView1.frame.origin.y + self.imageView1.frame.size.height + 10, kScreenWidth - 40, kScreenHeight - kStatusBarHeight - kNavigationBarHeight - kTabBarHeight - self.imageView1.frame.origin.y - self.imageView1.frame.size.height - 40)];
-    
-    self.contentField.layer.borderWidth = 1;
-    self.contentField.layer.borderColor = kTableViewCellSeparatorColor.CGColor;
-    self.contentField.layer.cornerRadius = 5;
-    [self.resignControl addSubview:self.contentField];
-
 }
 
 - (void)resetImageViews
@@ -397,28 +398,28 @@
 - (void)button1Click
 {
     [self resetButtons];
-    [self.button1 setTitleColor:kCommonMainColor forState:UIControlStateNormal];
+    [self.button1 setTitleColor:UIColorFromRGB(0xFF671D) forState:UIControlStateNormal];
     self.categoryId = 17;
 }
 
 - (void)button2Click
 {
     [self resetButtons];
-    [self.button2 setTitleColor:kCommonMainColor forState:UIControlStateNormal];
+    [self.button2 setTitleColor:UIColorFromRGB(0xFF671D) forState:UIControlStateNormal];
     self.categoryId = 18;
 }
 
 - (void)button3Click
 {
     [self resetButtons];
-    [self.button3 setTitleColor:kCommonMainColor forState:UIControlStateNormal];
+    [self.button3 setTitleColor:UIColorFromRGB(0xFF671D) forState:UIControlStateNormal];
     self.categoryId = 19;
 }
 
 - (void)button4Click
 {
     [self resetButtons];
-    [self.button4 setTitleColor:kCommonMainColor forState:UIControlStateNormal];
+    [self.button4 setTitleColor:UIColorFromRGB(0xFF671D) forState:UIControlStateNormal];
     self.categoryId = 20;
 }
 

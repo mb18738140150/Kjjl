@@ -32,17 +32,20 @@ typedef enum : NSUInteger {
 @property (nonatomic, strong)UILabel * questionCountLabel;
 @property (nonatomic, strong)UILabel *learnPepleCountLB;
 @property (nonatomic, strong)ProcessView * learnProcessView;
-@property (nonatomic, strong)UIImageView *learnImageView;// 下载
+@property (nonatomic, strong)UIImageView *learnImageView;// 下载图片
+@property (nonatomic, strong)UIButton * shikanBtn;
 @property (nonatomic, strong)UILabel * totalCountLB;
 @property (nonatomic, strong) UITapGestureRecognizer *tapGesture;
 @property (nonatomic, strong) UIView        *bottomLineView;
 @property (nonatomic, strong)UIView * lineView;
 @property (nonatomic, assign)VideoDownloadState downloadState;
 @property (nonatomic, copy)void(^downloadBlock)(VideoDownloadState downloadState);
+@property (nonatomic, copy)void(^shikanBlock)();
 
 - (void)resetisLast:(BOOL)islast withDicInfo:(NSDictionary *)infoDic;
 
 - (void)hideDownloadBtn;
 - (void)lockVideo;
+- (void)shikanAction;
 
 @end

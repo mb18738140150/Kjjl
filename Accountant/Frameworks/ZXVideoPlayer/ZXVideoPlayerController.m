@@ -179,7 +179,7 @@ static const CGFloat kVideoPlayerControllerAnimationTimeInterval = 0.3f;
     
     self.videoControl.timeLabel.text = [NSString stringWithFormat:@"%@/%@",timeElapsedString,timeRmainingString];
     
-    if (currentTime > 120) {
+    if (currentTime > 300) {
         if (self.informalBlock) {
             self.informalBlock();
         }

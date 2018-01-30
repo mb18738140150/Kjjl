@@ -37,7 +37,7 @@
     self.iconImageView.image = [UIImage imageNamed:[infoDic objectForKey:@"imageName"]];
     
     self.titleLB.text = [[UserManager sharedManager] getLevelStr];
-    if (self.titleLB.text.length > 0 && [self.titleLB.text containsString:@"会员"]) {
+    if (self.titleLB.text.length > 0 && ![self.titleLB.text containsString:@"会员"]) {
         self.titleLB.text = [NSString stringWithFormat:@"超级会员(%@)", self.titleLB.text];
     }
     

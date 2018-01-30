@@ -116,6 +116,7 @@
         [self initalTable];
     }
     
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(haveLogin:) name:kNotificationOfLoginSuccess object:nil];
 }
 
@@ -141,6 +142,7 @@
             self.playingChapterId = [[chapterInfo objectForKey:kChapterId] intValue];
             self.playingChapterName = [chapterInfo objectForKey:kChapterName];
         }
+        
         self.playingVideoId = [[videoInfo objectForKey:kVideoId] intValue];
         self.playingVideoName = [videoInfo objectForKey:kVideoName];
         
@@ -163,10 +165,16 @@
 
 - (void)haveLogin:(NSNotification *)notification
 {
-    [self.videoStateView removeFromSuperview];
+    if ([[self.playCourseInfo objectForKey:kCanWatch] intValue] == 0) {
+        self.videoStateView.hidden = NO;
+        self.videoStateView.state = VideoState_noJurisdiction;
+    }else
+    {
+        [self.videoStateView removeFromSuperview];
+    }
+    
     [[CourseraManager sharedManager] didRequestDetailCourseWithCourseID:[[self.playCourseInfo objectForKey:kCourseID] intValue] withNotifiedObject:self];
 }
-
 
 - (void)playVideoInfo:(NSDictionary *)videoInfo;
 {
@@ -174,7 +182,9 @@
         [self.videoController changePlayer];
     }
     self.currentVideoDic = videoInfo;
-    self.videoController = [[ZXVideoPlayerController alloc] initWithFrame:CGRectMake(0, 0, kZXVideoPlayerOriginalWidth, kZXVideoPlayerOriginalHeight)];
+    if (!self.videoController) {
+        self.videoController = [[ZXVideoPlayerController alloc] initWithFrame:CGRectMake(0, 0, kZXVideoPlayerOriginalWidth, kZXVideoPlayerOriginalHeight)];
+    }
     NSDictionary * dic = [[VideoManager sharedManager]getCurrentVideoInfoWithVideoId:[videoInfo objectForKey:kVideoId]];
     if ([dic objectForKey:kVideoPlayTime]) {
         self.playingVideo.playTime = [[dic objectForKey:kVideoPlayTime] intValue];
@@ -187,13 +197,13 @@
     __weak typeof(self) weakSelf = self;
     self.videoController.videoPlayerGoBackBlock = ^{
         __strong typeof(self) strongSelf = weakSelf;
-        
+        [strongSelf.videoController stop];
+        strongSelf.videoController = nil;
         [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
         [weakSelf dismissViewControllerAnimated:YES completion:nil];
         
         [[NSUserDefaults standardUserDefaults] setObject:@0 forKey:@"ZXVideoPlayer_DidLockScreen"];
         
-        strongSelf.videoController = nil;
     };
     self.videoController.videoPlayerGoBackWithPlayTimeBlock = ^(double time){
         NSLog(@"time = %.0f  ** %@", time,[weakSelf.currentVideoDic description]);
@@ -210,14 +220,13 @@
         NSLog(@"试看结束，请判断是不是正式学员");
         
         if ([[weakSelf.playCourseInfo objectForKey:kCanWatch] intValue] == 0) {
-            [SVProgressHUD showErrorWithStatus:@"试看结束，请升级套餐或购买课程继续观看"];
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                [SVProgressHUD dismiss];
-            });
+            
+            weakSelf.videoStateView.state = VideoState_shikanEnd;
+            [weakSelf.view addSubview:weakSelf.videoStateView];
+            weakSelf.videoController.video = nil;
             [weakSelf.videoController stop];
-
+            weakSelf.videoController = nil;
         }
-        
     };
     
     [self savePlayingInfo];
@@ -346,14 +355,40 @@
     __weak typeof(self)weakSelf = self;
     self.videoStateView = [[VideoStateView alloc] initWithFrame:CGRectMake(0, 0, kZXVideoPlayerOriginalWidth, kZXVideoPlayerOriginalHeight)];
     [self.view addSubview:self.videoStateView];
+    [self.videoStateView resetWithInfoDic:self.playCourseInfo];
+    
     self.videoStateView.loginClickBlock = ^(VideoState videoState, NSDictionary *infoDic) {
-        LoginViewController *login = [[LoginViewController alloc] init];
         
-        UINavigationController * nav = [[UINavigationController alloc]initWithRootViewController:login];
+        switch (videoState) {
+            case VideoState_notLogin:
+            {
+                LoginViewController *login = [[LoginViewController alloc] init];
+                
+                UINavigationController * nav = [[UINavigationController alloc]initWithRootViewController:login];
+                
+                [weakSelf presentViewController:nav animated:YES completion:nil];
+            }
+                break;
+            case VideoState_noJurisdiction:
+            {
+                [weakSelf playVideo];
+                [weakSelf.videoStateView removeFromSuperview];
+            }
+                break;
+            case VideoState_haveJurisdiction:
+            {
+                
+            }
+                break;
+                
+            default:
+                break;
+        }
         
-        [weakSelf presentViewController:nav animated:YES completion:nil];
     };
     self.videoStateView.BackClickBlock = ^{
+        [weakSelf.videoController stop];
+        weakSelf.videoController = nil;
         [weakSelf dismissViewControllerAnimated:YES completion:nil];
     };
     
@@ -362,7 +397,13 @@
     }else
     {
         self.videoStateView.hidden = YES;
-        [self playVideo];
+        if ([[self.playCourseInfo objectForKey:kCanWatch] intValue] == 0) {
+            self.videoStateView.hidden = NO;
+            self.videoStateView.state = VideoState_noJurisdiction;
+        }else
+        {
+            [self playVideo];
+        }
     }
     
     self.titleView = [[UIView alloc] initWithFrame:CGRectMake(0, kZXVideoPlayerOriginalHeight, kScreenWidth, 50)];
@@ -432,7 +473,6 @@
     [self.view addSubview:self.chapterTableView];
     
     // 联系老师
-
     if (![[self.playCourseInfo objectForKey:kCanWatch] intValue]) {
         
         BOOL isBuy = NO;
@@ -551,7 +591,6 @@
     NSDictionary *chapterDic = [self.chapterArray objectAtIndex:section];
     
     CategorySectionHeadView * view = [[CategorySectionHeadView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, 64) withTag:section];
-    
     BOOL currentIsOpen = ((NSNumber *)self.statusArray[section]).boolValue;
     
     MFoldingSectionState state = 0;
@@ -570,12 +609,12 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 50;
+    return 40;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 35;
+    return 40;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -620,21 +659,24 @@
     }
     
     if (indexPath.section == self.selectedSection && self.selectedRow == indexPath.row) {
-        cell.titleLabel.textColor = kCommonMainColor;
+        cell.titleLabel.textColor = UIColorFromRGB(0xff740e);
     }else
     {
         cell.titleLabel.textColor = kCommonMainTextColor_50;
     }
     
-    if ([[UserManager sharedManager] getUserLevel] != 3) {
-
-        [cell lockVideo];
+    if ([[self.playCourseInfo objectForKey:kCanWatch] intValue] == 0) {
+        if (indexPath.row == 0 && indexPath.section == 0) {
+            [cell shikanAction];
+        }else
+        {
+            [cell lockVideo];
+        }
     }
-    
     
     __weak typeof(self) weakSelf = self;
     cell.downloadBlock = ^(VideoDownloadState downloadState){
-        if ([[self.playCourseInfo objectForKey:kCourseCanDownLoad] intValue] == 0) {
+        if ([[weakSelf.playCourseInfo objectForKey:kCourseCanDownLoad] intValue] == 0) {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"暂无下载权限，请升级套餐或购买课程" delegate:nil cancelButtonTitle:@"知道了" otherButtonTitles:nil];
             [alert show];
         }else{
@@ -645,6 +687,11 @@
                 [weakSelf pushDownloadCenter];
             }
         }
+    };
+    
+    cell.shikanBlock = ^{
+        [weakSelf playVideo];
+        [weakSelf.videoStateView removeFromSuperview];
     };
     
     return cell;
@@ -785,6 +832,7 @@
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kNotificationOfLoginSuccess object:nil];
+    NSLog(@"课程界面销毁了*******");
 }
 
 @end

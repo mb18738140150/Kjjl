@@ -12,6 +12,7 @@ typedef enum : NSUInteger {
     VideoState_notLogin,
     VideoState_noJurisdiction,
     VideoState_haveJurisdiction,
+    VideoState_shikanEnd,
 } VideoState;
 
 @interface VideoStateView : UIView
@@ -19,6 +20,8 @@ typedef enum : NSUInteger {
 @property (nonatomic, strong)NSDictionary * infoDic;
 @property (nonatomic, copy)void(^loginClickBlock)(VideoState videoState, NSDictionary *infoDic);
 @property (nonatomic, copy)void(^BackClickBlock)();
+
+@property (nonatomic, assign)VideoState state;
 
 - (void)resetWithInfoDic:(NSDictionary *)infoDic;
 

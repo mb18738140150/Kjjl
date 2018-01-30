@@ -53,22 +53,21 @@
     self.courseNameLB.textAlignment = 1;
     [self addSubview:self.courseNameLB];
     
-    self.timeLB = [[UILabel alloc]initWithFrame:CGRectMake(kSpace, CGRectGetMaxY(self.courseNameLB.frame) + 2 * kSpace, kScreenWidth -2 * kSpace, 25)];
-    self.timeLB.textColor = [UIColor whiteColor];
-    self.timeLB.font = kMainFont;
-    self.timeLB.textAlignment = 1;
-    [self addSubview:self.timeLB];
-    
-    self.courseTeacherLB = [[UILabel alloc]initWithFrame:CGRectMake(kSpace, CGRectGetMaxY(self.timeLB.frame) + 2 * kSpace, kScreenWidth - kSpace * 2, 20)];
+    self.courseTeacherLB = [[UILabel alloc]initWithFrame:CGRectMake(kSpace, CGRectGetMaxY(self.courseNameLB.frame) + 2 * kSpace, kScreenWidth - kSpace * 2, 20)];
     self.courseTeacherLB.textAlignment = 1;
     self.courseTeacherLB.font = kMainFont;
     self.courseTeacherLB.textColor = [UIColor whiteColor];
     [self addSubview:self.courseTeacherLB];
     
+    self.timeLB = [[UILabel alloc]initWithFrame:CGRectMake(kSpace, CGRectGetMaxY(self.courseTeacherLB.frame) + 2 * kSpace, kScreenWidth -2 * kSpace, 25)];
+    self.timeLB.textColor = [UIColor whiteColor];
+    self.timeLB.font = kMainFont;
+    self.timeLB.textAlignment = 1;
+    [self addSubview:self.timeLB];
     
     
     self.loginBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.loginBtn.frame = CGRectMake(kScreenWidth / 2 - 40, CGRectGetMaxY(self.courseTeacherLB.frame) + 10, 80, 30);
+    self.loginBtn.frame = CGRectMake(kScreenWidth / 2 - 40, CGRectGetMaxY(self.timeLB.frame) + 10, 80, 30);
     self.loginBtn.layer.cornerRadius = 4;
     self.loginBtn.layer.masksToBounds = YES;
     self.loginBtn.backgroundColor = UIRGBColor(19, 32, 255);

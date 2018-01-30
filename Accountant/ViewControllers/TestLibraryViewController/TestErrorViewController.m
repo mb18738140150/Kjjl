@@ -238,6 +238,7 @@
     
     [self.scrollView addSubview:self.simulateTableView];
     
+    __weak TestErrorViewController *weakSelf = self;
     CGRect tableViewRect = CGRectMake(0, 0, kScreenWidth, kScreenHeight - kNavigationBarHeight - kStatusBarHeight - 37);
     self.tableView = [[UITableView alloc] initWithFrame:tableViewRect style:UITableViewStylePlain];
     self.tableView.delegate = self;
@@ -245,7 +246,7 @@
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.tableView registerClass:[CategoryDetailTableViewCell class] forCellReuseIdentifier:kCategoryDetailCellId];
     self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
-        [self startRequest];
+        [weakSelf startRequest];
     }];
     
     [self.scrollView addSubview:self.tableView];
@@ -253,7 +254,6 @@
     self.failView = [[FailView alloc]initWithFrame:CGRectMake(0, kSegmentHeight + 37, kScreenWidth, kScreenHeight - kNavigationBarHeight - kStatusBarHeight)];
     [self.view addSubview:self.failView];
     self.failView.hidden = YES;
-    __weak TestErrorViewController *weakSelf = self;
     self.failView.refreshBlock = ^(){
         [weakSelf startRequest];
     };

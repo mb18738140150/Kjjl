@@ -81,6 +81,8 @@
         self.iconImageView.image = [UIImage imageNamed:@"simulateresult_no"];
     }
     
+    self.iconImageView.image = [UIImage imageNamed:@"icon1题库"];
+    
 }
 
 - (NSString *)getCreatTimeStr

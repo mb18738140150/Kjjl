@@ -2197,8 +2197,6 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
     NSMutableDictionary * infoDic = [[NSMutableDictionary alloc]initWithDictionary:self.selectOrderLivingSectionInfoDic];
     [infoDic setObject:@1 forKey:kLivingState];
     [self refreshWith:infoDic];
-    
-    
 }
 
 - (void)didRequestOrderLivingFailed:(NSString *)failedInfo
@@ -2268,7 +2266,6 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
         case 1:
             [self addLocalNotification:self.infoDic];
             break;
-            
         default:
             break;
     }

@@ -12,7 +12,7 @@
 #import "HYSegmentedControl.h"
 #import "ProblemContentViewController.h"
 
-@interface AssistantViewController ()<UITextViewDelegate,UIWebViewDelegate,UserModule_SubmitOperationProtocol,HYSegmentedControlDelegate,UITableViewDelegate,UITableViewDataSource>
+@interface AssistantViewController ()<UITextViewDelegate,UIWebViewDelegate,UserModule_SubmitOperationProtocol,HYSegmentedControlDelegate,UITableViewDelegate,UITableViewDataSource,UserModule_AssistantCenterProtocol>
 
 @property (nonatomic, strong)MKPPlaceholderTextView * opinionTextView;
 @property (nonatomic, strong)UIControl * control;
@@ -30,7 +30,7 @@
     
     [self navigationViewSetup];
     [self prepareUI];
-    
+    [self getAssistantLiat];
 }
 
 - (void)navigationViewSetup
@@ -152,6 +152,21 @@
     [assistantBtn addTarget:self action:@selector(assistantAction) forControlEvents:UIControlEventTouchUpInside];
     
     [self addHelpView];
+    
+}
+
+- (void)getAssistantLiat
+{
+    [[UserManager sharedManager] didRequestAssistantWithInfo:@{} withNotifiedObject:self];
+}
+
+
+- (void)didRequestAssistantCenterSuccessed
+{
+    
+}
+- (void)didRequestAssistantCenterFailed:(NSString *)failedInfo
+{
     
 }
 

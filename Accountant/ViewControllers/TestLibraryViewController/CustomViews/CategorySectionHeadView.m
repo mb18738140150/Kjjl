@@ -166,7 +166,7 @@
     NSInteger totalCount = [countArray[1] integerValue];
     
     self.learnProcessView.progress = writeCount * 1.0 / totalCount;
-    self.totalCountLB.text = [NSString stringWithFormat:@"%d", totalCount];
+    self.totalCountLB.text = [NSString stringWithFormat:@"%ld", totalCount];
     if (sectionState == MFoldingSectionStateShow) {
         self.lineView.alpha = 1;
         
@@ -258,6 +258,11 @@
         }
     }
     
+    self.showStateImageView.hidden = YES;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.titleLabel.hd_x = 15;
+        self.titleLabel.hd_centerY = self.bounds.size.height / 2;
+    });
     self.questionCountLabel.hidden = YES;
     self.learnPepleCountLB.hidden = YES;
     self.learnProcessView.hidden = YES;
@@ -267,7 +272,6 @@
 
 -(void)setupSubviewsWithArrowPosition:(MFoldingSectionHeaderArrowPosition)arrowPosition
 {
-    
     [self removeAllSubviews];
     
     CGFloat labelWidth = [UIScreen mainScreen].bounds.size.width-45;
@@ -296,7 +300,7 @@
     [self addGestureRecognizer:self.tapGesture];
     [self addSubview:self.totalCountLB];
     
-    self.learnProcessView = [[ProcessView alloc]initWithFrame:CGRectMake(titleRect.origin.x, self.frame.size.height - 13, 230, 5)];
+    self.learnProcessView = [[ProcessView alloc]initWithFrame:CGRectMake(titleRect.origin.x, self.frame.size.height - 13, 230, 3)];
     [self addSubview:self.learnProcessView];
     
     self.lineView = [[UIView alloc] initWithFrame:CGRectMake(25, 30, 0.7, self.frame.size.height - 30)];

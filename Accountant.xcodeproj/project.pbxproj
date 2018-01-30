@@ -40,6 +40,7 @@
 		000E8ED21E825FBD00842562 /* YUFoldingSectionHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 000E8ECE1E825FBD00842562 /* YUFoldingSectionHeader.m */; };
 		000E8ED31E825FBD00842562 /* YUFoldingTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 000E8ED01E825FBD00842562 /* YUFoldingTableView.m */; };
 		000E8EE11E82770300842562 /* TestChapterQuestionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 000E8EE01E82770300842562 /* TestChapterQuestionViewController.m */; };
+		000FB20A201C2811005A5AD4 /* CourseSectionTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 000FB209201C2811005A5AD4 /* CourseSectionTableViewCell.m */; };
 		001570711F7E36A200E79EE6 /* 140-140.png in Resources */ = {isa = PBXBuildFile; fileRef = 001570701F7E36A200E79EE6 /* 140-140.png */; };
 		00181CAF1FAAC4A700D40F08 /* BindRegCodeOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 00181CAE1FAAC4A700D40F08 /* BindRegCodeOperation.m */; };
 		00181CB31FAAEE8C00D40F08 /* VideoFunctionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 00181CB21FAAEE8C00D40F08 /* VideoFunctionView.m */; };
@@ -618,6 +619,14 @@
 		005A44681FB1516400916D89 /* BuyMemberSort.m in Sources */ = {isa = PBXBuildFile; fileRef = 005A44671FB1516400916D89 /* BuyMemberSort.m */; };
 		005A446B1FB1566C00916D89 /* ldsx@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 005A44691FB1566C00916D89 /* ldsx@2x.png */; };
 		005A446C1FB1566C00916D89 /* ldsx@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 005A446A1FB1566C00916D89 /* ldsx@3x.png */; };
+		005A7027201EEE0800C57B7C /* hot@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 005A701F201EEE0800C57B7C /* hot@2x.png */; };
+		005A7028201EEE0800C57B7C /* hot@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 005A7020201EEE0800C57B7C /* hot@3x.png */; };
+		005A7029201EEE0800C57B7C /* kctp@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 005A7021201EEE0800C57B7C /* kctp@2x.png */; };
+		005A702A201EEE0800C57B7C /* kctp@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 005A7022201EEE0800C57B7C /* kctp@3x.png */; };
+		005A702B201EEE0800C57B7C /* trankle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 005A7023201EEE0800C57B7C /* trankle@2x.png */; };
+		005A702C201EEE0800C57B7C /* trankle@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 005A7024201EEE0800C57B7C /* trankle@3x.png */; };
+		005A702D201EEE0800C57B7C /* trankle_s@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 005A7025201EEE0800C57B7C /* trankle_s@2x.png */; };
+		005A702E201EEE0800C57B7C /* trankle_s@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 005A7026201EEE0800C57B7C /* trankle_s@3x.png */; };
 		005CE5991F736BB900324B31 /* LivingSectionDetailOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 005CE5981F736BB900324B31 /* LivingSectionDetailOperation.m */; };
 		005CE59C1F73926000324B31 /* ShakeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 005CE59B1F73926000324B31 /* ShakeView.m */; };
 		005CE5A01F73B01D00324B31 /* LivingSectionDetailTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 005CE59E1F73B01D00324B31 /* LivingSectionDetailTableViewCell.m */; };
@@ -678,6 +687,8 @@
 		00608586201329CC00F3E015 /* DailyPracticeOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 00608585201329CC00F3E015 /* DailyPracticeOperation.m */; };
 		0060858920132B0500F3E015 /* DailyPracticeQuestionOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 0060858820132B0500F3E015 /* DailyPracticeQuestionOperation.m */; };
 		0061228E1FFF23920096B6A2 /* LivingCourseBackDownLoadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0061228D1FFF23920096B6A2 /* LivingCourseBackDownLoadViewController.m */; };
+		00613BF6201AC3E000AA6264 /* icon1题库@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 00613BF4201AC3E000AA6264 /* icon1题库@2x.png */; };
+		00613BF7201AC3E000AA6264 /* icon1题库@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 00613BF5201AC3E000AA6264 /* icon1题库@3x.png */; };
 		0061677C1FB3DD1600394E30 /* MSegmentControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 0061677B1FB3DD1600394E30 /* MSegmentControl.m */; };
 		006167861FB3E17C00394E30 /* icon_bq@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0061677E1FB3E17C00394E30 /* icon_bq@2x.png */; };
 		006167871FB3E17C00394E30 /* icon_bq@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0061677F1FB3E17C00394E30 /* icon_bq@3x.png */; };
@@ -1201,6 +1212,8 @@
 		000E8ED01E825FBD00842562 /* YUFoldingTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YUFoldingTableView.m; sourceTree = "<group>"; };
 		000E8EDF1E82770300842562 /* TestChapterQuestionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestChapterQuestionViewController.h; sourceTree = "<group>"; };
 		000E8EE01E82770300842562 /* TestChapterQuestionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestChapterQuestionViewController.m; sourceTree = "<group>"; };
+		000FB208201C2811005A5AD4 /* CourseSectionTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CourseSectionTableViewCell.h; sourceTree = "<group>"; };
+		000FB209201C2811005A5AD4 /* CourseSectionTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CourseSectionTableViewCell.m; sourceTree = "<group>"; };
 		001570701F7E36A200E79EE6 /* 140-140.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "140-140.png"; sourceTree = "<group>"; };
 		00181CAD1FAAC4A700D40F08 /* BindRegCodeOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BindRegCodeOperation.h; sourceTree = "<group>"; };
 		00181CAE1FAAC4A700D40F08 /* BindRegCodeOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BindRegCodeOperation.m; sourceTree = "<group>"; };
@@ -2015,6 +2028,14 @@
 		005A44671FB1516400916D89 /* BuyMemberSort.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BuyMemberSort.m; sourceTree = "<group>"; };
 		005A44691FB1566C00916D89 /* ldsx@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ldsx@2x.png"; sourceTree = "<group>"; };
 		005A446A1FB1566C00916D89 /* ldsx@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ldsx@3x.png"; sourceTree = "<group>"; };
+		005A701F201EEE0800C57B7C /* hot@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "hot@2x.png"; sourceTree = "<group>"; };
+		005A7020201EEE0800C57B7C /* hot@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "hot@3x.png"; sourceTree = "<group>"; };
+		005A7021201EEE0800C57B7C /* kctp@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "kctp@2x.png"; sourceTree = "<group>"; };
+		005A7022201EEE0800C57B7C /* kctp@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "kctp@3x.png"; sourceTree = "<group>"; };
+		005A7023201EEE0800C57B7C /* trankle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "trankle@2x.png"; sourceTree = "<group>"; };
+		005A7024201EEE0800C57B7C /* trankle@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "trankle@3x.png"; sourceTree = "<group>"; };
+		005A7025201EEE0800C57B7C /* trankle_s@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "trankle_s@2x.png"; sourceTree = "<group>"; };
+		005A7026201EEE0800C57B7C /* trankle_s@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "trankle_s@3x.png"; sourceTree = "<group>"; };
 		005CE5971F736BB900324B31 /* LivingSectionDetailOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LivingSectionDetailOperation.h; sourceTree = "<group>"; };
 		005CE5981F736BB900324B31 /* LivingSectionDetailOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LivingSectionDetailOperation.m; sourceTree = "<group>"; };
 		005CE59A1F73926000324B31 /* ShakeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShakeView.h; sourceTree = "<group>"; };
@@ -2094,6 +2115,8 @@
 		0060858820132B0500F3E015 /* DailyPracticeQuestionOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DailyPracticeQuestionOperation.m; sourceTree = "<group>"; };
 		0061228C1FFF23920096B6A2 /* LivingCourseBackDownLoadViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LivingCourseBackDownLoadViewController.h; sourceTree = "<group>"; };
 		0061228D1FFF23920096B6A2 /* LivingCourseBackDownLoadViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LivingCourseBackDownLoadViewController.m; sourceTree = "<group>"; };
+		00613BF4201AC3E000AA6264 /* icon1题库@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon1题库@2x.png"; sourceTree = "<group>"; };
+		00613BF5201AC3E000AA6264 /* icon1题库@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon1题库@3x.png"; sourceTree = "<group>"; };
 		0061677A1FB3DD1600394E30 /* MSegmentControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSegmentControl.h; sourceTree = "<group>"; };
 		0061677B1FB3DD1600394E30 /* MSegmentControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSegmentControl.m; sourceTree = "<group>"; };
 		0061677E1FB3E17C00394E30 /* icon_bq@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_bq@2x.png"; sourceTree = "<group>"; };
@@ -4047,6 +4070,8 @@
 				005538371EF4C6CF00097978 /* tiku-bg22@3x.png */,
 				003E62D32011E70F0002ED07 /* icon_cuo@2x.png */,
 				003E62D42011E70F0002ED07 /* icon_cuo@3x.png */,
+				00613BF4201AC3E000AA6264 /* icon1题库@2x.png */,
+				00613BF5201AC3E000AA6264 /* icon1题库@3x.png */,
 				003E62D52011E70F0002ED07 /* icon_mei@2x.png */,
 				003E62D62011E70F0002ED07 /* icon_mei@3x.png */,
 				003E62D72011E70F0002ED07 /* icon_mo@2x.png */,
@@ -4392,6 +4417,7 @@
 		0056E0051EF3742D00656BFE /* 课程 */ = {
 			isa = PBXGroup;
 			children = (
+				005A701E201EEE0800C57B7C /* course_main */,
 				006E6DEA1FC3C128008EF66D /* pay */,
 				0061677D1FB3E17C00394E30 /* memberDetail */,
 				005A444D1FB14D5100916D89 /* buyMember */,
@@ -4437,6 +4463,21 @@
 				005A44591FB14D5100916D89 /* zygh@3x.png */,
 			);
 			path = buyMember;
+			sourceTree = "<group>";
+		};
+		005A701E201EEE0800C57B7C /* course_main */ = {
+			isa = PBXGroup;
+			children = (
+				005A701F201EEE0800C57B7C /* hot@2x.png */,
+				005A7020201EEE0800C57B7C /* hot@3x.png */,
+				005A7021201EEE0800C57B7C /* kctp@2x.png */,
+				005A7022201EEE0800C57B7C /* kctp@3x.png */,
+				005A7023201EEE0800C57B7C /* trankle@2x.png */,
+				005A7024201EEE0800C57B7C /* trankle@3x.png */,
+				005A7025201EEE0800C57B7C /* trankle_s@2x.png */,
+				005A7026201EEE0800C57B7C /* trankle_s@3x.png */,
+			);
+			path = course_main;
 			sourceTree = "<group>";
 		};
 		005DF5811F0C930E00F93DA1 /* Jpush */ = {
@@ -5492,6 +5533,8 @@
 				005CE59B1F73926000324B31 /* ShakeView.m */,
 				005E5F2C1F7CF2A200557FBD /* MonthSelectView.h */,
 				005E5F2D1F7CF2A200557FBD /* MonthSelectView.m */,
+				000FB208201C2811005A5AD4 /* CourseSectionTableViewCell.h */,
+				000FB209201C2811005A5AD4 /* CourseSectionTableViewCell.m */,
 			);
 			path = cells;
 			sourceTree = "<group>";
@@ -5623,6 +5666,7 @@
 				005538791EF4C6CF00097978 /* tiku-ridus@3x.png in Resources */,
 				003AC41E1E667DBD00713502 /* zx-video-player-volumeMute@2x.png in Resources */,
 				004643511F8DB1F9001AD03C /* 形状-up@2x.png in Resources */,
+				005A7027201EEE0800C57B7C /* hot@2x.png in Resources */,
 				006065E81FDF7E7D00D5E813 /* StudyPlanDerectionTableViewCell.xib in Resources */,
 				006596361F8CC7A5002DFD90 /* main_playTime@3x.png in Resources */,
 				00D747CB1F580B5B00F34756 /* message_tip@2x.png in Resources */,
@@ -5699,6 +5743,7 @@
 				005538721EF4C6CF00097978 /* tiku-icon1@2x.png in Resources */,
 				00366BC21FD68AB00092182A /* icon_xz@3x.png in Resources */,
 				00454CDB1EFD11CF00E32A3B /* tiku_text@2x.png in Resources */,
+				00613BF7201AC3E000AA6264 /* icon1题库@3x.png in Resources */,
 				003E62E52011E70F0002ED07 /* icon_yuan@2x.png in Resources */,
 				0068182E1FC7B36B000011AB /* icon_fy1@2x.png in Resources */,
 				00366BCD1FD68AB00092182A /* img_qbkc@2x.png in Resources */,
@@ -5795,6 +5840,7 @@
 				00AFB3A41E6F8E56003B73A6 /* bluetitle@3x.png in Resources */,
 				26E4CF481E71959400D6739F /* classIcon_2_6@2x.png in Resources */,
 				00181CC21FAAF15B00D40F08 /* btn_zixun@3x.png in Resources */,
+				005A702C201EEE0800C57B7C /* trankle@3x.png in Resources */,
 				005038AE1FD8CF35002661F2 /* bg_jfms@2x.png in Resources */,
 				005538521EF4C6CF00097978 /* tiku_夜间模式(1)@2x.png in Resources */,
 				005A446B1FB1566C00916D89 /* ldsx@2x.png in Resources */,
@@ -5808,6 +5854,7 @@
 				26E4CF561E71959400D6739F /* classIcon_4_3@2x.png in Resources */,
 				0055385F1EF4C6CF00097978 /* tiku_返回@3x.png in Resources */,
 				0048F6571FDA1E6700C82216 /* btn_lb_n@2x.png in Resources */,
+				005A702B201EEE0800C57B7C /* trankle@2x.png in Resources */,
 				00C71D361EFE455900B55B84 /* tiku_收藏-选中@3x.png in Resources */,
 				0098A63A1E70F38400D5E7E6 /* Info.plist in Resources */,
 				004643661F8E0098001AD03C /* livingCourse_time@3x.png in Resources */,
@@ -5819,6 +5866,7 @@
 				006AEEE21FD7C05100092330 /* img_bdsj@3x.png in Resources */,
 				005539091EF4DC3900097978 /* 222-2@3x.png in Resources */,
 				005538661EF4C6CF00097978 /* tiku_分享@2x.png in Resources */,
+				005A7028201EEE0800C57B7C /* hot@3x.png in Resources */,
 				005539481EF4DD9E00097978 /* 消息(5)@2x.png in Resources */,
 				006E6DF01FC3C128008EF66D /* payType_unSelect.png in Resources */,
 				004E774A1EF2154400DBE807 /* shouye-消息(5)@2x.png in Resources */,
@@ -5882,6 +5930,7 @@
 				005A44651FB14D5100916D89 /* zygh@3x.png in Resources */,
 				0055387B1EF4C6CF00097978 /* tiku-收藏夹@3x.png in Resources */,
 				006818451FC7B36B000011AB /* img_tx@3x.png in Resources */,
+				005A702A201EEE0800C57B7C /* kctp@3x.png in Resources */,
 				00F3629E1EFBB35B007F6819 /* main-tra2@2x.png in Resources */,
 				0055387E1EF4C6CF00097978 /* tiku-组-6@2x.png in Resources */,
 				003E62C32011D9510002ED07 /* icon_ztjl@3x.png in Resources */,
@@ -5905,8 +5954,10 @@
 				00181CC41FAAF15B00D40F08 /* img_tx@3x.png in Resources */,
 				0045C8C91F6929E700A85FA9 /* complete_QQ@2x.png in Resources */,
 				00AFB3A01E6F8D95003B73A6 /* greytitle@2x.png in Resources */,
+				005A7029201EEE0800C57B7C /* kctp@2x.png in Resources */,
 				0055384E1EF4C6CF00097978 /* tiku_解析@2x.png in Resources */,
 				00F362A11EFBB35B007F6819 /* 状态栏@3x.png in Resources */,
+				005A702D201EEE0800C57B7C /* trankle_s@2x.png in Resources */,
 				006AEEFC1FD7D43800092330 /* GetIntegralTableViewCell.xib in Resources */,
 				000A11D61E78D6A7003A6764 /* add@2x.png in Resources */,
 				00D7F2DF1E7A8E1100AE3012 /* classImg-3-4@3x.png in Resources */,
@@ -6067,6 +6118,7 @@
 				006818361FC7B36B000011AB /* icon_kc@2x.png in Resources */,
 				0055384D1EF4C6CF00097978 /* tiku_我－我的错题@3x.png in Resources */,
 				005539071EF4DC3900097978 /* 111@3x.png in Resources */,
+				005A702E201EEE0800C57B7C /* trankle_s@3x.png in Resources */,
 				007881921EF8BD2E00E3E96D /* tiku_minus@3x.png in Resources */,
 				007184161F764299001C013C /* livingState_back@2x.png in Resources */,
 				003AC4181E667DBD00713502 /* zx-video-player-rewind@2x.png in Resources */,
@@ -6157,6 +6209,7 @@
 				006AEEF11FD7C0AA00092330 /* IntegralViewController.xib in Resources */,
 				26E4CF511E71959400D6739F /* classIcon_3_4@3x.png in Resources */,
 				0056E0191EF3742D00656BFE /* course-章节@3x.png in Resources */,
+				00613BF6201AC3E000AA6264 /* icon1题库@2x.png in Resources */,
 				004E773B1EF2154400DBE807 /* shouye-6@3x.png in Resources */,
 				00F362921EFBB35B007F6819 /* main-icon2@2x.png in Resources */,
 				005539041EF4DC3900097978 /* 111-2@2x.png in Resources */,
@@ -6266,6 +6319,7 @@
 				009F32E51E810269004F41B1 /* DeleteVideoNoteOperation.m in Sources */,
 				003AC4431E667DBD00713502 /* ContentTableViewDataSource.m in Sources */,
 				00AB06D31E7D1B02000CA5D2 /* HistoryTableViewCell.m in Sources */,
+				000FB20A201C2811005A5AD4 /* CourseSectionTableViewCell.m in Sources */,
 				00A694D61E7FDC4D00A7D10D /* MyQuestionAlreadyReplyOperation.m in Sources */,
 				003AC3D21E667DBD00713502 /* AppDelegate.m in Sources */,
 				003AC3E91E667DBD00713502 /* TAAbstractDotView.m in Sources */,

@@ -10,6 +10,8 @@
 
 @interface CourseTableViewCell : UITableViewCell
 
+@property (nonatomic, assign)BOOL isVideoCourse;
+
 - (void)resetCellContentWithTwoCourseInfo:(NSArray *)infoArray;
 
 - (void)resetCellContentWithOneCourseInfo:(NSArray *)infoArray;

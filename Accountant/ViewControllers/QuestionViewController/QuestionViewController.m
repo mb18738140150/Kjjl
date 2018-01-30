@@ -80,6 +80,14 @@
 
 - (void)publishQuestion
 {
+    if (![[UserManager sharedManager] isUserLogin]) {
+        [SVProgressHUD showErrorWithStatus:@"请先登录"];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [SVProgressHUD dismiss];
+        });
+        return;
+    }
+    
     PublishQuestionViewController *vc = [[PublishQuestionViewController alloc] init];
     UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:nil action:nil];
     vc.hidesBottomBarWhenPushed = YES;

@@ -50,6 +50,8 @@
 #define kCourseSecondID           @"courseSecondID"
 #define kCourseCategorySecondCourseInfos      @"courseCategorySecondCourseInfos"
 
+#define kIsFold                 @"isFold"
+
 #define kChapterName        @"chapterName"
 #define kChapterURL         @"chapterURLString"
 #define kChapterId          @"chapterId"

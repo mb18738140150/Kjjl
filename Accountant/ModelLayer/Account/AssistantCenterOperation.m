@@ -19,6 +19,22 @@
 
 @implementation AssistantCenterOperation
 
+- (NSMutableArray *)assistantList
+{
+    if (!_assistantList) {
+        _assistantList = [NSMutableArray array];
+    }
+    return _assistantList;
+}
+
+- (NSMutableArray *)telephoneNumberList
+{
+    if (!_telephoneNumberList) {
+        _telephoneNumberList = [NSMutableArray array];
+    }
+    return _telephoneNumberList;
+}
+
 - (void)didRequestAssistantWithInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_AssistantCenterProtocol>)object
 {
     self.notifiedObject = object;
@@ -37,7 +53,6 @@
     for (NSString * telStr in telList) {
         [self.telephoneNumberList addObject:telStr];
     }
-    
     
     if (isObjectNotNil(self.notifiedObject)) {
         [self.notifiedObject didRequestAssistantCenterSuccessed];

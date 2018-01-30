@@ -64,7 +64,7 @@
     }
     
     if (indexPath.section == self.selectedSection && self.selectedRow == indexPath.row) {
-        cell.titleLabel.textColor = kCommonMainColor;
+        cell.titleLabel.textColor = UIColorFromRGB(0xff740e);
     }else
     {
         cell.titleLabel.textColor = kCommonMainTextColor_50;

@@ -187,6 +187,7 @@
 
 - (void)contentViewInit
 {
+    __weak typeof(self)weakSelf = self;
     CGRect tableViewRect = CGRectMake(0, 0, kScreenWidth, kScreenHeight - kNavigationBarHeight - kStatusBarHeight);
     self.contentTableView = [[UITableView alloc] initWithFrame:tableViewRect style:UITableViewStylePlain];
     self.contentTableView.delegate = self;
@@ -194,7 +195,7 @@
     self.contentTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.contentTableView registerClass:[CategoryDetailTableViewCell class] forCellReuseIdentifier:kCategoryDetailCellId];
     self.contentTableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
-        [self startRequest];
+        [weakSelf startRequest];
     }];
     
     [self.view addSubview:self.contentTableView];
@@ -202,7 +203,6 @@
     self.failView = [[FailView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, kScreenHeight - kNavigationBarHeight - kStatusBarHeight)];
     [self.view addSubview:self.failView];
     self.failView.hidden = YES;
-    __weak TestListViewController *weakSelf = self;
     self.failView.refreshBlock = ^(){
         [weakSelf startRequest];
     };
@@ -263,6 +263,7 @@
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
+    
     CategorySectionHeadView * view = [[CategorySectionHeadView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, 64) withTag:section];
     
     BOOL currentIsOpen = ((NSNumber *)self.statusArray[section]).boolValue;
@@ -335,7 +336,6 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    
     CategoryDetailTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:kCategoryDetailCellId forIndexPath:indexPath];
     //    NSDictionary *dic = [self.testChapterInfoArray objectAtIndex:indexPath.section];
     //    NSArray *array = [dic objectForKey:kTestChapterSectionArray];
@@ -366,7 +366,6 @@
                 if ([[infoDic objectForKey:kTestSectionId] isEqual:[secDic objectForKey:kTestSectionId]]) {
                     [secDic setValue:[infoDic objectForKey:@"currentIndex"] forKey:@"currentIndex"];
                 }
-                
             }
             
             break;
@@ -457,6 +456,12 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)dealloc
+{
+    NSLog(@"章节练习界面销毁了******");
+    
 }
 
 /*

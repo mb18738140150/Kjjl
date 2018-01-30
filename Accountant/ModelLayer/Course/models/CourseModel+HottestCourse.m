@@ -106,6 +106,15 @@
             self.lastTime = [dicInfo objectForKey:@"lastTime"];
         }
         
+        self.price = [[dicInfo objectForKey:@"price"] doubleValue];
+        if ([[dicInfo objectForKey:@"price"] isKindOfClass:[NSNull class]]) {
+            self.price = 0;
+        }
+        
+        self.oldPrice = [[dicInfo objectForKey:@"oldPrice"] intValue];
+        if ([[dicInfo objectForKey:@"oldPrice"] isKindOfClass:[NSNull class]]) {
+            self.oldPrice = 0;
+        }
         
     }
     return self;

@@ -69,7 +69,7 @@
     
     [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
     
-    [WXApi registerApp:@"wx6491dead226a5e8b"];
+    [WXApi registerApp:@"wx2b4e947d0cd34a16"];
     // JPush注册
     JPUSHRegisterEntity * entity = [[JPUSHRegisterEntity alloc] init];
     entity.types = JPAuthorizationOptionAlert|JPAuthorizationOptionBadge|JPAuthorizationOptionSound;

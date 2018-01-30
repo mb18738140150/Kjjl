@@ -78,7 +78,7 @@
     
     UILabel * titleLB = [[UILabel alloc]initWithFrame:CGRectMake(0, 10, kScreenWidth, 15)];
     titleLB.text = @"在线咨询";
-    titleLB.textColor = kMainTextColor;
+    titleLB.textColor = UIColorFromRGB(0xff750d);
     titleLB.font = kMainFont;
     titleLB.textAlignment = 1;
     [headView addSubview:titleLB];
