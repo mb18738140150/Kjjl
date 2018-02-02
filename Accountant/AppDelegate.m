@@ -139,7 +139,37 @@
         }
     }
     
+    [self reloadBasicData];
+    
     return YES;
+}
+
+- (void)reloadBasicData
+{
+    [self getMemberLevelDetail];
+    [self getCommonProblemList];
+    [self getAssistantLiat];
+    [self getLivingBackYearList];
+}
+
+- (void)getMemberLevelDetail
+{
+    [[UserManager sharedManager] didRequestLevelDetailWithNotifiedObject:nil];
+}
+
+- (void)getCommonProblemList
+{
+    [[UserManager sharedManager] didRequestCommonProblemWithInfo:@{} withNotifiedObject:nil];
+}
+
+- (void)getAssistantLiat
+{
+    [[UserManager sharedManager] didRequestAssistantWithInfo:@{} withNotifiedObject:nil];
+}
+
+- (void)getLivingBackYearList
+{
+    [[UserManager sharedManager]didRequestLivingBackYearListWithInfo:@{} withNotifiedObject:nil];
 }
 
 - (void)pushLoginVC

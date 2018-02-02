@@ -237,7 +237,12 @@
 
 - (void)shikanAction
 {
-    self.shikanBtn.hidden = NO;
+    if (![[UserManager sharedManager] isUserLogin]) {
+        [self lockVideo];
+    }else
+    {
+        self.shikanBtn.hidden = NO;
+    }
 }
 
 - (void)shikan

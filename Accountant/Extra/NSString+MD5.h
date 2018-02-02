@@ -18,4 +18,6 @@
 
 + (int )getCurrentMonth;
 
++ (int )getCurrentYear;
+
 @end

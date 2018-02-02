@@ -16,7 +16,7 @@
 #import "VerifyAccountViewController.h"
 #define kImageWidth 25
 
-@interface LoginViewController ()<UITextFieldDelegate,UserModule_LoginProtocol,UserModule_BindJPushProtocol,UserModule_LevelDetailProtocol,UserModule_CommonProblem,UserModule_AssistantCenterProtocol>
+@interface LoginViewController ()<UITextFieldDelegate,UserModule_LoginProtocol,UserModule_BindJPushProtocol,UserModule_LevelDetailProtocol,UserModule_CommonProblem,UserModule_AssistantCenterProtocol,UserModule_LivingBackYearList>
 
 @property (nonatomic,strong) UITextField                *account;
 @property (nonatomic,strong) UITextField                *password;
@@ -369,6 +369,7 @@
         [self getMemberLevelDetail];
         [self getCommonProblemList];
         [self getAssistantLiat];
+        [self getLivingBackYearList];
         
         if ([[NSUserDefaults standardUserDefaults] objectForKey:@"registrationID"]) {
             NSString *registrationID = [[NSUserDefaults standardUserDefaults] objectForKey:@"registrationID"];
@@ -441,6 +442,10 @@
     [[UserManager sharedManager] didRequestAssistantWithInfo:@{} withNotifiedObject:self];
 }
 
+- (void)getLivingBackYearList
+{
+    [[UserManager sharedManager]didRequestLivingBackYearListWithInfo:@{} withNotifiedObject:self];
+}
 
 - (void)didRequestLevelDetailSuccessed
 {
@@ -478,6 +483,16 @@
 }
 
 - (void)didRequestAssistantCenterFailed:(NSString *)failedInfo
+{
+    
+}
+
+- (void)didRequestLivingBackYearListSuccessed
+{
+    
+}
+
+- (void)didRequestLivingBackYearListFailed:(NSString *)failedInfo
 {
     
 }

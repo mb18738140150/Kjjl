@@ -106,7 +106,7 @@
     [self.navigationController.navigationBar setBackgroundImage:[self imageWithColor:[UIRGBColor(19, 0, 160) colorWithAlphaComponent:alpha]] forBarMetrics:UIBarMetricsDefault];
     [super viewWillAppear:animated];
     
-    [[CourseraManager sharedManager]didRequestNotStartLivingCourseWithInfo:@{@"Month":@([NSString getCurrentMonth])} NotifiedObject:self];
+    [[CourseraManager sharedManager]didRequestNotStartLivingCourseWithInfo:@{@"Month":@([NSString getCurrentMonth]),@"year":[NSString stringWithFormat:@"%d", [NSString getCurrentYear]]} NotifiedObject:self];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -126,7 +126,7 @@
     [[CourseraManager sharedManager] didRequestAllCourseCategoryWithNotifiedObject:self];
     [[QuestionManager sharedManager] didRequestMainPageQuestionRequestWithNotifiedObject:self];
     
-    [[CourseraManager sharedManager]didRequestNotStartLivingCourseWithInfo:@{@"Month":@([NSString getCurrentMonth])} NotifiedObject:self];
+    [[CourseraManager sharedManager]didRequestNotStartLivingCourseWithInfo:@{@"Month":@([NSString getCurrentMonth]),@"year":[NSString stringWithFormat:@"%d", [NSString getCurrentYear]]} NotifiedObject:self];
     [[UserManager sharedManager] didRequestAssistantWithInfo:@{} withNotifiedObject:nil];
     [[UserManager sharedManager]didRequestLevelDetailWithNotifiedObject:self];
 }
@@ -368,7 +368,7 @@
     __weak typeof(self)weakSelf = self;
     
     self.contentTableSource.mainCountDownBlock = ^{
-        [[CourseraManager sharedManager]didRequestNotStartLivingCourseWithInfo:@{@"Month":@([NSString getCurrentMonth])} NotifiedObject:weakSelf];
+        [[CourseraManager sharedManager]didRequestNotStartLivingCourseWithInfo:@{@"Month":@([NSString getCurrentMonth]),@"year":[NSString stringWithFormat:@"%d", [NSString getCurrentYear]]} NotifiedObject:weakSelf];
     };
     
     self.contentTableSource.mainMoreCourseBlock = ^{

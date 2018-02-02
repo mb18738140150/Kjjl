@@ -13,6 +13,8 @@
 @interface MonthSelectView ()<UICollectionViewDelegate, UICollectionViewDataSource,UICollectionViewDelegateFlowLayout>
 
 @property (nonatomic, strong)UICollectionView *collectionView;
+@property (nonatomic, strong)UITableView * tableView;
+@property (nonatomic, strong)UIButton * yearBtn;
 
 @end
 
@@ -29,6 +31,13 @@
 
 - (void)prepareUI
 {
+    self.yearBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.yearBtn.frame = CGRectMake(10, 0, 50, 35);
+    [self.yearBtn setTitle:[NSString stringWithFormat:@"%d",[NSString getCurrentYear]] forState:UIControlStateNormal];
+    [self.yearBtn setTitleColor:kCommonMainColor forState:UIControlStateNormal];
+    [self addSubview:self.yearBtn];
+    [self.yearBtn addTarget:self action:@selector(showYearsList) forControlEvents:UIControlEventTouchUpInside];
+    
     self.selectIndexpath = [NSIndexPath indexPathForRow:0 inSection:0];
     
     UICollectionViewFlowLayout * layout = [[UICollectionViewFlowLayout alloc]init];
@@ -37,7 +46,7 @@
     layout.minimumInteritemSpacing = 0;
     layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
     
-    self.collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(10, 0, kScreenWidth - 20, 35) collectionViewLayout:layout];
+    self.collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(60, 0, kScreenWidth - 20 - 60, 35) collectionViewLayout:layout];
     self.collectionView.delegate = self;
     self.collectionView.dataSource = self;
     self.collectionView.backgroundColor = [UIColor whiteColor];
@@ -56,21 +65,18 @@
     [self.collectionView reloadData];
 }
 
+#pragma collection delegate
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    return 9;
+    return 12;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     LivingCourseCollectionViewCell * cell = [collectionView dequeueReusableCellWithReuseIdentifier:kLivingCourseCollectionViewCellId forIndexPath:indexPath];
     NSString * title = @"";
-    if (indexPath.item == 0) {
-        title = @"2017";
-    }else
-    {
-        title = [NSString stringWithFormat:@"%ld月", (long)indexPath.row + 4];
-    }
+    
+    title = [NSString stringWithFormat:@"%ld月", (long)indexPath.row + 1];
     [cell resetTitleWith:title];
     if ([self.selectIndexpath isEqual:indexPath]) {
         cell.titleLabel.textColor = kCommonMainColor;
@@ -86,14 +92,23 @@
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     self.selectIndexpath = indexPath;
-    int item = indexPath.item;
-    if (indexPath.item > 0) {
-        item = indexPath.item + 4;
-    }
+    int item = indexPath.item + 1;
     if (self.MonthSelectBlock) {
         self.MonthSelectBlock(item);
     }
     [self.collectionView reloadData];
+}
+#pragma mark - tableViewdelegate
+- (void)showYearsList
+{
+    if (self.YearSelectBlock) {
+        self.YearSelectBlock(self.yearBtn.titleLabel.text);
+    }
+}
+
+- (void)setyearTitle:(NSString *)yearStr
+{
+    [self.yearBtn setTitle:yearStr forState:UIControlStateNormal];
 }
 
 

@@ -564,6 +564,7 @@
 		00553D991F3C3F0A00337D4C /* 已结束@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 00553D951F3C3F0A00337D4C /* 已结束@3x.png */; };
 		00553D9A1F3C3F0A00337D4C /* 已结束2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 00553D961F3C3F0A00337D4C /* 已结束2x.png */; };
 		0055597D1F6A50A000C4702D /* LivingStateView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0055597C1F6A50A000C4702D /* LivingStateView.m */; };
+		00560A50202164FB00DD468D /* LivingBackYearListOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 00560A4F202164FB00DD468D /* LivingBackYearListOperation.m */; };
 		0056215B1F1065A200E447A8 /* HotSearchOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 0056215A1F1065A200E447A8 /* HotSearchOperation.m */; };
 		0056215D1F10736B00E447A8 /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 0056215C1F10736B00E447A8 /* logo.png */; };
 		005672C51E768526000120D9 /* QuestionPublishOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 005672C41E768526000120D9 /* QuestionPublishOperation.m */; };
@@ -1956,6 +1957,8 @@
 		00553D961F3C3F0A00337D4C /* 已结束2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "已结束2x.png"; sourceTree = "<group>"; };
 		0055597B1F6A50A000C4702D /* LivingStateView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LivingStateView.h; sourceTree = "<group>"; };
 		0055597C1F6A50A000C4702D /* LivingStateView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LivingStateView.m; sourceTree = "<group>"; };
+		00560A4E202164FB00DD468D /* LivingBackYearListOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LivingBackYearListOperation.h; sourceTree = "<group>"; };
+		00560A4F202164FB00DD468D /* LivingBackYearListOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LivingBackYearListOperation.m; sourceTree = "<group>"; };
 		005621591F1065A200E447A8 /* HotSearchOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HotSearchOperation.h; sourceTree = "<group>"; };
 		0056215A1F1065A200E447A8 /* HotSearchOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HotSearchOperation.m; sourceTree = "<group>"; };
 		0056215C1F10736B00E447A8 /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo.png; sourceTree = "<group>"; };
@@ -4567,6 +4570,8 @@
 				00BF76F6200845870010DF79 /* SubmitOpinionOperation.m */,
 				00750615201587750019FC49 /* CommonProblemOperation.h */,
 				00750616201587750019FC49 /* CommonProblemOperation.m */,
+				00560A4E202164FB00DD468D /* LivingBackYearListOperation.h */,
+				00560A4F202164FB00DD468D /* LivingBackYearListOperation.m */,
 			);
 			name = operations;
 			sourceTree = "<group>";
@@ -6434,6 +6439,7 @@
 				005E08B61F1EE22500977F02 /* RCDCustomerServiceViewController.m in Sources */,
 				005A444C1FB1429500916D89 /* MemberIntroduceTableViewCell.m in Sources */,
 				003AC3EA1E667DBD00713502 /* TAAnimatedDotView.m in Sources */,
+				00560A50202164FB00DD468D /* LivingBackYearListOperation.m in Sources */,
 				009F32D61E80B81A004F41B1 /* SubCategoryCollectionViewCell.m in Sources */,
 				003AC42D1E667DBD00713502 /* CourseModuleModel.m in Sources */,
 				0059865F1F67E6FB00C864DC /* ForgetPasswordViewController.m in Sources */,
@@ -6893,6 +6899,7 @@
 				CODE_SIGN_ENTITLEMENTS = Accountant/kjjj.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = 3GW3ZFKCPR;
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Accountant/Frameworks/IMKit",
@@ -6913,7 +6920,7 @@
 					"$(PROJECT_DIR)/Accountant/ViewControllers/MainViewController/聊天室/Live/UCLOUD",
 					"$(PROJECT_DIR)/Accountant/Frameworks/OpenSDK1.8.1",
 				);
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"-Objc",
 					"-all_load",
@@ -6934,6 +6941,7 @@
 				CODE_SIGN_ENTITLEMENTS = Accountant/kjjj.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = 3GW3ZFKCPR;
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Accountant/Frameworks/IMKit",
@@ -6954,7 +6962,7 @@
 					"$(PROJECT_DIR)/Accountant/ViewControllers/MainViewController/聊天室/Live/UCLOUD",
 					"$(PROJECT_DIR)/Accountant/Frameworks/OpenSDK1.8.1",
 				);
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"-Objc",
 					"-all_load",

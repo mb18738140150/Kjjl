@@ -159,6 +159,10 @@
 
 - (void)requestCommonProblemWithProcessDelegate:(id<HttpRequestProtocol>)delegate;
 
+- (void)requestLivingBackYearListWithInfoDic:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate;
+
+
+
 #pragma mark - 未使用
 - (void)requestSearchKeyWord:(NSString *)keyWords;
 @end

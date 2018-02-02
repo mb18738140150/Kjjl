@@ -15,6 +15,7 @@
     if (self = [super init]) {
         self.courseName = [dicInfo objectForKey:@"courseName"];
         
+        self.name = @"";
         if (![[dicInfo objectForKey:@"name"] isKindOfClass:[NSNull class]] && [dicInfo objectForKey:@"name"]) {
             self.name = [dicInfo objectForKey:@"name"];
         }

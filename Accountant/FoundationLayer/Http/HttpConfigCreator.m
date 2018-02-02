@@ -474,7 +474,8 @@
     NSDictionary *dic = @{kCommand:kCommandGetLiveingCourse,
                           @"userId":@"0",
                           @"Type":@(2),
-                          @"Month":[infoDic objectForKey:@"Month"]};
+                          @"Month":[infoDic objectForKey:@"Month"],
+                          @"Year":[infoDic objectForKey:@"year"]};
     [self setConfigModel:c withInfo:dic];
     return c;
 }
@@ -740,6 +741,14 @@
                           @"type":@"dailyPractice",
                           @"category":[infoDic objectForKey:@"category"]};
     [self setKJBConfigModel:c withInfo:dic];
+    return c;
+}
+
++ (HttpConfigModel *)getLivingBackYearWithInfo:(NSDictionary *)infoDic
+{
+    HttpConfigModel *c = [[HttpConfigModel alloc] init];
+    NSDictionary *dic = @{kCommand:kLivingBackYearList};
+    [self setConfigModel:c withInfo:dic];
     return c;
 }
 

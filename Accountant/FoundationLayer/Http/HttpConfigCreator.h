@@ -155,4 +155,6 @@
 
 + (HttpConfigModel *)testDailyPracticeQuestionWithInfo:(NSDictionary *)infoDic;
 
++ (HttpConfigModel *)getLivingBackYearWithInfo:(NSDictionary *)infoDic;
+
 @end

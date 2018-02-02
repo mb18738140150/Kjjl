@@ -30,6 +30,7 @@
 #import "MemberLevelDetail.h"
 #import "SubmitOpinionOperation.h"
 #import "CommonProblemOperation.h"
+#import "LivingBackYearListOperation.h"
 
 @interface UserManager()
 
@@ -57,6 +58,7 @@
 @property (nonatomic, strong)MemberLevelDetail          *memberLevelDetailOperation;
 @property (nonatomic, strong)SubmitOpinionOperation     *submitOpinionOperation;
 @property (nonatomic, strong)CommonProblemOperation     *commonProblemOperation;
+@property (nonatomic, strong)LivingBackYearListOperation *livingBackYearLiatOperation;
 
 @end
 
@@ -98,6 +100,7 @@
         self.memberLevelDetailOperation = [[MemberLevelDetail alloc]init];
         self.submitOpinionOperation = [[SubmitOpinionOperation alloc]init];
         self.commonProblemOperation = [[CommonProblemOperation alloc]init];
+        self.livingBackYearLiatOperation = [[LivingBackYearListOperation alloc]init];
     }
     return self;
 }
@@ -194,6 +197,11 @@
 - (void)didRequestCommonProblemWithInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_CommonProblem>)object
 {
     [self.commonProblemOperation didRequestCommonProblemWithNotifiedObject:object];
+}
+
+- (void)didRequestLivingBackYearListWithInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_LivingBackYearList>)object
+{
+    [self.livingBackYearLiatOperation didRequestLivingBackYearListWithInfo:infoDic withNotifiedObject:object];
 }
 
 - (void)logout
@@ -489,6 +497,11 @@
 - (NSArray *)getCommonProblemList
 {
     return self.commonProblemOperation.commonProblemList;
+}
+
+- (NSArray *)getLivingBackYearList
+{
+    return self.livingBackYearLiatOperation.livingBackYearList;
 }
 
 @end

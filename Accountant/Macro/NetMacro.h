@@ -10,11 +10,11 @@
 #define NetMacro_h
 
 // 会计教练
-#define kRootUrl @"http://f.kjb360.cn/kjjldata.ashx"
-//#define kRootUrl @"http://test.kjjl100.com/kjjldata.ashx"
+//#define kRootUrl @"http://f.kjb360.cn/kjjldata.ashx"
+#define kRootUrl @"http://test.kjjl100.com/kjjldata.ashx"
 // 题库
-#define kRootKJBUrl @"http://f.kjb360.cn/getdata.ashx"
-//#define kRootKJBUrl @"http://test.kjjl100.com/getdata.ashx"
+//#define kRootKJBUrl @"http://f.kjb360.cn/getdata.ashx"
+#define kRootKJBUrl @"http://test.kjjl100.com/getdata.ashx"
 #define kMD5String @"tianmingkeji"
 
 
@@ -95,5 +95,6 @@
 #define kPayOrderFromOrderList          @"56"
 #define kSubmitOpinion                  @"57"
 #define kCommonProblem                  @"58"
+#define kLivingBackYearList             @"59"
 
 #endif /* NetMacro_h */

@@ -47,7 +47,7 @@
 #define kSegmentHeight 42
 #define OrderAlerttag 2000
 
-@interface CourseCategoryViewController ()<HYSegmentedControlDelegate, UITableViewDelegate, UITableViewDataSource, CourseModule_AllCourseCategoryProtocol, CourseModule_NotStartLivingCourse, CourseModule_EndLivingCourse,UIAlertViewDelegate,CourseModule_LivingSectionDetail,UIScrollViewDelegate,UserModule_OrderLivingCourseProtocol,UserModule_CancelOrderLivingCourseProtocol,UIScrollViewDelegate>
+@interface CourseCategoryViewController ()<HYSegmentedControlDelegate, UITableViewDelegate, UITableViewDataSource, CourseModule_AllCourseCategoryProtocol, CourseModule_NotStartLivingCourse, CourseModule_EndLivingCourse,UIAlertViewDelegate,CourseModule_LivingSectionDetail,UIScrollViewDelegate,UserModule_OrderLivingCourseProtocol,UserModule_CancelOrderLivingCourseProtocol,UIScrollViewDelegate,UserModule_LivingBackYearList>
 
 /**
  *  视频和直播页面切换segment
@@ -71,6 +71,8 @@
 @property (nonatomic, strong) UITableView * teacherTableView;
 @property (nonatomic, strong) UITableView * monthTableView;
 @property (nonatomic, strong) UIView        *livingBackView;
+@property (nonatomic, strong)UITableView *yearListTableView;
+@property (nonatomic, strong)UIView * yearBackView;
 
 @property (nonatomic, strong) NSIndexPath *currentVideoIndexpath;// 课程分类indexpath
 @property (nonatomic, strong) NSIndexPath *currentSectionIndexpath;// 课程小节indexpath
@@ -104,6 +106,7 @@
 @property (nonatomic, strong)NSIndexPath *monthIndexPath;// 本月直播还是往期直播indexpath
 @property (nonatomic, strong)NSIndexPath *selectMonthIndexpath;// 往期直播课选中的月份indexpath
 @property (nonatomic, assign)int        month;// 往期直播课选中月份，选年为0。
+@property (nonatomic, strong)NSString * yearStr;
 
 @property (nonatomic, strong)NSDictionary *selectOrderLivingSectionInfoDic;// 预约课
 
@@ -163,7 +166,7 @@
     
     self.teacherId = @"";
     self.month = [NSString getCurrentMonth];
-    
+    self.yearStr = [NSString stringWithFormat:@"%d", [NSString getCurrentYear]];
     [self addNotification];
     [self doRequestAllCategory];
     [self doRequestLivingcourse];
@@ -206,8 +209,11 @@
 - (void)doRequestLivingcourse
 {
     [SVProgressHUD show];
-    [[CourseraManager sharedManager] didRequestNotStartLivingCourseWithInfo:@{@"Month":@(self.month)} NotifiedObject:self];
+    [[CourseraManager sharedManager] didRequestNotStartLivingCourseWithInfo:@{@"Month":@(self.month),@"year":self.yearStr} NotifiedObject:self];
 //    [[CourseraManager sharedManager] didRequestEndLivingCourseWithNotifiedObject:self];
+    if ([[[UserManager sharedManager] getLivingBackYearList] count] == 0) {
+        [[UserManager sharedManager]didRequestLivingBackYearListWithInfo:@{} withNotifiedObject:self];
+    }
 }
 
 - (void)addNotification
@@ -215,7 +221,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(moreLivingClick:) name:kNotificationMoreLiving object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(courseClick:) name:kNotificationDetailCourse object:nil];
-    
 }
 
 - (void)courseClick:(NSNotification *)notification
@@ -237,7 +242,7 @@
         NSDictionary * infoDic = [self.categoryArray objectAtIndex:i];
         
         if (categoryId == [[infoDic objectForKey:kCourseCategoryId] intValue]) {
-            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:i + 1 inSection:0];
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:i inSection:0];
             self.currentVideoIndexpath = indexPath;
             self.currentSectionIndexpath = [NSIndexPath indexPathForRow:0 inSection:0];
             [self reloadVideo:indexPath];
@@ -251,12 +256,12 @@
                 NSDictionary * sectionDic = secondArr[j];
                 if (categoryId == [[sectionDic objectForKey:kCourseSecondID] intValue]) {
                     
-                    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:i + 1 inSection:0];
+                    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:i inSection:0];
                     self.currentVideoIndexpath = indexPath;
                     self.currentSectionIndexpath = [NSIndexPath indexPathForRow:0 inSection:0];
                     [self reloadVideo:indexPath];
                     
-                    NSIndexPath * indexPath1 = [NSIndexPath indexPathForRow:j+1 inSection:0];
+                    NSIndexPath * indexPath1 = [NSIndexPath indexPathForRow:j inSection:0];
                     self.currentSectionIndexpath = indexPath1;
                     [self reloadSection:indexPath1];
                     [self hideScreenWithHide:NO];
@@ -346,7 +351,7 @@
     
     self.livingTableview.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
         [SVProgressHUD show];
-        [[CourseraManager sharedManager] didRequestNotStartLivingCourseWithInfo:@{@"Month":@(self.month)} NotifiedObject:self];
+        [[CourseraManager sharedManager] didRequestNotStartLivingCourseWithInfo:@{@"Month":@(self.month),@"year":self.yearStr} NotifiedObject:self];
     }];
     
     [self.livingTableview registerClass:[LivingCourseTableViewCell class] forCellReuseIdentifier:kLivingCourseCellId];
@@ -360,6 +365,9 @@
     self.monthSelectView.MonthSelectBlock = ^(int month) {
         weakSef.month = month;
         [weakSef doRequestLivingcourse];
+    };
+    self.monthSelectView.YearSelectBlock = ^(NSString *year) {
+        [weakSef showYearTableview:YES];
     };
     [self.scrollView addSubview:self.monthSelectView];
     
@@ -384,13 +392,12 @@
     self.sectionScreentableview.showsVerticalScrollIndicator = NO;
     [self.view addSubview:self.sectionScreentableview];
     
-//    [self.screenTableView setHidden:YES];
     [self.screenBackView setHidden:YES];
     [self.sectionScreentableview setHidden:YES];
     
     // 直播课筛选
     self.livingBackView = [[UIView alloc]initWithFrame:CGRectMake(0, 41, kScreenWidth, kScreenHeight - kStatusBarHeight - kNavigationBarHeight - kTabBarHeight - kSegmentHeight + 1)];
-    self.livingBackView.backgroundColor = [UIColor colorWithWhite:.4 alpha:.5];
+    self.livingBackView.backgroundColor = [UIColor colorWithWhite:.4 alpha:.1];
     [self.view addSubview:self.livingBackView];
     UITapGestureRecognizer * livingTip = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(hideLiving)];
     [self.livingBackView addGestureRecognizer:livingTip];
@@ -411,6 +418,13 @@
     [self.teacherTableView setHidden:YES];
     [self.monthTableView setHidden:YES];
     [self.livingBackView setHidden:YES];
+    
+    self.yearListTableView = [[UITableView alloc]initWithFrame:CGRectMake(0, kSegmentHeight + 35, 50, 70) style:UITableViewStylePlain];
+    self.yearListTableView.delegate = self;
+    self.yearListTableView.dataSource = self;
+    [self.yearListTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"yearCellId"];
+    [self.view addSubview:self.yearListTableView];
+    self.yearListTableView.hidden = YES;
 }
 
 #pragma mark = 登录头部视图
@@ -481,6 +495,9 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
+    if ([tableView isEqual:self.yearListTableView]) {
+        return [[[UserManager sharedManager] getLivingBackYearList] count];
+    }
     if ([tableView isEqual:self.screenTableView]) {
         return self.categoryArray.count;
     }
@@ -721,7 +738,20 @@
             [weakSelf.videoTableview scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section] atScrollPosition:UITableViewScrollPositionTop animated:YES];
         };
         return cell;
-    }else
+    }else if ([tableView isEqual:self.yearListTableView])
+    {
+        UITableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:@"yearCellId" forIndexPath:indexPath];
+        [cell.contentView removeAllSubviews];
+        UILabel * titleLB = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, self.yearListTableView.hd_width, 35)];
+        titleLB.textColor = UIColorFromRGB(0x333333);
+        titleLB.font = kMainFont;
+        titleLB.textAlignment = NSTextAlignmentCenter;
+        NSDictionary * infoDic = [[[UserManager sharedManager] getLivingBackYearList] objectAtIndex:indexPath.row];
+        titleLB.text = [infoDic objectForKey:@"yearStr"];
+        [cell.contentView addSubview:titleLB];
+        return cell;
+    }
+    else
     {
         if (self.monthIndexPath.row == 1) {
             static NSString *courseCellName = @"liveCourseCell";
@@ -863,6 +893,9 @@
     if ( [tableView isEqual:self.sectionScreentableview] || [tableView isEqual:self.teacherTableView] || [tableView isEqual:self.monthTableView]) {
         return 40;
     }
+    if ([tableView isEqual:self.yearListTableView]) {
+        return 35;
+    }
     
     if ([tableView isEqual:self.screenTableView]) {
         return 50;
@@ -926,6 +959,17 @@
         [self.videoTableview scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:indexPath.row] atScrollPosition:UITableViewScrollPositionTop animated:NO];
         return;
     }
+    if ([tableView isEqual:self.yearListTableView]) {
+        NSDictionary * infoDic = [[[UserManager sharedManager] getLivingBackYearList] objectAtIndex:indexPath.row];
+        NSString * text = [infoDic objectForKey:@"yearStr"];
+        [self.monthSelectView setyearTitle:text];
+        [self showYearTableview:NO];
+        
+        self.yearStr = text;
+        [self doRequestLivingcourse];
+        return;
+    }
+    
     if ([tableView isEqual:self.sectionScreentableview]) {
         
         self.currentSectionIndexpath = [NSIndexPath indexPathForRow:indexPath.row inSection:self.currentSectionIndexpath.section];
@@ -1222,6 +1266,7 @@
 - (void)showTeacherTableview:(BOOL)isShow
 {
     [self.monthTableView setHidden:YES];
+    [self.yearListTableView setHidden:YES];
     if (isShow) {
         [self.livingBackView setHidden:NO];
         [self.teacherTableView setHidden:NO];
@@ -1245,13 +1290,39 @@
             [self.livingBackView setHidden:YES];
         }];
     }
-    
+}
+
+- (void)showYearTableview:(BOOL)isShow
+{
+    if (isShow) {
+        [self.livingBackView setHidden:NO];
+        [self.yearListTableView setHidden:NO];
+        self.yearListTableView.frame = CGRectMake(0, kSegmentHeight + 35, kScreenWidth, 0);
+        
+        [UIView animateWithDuration:kTime animations:^{
+            self.yearListTableView.frame = CGRectMake(0, kSegmentHeight + 35, kScreenWidth, 2 * 35);
+        } completion:^(BOOL finished) {
+            
+        }];
+        
+    }else
+    {
+        [self.livingBackView setHidden:NO];
+        self.yearListTableView.frame = CGRectMake(0, kSegmentHeight + 35, kScreenWidth, 2 * 35);
+        
+        [UIView animateWithDuration:kTime animations:^{
+            self.yearListTableView.frame = CGRectMake(0, kSegmentHeight + 35, kScreenWidth, 0);
+        } completion:^(BOOL finished) {
+            [self.yearListTableView setHidden:YES];
+            [self.livingBackView setHidden:YES];
+        }];
+    }
 }
 
 - (void)showMonthTableview:(BOOL)isShow
 {
     [self.teacherTableView setHidden:YES];
-    
+    [self.yearListTableView setHidden:YES];
     if (isShow) {
         [self.livingBackView setHidden:NO];
         [self.monthTableView setHidden:NO];
@@ -1296,18 +1367,19 @@
 
 - (void)hideLiving
 {
-    [self hideLivingWithHide:NO];
+    [self hideLivingWithHide:YES];
 }
 
 - (void)hideLivingWithHide:(BOOL)isHide
 {
     if (isHide) {
+        self.yearListTableView.hidden = YES;
         self.teacherTableView.hidden = YES;
         self.monthTableView.hidden = YES;
         self.livingBackView.hidden = YES;
         return;
     }
-    if (self.teacherTableView.hidden && self.monthTableView.hidden) {
+    if (self.teacherTableView.hidden && self.monthTableView.hidden && self.yearListTableView.hidden) {
         return;
     }
     [self.livingSegmentC clickBT:self.livingIndex];
@@ -1547,6 +1619,17 @@
             [self.livingSegmentC changeTitle:@"往期回放" withIndex:0];
         }
     }
+}
+
+#pragma mark - livingBackYearListDelegate
+- (void)didRequestLivingBackYearListSuccessed
+{
+    
+}
+
+- (void)didRequestLivingBackYearListFailed:(NSString *)failedInfo
+{
+    
 }
 
 #pragma mark - orderLivingProtocol

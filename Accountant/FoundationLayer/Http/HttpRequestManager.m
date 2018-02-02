@@ -476,6 +476,12 @@
     [self startPostWithConfig:s andProcessDelegate:delegate];
 }
 
+- (void)requestLivingBackYearListWithInfoDic:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate
+{
+    HttpConfigModel * s = [HttpConfigCreator getLivingBackYearWithInfo:infoDic];
+    [self startPostWithConfig:s andProcessDelegate:delegate];
+}
+
 #pragma mark - post method
 - (void)startPostWithConfig:(HttpConfigModel *)configModel andProcessDelegate:(__weak id<HttpRequestProtocol>)delegate
 {

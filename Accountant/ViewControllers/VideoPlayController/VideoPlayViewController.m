@@ -115,7 +115,9 @@
         self.playingCourseName = [self.playCourseInfo objectForKey:kCourseName];
         [self initalTable];
     }
-    
+    /*
+     
+     */
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(haveLogin:) name:kNotificationOfLoginSuccess object:nil];
 }
@@ -483,6 +485,7 @@
         self.videoFunctionView = [[VideoFunctionView alloc]initWithFrame:CGRectMake(0, kScreenHeight - 50, kScreenWidth, 50) andIsBuy:isBuy];
         [self.videoFunctionView refreshWithInfoDic:self.playCourseInfo];
         if (isBuy) {
+            self.chapterTableView.hd_height -= 50;
             [self.view addSubview:self.videoFunctionView];
         }
         self.videoFunctionView.cansultBlock = ^{
@@ -490,7 +493,6 @@
             AppDelegate * delegate = [UIApplication sharedApplication].delegate;
             weakSelf.cansultView.teachersArray  = [[UserManager sharedManager] getAssistantList];
             [delegate.window addSubview:weakSelf.cansultView];
-            
         };
         
         self.videoFunctionView.buyBlock = ^{
@@ -626,6 +628,17 @@
     return 0;
 }
 
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
+{
+    UIView * footerView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, 45)];
+    footerView.backgroundColor = UIColorFromRGB(0xf2f2f2);
+    footerView.layer.cornerRadius = 3;
+    footerView.layer.masksToBounds = YES;
+    footerView.layer.borderColor = UIColorFromRGB(0xeeeeee).CGColor;
+    footerView.layer.borderWidth = 1;
+    return nil;
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *cellName = @"playVideoTitleCell";
@@ -676,6 +689,15 @@
     
     __weak typeof(self) weakSelf = self;
     cell.downloadBlock = ^(VideoDownloadState downloadState){
+        if (![[UserManager sharedManager] isUserLogin]) {
+            [SVProgressHUD showErrorWithStatus:@"请先登录"];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [SVProgressHUD dismiss];
+            });
+            return;
+        }
+        
+        
         if ([[weakSelf.playCourseInfo objectForKey:kCourseCanDownLoad] intValue] == 0) {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"暂无下载权限，请升级套餐或购买课程" delegate:nil cancelButtonTitle:@"知道了" otherButtonTitles:nil];
             [alert show];

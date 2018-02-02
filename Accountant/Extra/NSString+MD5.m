@@ -98,4 +98,15 @@
     return timeStr.intValue;
 }
 
++ (int )getCurrentYear
+{
+    NSDate *nowDate = [NSDate date];
+    NSDateFormatter *dateFomatter = [[NSDateFormatter alloc] init];
+    dateFomatter.dateFormat = @"yyyy";
+    
+    NSString * timeStr = [dateFomatter stringFromDate:nowDate];
+    
+    return timeStr.intValue;
+}
+
 @end

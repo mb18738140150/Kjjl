@@ -137,9 +137,17 @@
 - (void)didRequestSubmitOperationFailed:(NSString *)failedInfo;
 
 @end
+
 @protocol UserModule_CommonProblem <NSObject>
 
 - (void)didRequestCommonProblemSuccessed;
 - (void)didRequestCommonProblemFailed:(NSString *)failedInfo;
+
+@end
+
+@protocol UserModule_LivingBackYearList <NSObject>
+
+- (void)didRequestLivingBackYearListSuccessed;
+- (void)didRequestLivingBackYearListFailed:(NSString *)failedInfo;
 
 @end

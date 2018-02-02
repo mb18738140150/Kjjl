@@ -73,6 +73,16 @@
 //    [self.payTypeArray addObject:aliPayInfoDic];
 }
 
+- (void)addNotification
+{
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(payFinish) name:@"weichatPay" object:nil];
+}
+
+- (void)payFinish
+{
+    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+}
+
 - (void)prepareUI
 {
     self.tableview = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, 100) style:UITableViewStylePlain];

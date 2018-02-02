@@ -18,6 +18,7 @@
 @property (nonatomic, strong)UILabel        *timeLB;
 
 @property (nonatomic, strong)NSTimer        *timer;
+@property (nonatomic, assign)NSInteger      day;
 @property (nonatomic, assign)NSInteger      hour;
 @property (nonatomic, assign)NSInteger      minute;
 
@@ -191,20 +192,29 @@
     __weak typeof(self)weakSelf = self;
     
     weakSelf.minute--;
+    
     if (weakSelf.minute<0) {
         weakSelf.hour--;
         if (weakSelf.hour <0) {
-            weakSelf.hour = 0;
-            weakSelf.minute = 0;
-            [weakSelf.timer invalidate];
-            weakSelf.timer = nil;
+            weakSelf.day--;
+            if (weakSelf.day < 0) {
+                weakSelf.day = 0;
+                weakSelf.hour = 0;
+                weakSelf.minute = 0;
+                [weakSelf.timer invalidate];
+                weakSelf.timer = nil;
+            }else
+            {
+                weakSelf.hour = 23;
+                weakSelf.minute = 59;
+            }
         }else
         {
             weakSelf.minute = 59;
         }
     }
     dispatch_async(dispatch_get_main_queue(), ^{
-        weakSelf.timeLB.attributedText = [weakSelf getTimeStrWithHoour:weakSelf.hour andMinute:weakSelf.minute];
+        weakSelf.timeLB.attributedText = [weakSelf getTimeStrWithday:weakSelf.day andHour:weakSelf.hour andMinute:weakSelf.minute];
     });
 }
 
@@ -237,9 +247,13 @@
     // 对比时间差
     NSDateComponents *dateCom = [calendar components:unit fromDate:nowDate toDate:expireDate options:0];
     
-    self.hour = dateCom.month * 30 * 24  + dateCom.day * 24  + dateCom.hour;
+    self.day = dateCom.month * 30  + dateCom.day;
+    self.hour = dateCom.hour;
     
     self.minute = dateCom.minute;
+    if (_day <= 0) {
+        _day = 0;
+    }
     
     if (_hour <= 0) {
         _hour = 0;
@@ -249,19 +263,21 @@
         _minute = 0;
     }
     
-    return [self getTimeStrWithHoour:_hour andMinute:_minute];
+    return [self getTimeStrWithday:self.day andHour:_hour andMinute:_minute];
 }
 
-- (NSAttributedString *)getTimeStrWithHoour:(NSInteger)hour andMinute:(NSInteger)minute
+- (NSAttributedString *)getTimeStrWithday:(NSInteger)day andHour:(NSInteger)hour andMinute:(NSInteger)minute
 {
-    NSString * timeString = [NSString stringWithFormat:@"距离开课还有:%ld小时%ld分钟", (long)hour,(long)minute];
+    NSString * timeString = [NSString stringWithFormat:@"距离开课还有:%ld天%ld小时%ld分钟",(long)day, (long)hour,(long)minute];
     
+    NSRange dayRange = [timeString rangeOfString:[NSString stringWithFormat:@"%ld天", (long)day]];
     NSRange hourRange = [timeString rangeOfString:[NSString stringWithFormat:@"%ld小时", (long)hour]];
     NSRange minuteRange = [timeString rangeOfString:[NSString stringWithFormat:@"%ld分钟", (long)minute]];
     
     NSMutableAttributedString * mTimeStr = [[NSMutableAttributedString alloc]initWithString:timeString];
     
     NSDictionary * timeAttribute = @{NSFontAttributeName:[UIFont systemFontOfSize:25],NSForegroundColorAttributeName:[UIColor redColor]};
+    [mTimeStr setAttributes:timeAttribute range:NSMakeRange(dayRange.location, dayRange.length - 1)];
     [mTimeStr setAttributes:timeAttribute range:NSMakeRange(hourRange.location, hourRange.length - 2)];
     [mTimeStr setAttributes:timeAttribute range:NSMakeRange(minuteRange.location, minuteRange.length - 2)];
     

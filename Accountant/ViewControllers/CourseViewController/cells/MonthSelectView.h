@@ -14,6 +14,10 @@
 
 @property (nonatomic, copy)void(^MonthSelectBlock)(int month);
 
+@property (nonatomic, copy)void(^YearSelectBlock)(NSString * year);
+
 - (void)reloadData;
+
+- (void)setyearTitle:(NSString *)yearStr;
 
 @end

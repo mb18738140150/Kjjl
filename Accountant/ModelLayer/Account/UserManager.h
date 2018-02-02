@@ -207,5 +207,9 @@
 - (void)didRequestCommonProblemWithInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_CommonProblem>)object;
 - (NSArray *)getCommonProblemList;
 
+// 获取往期回放年份列表
+- (void)didRequestLivingBackYearListWithInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_LivingBackYearList>)object;
+- (NSArray *)getLivingBackYearList;
+
 
 @end

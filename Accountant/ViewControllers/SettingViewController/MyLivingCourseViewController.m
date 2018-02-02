@@ -181,6 +181,33 @@
     }
 }
 
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    if (self.dataSourseArry.count > 0) {
+        return nil;
+    }
+    
+    UIView * headerView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, 32)];
+    headerView.backgroundColor = UIColorFromRGB(0xf2f2f2);
+    
+    UILabel * tipLB = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, 32)];
+    tipLB.text = @"暂无预约课程";
+    tipLB.textColor = UIColorFromRGB(0x666666);
+    tipLB.font = kMainFont;
+    tipLB.textAlignment = NSTextAlignmentCenter;
+    [headerView addSubview:tipLB];
+    
+    return headerView;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    if (self.dataSourseArry.count == 0) {
+        return 32;
+    }
+    return 0;
+}
+
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {
     UIView * footerView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, 40)];
