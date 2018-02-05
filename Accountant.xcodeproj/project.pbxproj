@@ -2969,24 +2969,15 @@
 				003AC2D11E667DBC00713502 /* Assets.xcassets */,
 				003AC2D21E667DBC00713502 /* LaunchScreen.storyboard */,
 				003AC2D41E667DBC00713502 /* Main.storyboard */,
-				003AC2D91E667DBC00713502 /* DownloaderManager */,
 				003AC2DA1E667DBC00713502 /* Extra */,
 				003AC2E91E667DBC00713502 /* Frameworks */,
 				003AC36F1E667DBC00713502 /* Info.plist */,
 				003AC3761E667DBC00713502 /* main.m */,
-				003AC3B21E667DBD00713502 /* Player */,
 				003AC3B31E667DBD00713502 /* Resources */,
 				003AC3B51E667DBD00713502 /* ViewController.h */,
 				003AC3B61E667DBD00713502 /* ViewController.m */,
 			);
 			path = Accountant;
-			sourceTree = "<group>";
-		};
-		003AC2D91E667DBC00713502 /* DownloaderManager */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = DownloaderManager;
 			sourceTree = "<group>";
 		};
 		003AC2DA1E667DBC00713502 /* Extra */ = {
@@ -3444,13 +3435,6 @@
 				003AC3AD1E667DBD00713502 /* PlayingVideoModel.m */,
 			);
 			path = Models;
-			sourceTree = "<group>";
-		};
-		003AC3B21E667DBD00713502 /* Player */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Player;
 			sourceTree = "<group>";
 		};
 		003AC3B31E667DBD00713502 /* Resources */ = {

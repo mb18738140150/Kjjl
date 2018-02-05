@@ -53,7 +53,6 @@
     [self.view addSubview:self.contentLB];
     
     NSAttributedString * attributeStr = [[NSAttributedString alloc] initWithData:[self.name dataUsingEncoding:NSUnicodeStringEncoding] options:@{NSDocumentTypeDocumentAttribute:NSHTMLTextDocumentType} documentAttributes:nil error:nil];
-    
     self.contentLB.attributedText = attributeStr;
 }
 
