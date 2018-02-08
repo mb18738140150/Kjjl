@@ -57,6 +57,7 @@ static int a = 59;
     _account.placeholder=[NSString stringWithFormat:@"请输入账号"];
     _account.delegate = self;
     _account.font = kMainFont;
+    _account.keyboardType = UIKeyboardTypeNumberPad;
     _account.returnKeyType = UIReturnKeyDone;
     _account.textColor = kCommonMainTextColor_50;
     [accountView addSubview:_account];
@@ -178,6 +179,13 @@ static int a = 59;
 
 - (void)getVerifyCodeAction
 {
+    
+    if (self.account.text.length != 11) {
+        [SVProgressHUD showErrorWithStatus:@"请输入正确的手机号码"];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [SVProgressHUD dismiss];
+        });
+    }
     
     [[UserManager sharedManager] getVerifyCodeWithPhoneNumber:self.account.text withNotifiedObject:self];
     

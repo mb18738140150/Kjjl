@@ -117,6 +117,11 @@
             self.oldPrice = 0;
         }
         
+        self.isDownload = [[dicInfo objectForKey:@"isDownload"] intValue];
+        if ([[dicInfo objectForKey:@"isDownload"] isKindOfClass:[NSNull class]]) {
+            self.isDownload = 0;
+        }
+        
     }
     return self;
 }

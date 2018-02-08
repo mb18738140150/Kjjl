@@ -31,6 +31,8 @@
 #import "SubmitOpinionOperation.h"
 #import "CommonProblemOperation.h"
 #import "LivingBackYearListOperation.h"
+#import "SubmitGiftCodeOperation.h"
+#import "GiftListOperation.h"
 
 @interface UserManager()
 
@@ -59,6 +61,9 @@
 @property (nonatomic, strong)SubmitOpinionOperation     *submitOpinionOperation;
 @property (nonatomic, strong)CommonProblemOperation     *commonProblemOperation;
 @property (nonatomic, strong)LivingBackYearListOperation *livingBackYearLiatOperation;
+@property (nonatomic, strong)GiftListOperation          *giftLIstOperation;
+@property (nonatomic, strong)SubmitGiftCodeOperation    *submitGiftCodeOperation;
+
 
 @end
 
@@ -101,6 +106,8 @@
         self.submitOpinionOperation = [[SubmitOpinionOperation alloc]init];
         self.commonProblemOperation = [[CommonProblemOperation alloc]init];
         self.livingBackYearLiatOperation = [[LivingBackYearListOperation alloc]init];
+        self.giftLIstOperation = [[GiftListOperation alloc]init];
+        self.submitGiftCodeOperation = [[SubmitGiftCodeOperation alloc]init];
     }
     return self;
 }
@@ -197,6 +204,16 @@
 - (void)didRequestCommonProblemWithInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_CommonProblem>)object
 {
     [self.commonProblemOperation didRequestCommonProblemWithNotifiedObject:object];
+}
+
+- (void)didRequestGiftListWithInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_GiftList>)object
+{
+    [self.giftLIstOperation didRequestGiftListWithInfo:infoDic withNotifiedObject:object];
+}
+
+- (void)didRequestSubmitGiftCodeWithInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_SubmitGiftCode>)object
+{
+    [self.submitGiftCodeOperation didRequestSubmitGiftCodeWithInfo:infoDic withNotifiedObject:object];
 }
 
 - (void)didRequestLivingBackYearListWithInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_LivingBackYearList>)object
@@ -502,6 +519,11 @@
 - (NSArray *)getLivingBackYearList
 {
     return self.livingBackYearLiatOperation.livingBackYearList;
+}
+
+- (NSArray *)getGiftList
+{
+    return self.giftLIstOperation.livingBackYearList;
 }
 
 @end

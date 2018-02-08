@@ -526,7 +526,9 @@
                               kCourseName:jModel.name,
                               kCourseCover:jModel.courseCover,
                               kPrice:@(jModel.price),
-                              kOldPrice:@(jModel.oldPrice)};
+                              kOldPrice:@(jModel.oldPrice),
+                              kIsDownload:@(jModel.isDownload)
+                              };
         [LivingSectionDetailArray addObject:dic];
     }
     return LivingSectionDetailArray;
@@ -586,7 +588,8 @@
                               kPlayBackUrl:jModel.playback,
                               kIsLivingCourseFree:@(jModel.isFree),
                               kIsBack:@(jModel.isBack),
-                              kCourseCover:jModel.courseCover};
+                              kCourseCover:jModel.courseCover,
+                              kIsDownload:@(jModel.isDownload)};
         if (jModel.playState == 1) {
             [LivingSectionDetailArray addObject:dic];
         }

@@ -157,4 +157,8 @@
 
 + (HttpConfigModel *)getLivingBackYearWithInfo:(NSDictionary *)infoDic;
 
++ (HttpConfigModel *)getGiftListWithInfo:(NSDictionary *)infoDic;
+
++(HttpConfigModel *)submitGiftCode:(NSDictionary *)infoDic;
+
 @end

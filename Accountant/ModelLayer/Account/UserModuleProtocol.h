@@ -151,3 +151,19 @@
 - (void)didRequestLivingBackYearListFailed:(NSString *)failedInfo;
 
 @end
+
+@protocol UserModule_GiftList <NSObject>
+
+- (void)didRequestGiftListSuccessed;
+- (void)didRequestGiftListFailed:(NSString *)failedInfo;
+
+@end
+
+@protocol UserModule_SubmitGiftCode <NSObject>
+
+- (void)didRequestSubmitGiftCodeSuccessed;
+- (void)didRequestSubmitGiftCodeFailed:(NSString *)failedInfo;
+
+@end
+
+

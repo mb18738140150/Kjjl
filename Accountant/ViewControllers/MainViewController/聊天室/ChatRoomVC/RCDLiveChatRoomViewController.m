@@ -286,8 +286,11 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
             case 3:
             {
                 self.downLoadBtn.hidden = NO;
-                if ([[self.infoDic objectForKey:kIsBack] intValue] == 0) {
+                if ([[self.infoDic objectForKey:kIsDownload] intValue] == 0) {
                     self.downLoadBtn.hidden = YES;
+                }
+                if ([[self.infoDic objectForKey:kIsBack] intValue] == 0) {
+                    
                     [SVProgressHUD showErrorWithStatus:@"暂无观看权限"];
                     self.playingVideo.playUrl = @"";
                     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -1179,8 +1182,11 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
         case 3:
         {
             self.downLoadBtn.hidden = NO;
-            if ([[self.infoDic objectForKey:kIsBack] intValue] == 0) {
+            if ([[self.infoDic objectForKey:kIsDownload] intValue] == 0) {
                 self.downLoadBtn.hidden = YES;
+            }
+            if ([[self.infoDic objectForKey:kIsBack] intValue] == 0) {
+                
                 [SVProgressHUD showErrorWithStatus:@"暂无观看权限"];
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                     [SVProgressHUD dismiss];
@@ -2291,8 +2297,11 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
         case 3:
         {
             self.downLoadBtn.hidden = NO;
-            if ([[self.infoDic objectForKey:kIsBack] intValue] == 0) {
+            if ([[self.infoDic objectForKey:kIsDownload] intValue] == 0) {
                 self.downLoadBtn.hidden = YES;
+            }
+            if ([[self.infoDic objectForKey:kIsBack] intValue] == 0) {
+                
                 [SVProgressHUD showErrorWithStatus:@"暂无观看权限"];
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                     [SVProgressHUD dismiss];
@@ -2348,8 +2357,11 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
             case 3:
             {
                 self.downLoadBtn.hidden = NO;
-                if ([[self.infoDic objectForKey:kIsBack] intValue] == 0) {
+                if ([[self.infoDic objectForKey:kIsDownload] intValue] == 0) {
                     self.downLoadBtn.hidden = YES;
+                }
+                if ([[self.infoDic objectForKey:kIsBack] intValue] == 0) {
+                    
                     [SVProgressHUD showErrorWithStatus:@"暂无观看权限"];
                     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                         [SVProgressHUD dismiss];

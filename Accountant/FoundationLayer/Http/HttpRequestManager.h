@@ -161,7 +161,9 @@
 
 - (void)requestLivingBackYearListWithInfoDic:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate;
 
+- (void)requestGiftListWithInfoDic:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate;
 
+- (void)requestSubmitGiftCodeWithInfoDic:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate;
 
 #pragma mark - 未使用
 - (void)requestSearchKeyWord:(NSString *)keyWords;

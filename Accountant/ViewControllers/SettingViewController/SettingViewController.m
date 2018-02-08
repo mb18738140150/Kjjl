@@ -34,6 +34,8 @@
 #import "StudyPlanViewController.h"
 #import "AssistantViewController.h"
 
+#import "FuliViewController.h"
+
 #define kSettingCellID @"SettingTableViewCellID"
 
 //#import "LivingChatViewController.h"
@@ -149,7 +151,7 @@
                            ];
     
     
-    self.dataArray = @[@[@{@"imageName":@"icon_hy",@"title":[[UserManager sharedManager] getLevelStr],@"tip":@""}],@[@{@"imageName":@"icon_dd",@"title":@"订单",@"tip":@""},@{@"imageName":@"icon_xz1",@"title":@"下载",@"tip":@""}],@[@{@"imageName":@"icon_jf",@"title":@"积分",@"tip":@""},@{@"imageName":@"icon_kq",@"title":@"卡券",@"tip":@""},@{@"imageName":@"icon_ewm",@"title":@"推广二维码",@"tip":@""}],@[@{@"imageName":@"icon_kf",@"title":@"客服中心",@"tip":@""}]];
+    self.dataArray = @[@[@{@"imageName":@"icon_hy",@"title":[[UserManager sharedManager] getLevelStr],@"tip":@""}],@[@{@"imageName":@"icon_dd",@"title":@"订单",@"tip":@""},@{@"imageName":@"icon_xz1",@"title":@"下载",@"tip":@""},@{@"imageName":@"icon_wd_fl",@"title":@"福利",@"tip":@""}],@[@{@"imageName":@"icon_jf",@"title":@"积分",@"tip":@""},@{@"imageName":@"icon_kq",@"title":@"卡券",@"tip":@""},@{@"imageName":@"icon_ewm",@"title":@"推广二维码",@"tip":@""}],@[@{@"imageName":@"icon_kf",@"title":@"客服中心",@"tip":@""}]];
 }
 
 - (void)courseCategoryClick:(NSNotification *)notifier
@@ -247,6 +249,7 @@
                 [self.navigationController pushViewController:userCenter animated:YES];
             }else
             {
+                
                 if ([WXApi isWXAppSupportApi] && [WXApi isWXAppInstalled]) {
                     [self upgradeMemberLevel];
                 }
@@ -291,6 +294,12 @@
                 vc.hidesBottomBarWhenPushed = YES;
                 
                 [self.navigationController pushViewController:vc animated:YES];
+            }else if ([title isEqualToString:@"福利"])
+            {
+                NSLog(@"福利");
+                FuliViewController * fuliVC = [[FuliViewController alloc]init];
+                fuliVC.hidesBottomBarWhenPushed = YES;
+                [self.navigationController pushViewController:fuliVC animated:YES];
             }
         }
             break;

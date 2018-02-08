@@ -473,6 +473,8 @@
     self.chapterTableView.delegate = self;
     self.chapterTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.view addSubview:self.chapterTableView];
+    self.chapterTableView.estimatedSectionHeaderHeight=0;
+    self.chapterTableView.estimatedSectionFooterHeight=0;
     
     // 联系老师
     if (![[self.playCourseInfo objectForKey:kCanWatch] intValue]) {

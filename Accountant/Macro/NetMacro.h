@@ -96,5 +96,7 @@
 #define kSubmitOpinion                  @"57"
 #define kCommonProblem                  @"58"
 #define kLivingBackYearList             @"59"
+#define kSubmitGidtCode                 @"60"
+#define kGiftLIst                       @"61"
 
 #endif /* NetMacro_h */

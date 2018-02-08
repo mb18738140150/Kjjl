@@ -48,7 +48,7 @@
     self.loginBtn.layer.cornerRadius = 4;
     self.loginBtn.layer.masksToBounds = YES;
     self.loginBtn.backgroundColor = UIColorFromRGB(0xff740e);
-    [self.loginBtn setTitle:@"请登录" forState:UIControlStateNormal];
+    [self.loginBtn setTitle:@"登录/注册" forState:UIControlStateNormal];
     [self.loginBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     self.loginBtn.titleLabel.font = kMainFont;
     [self.loginBtn addTarget:self action:@selector(loginClick) forControlEvents:UIControlEventTouchUpInside];
@@ -87,7 +87,7 @@
     _state = state;
     switch (state) {
         case VideoState_notLogin:
-            [self.loginBtn setTitle:@"请登录" forState:UIControlStateNormal];
+            [self.loginBtn setTitle:@"登录/注册" forState:UIControlStateNormal];
             break;
         case VideoState_noJurisdiction:
         {

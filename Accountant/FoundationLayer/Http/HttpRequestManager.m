@@ -482,6 +482,18 @@
     [self startPostWithConfig:s andProcessDelegate:delegate];
 }
 
+- (void)requestGiftListWithInfoDic:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate
+{
+    HttpConfigModel * s = [HttpConfigCreator getGiftListWithInfo:infoDic];
+    [self startPostWithConfig:s andProcessDelegate:delegate];
+}
+
+- (void)requestSubmitGiftCodeWithInfoDic:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate
+{
+    HttpConfigModel * s = [HttpConfigCreator submitGiftCode:infoDic];
+    [self startPostWithConfig:s andProcessDelegate:delegate];
+}
+
 #pragma mark - post method
 - (void)startPostWithConfig:(HttpConfigModel *)configModel andProcessDelegate:(__weak id<HttpRequestProtocol>)delegate
 {

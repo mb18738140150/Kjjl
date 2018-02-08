@@ -28,6 +28,7 @@
 #define kPrice              @"price"
 #define kOldPrice           @"oldPrice"
 #define kRealityPrice       @"realityPrice"
+#define kIsDownload         @"isDownload"
 
 #define kLivingTime         @"livingTime"
 #define kLivinglastTime     @"lastTime"

@@ -53,6 +53,6 @@
 @property (nonatomic, strong)NSString * playback;
 @property (nonatomic, assign)int isFree;
 @property (nonatomic, assign)int isBack;//回放是否有权限观看
-
+@property (nonatomic, assign)int isDownload;//回放是否有下载权限
 
 @end

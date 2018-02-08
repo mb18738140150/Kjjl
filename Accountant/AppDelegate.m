@@ -69,6 +69,10 @@
     
     [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
     
+//    if (@available(iOS 11.0, *)){
+//        [[UIScrollView appearance] setContentInsetAdjustmentBehavior:UIScrollViewContentInsetAdjustmentNever];
+//    }
+    
     [WXApi registerApp:@"wx2b4e947d0cd34a16"];
     // JPush注册
     JPUSHRegisterEntity * entity = [[JPUSHRegisterEntity alloc] init];

@@ -752,6 +752,24 @@
     return c;
 }
 
++ (HttpConfigModel *)getGiftListWithInfo:(NSDictionary *)infoDic
+{
+    HttpConfigModel *c = [[HttpConfigModel alloc] init];
+    NSDictionary *dic = @{kCommand:kGiftLIst};
+    [self setConfigModel:c withInfo:dic];
+    return c;
+}
+
++(HttpConfigModel *)submitGiftCode:(NSDictionary *)infoDic
+{
+    HttpConfigModel *c = [[HttpConfigModel alloc] init];
+    NSDictionary *dic = @{kCommand:kSubmitGidtCode,
+                          @"actCode":[infoDic objectForKey:@"actCode"]
+                          };
+    [self setConfigModel:c withInfo:dic];
+    return c;
+}
+
 #pragma mark - utility
 + (void)setConfigModel:(HttpConfigModel *)configModel withInfo:(NSDictionary *)parameters
 {

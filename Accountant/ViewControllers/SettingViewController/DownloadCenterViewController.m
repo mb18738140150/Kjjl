@@ -31,7 +31,6 @@
 @property (nonatomic,strong) NSArray                                *downloadCourseArray;
 
 @property (nonatomic,strong) UIView                                 *headerView;
-
 @property (nonatomic,strong) UIButton                               *button1;
 @property (nonatomic,strong) UIButton                               *button2;
 

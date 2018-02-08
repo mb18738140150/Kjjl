@@ -32,10 +32,10 @@
         case 2:
         {
             if ([WXApi isWXAppInstalled] && [WXApi isWXAppSupportApi]) {
-                return 2;
+                return 3;
             }else
             {
-                return 1;
+                return 2;
             }
         }
             return 3;
