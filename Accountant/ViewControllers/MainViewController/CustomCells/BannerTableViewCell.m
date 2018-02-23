@@ -48,7 +48,7 @@
     [self.titleImageView removeFromSuperview];
     [self.detailsLB removeFromSuperview];
     [self.bannerScrollView removeFromSuperview];
-    self.bannerScrollView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0, 0, kScreenWidth, 2 * kCellHeightOfCategoryView + 30 - 20 + 10) imageNamesGroup:self.bannerImgUrlArray];
+    self.bannerScrollView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0, 0, kScreenWidth, 2 * kCellHeightOfCategoryView + 30 + 30) imageNamesGroup:self.bannerImgUrlArray];
     self.bannerScrollView.autoScrollTimeInterval = 10;
     [self addSubview:self.bannerScrollView];
     
@@ -73,7 +73,7 @@
 
 - (void)setupView
 {
-    self.bannerScrollView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0, 0, kScreenWidth, 2 * kCellHeightOfCategoryView + 30 - 20 + 10) imageNamesGroup:self.bannerImgUrlArray];
+    self.bannerScrollView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0, 0, kScreenWidth, 2 * kCellHeightOfCategoryView + 30 + 30) imageNamesGroup:self.bannerImgUrlArray];
     self.bannerScrollView.autoScrollTimeInterval = 10;
     [self addSubview:self.bannerScrollView];
 }

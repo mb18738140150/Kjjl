@@ -1499,7 +1499,7 @@
 - (void)didRequestNotStartLivingCourseSuccessed
 {
     self.teacherArr = [[CourseraManager sharedManager] getLivingTeacherInfoArrar];
-    self.livingCourseArr = [[CourseraManager sharedManager] getNotStartLivingCourseArray];
+    
     dispatch_async(dispatch_get_main_queue(), ^{
         self.teacherTableView.frame = CGRectMake(kScreenWidth / 2, kSegmentHeight - 1, kScreenWidth / 2 , (self.teacherArr.count + 1) * 40.0) ;
         self.teachertableviewheight = (self.teacherArr.count + 1) * 40.0;
@@ -1513,6 +1513,7 @@
         [[CourseraManager sharedManager] didrequestLivingSectionDetailWithInfo:dic andNotifiedObject:self];
     }else
     {
+        self.livingCourseArr = [[CourseraManager sharedManager] getNotStartLivingCourseArray];
         [SVProgressHUD dismiss];
         [self.livingTableview.mj_header endRefreshing];
         [self reloadLivingTableViewData];
@@ -1554,6 +1555,15 @@
     if (self.selectCurrentMonthCourseId) {
 //        self.selectCurrentMonthCourseId = 0;
         if (self.selectCurrentMonthCourseSectionInfoDic) {
+            
+            NSArray * livingSectionList = [[CourseraManager sharedManager] getLivingSectionDetailArray];
+//            NSDictionary * currentLivingSectionInfoDic ;
+            for (NSDictionary * infoDic in livingSectionList) {
+                if ([[self.selectCurrentMonthCourseSectionInfoDic objectForKey:kCourseSecondID] intValue] == [[infoDic objectForKey:kCourseSecondID] intValue]) {
+                    self.selectCurrentMonthCourseSectionInfoDic = infoDic;
+                }
+            }
+            
             // 直播课小节信息
             [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationOfLivingChatClick object:self.selectCurrentMonthCourseSectionInfoDic];
             self.selectCurrentMonthCourseSectionInfoDic = nil;

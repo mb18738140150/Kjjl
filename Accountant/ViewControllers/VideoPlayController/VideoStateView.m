@@ -108,6 +108,7 @@
 
 - (void)resetWithInfoDic:(NSDictionary *)infoDic
 {
+    self.infoDic = infoDic;
     [self.imageView sd_setImageWithURL:[NSURL URLWithString:[infoDic objectForKey:kCourseCover]] placeholderImage:[UIImage imageNamed:@"已结束"]];
 }
 

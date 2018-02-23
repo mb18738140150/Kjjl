@@ -190,7 +190,7 @@
 {
     CGFloat cellHeight = 0;
     if (indexPath.section == 0 && indexPath.row == 0) {
-        return  2 * kCellHeightOfCategoryView + 30 + 10;
+        return  2 * kCellHeightOfCategoryView + 30 + 30;
         return [UIImage imageGetHeight:[UIImage imageNamed:@"shouye-banner"]] + 2 * kCellHeightOfCategoryView + 30 - 20 + 10;
     }
     if (indexPath.section == 1) {

@@ -361,6 +361,8 @@
 {
     [SVProgressHUD dismiss];
     [SVProgressHUD showSuccessWithStatus:@"登录成功"];
+    [[NSUserDefaults standardUserDefaults] setObject:_account.text forKey:@"userName"];
+    [[NSUserDefaults standardUserDefaults] setObject:_password.text forKey:@"password"];
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [SVProgressHUD dismiss];
         [self dismissSelf];

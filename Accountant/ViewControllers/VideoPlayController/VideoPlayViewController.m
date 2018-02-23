@@ -233,7 +233,10 @@
     
     [self savePlayingInfo];
     [self.videoController showInView:self.view];
-    [self.view insertSubview:self.videoController.view belowSubview:self.videoStateView];
+    if(!self.videoStateView.hidden)
+    {
+        [self.view insertSubview:self.videoController.view belowSubview:self.videoStateView];
+    }
 }
 
 - (void)addHistory:(NSDictionary *)info
@@ -364,8 +367,8 @@
         switch (videoState) {
             case VideoState_notLogin:
             {
+                // 登录
                 LoginViewController *login = [[LoginViewController alloc] init];
-                
                 UINavigationController * nav = [[UINavigationController alloc]initWithRootViewController:login];
                 
                 [weakSelf presentViewController:nav animated:YES completion:nil];
@@ -373,6 +376,7 @@
                 break;
             case VideoState_noJurisdiction:
             {
+                // 试看
                 [weakSelf playVideo];
                 [weakSelf.videoStateView removeFromSuperview];
             }
@@ -393,20 +397,6 @@
         weakSelf.videoController = nil;
         [weakSelf dismissViewControllerAnimated:YES completion:nil];
     };
-    
-    if (![[UserManager sharedManager] isUserLogin]) {
-        self.videoStateView.hidden = NO;
-    }else
-    {
-        self.videoStateView.hidden = YES;
-        if ([[self.playCourseInfo objectForKey:kCanWatch] intValue] == 0) {
-            self.videoStateView.hidden = NO;
-            self.videoStateView.state = VideoState_noJurisdiction;
-        }else
-        {
-            [self playVideo];
-        }
-    }
     
     self.titleView = [[UIView alloc] initWithFrame:CGRectMake(0, kZXVideoPlayerOriginalHeight, kScreenWidth, 50)];
     self.titleView.backgroundColor = [UIColor whiteColor];
@@ -513,6 +503,20 @@
     self.cansultView.cansultBlock = ^(NSDictionary *infoDic) {
         [weakSelf cantactTeacherAction:infoDic];
     };
+    
+    if (![[UserManager sharedManager] isUserLogin]) {
+        self.videoStateView.hidden = NO;
+    }else
+    {
+        self.videoStateView.hidden = YES;
+        if ([[self.playCourseInfo objectForKey:kCanWatch] intValue] == 0) {
+            self.videoStateView.hidden = NO;
+            self.videoStateView.state = VideoState_noJurisdiction;
+        }else
+        {
+            [self playVideo];
+        }
+    }
     
 }
 
