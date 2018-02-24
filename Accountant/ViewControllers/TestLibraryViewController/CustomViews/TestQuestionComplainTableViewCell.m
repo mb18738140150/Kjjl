@@ -34,10 +34,15 @@
     self.complainLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, self.titleLabel.frame.origin.y + self.titleLabel.frame.size.height+10, kScreenWidth - 40, height)];
     self.complainLabel.font = font;
     NSString *complainStr = [infoDic objectForKey:kTestQuestionComplain];
-    if ([[complainStr substringFromIndex:(complainStr.length-4)] isEqualToString:@"</p>"]) {
-        NSString * str = [complainStr substringToIndex:complainStr.length - 4];
-        self.complainLabel.attributedText = [UIUtility getSpaceLabelStr:str withFont:font];
-    }else{
+    if (complainStr.length > 4) {
+        if ([[complainStr substringFromIndex:(complainStr.length-4)] isEqualToString:@"</p>"]) {
+            NSString * str = [complainStr substringToIndex:complainStr.length - 4];
+            self.complainLabel.attributedText = [UIUtility getSpaceLabelStr:str withFont:font];
+        }else{
+            self.complainLabel.attributedText = [UIUtility getSpaceLabelStr:complainStr withFont:font];
+        }
+    }else
+    {
         self.complainLabel.attributedText = [UIUtility getSpaceLabelStr:complainStr withFont:font];
     }
     self.complainLabel.numberOfLines = 100000;

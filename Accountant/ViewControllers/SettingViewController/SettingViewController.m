@@ -394,10 +394,7 @@
      }
      */
     
-    
 }
-
-
 
 - (void)setupAction
 {
@@ -408,7 +405,6 @@
     vc.quitBlock = ^(){
         [weakSelf logout];
         [weakSelf performSelector:@selector(changeSelectIndex) withObject:nil afterDelay:0.1];
-        
     };
     [self.navigationController pushViewController:vc animated:YES];
 }
