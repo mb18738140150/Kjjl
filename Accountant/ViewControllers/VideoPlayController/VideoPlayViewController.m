@@ -28,7 +28,7 @@
 #import "BuyCourseViewController.h"
 #import "VideoStateView.h"
 #import "LoginViewController.h"
-
+#import "PathUtility.h"
 #import "DownloadCenterViewController.h"
 
 @interface VideoPlayViewController ()<UITableViewDelegate,UITableViewDataSource
@@ -184,9 +184,8 @@
         [self.videoController changePlayer];
     }
     self.currentVideoDic = videoInfo;
-    if (!self.videoController) {
-        self.videoController = [[ZXVideoPlayerController alloc] initWithFrame:CGRectMake(0, 0, kZXVideoPlayerOriginalWidth, kZXVideoPlayerOriginalHeight)];
-    }
+    self.videoController = [[ZXVideoPlayerController alloc] initWithFrame:CGRectMake(0, 0, kZXVideoPlayerOriginalWidth, kZXVideoPlayerOriginalHeight)];
+    
     NSDictionary * dic = [[VideoManager sharedManager]getCurrentVideoInfoWithVideoId:[videoInfo objectForKey:kVideoId]];
     if ([dic objectForKey:kVideoPlayTime]) {
         self.playingVideo.playTime = [[dic objectForKey:kVideoPlayTime] intValue];
@@ -237,6 +236,8 @@
     {
         [self.view insertSubview:self.videoController.view belowSubview:self.videoStateView];
     }
+    
+    
 }
 
 - (void)addHistory:(NSDictionary *)info
@@ -262,6 +263,22 @@
 //    }else{
 //    
 //    }
+    
+    if (![[UserManager sharedManager] isUserLogin]) {
+        [SVProgressHUD showErrorWithStatus:@"请先登录"];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [SVProgressHUD dismiss];
+        });
+        return;
+    }
+    
+    if ([[self.playCourseInfo objectForKey:kCourseCanDownLoad] intValue] == 0) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"暂无下载权限，请升级套餐或购买课程" delegate:nil cancelButtonTitle:@"知道了" otherButtonTitles:nil];
+        [alert show];
+        return;
+    }
+    
+    
     [self.videoController pausePlay];
     DownLoadViewController *vc = [[DownLoadViewController alloc] init];
     vc.chapterInfoArray = self.chapterArray;
@@ -413,14 +430,14 @@
     [downloadButton addTarget:self action:@selector(downLoadVides) forControlEvents:UIControlEventTouchUpInside];
     
     UIButton *noteButton = [UIButton buttonWithType: UIButtonTypeCustom];
-    noteButton.frame = CGRectMake(kScreenWidth - 70, 10, 60, 30);
+    noteButton.frame = CGRectMake(kScreenWidth - 130, 10, 60, 30);
     [noteButton setTitle:@"笔记" forState:UIControlStateNormal];
     noteButton.titleLabel.font = [UIFont systemFontOfSize:15];
     [noteButton setTitleColor:UIColorFromRGB(0x333333) forState:UIControlStateNormal];
     [noteButton addTarget:self action:@selector(writeNote) forControlEvents:UIControlEventTouchUpInside];
     
     self.collectButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.collectButton.frame = CGRectMake(kScreenWidth - 130, 10, 60, 30);
+    self.collectButton.frame = CGRectMake(kScreenWidth - 210, 10, 60, 30);
     self.collectButton.titleLabel.font =[UIFont systemFontOfSize:15];
     if ([[self.playCourseInfo objectForKey:kCourseIsCollect] boolValue]) {
         [self.collectButton setTitle:@"已收藏" forState:UIControlStateNormal];
@@ -451,8 +468,8 @@
     [self.titleView addSubview:noteButton];
     [self.titleView addSubview:self.collectButton];
     [self.titleView addSubview:separeLine1];
-//    [self.titleView addSubview:separeLine2];
-//    [self.titleView addSubview:downloadButton];
+    [self.titleView addSubview:separeLine2];
+    [self.titleView addSubview:downloadButton];
     [self.titleView addSubview:bottomLineView];
     [self.view addSubview:self.titleView];
     
@@ -560,32 +577,45 @@
         return;
     }
     
+    
+    
     NSDictionary *chapterDic = [self.chapterArray objectAtIndex:indexPath.section];
     NSArray *videoInfos = [self.chapterVideoInfoArray objectAtIndex:indexPath.section];
     NSDictionary *videoInfo = [videoInfos objectAtIndex:indexPath.row];
     
-    NSDictionary *history;
-    if ([[chapterDic objectForKey:kIsSingleChapter] boolValue] == YES) {
-        history = @{kCourseID:[self.playCourseInfo objectForKey:kCourseID],
-                    kChapterId:[chapterDic objectForKey:kChapterId],
-                    kVideoId:@(0)};
-    }else{
-        history = @{kCourseID:[self.playCourseInfo objectForKey:kCourseID],
-                    kChapterId:[chapterDic objectForKey:kChapterId],
-                    kVideoId:[videoInfo objectForKey:kVideoId]};
+    NSMutableDictionary *videoD = [[NSMutableDictionary alloc]initWithDictionary:videoInfo];
+    [videoD setObject:@(1) forKey:@"type"];
+    if ([[DownloaderManager sharedManager] isVideoIsDownloadedWithVideoId:videoD]) {
+        
+        [self playDownLoadVideo:videoInfo andChapterInfo:(NSDictionary *)chapterDic];
+        
+    }else
+    {
+        NSDictionary *history;
+        if ([[chapterDic objectForKey:kIsSingleChapter] boolValue] == YES) {
+            history = @{kCourseID:[self.playCourseInfo objectForKey:kCourseID],
+                        kChapterId:[chapterDic objectForKey:kChapterId],
+                        kVideoId:@(0)};
+        }else{
+            history = @{kCourseID:[self.playCourseInfo objectForKey:kCourseID],
+                        kChapterId:[chapterDic objectForKey:kChapterId],
+                        kVideoId:[videoInfo objectForKey:kVideoId]};
+        }
+        
+        self.playingChapterId = [[chapterDic objectForKey:kChapterId] intValue];
+        self.playingChapterName = [chapterDic objectForKey:kChapterName];
+        self.playingVideoId = [[videoInfo objectForKey:kVideoId] intValue];
+        self.playingVideoName = [videoInfo objectForKey:kVideoName];
+        [self addHistory:history];
+        
+        self.playingVideo = [[ZXVideo alloc] init];
+        self.playingVideo.playUrl = [videoInfo objectForKey:kVideoURL];
+        self.playingVideo.title = [videoInfo objectForKey:kVideoName];
+        
+        [self playVideoInfo:videoInfo];
     }
     
-    self.playingChapterId = [[chapterDic objectForKey:kChapterId] intValue];
-    self.playingChapterName = [chapterDic objectForKey:kChapterName];
-    self.playingVideoId = [[videoInfo objectForKey:kVideoId] intValue];
-    self.playingVideoName = [videoInfo objectForKey:kVideoName];
-    [self addHistory:history];
     
-    self.playingVideo = [[ZXVideo alloc] init];
-    self.playingVideo.playUrl = [videoInfo objectForKey:kVideoURL];
-    self.playingVideo.title = [videoInfo objectForKey:kVideoName];
-    
-    [self playVideoInfo:videoInfo];
     
     self.selectedSection = indexPath.section;
     self.selectedRow = indexPath.row;
@@ -703,7 +733,6 @@
             return;
         }
         
-        
         if ([[weakSelf.playCourseInfo objectForKey:kCourseCanDownLoad] intValue] == 0) {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"暂无下载权限，请升级套餐或购买课程" delegate:nil cancelButtonTitle:@"知道了" otherButtonTitles:nil];
             [alert show];
@@ -753,6 +782,112 @@
             [self.chapterTableView insertRowsAtIndexPaths:[NSArray arrayWithArray:rowArray] withRowAnimation:UITableViewRowAnimationTop];
         }
     }
+}
+
+#pragma mark playDownloadVideo
+
+- (void)playDownLoadVideo:(NSDictionary *)videoInfo andChapterInfo:(NSDictionary *)chapterInfo
+{
+    
+    NSString *videoPath = [[NSString stringWithFormat:@"%@",[videoInfo objectForKey:kVideoId]] MD5];
+    NSString *chapterPath = [[NSString stringWithFormat:@"%@",[chapterInfo objectForKey:kChapterId]] MD5];
+    NSString *coursePath = [[NSString stringWithFormat:@"%@",[self.playCourseInfo objectForKey:kCourseID]] MD5];
+    
+    NSString *docPath = [PathUtility getDocumentPath];
+    NSString *path1 = [docPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@",coursePath]];
+    
+    NSString *path2 = [path1 stringByAppendingPathComponent:[NSString stringWithFormat:@"%@",chapterPath]];
+    NSString *path3 = [path2 stringByAppendingPathComponent:[NSString stringWithFormat:@"%@",videoPath]];
+    
+    NSString *toPath = [path2 stringByAppendingPathComponent:@"1.mp4"];
+    
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSError *error;
+    if ([fileManager fileExistsAtPath:toPath]) {
+        [fileManager removeItemAtPath:toPath error:nil];
+    }
+    [fileManager linkItemAtPath:path3 toPath:toPath error:&error];
+    
+    if (error) {
+        NSLog(@"%@",error);
+    }
+    
+    //    self.filePath = toPath;
+    //    [UIUtility codefileData:self.filePath];
+    
+    NSURL *pathUrl = [NSURL fileURLWithPath:toPath];
+    
+    self.playingChapterId = [[chapterInfo objectForKey:kChapterId] intValue];
+    self.playingChapterName = [chapterInfo objectForKey:kChapterName];
+    self.playingVideoId = [[videoInfo objectForKey:kVideoId] intValue];
+    self.playingVideoName = [videoInfo objectForKey:kVideoName];
+    
+    self.playingVideo = [[ZXVideo alloc] init];
+    self.playingVideo.playUrl = pathUrl.absoluteString;
+    self.playingVideo.title = [videoInfo objectForKey:kVideoName];
+    self.playingVideo.playTime = [[videoInfo objectForKey:kVideoPlayTime] intValue];
+    [self playDownloadVideo];
+}
+
+- (void)playDownloadVideo
+{
+    
+    if (self.videoController) {
+        [self.videoController changePlayer];
+    }
+    self.videoController = [[ZXVideoPlayerController alloc] initWithFrame:CGRectMake(0, 0, kZXVideoPlayerOriginalWidth, kZXVideoPlayerOriginalHeight)];
+    self.videoController.video = self.playingVideo;
+    __weak typeof(self) weakSelf = self;
+    self.videoController.videoPlayerGoBackBlock = ^{
+        __strong typeof(self) strongSelf = weakSelf;
+        //        [UIUtility codefileData:weakSelf.filePath];
+        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+        [weakSelf dismissViewControllerAnimated:YES completion:nil];
+        
+        [[NSUserDefaults standardUserDefaults] setObject:@0 forKey:@"ZXVideoPlayer_DidLockScreen"];
+        
+        strongSelf.videoController = nil;
+    };
+    
+    NSDictionary * courseInfoDic = self.playCourseInfo;
+    NSDictionary * chapterInfo = [weakSelf.chapterArray objectAtIndex:weakSelf.selectedSection];
+    NSArray *videoInfos = [weakSelf.chapterVideoInfoArray objectAtIndex:weakSelf.selectedSection];
+    NSDictionary *videoInfo = [videoInfos objectAtIndex:weakSelf.selectedRow];
+    
+    
+    self.videoController.videoPlayerGoBackWithPlayTimeBlock = ^(double time){
+        NSLog(@"已经播放的时长 %.2f", time);
+//        NSMutableDictionary *downLoadInfo = [[NSMutableDictionary alloc] init];
+//        [downLoadInfo setObject:[courseInfoDic objectForKey:kCourseID] forKey:kCourseID];
+//        [downLoadInfo setObject:[courseInfoDic objectForKey:kCourseName] forKey:kCourseName];
+//        [downLoadInfo setObject:[courseInfoDic objectForKey:kCourseCover] forKey:kCourseCover];
+//        [downLoadInfo setObject:[courseInfoDic objectForKey:kCoursePath] forKey:kCoursePath];
+//
+//        [downLoadInfo setObject:[videoInfo objectForKey:kVideoId] forKey:kVideoId];
+//        [downLoadInfo setObject:[videoInfo objectForKey:kVideoName] forKey:kVideoName];
+//        [downLoadInfo setObject:[videoInfo objectForKey:kVideoSort] forKey:kVideoSort];
+//        [downLoadInfo setObject:@((int)time) forKey:kVideoPlayTime];
+//        [downLoadInfo setObject:[videoInfo objectForKey:kVideoPath] forKey:kVideoPath];
+//
+//        [downLoadInfo setObject:[chapterInfo objectForKey:kChapterId] forKey:kChapterId];
+//        [downLoadInfo setObject:[chapterInfo objectForKey:kChapterName] forKey:kChapterName];
+//        [downLoadInfo setObject:[chapterInfo objectForKey:kChapterSort] forKey:kChapterSort];
+//        [downLoadInfo setObject:[chapterInfo objectForKey:kChapterPath] forKey:kChapterPath];
+//        [downLoadInfo setObject:[chapterInfo objectForKey:kIsSingleChapter] forKey:kIsSingleChapter];
+//
+//        [[DownloaderManager sharedManager] writeToDBWith:downLoadInfo];
+        
+        NSMutableDictionary * videoInfodic = [NSMutableDictionary dictionary];
+        [videoInfodic setValue:[weakSelf.currentVideoDic objectForKey:kVideoId] forKey:kVideoId];
+        [videoInfodic setValue:@(time) forKey:kVideoPlayTime];
+        [videoInfodic setValue:[weakSelf.currentVideoDic objectForKey:kVideoName] forKey:kVideoName];
+        [videoInfodic setValue:[weakSelf.currentVideoDic objectForKey:kVideoURL] forKey:kVideoURL];
+        [[VideoManager sharedManager]writeToDB:videoInfodic];
+        
+        
+    };
+    
+    [self.videoController showInView:self.view];
 }
 
 #pragma mark - CourseDetail delegate

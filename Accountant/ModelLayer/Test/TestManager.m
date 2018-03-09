@@ -541,6 +541,7 @@
     [dic setObject:questionModel.correctAnswerIds forKey:kTestQuestionCorrectAnswersId];
     [dic setObject:@(questionModel.questionIsAnswered) forKey:kTestQuestionIsAnswered];
     [dic setObject:@(questionModel.questionIsCollected) forKey:kTestQuestionIsCollected];
+    [dic setObject:questionModel.caseInfo forKey:kQuestionCaseInfo];
     NSMutableArray *array = [[NSMutableArray alloc] init];
     for (TestAnswerModel *answerModel in questionModel.answers) {
         NSMutableDictionary *dic1 = [NSMutableDictionary new];
@@ -574,6 +575,7 @@
     [dic setObject:@(questionModel.questionIsAnswered) forKey:kTestQuestionIsAnswered];
     [dic setObject:@(questionModel.questionIsShowAnswer) forKey:kTestQuestionIsShowAnswer];
     [dic setObject:@(questionModel.questionIsCollected) forKey:kTestQuestionIsCollected];
+    [dic setObject:questionModel.caseInfo forKey:kQuestionCaseInfo];
     NSMutableArray *array = [[NSMutableArray alloc] init];
     for (TestAnswerModel *answerModel in questionModel.answers) {
         NSMutableDictionary *dic1 = [NSMutableDictionary new];
@@ -605,7 +607,7 @@
     [dic setObject:@(questionModel.questionIsAnswered) forKey:kTestQuestionIsAnswered];
     [dic setObject:@(questionModel.questionIsShowAnswer) forKey:kTestQuestionIsShowAnswer];
     [dic setObject:@(questionModel.questionIsCollected) forKey:kTestQuestionIsCollected];
-    
+    [dic setObject:questionModel.caseInfo forKey:kQuestionCaseInfo];
     [dic setObject:@(questionModel.isResponse) forKey:kTestIsResponse];
     if (questionModel.myAnswer) {
         [dic setObject:questionModel.myAnswer forKey:kTestMyanswer];
@@ -653,6 +655,7 @@
         [dic setObject:questionModel.correctAnswerIds forKey:kTestQuestionCorrectAnswersId];
         [dic setObject:@(questionModel.questionIsAnswered) forKey:kTestQuestionIsAnswered];
         [dic setObject:@(questionModel.questionIsCollected) forKey:kTestQuestionIsCollected];
+        [dic setObject:questionModel.caseInfo forKey:kQuestionCaseInfo];
         NSMutableArray *array = [[NSMutableArray alloc] init];
         for (TestAnswerModel *answerModel in questionModel.answers) {
             NSMutableDictionary *dic1 = [NSMutableDictionary new];
@@ -726,6 +729,7 @@
         [dic setObject:@(questionModel.questionIsCollected) forKey:kTestQuestionIsCollected];
         [dic setObject:@(questionModel.isAnsweredCorrect) forKey:kTestQuestionIsAnswerCorrect];
         [dic setObject:@(questionModel.questionNumber) forKey:kTestQuestionNumber];
+        [dic setObject:questionModel.caseInfo forKey:kQuestionCaseInfo];
         NSMutableArray *array = [[NSMutableArray alloc] init];
         for (TestAnswerModel *answerModel in questionModel.answers) {
             NSMutableDictionary *dic1 = [NSMutableDictionary new];

@@ -12,6 +12,7 @@
 #import "CourseraManager.h"
 #import "CommonMacro.h"
 #import "SVProgressHUD.h"
+#import "UIImageView+AFNetworking.h"
 
 @interface AddVideoNoteViewController ()<NoteModule_AddVideoNoteProtocol>
 
@@ -29,6 +30,7 @@
     self.view.backgroundColor = [UIColor whiteColor];
     [self navigationViewSetup];
     [self contentViewSetup];
+    
 }
 
 - (void)dissmiss

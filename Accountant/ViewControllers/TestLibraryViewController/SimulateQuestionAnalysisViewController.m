@@ -19,8 +19,8 @@
 #import "TestMacro.h"
 #import "SVProgressHUD.h"
 #import "TestQuestioncollectView.h"
-
-@interface SimulateQuestionAnalysisViewController ()<UITableViewDelegate,UITableViewDataSource,UIGestureRecognizerDelegate,TestModuleQuestionCollection,TestModule_CollectQuestionProtocol,TestModule_UncollectQuestionProtocol>
+#import "SlideBlockView.h"
+@interface SimulateQuestionAnalysisViewController ()<UITableViewDelegate,UITableViewDataSource,UIGestureRecognizerDelegate,TestModuleQuestionCollection,TestModule_CollectQuestionProtocol,TestModule_UncollectQuestionProtocol,UITextViewDelegate>
 
 @property (nonatomic,strong) UITableView            *contentTableView;
 
@@ -38,6 +38,11 @@
 @property (nonatomic,strong) UISwipeGestureRecognizer *rightGesture;
 
 @property (nonatomic, strong)TestQuestioncollectView * collectView;
+
+@property (nonatomic, strong)SlideBlockView * slideBlockView;
+@property (nonatomic, assign)CGFloat tableviewHeight;
+@property (nonatomic, strong)UITextView * cailiaoDetailLabel;
+
 @end
 
 @implementation SimulateQuestionAnalysisViewController
@@ -52,7 +57,7 @@
     self.view.backgroundColor = kBackgroundGrayColor;
     
     self.navigationController.interactivePopGestureRecognizer.delegate = self;
-    
+    self.tableviewHeight = kScreenHeight - kNavigationBarHeight - kStatusBarHeight;
     if (self.currentQuestionIndex && self.currentQuestionIndex > 0) {
         [[TestManager sharedManager] resetCurrentQuestionInfoswith:self.currentQuestionIndex];
     }else
@@ -68,6 +73,7 @@
     }
     
     [self navigationViewSetup];
+    [self slideViewSetup];
     [self tableViewSetup];
     [self reloadQuestionInfo];
     [self reloadCurrentTableView];
@@ -91,6 +97,10 @@
     [self.contentTableView removeGestureRecognizer:_rightGesture];
 }
 
+static bool isCailiao;
+static bool isFirstCailiaoQuestion;
+
+
 - (void)reloadQuestionInfo
 {
     if (self.wrongQuestion) {
@@ -99,9 +109,66 @@
     {
         self.questionInfoDic = [[TestManager sharedManager] getCurrentSimulateQuestionInfo];
     }
+    
+    if (![[self.questionInfoDic objectForKey:kQuestionCaseInfo] isEqualToString:@""]) {
+        self.slideBlockView.hidden = NO;
+        isCailiao = true;
+        if (![self.cailiaoDetailLabel.text isEqualToString:@""]) {
+            
+            NSLog(@"self.cailiaoDetailLabel.text = %@", self.cailiaoDetailLabel.text);
+            NSLog(@"[self.questionInfoDic objectForKey:kQuestionCaseInfo] = %@", [self.questionInfoDic objectForKey:kQuestionCaseInfo]);
+            if (![self.cailiaoDetailLabel.text isEqualToString:[self.questionInfoDic objectForKey:kQuestionCaseInfo]]) {
+                self.cailiaoDetailLabel.attributedText = [UIUtility getSpaceLabelStr:[self.questionInfoDic objectForKey:kQuestionCaseInfo] withFont:kMainFont color:kMainTextColor_100];
+            }
+            isFirstCailiaoQuestion = false;
+        }else
+        {
+            isFirstCailiaoQuestion = true;
+            self.cailiaoDetailLabel.attributedText = [UIUtility getSpaceLabelStr:[self.questionInfoDic objectForKey:kQuestionCaseInfo] withFont:kMainFont color:kMainTextColor_100];
+            [self changetableview];
+        }
+    }else
+    {
+        self.slideBlockView.hidden = YES;
+        self.cailiaoDetailLabel.text = @"";
+        isCailiao = false;
+    }
+    
     self.currentQuestionIndex = [[TestManager sharedManager] getCurrentQuestionIndex];
     
     self.selectedArray = [self.questionInfoDic objectForKey:kTestQuestionSelectedAnswers];
+}
+
+- (void)changetableview
+{
+    CGFloat point_y = 0.0;
+    CGFloat height = 0.0;
+    
+    if (isCailiao) {
+        if (isFirstCailiaoQuestion) {
+            point_y = 60 + 30;
+            height = kScreenHeight - kNavigationBarHeight - kStatusBarHeight  - 60 - 30;
+            self.tableviewHeight = height;
+            self.slideBlockView.hd_y = 60;
+            self.slideBlockView.alpha = 0;
+        }else
+        {
+            point_y = kScreenHeight - kNavigationBarHeight - kStatusBarHeight  - self.tableviewHeight;
+            height = self.tableviewHeight;
+        }
+    }else
+    {
+        point_y = 0;
+        height = kScreenHeight - kNavigationBarHeight - kStatusBarHeight;
+        self.tableviewHeight = height;
+    }
+    
+    [UIView animateWithDuration:0.5 animations:^{
+        self.slideBlockView.alpha = 1;
+        self.nextOrPreviousTableView.frame = CGRectMake(0, point_y, kScreenWidth, self.tableviewHeight);
+        self.contentTableView.frame = CGRectMake(0, point_y, kScreenWidth, self.tableviewHeight);
+    }];
+    
 }
 
 - (void)previousQuestion
@@ -110,12 +177,37 @@
         [[TestManager sharedManager] previousQuestion];
         [self reloadQuestionInfo];
         [self reloadNextOrPreTableView];
-        self.nextOrPreviousTableView.frame = CGRectMake(-kScreenWidth, 0, kScreenWidth, kScreenHeight - kStatusBarHeight - kNavigationBarHeight);
+        
+        CGFloat point_y = 0.0;
+        CGFloat height = 0.0;
+        
+        if (isCailiao) {
+            if (isFirstCailiaoQuestion) {
+                point_y = 60 + 30;
+                height = kScreenHeight - kNavigationBarHeight - kStatusBarHeight  - 60 - 30;
+                self.tableviewHeight = height;
+                self.slideBlockView.hd_y = 60;
+                self.slideBlockView.alpha = 0;
+            }else
+            {
+                point_y = kScreenHeight - kNavigationBarHeight - kStatusBarHeight  - self.tableviewHeight;
+                height = self.tableviewHeight;
+            }
+        }else
+        {
+            point_y = 0;
+            height = kScreenHeight - kNavigationBarHeight - kStatusBarHeight ;
+            self.tableviewHeight = height;
+        }
+        
+        self.nextOrPreviousTableView.frame = CGRectMake(-kScreenWidth, point_y, kScreenWidth, self.tableviewHeight);
         
         [UIView animateWithDuration:0.5 animations:^{
-            self.nextOrPreviousTableView.frame = CGRectMake(0, 0, kScreenWidth, kScreenHeight - kStatusBarHeight - kNavigationBarHeight);
-            self.contentTableView.frame = CGRectMake(kScreenWidth, 0, kScreenWidth, kScreenHeight - kStatusBarHeight - kNavigationBarHeight );
+            self.nextOrPreviousTableView.frame = CGRectMake(0, point_y, kScreenWidth, self.tableviewHeight);
+            self.contentTableView.frame = CGRectMake(kScreenWidth, point_y, kScreenWidth, self.tableviewHeight );
+            self.slideBlockView.alpha = 1;
         } completion:^(BOOL finished) {
+             self.contentTableView.frame = CGRectMake(0, point_y, kScreenWidth, self.tableviewHeight);
             [self reloadCurrentTableView];
             [self setrightNavigationItem:self.questionInfoDic];
         }];
@@ -128,12 +220,37 @@
         [[TestManager sharedManager] nextQuestion];
         [self reloadQuestionInfo];
         [self reloadNextOrPreTableView];
-        self.nextOrPreviousTableView.frame = CGRectMake(kScreenWidth, 0, kScreenWidth, kScreenHeight - kStatusBarHeight - kNavigationBarHeight);
+        
+        CGFloat point_y = 0.0;
+        CGFloat height = 0.0;
+        
+        if (isCailiao) {
+            if (isFirstCailiaoQuestion) {
+                point_y = 60 + 30;
+                height = kScreenHeight - kNavigationBarHeight - kStatusBarHeight  - 60 - 30;
+                self.tableviewHeight = height;
+                self.slideBlockView.hd_y = 60;
+                self.slideBlockView.alpha = 0;
+            }else
+            {
+                point_y = kScreenHeight - kNavigationBarHeight - kStatusBarHeight  - self.tableviewHeight;
+                height = self.tableviewHeight;
+            }
+        }else
+        {
+            point_y = 0;
+            height = kScreenHeight - kNavigationBarHeight - kStatusBarHeight ;
+            self.tableviewHeight = height;
+        }
+        
+        self.nextOrPreviousTableView.frame = CGRectMake(kScreenWidth, point_y, kScreenWidth, self.tableviewHeight);
         
         [UIView animateWithDuration:0.5 animations:^{
-            self.nextOrPreviousTableView.frame = CGRectMake(0, 0, kScreenWidth, kScreenHeight - kStatusBarHeight - kNavigationBarHeight);
-            self.contentTableView.frame = CGRectMake(-kScreenWidth, 0, kScreenWidth, kScreenHeight - kStatusBarHeight - kNavigationBarHeight );
+            self.nextOrPreviousTableView.frame = CGRectMake(0, point_y, kScreenWidth, self.tableviewHeight);
+            self.contentTableView.frame = CGRectMake(-kScreenWidth, point_y, kScreenWidth, self.tableviewHeight );
+            self.slideBlockView.alpha = 1;
         } completion:^(BOOL finished) {
+            self.contentTableView.frame = CGRectMake(0, point_y, kScreenWidth, self.tableviewHeight);
             [self reloadCurrentTableView];
             [self setrightNavigationItem:self.questionInfoDic];
         }];
@@ -143,7 +260,6 @@
 - (void)reloadCurrentTableView
 {
     [self.contentTableView reloadData];
-    self.contentTableView.frame = CGRectMake(0, 0, kScreenWidth, kScreenHeight - kStatusBarHeight - kNavigationBarHeight );
 }
 
 - (void)reloadNextOrPreTableView
@@ -277,6 +393,26 @@
 {
     [self.collectView resetWithInfo:dic andIsShowCollect:YES];
 }
+
+- (void)slideViewSetup
+{
+    self.slideBlockView = [[SlideBlockView alloc]initWithFrame:CGRectMake(kScreenWidth / 2 - 24, 60, 48, 30)];
+    __weak typeof(self)weakSelf = self;
+    [self.slideBlockView moveSlideBlock:^(CGPoint point) {
+        
+        weakSelf.cailiaoDetailLabel.hd_height = CGRectGetMaxY(weakSelf.slideBlockView.frame);
+        weakSelf.contentTableView.hd_y = CGRectGetMaxY(weakSelf.slideBlockView.frame);
+        
+        weakSelf.contentTableView.hd_height = kScreenHeight - kNavigationBarHeight - kStatusBarHeight - CGRectGetMaxY(weakSelf.slideBlockView.frame);
+        
+        weakSelf.nextOrPreviousTableView.hd_y = CGRectGetMaxY(weakSelf.slideBlockView.frame);
+        weakSelf.nextOrPreviousTableView.hd_height = kScreenHeight - kNavigationBarHeight - kStatusBarHeight  - CGRectGetMaxY(weakSelf.slideBlockView.frame);
+        
+        weakSelf.tableviewHeight = kScreenHeight - kNavigationBarHeight - kStatusBarHeight  - CGRectGetMaxY(weakSelf.slideBlockView.frame);
+    }];
+    [self.view addSubview:self.slideBlockView];
+}
+
 - (void)tableViewSetup
 {
     self.nextOrPreviousTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidth, kScreenHeight - kStatusBarHeight - kNavigationBarHeight ) style:UITableViewStylePlain];
@@ -297,7 +433,15 @@
     [self.view addSubview:self.contentTableView];
     
     
+    self.cailiaoDetailLabel = [[UITextView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, 100)];
+    self.cailiaoDetailLabel.backgroundColor = [UIColor colorWithWhite:.9 alpha:1];
+    self.cailiaoDetailLabel.textColor = [UIColor whiteColor];
+    self.cailiaoDetailLabel.delegate = self;
+    self.cailiaoDetailLabel.editable = YES;
+    [self.view addSubview:self.cailiaoDetailLabel];
     
+    [self.view insertSubview:self.cailiaoDetailLabel belowSubview:self.nextOrPreviousTableView];
+    [self.view bringSubviewToFront:self.slideBlockView];
 }
 
 #pragma mark - table delegate

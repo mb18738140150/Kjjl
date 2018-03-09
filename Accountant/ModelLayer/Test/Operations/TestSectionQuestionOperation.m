@@ -49,6 +49,7 @@
         questionModel.correctAnswerIds = [dic objectForKey:@"answer"];
         questionModel.questionIsCollected = [[dic objectForKey:@"isCollect"] boolValue];
         questionModel.logId = [[dic objectForKey:@"logId"] intValue];
+        questionModel.caseInfo = [UIUtility judgeStr:[dic objectForKey:@"caseInfo"]];
         NSString *a = [dic objectForKey:@"answer"];
         NSString *str = [dic objectForKey:@"items"];
         NSArray *array = [str componentsSeparatedByString:@"|"];

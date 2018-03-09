@@ -198,6 +198,8 @@
         self.learnProcessView.hidden = YES;
         self.backgroundColor = UIColorFromRGB(0xf9f9f9);
     }
+
+    
 }
 
 
@@ -254,6 +256,7 @@
 
 - (void)lockVideo
 {
+    self.learnImageView.hidden = NO;
     self.showStateImageView.image = [UIImage imageNamed:@"课程50-50"];
     self.lineView.hidden = YES;
     self.learnImageView.image = [UIImage imageNamed:@"密码"];
@@ -274,7 +277,7 @@
         self.learnImageView.image = [UIImage imageNamed:@"下载(7)"];
         self.downloadState = DownloadState_downloading;
     }
-    
+    self.learnImageView.hidden = YES;
     CGRect learnImageRect = CGRectMake([UIScreen mainScreen].bounds.size.width - 10 - 25, 3, 25, 25);
     
     [self.learnImageView setFrame:learnImageRect];
@@ -304,6 +307,10 @@
 
 - (void)downloadAction
 {
+    if ([self.learnImageView.image isEqual: [UIImage imageNamed:@"密码"]]) {
+        return;
+    }
+    
     if (self.downloadBlock) {
         self.downloadBlock(self.downloadState);
     }

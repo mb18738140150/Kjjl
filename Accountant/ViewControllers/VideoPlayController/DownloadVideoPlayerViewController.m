@@ -70,6 +70,18 @@
 //    self.filePath = toPath;
 //    [UIUtility codefileData:toPath];
     
+//    unsigned int count = 0;
+//    Ivar *ivars = class_copyIvarList([self class], &count);
+//    for (int i = 0; i<count; i ++) {
+//        Ivar ivar = ivars[i];
+//        const char *name = ivar_getName(ivar);
+//        NSString * nameStr = [NSString stringWithUTF8String:name];
+//        id value = [self valueForKey:nameStr];
+//        NSLog(@"%@", value);
+//    }
+    
+
+    
     
     NSURL *pathUrl = [NSURL fileURLWithPath:toPath];
     

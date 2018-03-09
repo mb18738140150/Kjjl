@@ -170,9 +170,9 @@
     return self;
 }
 
+
 - (void)segmentedControlChange:(UIButton *)btn
 {
-    
     [UIView animateWithDuration:0.3 animations:^{
         btn.imageView.transform = CGAffineTransformRotate(btn.imageView.transform, M_PI);
     }];
@@ -186,7 +186,9 @@
             }];
         }
     }
-    
+    /*
+     4275 4450 2110 402 1416 700 800 220 2945 965 18227 40000 10000 2398 528 2829 108 100 400 1200 1200 6000 14000 1200
+     */
     CGRect rect4boottomLine = self.bottomLineView.frame;
     rect4boottomLine.origin.x = btn.frame.origin.x;
     
@@ -281,6 +283,7 @@
         [bt setImage:[UIImage imageNamed:@"message_tip"] forState:UIControlStateNormal];
     });
 }
+
 - (void)cancelTipWithIndex:(NSInteger)index
 {
     UIButton * bt = [_array4Btn   objectAtIndex:index];

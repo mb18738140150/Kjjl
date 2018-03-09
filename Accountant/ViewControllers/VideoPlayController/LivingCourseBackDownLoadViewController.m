@@ -130,9 +130,10 @@
         return cell;
     }
     
-    if ([[DownloaderManager sharedManager] isTaskAddToDownloadedQueue:taskId]) {
+    if ([[DownloaderManager sharedManager] TY_isTaskAddToDownloadedQueue:[videoDic objectForKey:kVideoURL]]) {
         cell.downloadDetailLabel.text = @"已添加";
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        
         return cell;
     }
     

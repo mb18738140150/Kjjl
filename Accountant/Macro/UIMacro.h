@@ -41,4 +41,6 @@ blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 #define kCommonMainTextColor_150 [UIColor colorWithWhite:0.6 alpha:1]
 #define kCommonMainTextColor_200 [UIColor colorWithWhite:0.8 alpha:1]
 
+#define kRevealWidth  200
+
 #endif /* UIMacro_h */

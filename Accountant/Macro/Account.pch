@@ -32,13 +32,13 @@
 #import "UIUtility.h"
 #import "NSString+MD5.h"
 #import "UIImage+Base64.h"
+#import "ViewController.h"
+#import "CountDown.h"
+#import "HttpUploaderManager.h"
 #import <RongIMKit/RongIMKit.h>
+#import "RCDLive.h"
+#import "WXApi.h"
 #import "UIViewController+Cloudox.h"
 #import "UINavigationController+Cloudox.h"
-#import "RCDLive.h"
-#import "ViewController.h"
-#import "HttpUploaderManager.h"
-#import "CountDown.h"
-#import "WXApi.h"
 #import <AlipaySDK/AlipaySDK.h>
 #endif /* Account_h */

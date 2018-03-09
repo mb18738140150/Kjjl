@@ -535,6 +535,7 @@
             [array addObject:model.infoDic];
         };
     }
+    
     return array;
 }
 

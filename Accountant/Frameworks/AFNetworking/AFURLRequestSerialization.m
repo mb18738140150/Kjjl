@@ -1129,7 +1129,7 @@ typedef enum {
 
     if (_phase == AFBodyPhase) {
         NSInteger numberOfBytesRead = 0;
-
+        
         numberOfBytesRead = [self.inputStream read:&buffer[totalNumberOfBytesRead] maxLength:(length - (NSUInteger)totalNumberOfBytesRead)];
         if (numberOfBytesRead == -1) {
             return -1;

@@ -70,8 +70,8 @@
         NSString *downloadTaskId = [DownloadRquestOperation getDownloadTaskIdWitChapterId:[chapterInfo objectForKey:kChapterId] andVideoId:[videoInfo objectForKey:kVideoId]];
         
         NSString *videoPath = [[NSString stringWithFormat:@"%@",[videoInfo objectForKey:kVideoId]] MD5];
-        NSString *chapterPath = [[NSString stringWithFormat:@"%@",[videoInfo objectForKey:kChapterId]] MD5];
-        NSString *coursePath = [[NSString stringWithFormat:@"%@",[videoInfo objectForKey:kCourseID]] MD5];
+        NSString *chapterPath = [[NSString stringWithFormat:@"%@",[chapterInfo objectForKey:kChapterId]] MD5];
+        NSString *coursePath = [[NSString stringWithFormat:@"%@",[self.playCourseInfoDic objectForKey:kCourseID]] MD5];
         
         NSMutableDictionary *downLoadInfo = [[NSMutableDictionary alloc] init];
         [downLoadInfo setObject:[courseInfo objectForKey:kCourseID] forKey:kCourseID];
@@ -91,12 +91,11 @@
         [downLoadInfo setObject:[chapterInfo objectForKey:kIsSingleChapter] forKey:kIsSingleChapter];
         [downLoadInfo setObject:downloadTaskId forKey:kDownloadTaskId];
         [downLoadInfo setObject:@(DownloadTaskStateWait) forKey:kDownloadState];
-//        [downLoadInfo setObject:@(1) forKey:@"type"];
+        [downLoadInfo setObject:@(1) forKey:@"type"];
         
         NSLog(@"%@", [downLoadInfo description]);
         
-        [[DownloaderManager sharedManager] addDownloadTask:downLoadInfo];
-        [[DownloaderManager sharedManager] startDownload];
+        [[DownloaderManager sharedManager] TY_addDownloadTask:downLoadInfo];
         
     }
     [SVProgressHUD showSuccessWithStatus:@"开始下载"];
@@ -130,13 +129,15 @@
     cell.nameLabel.text = [videoDic objectForKey:kVideoName];
     cell.downloadDetailLabel.text = nil;
     
-    if ([[DownloaderManager sharedManager] isVideoIsDownloadedWithVideoId:videoDic]) {
+    NSMutableDictionary *videoD = [[NSMutableDictionary alloc]initWithDictionary:videoDic];
+    [videoD setObject:@(1) forKey:@"type"];
+    if ([[DownloaderManager sharedManager] isVideoIsDownloadedWithVideoId:videoD]) {
         cell.downloadDetailLabel.text = @"已下载";
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         return cell;
     }
     
-    if ([[DownloaderManager sharedManager] isTaskAddToDownloadedQueue:taskId]) {
+    if ([[DownloaderManager sharedManager] TY_isTaskAddToDownloadedQueue:[videoDic objectForKey:kVideoURL]]) {
         cell.downloadDetailLabel.text = @"已添加";
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         return cell;
@@ -162,14 +163,15 @@
     NSString *downloadTaskId = [DownloadRquestOperation getDownloadTaskIdWitChapterId:[chapterDic objectForKey:kChapterId] andVideoId:[videoDic objectForKey:kVideoId]];
     NSString *selectedId = [NSString stringWithFormat:@"%ld_%ld",(long)indexPath.section,(long)indexPath.row];
     
-    if ([[DownloaderManager sharedManager] isVideoIsDownloadedWithVideoId:videoDic]) {
+    NSMutableDictionary *videoD = [[NSMutableDictionary alloc]initWithDictionary:videoDic];
+    [videoD setObject:@(1) forKey:@"type"];
+    if ([[DownloaderManager sharedManager] isVideoIsDownloadedWithVideoId:videoD]) {
         return;
     }
     
     if ([[DownloaderManager sharedManager] TY_isTaskAddToDownloadedQueue:[videoDic objectForKey:kVideoURL]]) {
         return;
     }
-    
     
     if ([[self.selectedInfoDic allKeys] containsObject:downloadTaskId]) {
         [self.selectedInfoDic removeObjectForKey:downloadTaskId];
@@ -247,16 +249,15 @@
 
 - (void)navigationViewSetup
 {
-    self.navigationItem.title = @"下  载";
+    self.navigationItem.title = @"下载列表";
     self.edgesForExtendedLayout = UIRectEdgeNone;
     self.automaticallyAdjustsScrollViewInsets = NO;
     
     self.navigationController.navigationBar.barTintColor = kCommonNavigationBarColor;
-    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:[UIColor whiteColor]};
+    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName:UIColorFromRGB(0x333333)};
     
-    UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"close-2.png"] style:UIBarButtonItemStylePlain target:self action:@selector(dissmiss)];
+    UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithImage:[[UIImage imageNamed:@"close-2"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] style:UIBarButtonItemStylePlain target:self action:@selector(dissmiss)];
     self.navigationItem.leftBarButtonItem = item;
-    
 }
 
 @end
