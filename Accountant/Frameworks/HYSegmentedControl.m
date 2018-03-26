@@ -170,7 +170,6 @@
     return self;
 }
 
-
 - (void)segmentedControlChange:(UIButton *)btn
 {
     [UIView animateWithDuration:0.3 animations:^{
@@ -186,9 +185,7 @@
             }];
         }
     }
-    /*
-     4275 4450 2110 402 1416 700 800 220 2945 965 18227 40000 10000 2398 528 2829 108 100 400 1200 1200 6000 14000 1200
-     */
+    
     CGRect rect4boottomLine = self.bottomLineView.frame;
     rect4boottomLine.origin.x = btn.frame.origin.x;
     
@@ -262,7 +259,6 @@
 - (void)changeTitle:(NSString *)title withIndex:(NSInteger)index
 {
     UIButton * bt = [_array4Btn   objectAtIndex:index];
-    
     CGFloat width = [UIUtility getWidthWithText:title font:kMainFont height:15];
     dispatch_async(dispatch_get_main_queue(), ^{
         [bt setTitle:title forState:UIControlStateNormal];
@@ -273,7 +269,6 @@
             bt.imageEdgeInsets = UIEdgeInsetsMake(0,width + bt.titleLabel.hd_x, 0, 0);
         }
     });
-    
 }
 
 - (void)addTipWithIndex:(NSInteger)index

@@ -428,6 +428,12 @@
     [self startPostWithConfig:s andProcessDelegate:delegate];
 }
 
+- (void)requestAcquireDiscountCouponWithInfoDic:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate
+{
+    HttpConfigModel * s = [HttpConfigCreator acquireDiscountCoupon];
+    [self startPostWithConfig:s andProcessDelegate:delegate];
+}
+
 - (void)requestOrderListWithInfoDic:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate
 {
     HttpConfigModel * s = [HttpConfigCreator orderList];

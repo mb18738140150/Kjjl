@@ -103,6 +103,13 @@
 
 @end
 
+@protocol UserModule_AcquireDiscountCouponProtocol <NSObject>
+
+- (void)didRequestAcquireDiscountCouponSuccessed;
+- (void)didRequestAcquireDiscountCouponFailed:(NSString *)failedInfo;
+
+@end
+
 @protocol UserModule_OrderListProtocol <NSObject>
 
 - (void)didRequestOrderListSuccessed;

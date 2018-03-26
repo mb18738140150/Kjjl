@@ -640,6 +640,14 @@
     return c;
 }
 
++ (HttpConfigModel *)acquireDiscountCoupon
+{
+    HttpConfigModel *c = [[HttpConfigModel alloc] init];
+    NSDictionary *dic = @{kCommand:kAcquireDiscountCoupon};
+    [self setConfigModel:c withInfo:dic];
+    return c;
+}
+
 + (HttpConfigModel *)orderList
 {
     HttpConfigModel *c = [[HttpConfigModel alloc] init];

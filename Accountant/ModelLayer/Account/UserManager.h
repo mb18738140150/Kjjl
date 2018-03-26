@@ -183,6 +183,9 @@
 - (NSArray *)getCannotUseDiscountCoupon:(double)price;
 - (NSArray *)getHaveUsedDiscountCoupon;
 
+- (void)didRequestAcquireDiscountCouponWithCourseInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_AcquireDiscountCouponProtocol>)object;
+- (NSArray *)getAcquireDiscountCoupon;
+
 // 获取我的积分
 - (void)didRequestIntegralWithCourseInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_RecommendProtocol>)object;
 - (void)didRequestGetIntegralWithCourseInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_RecommendProtocol>)object;

@@ -630,6 +630,8 @@
 		005A702C201EEE0800C57B7C /* trankle@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 005A7024201EEE0800C57B7C /* trankle@3x.png */; };
 		005A702D201EEE0800C57B7C /* trankle_s@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 005A7025201EEE0800C57B7C /* trankle_s@2x.png */; };
 		005A702E201EEE0800C57B7C /* trankle_s@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 005A7026201EEE0800C57B7C /* trankle_s@3x.png */; };
+		005C3D12205B559A004F547F /* DiscountCouponVIew.m in Sources */ = {isa = PBXBuildFile; fileRef = 005C3D11205B559A004F547F /* DiscountCouponVIew.m */; };
+		005C3D27205B64B4004F547F /* DiscountCouponTCCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 005C3D26205B64B4004F547F /* DiscountCouponTCCell.m */; };
 		005CE5991F736BB900324B31 /* LivingSectionDetailOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 005CE5981F736BB900324B31 /* LivingSectionDetailOperation.m */; };
 		005CE59C1F73926000324B31 /* ShakeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 005CE59B1F73926000324B31 /* ShakeView.m */; };
 		005CE5A01F73B01D00324B31 /* LivingSectionDetailTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 005CE59E1F73B01D00324B31 /* LivingSectionDetailTableViewCell.m */; };
@@ -863,6 +865,7 @@
 		007BD6681FF1F73A009914F9 /* AssistantCenterOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 007BD6671FF1F73A009914F9 /* AssistantCenterOperation.m */; };
 		0081D8E31E642EBB0071292F /* AccountantTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0081D8E21E642EBB0071292F /* AccountantTests.m */; };
 		00846A3E1FB58D1200796C5C /* NSTimer+tool.m in Sources */ = {isa = PBXBuildFile; fileRef = 00846A3D1FB58D1200796C5C /* NSTimer+tool.m */; };
+		0084F2AF205F4439008A3DE6 /* AcquireDiscountCouponOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 0084F2AE205F4439008A3DE6 /* AcquireDiscountCouponOperation.m */; };
 		0088D62A20045D7D00A307D2 /* AssistantViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0088D62920045D7D00A307D2 /* AssistantViewController.m */; };
 		0088D62D200460BD00A307D2 /* MKPPlaceholderTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0088D62C200460BD00A307D2 /* MKPPlaceholderTextView.m */; };
 		0088D63820046D6B00A307D2 /* icon_kefu@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0088D63020046D6B00A307D2 /* icon_kefu@2x.png */; };
@@ -2040,6 +2043,18 @@
 		005A7024201EEE0800C57B7C /* trankle@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "trankle@3x.png"; sourceTree = "<group>"; };
 		005A7025201EEE0800C57B7C /* trankle_s@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "trankle_s@2x.png"; sourceTree = "<group>"; };
 		005A7026201EEE0800C57B7C /* trankle_s@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "trankle_s@3x.png"; sourceTree = "<group>"; };
+		005C3D10205B559A004F547F /* DiscountCouponVIew.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DiscountCouponVIew.h; sourceTree = "<group>"; };
+		005C3D11205B559A004F547F /* DiscountCouponVIew.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DiscountCouponVIew.m; sourceTree = "<group>"; };
+		005C3D1D205B56A3004F547F /* discountCoupon_bg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "discountCoupon_bg@2x.png"; sourceTree = "<group>"; };
+		005C3D1E205B56A3004F547F /* discountCoupon_bg@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "discountCoupon_bg@3x.png"; sourceTree = "<group>"; };
+		005C3D1F205B56A3004F547F /* discountCoupon_bt@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "discountCoupon_bt@2x.png"; sourceTree = "<group>"; };
+		005C3D20205B56A3004F547F /* discountCoupon_bt@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "discountCoupon_bt@3x.png"; sourceTree = "<group>"; };
+		005C3D21205B56A3004F547F /* discountCoupon_close@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "discountCoupon_close@2x.png"; sourceTree = "<group>"; };
+		005C3D22205B56A3004F547F /* discountCoupon_close@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "discountCoupon_close@3x.png"; sourceTree = "<group>"; };
+		005C3D23205B56A3004F547F /* discountCoupon_yhq_bg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "discountCoupon_yhq_bg@2x.png"; sourceTree = "<group>"; };
+		005C3D24205B56A3004F547F /* discountCoupon_yhq_bg@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "discountCoupon_yhq_bg@3x.png"; sourceTree = "<group>"; };
+		005C3D25205B64B4004F547F /* DiscountCouponTCCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DiscountCouponTCCell.h; sourceTree = "<group>"; };
+		005C3D26205B64B4004F547F /* DiscountCouponTCCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DiscountCouponTCCell.m; sourceTree = "<group>"; };
 		005CE5971F736BB900324B31 /* LivingSectionDetailOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LivingSectionDetailOperation.h; sourceTree = "<group>"; };
 		005CE5981F736BB900324B31 /* LivingSectionDetailOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LivingSectionDetailOperation.m; sourceTree = "<group>"; };
 		005CE59A1F73926000324B31 /* ShakeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShakeView.h; sourceTree = "<group>"; };
@@ -2362,6 +2377,8 @@
 		0081D8E41E642EBB0071292F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00846A3C1FB58D1200796C5C /* NSTimer+tool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSTimer+tool.h"; sourceTree = "<group>"; };
 		00846A3D1FB58D1200796C5C /* NSTimer+tool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSTimer+tool.m"; sourceTree = "<group>"; };
+		0084F2AD205F4439008A3DE6 /* AcquireDiscountCouponOperation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AcquireDiscountCouponOperation.h; sourceTree = "<group>"; };
+		0084F2AE205F4439008A3DE6 /* AcquireDiscountCouponOperation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AcquireDiscountCouponOperation.m; sourceTree = "<group>"; };
 		0088D62820045D7D00A307D2 /* AssistantViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AssistantViewController.h; sourceTree = "<group>"; };
 		0088D62920045D7D00A307D2 /* AssistantViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AssistantViewController.m; sourceTree = "<group>"; };
 		0088D62B200460BD00A307D2 /* MKPPlaceholderTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKPPlaceholderTextView.h; sourceTree = "<group>"; };
@@ -2875,6 +2892,7 @@
 		000C91951FD5497C0075E67C /* discountCoupon */ = {
 			isa = PBXGroup;
 			children = (
+				005C3D1C205B56A3004F547F /* 优惠券弹窗 */,
 				006AEEC11FD7904000092330 /* bg_yhqxq@2x.png */,
 				006AEEC21FD7904000092330 /* bg_yhqxq@3x.png */,
 				006AEEB91FD7902700092330 /* img_ygq@2x.png */,
@@ -4467,6 +4485,21 @@
 			path = course_main;
 			sourceTree = "<group>";
 		};
+		005C3D1C205B56A3004F547F /* 优惠券弹窗 */ = {
+			isa = PBXGroup;
+			children = (
+				005C3D1D205B56A3004F547F /* discountCoupon_bg@2x.png */,
+				005C3D1E205B56A3004F547F /* discountCoupon_bg@3x.png */,
+				005C3D1F205B56A3004F547F /* discountCoupon_bt@2x.png */,
+				005C3D20205B56A3004F547F /* discountCoupon_bt@3x.png */,
+				005C3D21205B56A3004F547F /* discountCoupon_close@2x.png */,
+				005C3D22205B56A3004F547F /* discountCoupon_close@3x.png */,
+				005C3D23205B56A3004F547F /* discountCoupon_yhq_bg@2x.png */,
+				005C3D24205B56A3004F547F /* discountCoupon_yhq_bg@3x.png */,
+			);
+			path = "优惠券弹窗";
+			sourceTree = "<group>";
+		};
 		005DF5811F0C930E00F93DA1 /* Jpush */ = {
 			isa = PBXGroup;
 			children = (
@@ -4542,6 +4575,8 @@
 				0048F92C1FC521F90023B02B /* PayCourseOperation.m */,
 				006548501FE8E2FB007159CA /* DiscountCouponOperation.h */,
 				006548511FE8E2FB007159CA /* DiscountCouponOperation.m */,
+				0084F2AD205F4439008A3DE6 /* AcquireDiscountCouponOperation.h */,
+				0084F2AE205F4439008A3DE6 /* AcquireDiscountCouponOperation.m */,
 				006548561FE8ED23007159CA /* OrderListOperation.h */,
 				006548571FE8ED23007159CA /* OrderListOperation.m */,
 				006D080B1FEA01F600346392 /* RecommendOperation.h */,
@@ -5211,6 +5246,10 @@
 				005DD68E20283C2C006A2FB8 /* FuliTableViewCell.h */,
 				005DD68F20283C2C006A2FB8 /* FuliTableViewCell.m */,
 				005DD69020283C2C006A2FB8 /* FuliTableViewCell.xib */,
+				005C3D10205B559A004F547F /* DiscountCouponVIew.h */,
+				005C3D11205B559A004F547F /* DiscountCouponVIew.m */,
+				005C3D25205B64B4004F547F /* DiscountCouponTCCell.h */,
+				005C3D26205B64B4004F547F /* DiscountCouponTCCell.m */,
 			);
 			path = CustomViews;
 			sourceTree = "<group>";
@@ -6376,6 +6415,7 @@
 				006167901FB3E4DE00394E30 /* MemberDetailView.m in Sources */,
 				003AC3DB1E667DBD00713502 /* HttpConfigModel.m in Sources */,
 				003AC43A1E667DBD00713502 /* BannerModel.m in Sources */,
+				005C3D12205B559A004F547F /* DiscountCouponVIew.m in Sources */,
 				000C91821FD4DEB50075E67C /* MyOrderTableViewCell.m in Sources */,
 				00501F301F396369009774D8 /* RCDLiveMessageCell.m in Sources */,
 				0098A6271E70F31D00D5E7E6 /* DBManager.m in Sources */,
@@ -6693,6 +6733,7 @@
 				006957521F908D88002C1C13 /* CancelOrderLivingCourseOperation.m in Sources */,
 				00A694B51E7F794E00A7D10D /* PlayingInfoModel.m in Sources */,
 				003AC4261E667DBD00713502 /* ZXVideoPlayerVolumeView.m in Sources */,
+				005C3D27205B64B4004F547F /* DiscountCouponTCCell.m in Sources */,
 				003AC3F11E667DBD00713502 /* MKAnnotationView+WebCache.m in Sources */,
 				006065E71FDF7E7D00D5E813 /* StudyPlanDerectionTableViewCell.m in Sources */,
 				00A694D91E7FDC5C00A7D10D /* MyQuestionNotReplyOperation.m in Sources */,
@@ -6705,6 +6746,7 @@
 				0025F2631F6F9D870097C219 /* CALayer+UIColor.m in Sources */,
 				00EA7B481E6AC50600B95EB5 /* PathUtility.m in Sources */,
 				00366B951FD67F5A0092182A /* DredgeMemberSelectDCTableViewCell.m in Sources */,
+				0084F2AF205F4439008A3DE6 /* AcquireDiscountCouponOperation.m in Sources */,
 				00366B8F1FD6724E0092182A /* DredgeMemberPriceselectTableViewCell.m in Sources */,
 				003AC4311E667DBD00713502 /* CourseModel.m in Sources */,
 				00D7F29F1E7A3A2800AE3012 /* NSBundle+TZImagePicker.m in Sources */,
@@ -6936,7 +6978,7 @@
 					"$(PROJECT_DIR)/Accountant/ViewControllers/MainViewController/聊天室/Live/UCLOUD",
 					"$(PROJECT_DIR)/Accountant/Frameworks/OpenSDK1.8.1",
 				);
-				ONLY_ACTIVE_ARCH = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"-Objc",
 					"-all_load",
@@ -6978,7 +7020,7 @@
 					"$(PROJECT_DIR)/Accountant/ViewControllers/MainViewController/聊天室/Live/UCLOUD",
 					"$(PROJECT_DIR)/Accountant/Frameworks/OpenSDK1.8.1",
 				);
-				ONLY_ACTIVE_ARCH = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"-Objc",
 					"-all_load",

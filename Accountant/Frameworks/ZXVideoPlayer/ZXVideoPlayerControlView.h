@@ -33,6 +33,7 @@
 @property (nonatomic, strong, readonly) UIButton *shrinkScreenButton;
 @property (nonatomic, strong, readonly) UISlider *progressSlider;
 @property (nonatomic, strong, readonly) UILabel *timeLabel;
+@property (nonatomic, strong, readonly) UIButton *rateButton;
 @property (nonatomic, strong, readonly) UIActivityIndicatorView *indicatorView;
 
 @property (nonatomic, assign, readonly) BOOL isBarShowing;

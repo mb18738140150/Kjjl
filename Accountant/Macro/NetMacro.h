@@ -98,5 +98,6 @@
 #define kLivingBackYearList             @"59"
 #define kSubmitGidtCode                 @"60"
 #define kGiftLIst                       @"61"
+#define kAcquireDiscountCoupon          @"62"
 
 #endif /* NetMacro_h */

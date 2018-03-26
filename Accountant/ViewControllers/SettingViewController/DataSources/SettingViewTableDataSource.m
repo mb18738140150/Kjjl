@@ -41,7 +41,7 @@
             return 3;
             break;
         case 3:
-            return 0;
+            return 3;
             break;
         case 4:
             return 1;
@@ -101,7 +101,6 @@
         NSDictionary * infoDic = self.dataSourceArray[indexPath.section - 1][indexPath.row];
         [cell resetcellWithInfo:infoDic andHaveNewActivty:NO];
         return cell;
-        
     }
     if (indexPath.section == 4) {
         SettingTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kSettingCellID forIndexPath:indexPath];
@@ -111,7 +110,6 @@
         
     }
     
-   
     return nil;
 }
 

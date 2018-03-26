@@ -29,7 +29,8 @@
 #import "UIImage+Scale.h"
 #import "LivingCourseViewController.h"
 #import "RCDCustomerServiceViewController.h"
-
+#import "DiscountCouponVIew.h"
+#import "DiscountCouponViewController.h"
 #import "LivingChatViewController.h"
 #import "LivingSectionDetailViewController.h"
 //#define SERVICE_ID @"KEFU150105808199853"
@@ -40,7 +41,7 @@
 //#define SERVICE_ID_XIAONENG2 @"op_1000_1483495280515"
 #define OrderAlerttag 2000
 
-@interface MainViewController ()<UITableViewDelegate,CourseModule_HottestCourseProtocl,ImageModule_BannerProtocol,QuestionModule_QuestionProtocol, CourseModule_NotStartLivingCourse,UIAlertViewDelegate,CourseModule_LivingSectionDetail,CourseModule_LivingSectionDetail,CourseModule_AllCourseProtocol,UserModule_LevelDetailProtocol>
+@interface MainViewController ()<UITableViewDelegate,CourseModule_HottestCourseProtocl,ImageModule_BannerProtocol,QuestionModule_QuestionProtocol, CourseModule_NotStartLivingCourse,UIAlertViewDelegate,CourseModule_LivingSectionDetail,CourseModule_LivingSectionDetail,CourseModule_AllCourseProtocol,UserModule_LevelDetailProtocol,UserModule_AcquireDiscountCouponProtocol>
 
 @property (nonatomic,strong)    UITableView                     *contentTableView;
 @property (nonatomic,strong)    ContentTableViewDataSource      *contentTableSource;
@@ -48,6 +49,8 @@
 @property (nonatomic,strong)    NSArray                         *categoryArray;
 @property (nonatomic,strong)    NSArray                         *mainQuestionArray;
 @property (nonatomic, strong)  NSArray                          *notStartLivingArray;
+
+@property (nonatomic, strong) DiscountCouponVIew        *discountCouponView;
 
 @property (nonatomic, assign) BOOL courseVCdidload;
 @property (nonatomic, assign) int orderCourseId;
@@ -129,6 +132,7 @@
     [[CourseraManager sharedManager]didRequestNotStartLivingCourseWithInfo:@{@"Month":@([NSString getCurrentMonth]),@"year":[NSString stringWithFormat:@"%d", [NSString getCurrentYear]]} NotifiedObject:self];
     [[UserManager sharedManager] didRequestAssistantWithInfo:@{} withNotifiedObject:nil];
     [[UserManager sharedManager]didRequestLevelDetailWithNotifiedObject:self];
+    [[UserManager sharedManager] didRequestAcquireDiscountCouponWithCourseInfo:@{} withNotifiedObject:self];
 }
 
 - (void)allCourseClick
@@ -475,6 +479,33 @@
 - (void)didRequestNotStartLivingCourseFailed:(NSString *)failedInfo
 {
     [self requestEnd];
+}
+
+#pragma mark - acquireDiscountConpon
+- (void)didRequestAcquireDiscountCouponSuccessed
+{
+    AppDelegate *delegate = [UIApplication sharedApplication].delegate;
+    self.discountCouponView = [[DiscountCouponVIew alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, kScreenHeight)];
+    self.discountCouponView.dataArray = [[UserManager sharedManager] getAcquireDiscountCoupon];
+    [self.discountCouponView refreshUIWith:[[UserManager sharedManager] getAcquireDiscountCoupon]];
+    if (self.discountCouponView.dataArray.count > 0) {
+        [delegate.window addSubview:self.discountCouponView];
+    }
+    
+    __weak typeof(self)weakSelf = self;
+    self.discountCouponView.closeBlock = ^{
+        [weakSelf.discountCouponView removeFromSuperview];
+    };
+    self.discountCouponView.getDiscountCouponBlock = ^{
+        [weakSelf.discountCouponView removeFromSuperview];
+        DiscountCouponViewController * discountVC = [[DiscountCouponViewController alloc]init];
+        [weakSelf.navigationController pushViewController:discountVC animated:YES];
+    };
+}
+
+- (void)didRequestAcquireDiscountCouponFailed:(NSString *)failedInfo
+{
+    
 }
 
 #pragma mark - banner delegate

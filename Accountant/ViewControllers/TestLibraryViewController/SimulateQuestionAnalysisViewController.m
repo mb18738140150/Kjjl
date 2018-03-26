@@ -432,12 +432,11 @@ static bool isFirstCailiaoQuestion;
     self.contentTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.view addSubview:self.contentTableView];
     
-    
     self.cailiaoDetailLabel = [[UITextView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, 100)];
     self.cailiaoDetailLabel.backgroundColor = [UIColor colorWithWhite:.9 alpha:1];
     self.cailiaoDetailLabel.textColor = [UIColor whiteColor];
     self.cailiaoDetailLabel.delegate = self;
-    self.cailiaoDetailLabel.editable = YES;
+    self.cailiaoDetailLabel.editable = NO;
     [self.view addSubview:self.cailiaoDetailLabel];
     
     [self.view insertSubview:self.cailiaoDetailLabel belowSubview:self.nextOrPreviousTableView];

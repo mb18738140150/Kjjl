@@ -26,8 +26,6 @@
 {
     
     [self refreshWith:self.useState];
-    
-    
 }
 
 - (void)refreshWith:(DiscountCouponUserState)state

@@ -131,6 +131,8 @@
 
 + (HttpConfigModel *)discountCoupon;
 
++ (HttpConfigModel *)acquireDiscountCoupon;
+
 + (HttpConfigModel *)orderList;
 
 + (HttpConfigModel *)recommend;

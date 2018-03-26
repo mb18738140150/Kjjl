@@ -488,7 +488,8 @@
         return self.livingCourseArr.count;
     }
     if ([self.videoTableview isEqual:tableView]) {
-        return  self.categoryArray.count;
+//        return  self.categoryArray.count;
+        return 1;
     }
     return 1;
 }
@@ -505,7 +506,7 @@
         return self.sectionArray.count;
     }
     if ([tableView isEqual:self.videoTableview]) {
-        return [[[self.categoryArray objectAtIndex:section] objectForKey:kCourseCategoryCourseInfos] count];
+        return [[[self.categoryArray objectAtIndex:self.currentVideoIndexpath.row] objectForKey:kCourseCategoryCourseInfos] count];
     }
     if ([tableView isEqual:self.teacherTableView]) {
         return self.teacherArr.count + 1;
@@ -545,7 +546,7 @@
         UILabel * titleLB = [[UILabel alloc]initWithFrame:CGRectMake(15, 0, headerView.hd_width - 75, 32)];
         titleLB.textColor = [UIColor blackColor];
         titleLB.font = [UIFont boldSystemFontOfSize:14];
-        NSDictionary * infoDic = [self.categoryArray objectAtIndex:section];
+        NSDictionary * infoDic = [self.categoryArray objectAtIndex:self.currentVideoIndexpath.row];
         titleLB.text = [infoDic objectForKey:kCourseCategoryName];
         [headerView addSubview:titleLB];
         
@@ -558,7 +559,7 @@
             [allVideobtn setImage:[[UIImage imageNamed:@"trankle"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal] forState:UIControlStateNormal];
             allVideobtn.titleEdgeInsets = UIEdgeInsetsMake(0, -30, 0, 0);
             allVideobtn.imageEdgeInsets = UIEdgeInsetsMake(0, 50, 0, 0);
-            [headerView addSubview:allVideobtn];
+//            [headerView addSubview:allVideobtn];
             [allVideobtn addTarget:self action:@selector(changeCOurseSectionVideo:) forControlEvents:UIControlEventTouchUpInside];
             allVideobtn.tag = 1000 + section;
         }
@@ -727,7 +728,7 @@
     else if ([tableView isEqual:self.videoTableview]) {
         CourseSectionTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:kCourseSectionCellID forIndexPath:indexPath];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        NSMutableDictionary * infoDic = [self.categoryArray objectAtIndex:indexPath.section];
+        NSMutableDictionary * infoDic = [self.categoryArray objectAtIndex:self.currentVideoIndexpath.row];
         NSArray * sectionArr = [infoDic objectForKey:kCourseCategoryCourseInfos];
         NSMutableDictionary * sectionInfoDic = [sectionArr objectAtIndex:indexPath.row];
         [sectionInfoDic setObject:[infoDic objectForKey:kCourseCategoryName] forKey:kCourseCategoryName];
@@ -735,7 +736,7 @@
         
         cell.FoldBlock = ^(NSMutableDictionary *infoDic) {
             [weakSelf.videoTableview reloadData];
-            [weakSelf.videoTableview scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+//            [weakSelf.videoTableview scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section] atScrollPosition:UITableViewScrollPositionTop animated:YES];
         };
         return cell;
     }else if ([tableView isEqual:self.yearListTableView])
@@ -912,7 +913,7 @@
         return 110;
     }
     if ([tableView isEqual:self.videoTableview]) {
-        NSDictionary * infoDic = [self.categoryArray objectAtIndex:indexPath.section];
+        NSDictionary * infoDic = [self.categoryArray objectAtIndex:self.currentVideoIndexpath.row];
         NSArray * sectionArr = [infoDic objectForKey:kCourseCategoryCourseInfos];
         NSDictionary * sectionInfoDic = [sectionArr objectAtIndex:indexPath.row];
         NSArray * array = [sectionInfoDic objectForKey:kCourseCategorySecondCourseInfos];
@@ -956,7 +957,7 @@
         self.currentSectionIndexpath = [NSIndexPath indexPathForRow:0 inSection:0];
         [self reloadVideo:indexPath];
 //        [self hideScreenWithHide:NO];
-        [self.videoTableview scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:indexPath.row] atScrollPosition:UITableViewScrollPositionTop animated:NO];
+//        [self.videoTableview scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:indexPath.row] atScrollPosition:UITableViewScrollPositionTop animated:NO];
         return;
     }
     if ([tableView isEqual:self.yearListTableView]) {
@@ -1768,11 +1769,13 @@
 {
     if ([scrollView isEqual:self.videoTableview]) {
         
-        NSArray * cellsArray = [self.videoTableview visibleCells];
-        CourseSectionTableViewCell * cell = [cellsArray firstObject];
-        NSIndexPath * indexPath = [self.videoTableview indexPathForCell:cell];
-        self.currentVideoIndexpath = [NSIndexPath indexPathForRow:indexPath.section inSection:0];
-        [self.screenTableView reloadData];
+        /*
+         NSArray * cellsArray = [self.videoTableview visibleCells];
+         CourseSectionTableViewCell * cell = [cellsArray firstObject];
+         NSIndexPath * indexPath = [self.videoTableview indexPathForCell:cell];
+         self.currentVideoIndexpath = [NSIndexPath indexPathForRow:indexPath.section inSection:0];
+         [self.screenTableView reloadData];
+         */
         
         return;
     }
@@ -1796,11 +1799,13 @@
 {
     if ([scrollView isEqual:self.videoTableview]) {
         
-        NSArray * cellsArray = [self.videoTableview visibleCells];
-        CourseSectionTableViewCell * cell = [cellsArray firstObject];
-        NSIndexPath * indexPath = [self.videoTableview indexPathForCell:cell];
-        self.currentVideoIndexpath = [NSIndexPath indexPathForRow:indexPath.section inSection:0];
-        [self.screenTableView reloadData];
+        /*
+         NSArray * cellsArray = [self.videoTableview visibleCells];
+         CourseSectionTableViewCell * cell = [cellsArray firstObject];
+         NSIndexPath * indexPath = [self.videoTableview indexPathForCell:cell];
+         self.currentVideoIndexpath = [NSIndexPath indexPathForRow:indexPath.section inSection:0];
+         [self.screenTableView reloadData];
+         */
         
         return;
     }

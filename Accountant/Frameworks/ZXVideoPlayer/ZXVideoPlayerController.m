@@ -59,7 +59,7 @@ static const CGFloat kVideoPlayerControllerAnimationTimeInterval = 0.3f;
         self.controlStyle = MPMovieControlStyleNone;
         [self.view addSubview:self.videoControl];
         self.videoControl.frame = self.view.bounds;
-        
+        self.rate = CurrentRate_1;
         UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(panDirection:)];
         pan.delegate = self;
         [self.videoControl addGestureRecognizer:pan];
@@ -122,6 +122,7 @@ static const CGFloat kVideoPlayerControllerAnimationTimeInterval = 0.3f;
     [self.videoControl.shrinkScreenButton addTarget:self action:@selector(shrinkScreenButtonClick) forControlEvents:UIControlEventTouchUpInside];
     [self.videoControl.lockButton addTarget:self action:@selector(lockButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     [self.videoControl.backButton addTarget:self action:@selector(backButtonClick) forControlEvents:UIControlEventTouchUpInside];
+    [self.videoControl.rateButton addTarget:self action:@selector(rateButtonClick:) forControlEvents:UIControlEventTouchUpInside];
     
     // slider
     [self.videoControl.progressSlider addTarget:self action:@selector(progressSliderValueChanged:) forControlEvents:UIControlEventValueChanged];
@@ -628,6 +629,41 @@ static const CGFloat kVideoPlayerControllerAnimationTimeInterval = 0.3f;
     }
 }
 
+- (void)rateButtonClick:(UIButton *)button
+{
+    float rate = [[button.titleLabel.text substringFromIndex:1] floatValue];
+    if (rate == 1) {
+        self.rate = CurrentRate_2;
+    }else if (rate == 1.5)
+    {
+        self.rate = CurrentRate_3;
+    }else if(rate == 2.0)
+    {
+        self.rate = CurrentRate_1;
+    }
+    [self changePlayRate:self.rate];
+}
+
+- (void)changePlayRate:(CurrentRate)rate
+{
+    float currentRate = 1.0;
+    switch (rate) {
+        case CurrentRate_1:
+            currentRate = 1.0;
+            break;
+        case CurrentRate_2:
+            currentRate = 1.5;
+            break;
+        case CurrentRate_3:
+            currentRate = 2.0;
+            break;
+        default:
+            break;
+    }
+    [self.videoControl.rateButton setTitle:[NSString stringWithFormat:@"x%.1f", currentRate] forState:UIControlStateNormal];
+    self.currentPlaybackRate = currentRate;
+}
+
 - (void)changePlayer
 {
     double currentTime = floor(self.currentPlaybackTime);
@@ -663,6 +699,7 @@ static const CGFloat kVideoPlayerControllerAnimationTimeInterval = 0.3f;
 /// 播放按钮点击
 - (void)playButtonClick
 {
+    [self changePlayRate:self.rate];
     [self play];
     self.videoControl.playButton.hidden = YES;
     self.videoControl.pauseButton.hidden = NO;

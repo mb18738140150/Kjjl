@@ -137,7 +137,7 @@ static const char * af_backgroundImageDownloadReceiptKeyForState(UIControlState 
     if ([self isActiveTaskURLEqualToURLRequest:urlRequest forState:state]) {
         return;
     }
-
+    
     [self cancelImageDownloadTaskForState:state];
 
     AFImageDownloader *downloader = [[self class] sharedImageDownloader];

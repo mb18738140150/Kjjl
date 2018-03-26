@@ -46,6 +46,7 @@
 - (void)backAction:(UIButton *)button
 {
     [self.navigationController popViewControllerAnimated:YES];
+    
 }
 
 - (void)prepareUI

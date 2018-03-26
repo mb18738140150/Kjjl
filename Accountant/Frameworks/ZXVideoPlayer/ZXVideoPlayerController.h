@@ -13,6 +13,13 @@
 #define kZXVideoPlayerOriginalWidth  MIN([UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height)
 #define kZXVideoPlayerOriginalHeight (kZXVideoPlayerOriginalWidth * (9.0 / 16.0))
 
+
+typedef enum : NSUInteger {
+    CurrentRate_1=1,
+    CurrentRate_2,
+    CurrentRate_3,
+} CurrentRate;
+
 @interface ZXVideoPlayerController : MPMoviePlayerController
 
 @property (nonatomic, assign) CGRect frame;
@@ -26,6 +33,8 @@
 @property (nonatomic, copy) void(^videoPlayerWillChangeToOriginalScreenModeBlock)();
 /// 将要切换到全屏模式
 @property (nonatomic, copy) void(^videoPlayerWillChangeToFullScreenModeBlock)();
+
+@property (nonatomic, assign)CurrentRate rate;
 
 /// 非正式会员只可试听第一节5分钟
 @property (nonatomic, copy) void(^informalBlock)();

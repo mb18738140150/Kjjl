@@ -33,6 +33,7 @@
 #import "LivingBackYearListOperation.h"
 #import "SubmitGiftCodeOperation.h"
 #import "GiftListOperation.h"
+#import "AcquireDiscountCouponOperation.h"
 
 @interface UserManager()
 
@@ -63,7 +64,7 @@
 @property (nonatomic, strong)LivingBackYearListOperation *livingBackYearLiatOperation;
 @property (nonatomic, strong)GiftListOperation          *giftLIstOperation;
 @property (nonatomic, strong)SubmitGiftCodeOperation    *submitGiftCodeOperation;
-
+@property (nonatomic, strong)AcquireDiscountCouponOperation *acquireDisCountOperation;
 
 @end
 
@@ -170,6 +171,11 @@
 - (void)didRequestMyDiscountCouponWithCourseInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_discountCouponProtocol>)object
 {
     [self.discountCouponOperation didRequestDiscountCouponWithCourseInfo:infoDic withNotifiedObject:object];
+}
+
+- (void)didRequestAcquireDiscountCouponWithCourseInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_AcquireDiscountCouponProtocol>)object
+{
+    [self.acquireDisCountOperation didRequestDiscountCouponWithCourseInfo:infoDic withNotifiedObject:object];
 }
 
 - (void)didRequestIntegralWithCourseInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_RecommendProtocol>)object
@@ -435,6 +441,12 @@
 {
     return self.discountCouponOperation.discountCouponArray;
 }
+
+- (NSArray *)getAcquireDiscountCoupon
+{
+    return self.acquireDisCountOperation.discountCouponArray;
+}
+
 - (NSArray *)getNormalDiscountCoupon
 {
     NSMutableArray * array = [NSMutableArray array];

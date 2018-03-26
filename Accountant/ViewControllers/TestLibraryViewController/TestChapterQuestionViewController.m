@@ -608,7 +608,7 @@ static bool isFirstCailiaoQuestion;
     self.cailiaoDetailLabel.backgroundColor = [UIColor colorWithWhite:.9 alpha:1];
     self.cailiaoDetailLabel.textColor = [UIColor whiteColor];
     self.cailiaoDetailLabel.delegate = self;
-    self.cailiaoDetailLabel.editable = YES;
+    self.cailiaoDetailLabel.editable = NO;
     [self.view addSubview:self.cailiaoDetailLabel];
     
     [self.view insertSubview:self.cailiaoDetailLabel belowSubview:self.nextOrPreviousTableView];

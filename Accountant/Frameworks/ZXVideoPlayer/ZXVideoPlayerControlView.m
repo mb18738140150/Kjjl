@@ -24,6 +24,7 @@ static const CGFloat kVideoControlBarAutoFadeOutTimeInterval = 5.0;
 @property (nonatomic, strong) UISlider *progressSlider;
 @property (nonatomic, strong) UILabel *timeLabel;
 @property (nonatomic, assign) BOOL isBarShowing;
+@property (nonatomic, strong) UIButton *rateButton;
 @property (nonatomic, strong) UIActivityIndicatorView *indicatorView;
 
 @end
@@ -45,6 +46,7 @@ static const CGFloat kVideoControlBarAutoFadeOutTimeInterval = 5.0;
         self.shrinkScreenButton.hidden = YES;
         [self.bottomBar addSubview:self.progressSlider];
         [self.bottomBar addSubview:self.timeLabel];
+        [self.bottomBar addSubview:self.rateButton];
         [self addSubview:self.indicatorView];
         
         // 返回按钮
@@ -87,9 +89,11 @@ static const CGFloat kVideoControlBarAutoFadeOutTimeInterval = 5.0;
     
     self.shrinkScreenButton.frame = self.fullScreenButton.frame;
     
-    self.progressSlider.frame = CGRectMake(CGRectGetMaxX(self.playButton.frame), 0, CGRectGetMinX(self.fullScreenButton.frame) - CGRectGetMaxX(self.playButton.frame), kVideoControlBarHeight);
+    self.progressSlider.frame = CGRectMake(CGRectGetMaxX(self.playButton.frame), 0, CGRectGetMinX(self.fullScreenButton.frame) - CGRectGetMaxX(self.playButton.frame) - 50, kVideoControlBarHeight);
     
     self.timeLabel.frame = CGRectMake(CGRectGetMidX(self.progressSlider.frame), CGRectGetHeight(self.bottomBar.bounds) - CGRectGetHeight(self.timeLabel.bounds) - 2.0, CGRectGetWidth(self.progressSlider.bounds)/2, CGRectGetHeight(self.timeLabel.bounds));
+    
+    self.rateButton.frame = CGRectMake(CGRectGetMaxX(self.progressSlider.frame), 0, 50, kVideoControlBarHeight);
     
     self.indicatorView.center = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
     
@@ -348,6 +352,18 @@ static const CGFloat kVideoControlBarAutoFadeOutTimeInterval = 5.0;
         _titleLabel.textAlignment = NSTextAlignmentCenter;
     }
     return _titleLabel;
+}
+
+- (UIButton *)rateButton
+{
+    if (!_rateButton) {
+        _rateButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//        _rateButton.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.3];
+        [_rateButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        _rateButton.titleLabel.font = kMainFont;
+        [_rateButton setTitle:@"x1.0" forState:UIControlStateNormal];
+    }
+    return _rateButton;
 }
 
 @end
