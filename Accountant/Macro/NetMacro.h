@@ -84,7 +84,7 @@
 #define kBindRegCode                    @"44"
 #define kPayOrder                       @"46"
 #define kCommandMyLivingCourse          @"47"
-#define kDiscountCoupon                 @"48"
+
 #define kOrderList                      @"49"
 #define kCommandDeleteMyLearningCourse     @"50"
 #define kRecommend                      @"51"
@@ -99,5 +99,9 @@
 #define kSubmitGidtCode                 @"60"
 #define kGiftLIst                       @"61"
 #define kAcquireDiscountCoupon          @"62"
+#define kDiscountCoupon                 @"63"
+#define kAcquireDiscountCouponSuccess   @"64"
+#define kGetAllPackage                  @"65"
+
 
 #endif /* NetMacro_h */

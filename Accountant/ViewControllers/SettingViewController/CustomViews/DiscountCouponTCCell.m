@@ -22,15 +22,16 @@
     [self.contentView removeAllSubviews];
     [self prepareUI];
     
-    self.discountPriceLB.attributedText = [self getPrice:[NSString stringWithFormat:@"￥%@", [infoDic objectForKey:@"price"]]];
-    self.manPriceLB.text = [NSString stringWithFormat:@"满%@可用", [infoDic objectForKey:@"manPrice"]];
-    self.activityLB.text = [infoDic objectForKey:@"detail"];
-    self.deadlineLB.text = [NSString stringWithFormat:@"有效期至：%@", [infoDic objectForKey:@"deadLineTime"]];
+    self.discountPriceLB.attributedText = [self getPrice:[NSString stringWithFormat:@"￥%@", [infoDic objectForKey:@"CouponPrice"]]];
+    self.manPriceLB.text = [NSString stringWithFormat:@"满%@可用", [infoDic objectForKey:@"Area"]];
+    self.activityLB.text = [infoDic objectForKey:@"MakeText"];
+    self.deadlineLB.text = [NSString stringWithFormat:@"有效期至：%@", [infoDic objectForKey:@"EndDate"]];
     
 }
 
 - (void)prepareUI
 {
+    self.backgroundColor = [UIColor clearColor];
     UIImageView * backImageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, self.hd_width, self.hd_height - 8)];
     backImageView.image = [UIImage imageNamed:@"discountCoupon_yhq_bg"];
     [self.contentView addSubview:backImageView];

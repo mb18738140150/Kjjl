@@ -90,6 +90,14 @@
     return allCourseHttp;
 }
 
++ (HttpConfigModel *)getAllPackage
+{
+    HttpConfigModel *allCourseHttp = [[HttpConfigModel alloc] init];
+    NSDictionary *dic = @{kCommand:kGetAllPackage};
+    [self setConfigModel:allCourseHttp withInfo:dic];
+    return allCourseHttp;
+}
+
 + (HttpConfigModel *)getQuestionConfigWithPageCount:(int)pageCount
 {
     HttpConfigModel *wendaHttp = [[HttpConfigModel alloc] init];
@@ -648,6 +656,14 @@
     return c;
 }
 
++ (HttpConfigModel *)acquireDiscountCouponSuccess
+{
+    HttpConfigModel *c = [[HttpConfigModel alloc] init];
+    NSDictionary *dic = @{kCommand:kAcquireDiscountCouponSuccess};
+    [self setConfigModel:c withInfo:dic];
+    return c;
+}
+
 + (HttpConfigModel *)orderList
 {
     HttpConfigModel *c = [[HttpConfigModel alloc] init];
@@ -774,6 +790,14 @@
     NSDictionary *dic = @{kCommand:kSubmitGidtCode,
                           @"actCode":[infoDic objectForKey:@"actCode"]
                           };
+    [self setConfigModel:c withInfo:dic];
+    return c;
+}
+
++(HttpConfigModel *)allPackage:(NSDictionary *)infoDic
+{
+    HttpConfigModel *c = [[HttpConfigModel alloc] init];
+    NSDictionary *dic = @{kCommand:kGetAllPackage};
     [self setConfigModel:c withInfo:dic];
     return c;
 }

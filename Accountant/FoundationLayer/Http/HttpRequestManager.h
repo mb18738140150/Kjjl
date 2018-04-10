@@ -41,6 +41,8 @@
 
 - (void)requestCategoryDetailWithCategoryId:(int)categoryId andUserId:(int)userId andProcessDelegate:(id<HttpRequestProtocol>)delegate;
 
+- (void)requestAllPackageWithProcessDelegate:(id<HttpRequestProtocol>)delegate;
+
 - (void)requestResetPwdWithOldPassword:(NSString *)oldPwd andNewPwd:(NSString *)newPwd andProcessDelegate:(id<HttpRequestProtocol>)delegate;
 
 - (void)requestQuestionPublishWithInfo:(NSDictionary *)questionInfo andProcessDelegate:(id<HttpRequestProtocol>)delegate;
@@ -145,6 +147,8 @@
 
 - (void)requestAcquireDiscountCouponWithInfoDic:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate;
 
+- (void)requestAcquireDiscountCouponSuccessWithInfoDic:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate;
+
 - (void)requestOrderListWithInfoDic:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate;
 
 - (void)requestRecommendWithInfoDic:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate;
@@ -166,6 +170,8 @@
 - (void)requestGiftListWithInfoDic:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate;
 
 - (void)requestSubmitGiftCodeWithInfoDic:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate;
+
+- (void)requestAllPackageWith:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate;
 
 #pragma mark - 未使用
 - (void)requestSearchKeyWord:(NSString *)keyWords;

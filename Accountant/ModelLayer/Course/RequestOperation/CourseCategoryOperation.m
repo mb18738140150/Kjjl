@@ -63,7 +63,6 @@
             [model addSecondCourseModel:secondModel];
         }else
         {
-            
             for (NSDictionary * secondDic in secondArr) {
                 CourseCategorysecondModel * secondModel = [[CourseCategorysecondModel alloc]init];
                 secondModel.categorySecondId = [[secondDic objectForKey:@"id"] intValue];
@@ -81,9 +80,6 @@
                 [model addSecondCourseModel:secondModel];
             }
         }
-        
-        
-        
         [self.allCourseCategory addCategory:model];
     }
     if (isObjectNotNil(self.notifiedObject)) {

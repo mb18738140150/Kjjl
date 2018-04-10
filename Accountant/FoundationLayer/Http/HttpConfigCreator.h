@@ -27,6 +27,8 @@
 
 + (HttpConfigModel *)getAllCourseConfig;
 
++ (HttpConfigModel *)getAllPackage;
+
 + (HttpConfigModel *)getQuestionConfigWithPageCount:(int)pageCount;
 
 + (HttpConfigModel *)getQuestionDetailConfigWithQuestionId:(int)questionId;
@@ -133,6 +135,8 @@
 
 + (HttpConfigModel *)acquireDiscountCoupon;
 
++ (HttpConfigModel *)acquireDiscountCouponSuccess;
+
 + (HttpConfigModel *)orderList;
 
 + (HttpConfigModel *)recommend;
@@ -162,5 +166,7 @@
 + (HttpConfigModel *)getGiftListWithInfo:(NSDictionary *)infoDic;
 
 +(HttpConfigModel *)submitGiftCode:(NSDictionary *)infoDic;
+
++(HttpConfigModel *)allPackage:(NSDictionary *)infoDic;
 
 @end

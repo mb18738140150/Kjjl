@@ -10,7 +10,6 @@
 
 typedef enum : NSUInteger {
     DiscountCouponUserState_normal,
-    DiscountCouponUserState_cannotUse,
     DiscountCouponUserState_haveUseed,
     DiscountCouponUserState_expire,
 } DiscountCouponUserState;

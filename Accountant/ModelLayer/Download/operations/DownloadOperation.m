@@ -80,7 +80,7 @@
                 }
             });
         }];
-    }else
+    }else  
     {
         self.downloadTask = [manager downloadTaskWithRequest:request progress:^(NSProgress * _Nonnull downloadProgress) {
             float process = 1.0 * downloadProgress.completedUnitCount / downloadProgress.totalUnitCount;
@@ -107,7 +107,6 @@
             });
         }];
     }
-    
     [self.downloadTask resume];
 }
 

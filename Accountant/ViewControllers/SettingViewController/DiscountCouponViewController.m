@@ -139,12 +139,9 @@
             lCell.useState = DiscountCouponUserState_normal;
             break;
         case 1:
-            lCell.useState = DiscountCouponUserState_normal;
-            break;
-        case 2:
             lCell.useState = DiscountCouponUserState_haveUseed;
             break;
-        case 3:
+        case 2:
             lCell.useState = DiscountCouponUserState_expire;
             break;
             

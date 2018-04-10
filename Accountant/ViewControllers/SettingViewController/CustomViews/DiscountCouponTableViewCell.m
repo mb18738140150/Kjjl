@@ -38,13 +38,10 @@
     self.manPriceLB.textColor = UIColorFromRGB(0x999999);
     switch (state) {
         case DiscountCouponUserState_normal:
-            
-            break;
-        case DiscountCouponUserState_cannotUse:
-        {
-            self.deadlineLB.textColor = UIColorFromRGB(0x999999);
-            self.discountPriceLB.textColor = UIColorFromRGB(0x999999);
-        }
+//        {
+//            self.deadlineLB.textColor = UIColorFromRGB(0x999999);
+//            self.discountPriceLB.textColor = UIColorFromRGB(0x999999);
+//        }
             break;
         case DiscountCouponUserState_haveUseed:
         {

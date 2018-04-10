@@ -36,6 +36,13 @@
 
 @end
 
+@protocol CourseModule_PackageProtocol <NSObject>
+
+- (void)didReuquestPackageSuccessed;
+- (void)didReuquestPackageFailed:(NSString *)failedInfo;
+
+@end
+
 @protocol CourseModule_HottestCourseProtocl <NSObject>
 
 - (void)didRequestHottestCourseSuccessed;

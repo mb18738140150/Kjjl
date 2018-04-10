@@ -189,5 +189,16 @@
 #define kDeadLineTime                   @"deadLineTime"
 #define kOrderStatus                    @"orderStatus"
 
+#define kRecommendPackageId             @"recommendPackageId"
+#define kRecommendPackageCover          @"recommendPackageCover"
+
+#define kPackageTypeId                  @"packageTypeId"
+#define kPackageTypename                @"packageTypename"
+#define kPackageId                      @"packageId"
+#define kPackageName                    @"packageName"
+#define kPackageCover                   @"packageCover"
+#define kPackagePrice                   @"packagePrice"
+
+
 #endif /* CommonMacro_h */
 

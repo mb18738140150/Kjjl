@@ -63,6 +63,9 @@
 //全部课程类型信息
 @property (nonatomic,strong) AllCourseCategoryModel         *allCourseCategoryModel;
 
+// 所有套餐
+@property (nonatomic, strong) AllCourseCategoryModel         *allPackage;
+
 //课程类别的详细信息
 @property (nonatomic,strong) CourseCategoryDetailModel      *courseCategoryDetailModel;
 

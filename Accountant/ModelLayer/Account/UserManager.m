@@ -34,6 +34,7 @@
 #import "SubmitGiftCodeOperation.h"
 #import "GiftListOperation.h"
 #import "AcquireDiscountCouponOperation.h"
+#import "AcquireDiscountCouponSuccess.h"
 
 @interface UserManager()
 
@@ -65,6 +66,7 @@
 @property (nonatomic, strong)GiftListOperation          *giftLIstOperation;
 @property (nonatomic, strong)SubmitGiftCodeOperation    *submitGiftCodeOperation;
 @property (nonatomic, strong)AcquireDiscountCouponOperation *acquireDisCountOperation;
+@property (nonatomic, strong)AcquireDiscountCouponSuccess   *acquireDisCountSuccessOperation;
 
 @end
 
@@ -100,6 +102,8 @@
         self.bindRegCodeOperation = [[BindRegCodeOperation alloc]init];
         self.payOrderOperation = [[PayCourseOperation alloc]init];
         self.discountCouponOperation = [[DiscountCouponOperation alloc]init];
+        self.acquireDisCountOperation = [[AcquireDiscountCouponOperation alloc]init];
+        self.acquireDisCountSuccessOperation = [[AcquireDiscountCouponSuccess alloc]init];
         self.orderListOperation = [[OrderListOperation alloc]init];
         self.recommendOperation = [[RecommendOperation alloc]init];
         self.assistantCenterOperation = [[AssistantCenterOperation alloc]init];
@@ -175,7 +179,12 @@
 
 - (void)didRequestAcquireDiscountCouponWithCourseInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_AcquireDiscountCouponProtocol>)object
 {
-    [self.acquireDisCountOperation didRequestDiscountCouponWithCourseInfo:infoDic withNotifiedObject:object];
+    [self.acquireDisCountOperation didRequestAcquireDiscountCouponWithCourseInfo:infoDic withNotifiedObject:object];
+}
+
+- (void)didRequestAcquireDiscountCouponSuccessWithCourseInfo:(NSDictionary *)infoDic
+{
+    [self.acquireDisCountSuccessOperation didRequestAcquireDiscountCouponSuccessWithCourseInfo:infoDic];
 }
 
 - (void)didRequestIntegralWithCourseInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_RecommendProtocol>)object

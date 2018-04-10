@@ -26,6 +26,7 @@
 #import "EndLivingCourseOperation.h"
 #import "HotSearchOperation.h"
 #import "LivingSectionDetailOperation.h"
+#import "PackageOperation.h"
 
 @interface CourseraManager ()
 
@@ -45,6 +46,7 @@
 @property (nonatomic, strong)EndLivingCourseOperation       *endLivingOperation;
 @property (nonatomic,strong)HotSearchOperation              *hotSearchOperation;
 @property (nonatomic,strong)LivingSectionDetailOperation    *livingSectionDetailOperation;
+@property (nonatomic, strong)PackageOperation               *packageOperation;
 
 @end
 
@@ -112,6 +114,9 @@
         
         self.addCollectCourseOperation = [AddCollectCourseOperation new];
         self.deleteCollectCourseOperation = [DeleteCollectCourseOperation new];
+        
+        self.packageOperation = [[PackageOperation alloc]init];
+        [self.packageOperation setCurrentAllPackageModel:self.courseModuleModel.allPackage];
     }
     return self;
 }
@@ -156,6 +161,11 @@
 - (void)didRequestAllCourseCategoryWithNotifiedObject:(id<CourseModule_AllCourseCategoryProtocol>)object
 {
     [self.courseCategoryOperation didRequestAllCourseCategoryWithNotifiedObject:object];
+}
+
+- (void)didRequestAllPackageWithNotifiedObject:(id<CourseModule_PackageProtocol>)object
+{
+    [self.packageOperation didRequestAllPackageWithNotifiedObject:object];
 }
 
 - (void)didRequestCategoryDetailWithCategoryId:(int)categoryId andUserId:(int)userId withNotifiedObject:(id<CourseModule_CourseCategoryDetailProtocol>)object
@@ -703,6 +713,42 @@
     }
     return array;
 }
+
+- (NSArray *)getAllPackageList
+{
+    NSMutableArray *array = [[NSMutableArray alloc] init];
+    for (CourseCategoryModel *model in self.courseModuleModel.allPackage.allCategory) {
+        NSMutableDictionary *tmpDic = [[NSMutableDictionary alloc] init];
+        
+        [tmpDic setObject:@(model.categoryId) forKey:kCourseCategoryId];
+        [tmpDic setObject:model.categoryImageUrl forKey:kCourseCategoryCoverUrl];
+        NSMutableArray *array1 = [[NSMutableArray alloc] init];
+        for (CourseCategorysecondModel *courseSecondModel in model.categrorySecondCoursesArray) {
+            NSMutableDictionary *tmpDic2 = [[NSMutableDictionary alloc] init];
+            [tmpDic2 setObject:@(courseSecondModel.categorySecondId) forKey:kCourseSecondID];
+            [tmpDic2 setObject:courseSecondModel.categorySecondName forKey:kCourseSecondName];
+            [tmpDic2 setObject:courseSecondModel.categorySecondImageUrl forKey:kCourseSecondCover];
+            [tmpDic2 setObject:@(1) forKey:kIsFold];
+            NSMutableArray * array2 = [[NSMutableArray alloc]init];
+            for (CourseModel *courseModel in courseSecondModel.categroryCoursesArray) {
+                NSMutableDictionary * tmpDic3 = [[NSMutableDictionary alloc]init];
+                [tmpDic3 setObject:@(courseModel.courseID) forKey:kCourseID];
+                [tmpDic3 setObject:courseModel.courseName forKey:kCourseName];
+                [tmpDic3 setObject:courseModel.courseCover forKey:kCourseCover];
+                [tmpDic3 setObject:courseModel.coueseTeacherName forKey:kCourseTeacherName];
+                [array2 addObject:tmpDic3];
+            }
+            [tmpDic2 setObject:array2 forKey:kCourseCategorySecondCourseInfos];
+            
+            [array1 addObject:tmpDic2];
+        }
+        [tmpDic setObject:array1 forKey:kCourseCategoryCourseInfos];
+        
+        [array addObject:tmpDic];
+    }
+    return array;
+}
+
 
 - (NSArray *)getMainVCCategoryArray
 {

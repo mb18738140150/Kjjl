@@ -26,7 +26,7 @@
     return _discountCouponArray;
 }
 
-- (void)didRequestDiscountCouponWithCourseInfo:(NSDictionary * )infoDic withNotifiedObject:(id<UserModule_AcquireDiscountCouponProtocol>)object
+- (void)didRequestAcquireDiscountCouponWithCourseInfo:(NSDictionary * )infoDic withNotifiedObject:(id<UserModule_AcquireDiscountCouponProtocol>)object
 {
     self.notifiedObject = object;
     
@@ -37,6 +37,10 @@
 {
     [self.discountCouponArray removeAllObjects];
     NSArray *dataList = [successInfo objectForKey:@"data"];
+    if (dataList == nil || ![dataList isKindOfClass:[NSArray class]]) {
+        NSLog(@"[dataList class] = %@", [dataList class]);
+        return;
+    }
     for (NSDictionary *infoDic in dataList) {
         [self.discountCouponArray addObject:infoDic];
     }

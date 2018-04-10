@@ -15,10 +15,6 @@
 
 - (void)setCurrentAllCourseCategoryModel:(AllCourseCategoryModel *)model;
 
-
-
 - (void)didRequestAllCourseCategoryWithNotifiedObject:(id<CourseModule_AllCourseCategoryProtocol>)object;
-
-
 
 @end

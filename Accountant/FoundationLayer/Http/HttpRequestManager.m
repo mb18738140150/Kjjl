@@ -116,6 +116,12 @@
     [self startPostWithConfig:categoryDetailHttp andProcessDelegate:delegate];
 }
 
+- (void)requestAllPackageWithProcessDelegate:(id<HttpRequestProtocol>)delegate
+{
+    HttpConfigModel *categoryHttp = [HttpConfigCreator getAllPackage];
+    [self startPostWithConfig:categoryHttp andProcessDelegate:delegate];
+}
+
 - (void)requestResetPwdWithOldPassword:(NSString *)oldPwd andNewPwd:(NSString *)newPwd andProcessDelegate:(id<HttpRequestProtocol>)delegate
 {
     HttpConfigModel *reset = [HttpConfigCreator getResetPwdConfigWithOldPwd:oldPwd andNewPwd:newPwd];
@@ -434,6 +440,12 @@
     [self startPostWithConfig:s andProcessDelegate:delegate];
 }
 
+- (void)requestAcquireDiscountCouponSuccessWithInfoDic:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate
+{
+    HttpConfigModel * s = [HttpConfigCreator acquireDiscountCouponSuccess];
+    [self startPostWithConfig:s andProcessDelegate:delegate];
+}
+
 - (void)requestOrderListWithInfoDic:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate
 {
     HttpConfigModel * s = [HttpConfigCreator orderList];
@@ -497,6 +509,12 @@
 - (void)requestSubmitGiftCodeWithInfoDic:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate
 {
     HttpConfigModel * s = [HttpConfigCreator submitGiftCode:infoDic];
+    [self startPostWithConfig:s andProcessDelegate:delegate];
+}
+
+- (void)requestAllPackageWith:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate
+{
+    HttpConfigModel * s = [HttpConfigCreator allPackage:infoDic];
     [self startPostWithConfig:s andProcessDelegate:delegate];
 }
 

@@ -12,6 +12,6 @@
 
 @property (nonatomic, strong)NSMutableArray *discountCouponArray;
 
-- (void)didRequestDiscountCouponWithCourseInfo:(NSDictionary * )infoDic withNotifiedObject:(id<UserModule_AcquireDiscountCouponProtocol>)object;
+- (void)didRequestAcquireDiscountCouponWithCourseInfo:(NSDictionary * )infoDic withNotifiedObject:(id<UserModule_AcquireDiscountCouponProtocol>)object;
 
 @end

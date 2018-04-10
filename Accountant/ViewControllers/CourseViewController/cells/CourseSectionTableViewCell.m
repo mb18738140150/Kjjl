@@ -62,6 +62,9 @@
 {
     [self prepareUI];
     self.infoDic = infoDic;
+    
+    NSLog(@"%@", [infoDic description]);
+    
     self.dataArray = [infoDic objectForKey:kCourseCategorySecondCourseInfos];
     self.titleLB.text = [infoDic objectForKey:kCourseSecondName];
     if (self.titleLB.text.length == 0) {
@@ -120,7 +123,6 @@
 {   
     int number = [self getRow:@{}];
     return number;
-    
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath

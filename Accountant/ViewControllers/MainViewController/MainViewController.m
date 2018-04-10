@@ -489,23 +489,32 @@
     self.discountCouponView.dataArray = [[UserManager sharedManager] getAcquireDiscountCoupon];
     [self.discountCouponView refreshUIWith:[[UserManager sharedManager] getAcquireDiscountCoupon]];
     if (self.discountCouponView.dataArray.count > 0) {
-        [delegate.window addSubview:self.discountCouponView];
+        if (![delegate.window.subviews containsObject:self.discountCouponView]) {
+            [delegate.window addSubview:self.discountCouponView];
+        }
     }
     
     __weak typeof(self)weakSelf = self;
     self.discountCouponView.closeBlock = ^{
         [weakSelf.discountCouponView removeFromSuperview];
+        weakSelf.discountCouponView = nil;
+        [weakSelf acquireDiscountCouponSuccesse];
     };
     self.discountCouponView.getDiscountCouponBlock = ^{
         [weakSelf.discountCouponView removeFromSuperview];
         DiscountCouponViewController * discountVC = [[DiscountCouponViewController alloc]init];
         [weakSelf.navigationController pushViewController:discountVC animated:YES];
+        [weakSelf acquireDiscountCouponSuccesse];
     };
 }
 
 - (void)didRequestAcquireDiscountCouponFailed:(NSString *)failedInfo
 {
-    
+}
+
+- (void)acquireDiscountCouponSuccesse
+{
+    [[UserManager sharedManager] didRequestAcquireDiscountCouponSuccessWithCourseInfo:@{}];
 }
 
 #pragma mark - banner delegate

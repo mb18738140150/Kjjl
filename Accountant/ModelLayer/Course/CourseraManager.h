@@ -339,5 +339,11 @@
 - (void )refreshLivingSectionStateOrder_complateWith:(NSDictionary *)infoDic;
 
 
+/**
+ 获取所有套餐
+ 
+ */
+- (void)didRequestAllPackageWithNotifiedObject:(id<CourseModule_PackageProtocol>)object;
+- (NSArray *)getAllPackageList;
 
 @end

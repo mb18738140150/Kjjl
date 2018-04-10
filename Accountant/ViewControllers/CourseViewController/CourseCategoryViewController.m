@@ -47,7 +47,7 @@
 #define kSegmentHeight 42
 #define OrderAlerttag 2000
 
-@interface CourseCategoryViewController ()<HYSegmentedControlDelegate, UITableViewDelegate, UITableViewDataSource, CourseModule_AllCourseCategoryProtocol, CourseModule_NotStartLivingCourse, CourseModule_EndLivingCourse,UIAlertViewDelegate,CourseModule_LivingSectionDetail,UIScrollViewDelegate,UserModule_OrderLivingCourseProtocol,UserModule_CancelOrderLivingCourseProtocol,UIScrollViewDelegate,UserModule_LivingBackYearList>
+@interface CourseCategoryViewController ()<HYSegmentedControlDelegate, UITableViewDelegate, UITableViewDataSource, CourseModule_AllCourseCategoryProtocol, CourseModule_NotStartLivingCourse, CourseModule_EndLivingCourse,UIAlertViewDelegate,CourseModule_LivingSectionDetail,UIScrollViewDelegate,UserModule_OrderLivingCourseProtocol,UserModule_CancelOrderLivingCourseProtocol,UIScrollViewDelegate,UserModule_LivingBackYearList,CourseModule_PackageProtocol>
 
 /**
  *  视频和直播页面切换segment
@@ -77,6 +77,7 @@
 @property (nonatomic, strong) NSIndexPath *currentVideoIndexpath;// 课程分类indexpath
 @property (nonatomic, strong) NSIndexPath *currentSectionIndexpath;// 课程小节indexpath
 
+@property (nonatomic, strong)NSArray                        *packageArray;
 @property (nonatomic,strong) NSArray                        *categoryArray;// 课程数据源
 @property (nonatomic,strong) NSArray                        *allCategoryArray;
 @property (nonatomic, strong)NSArray                        *sectionArray;// 课程小节数据源
@@ -203,6 +204,7 @@
 - (void)doRequestAllCategory
 {
     [SVProgressHUD show];
+    [[CourseraManager sharedManager] didRequestAllPackageWithNotifiedObject:self];
     [[CourseraManager sharedManager] didRequestAllCourseCategoryWithNotifiedObject:self];
 }
 
@@ -242,7 +244,7 @@
         NSDictionary * infoDic = [self.categoryArray objectAtIndex:i];
         
         if (categoryId == [[infoDic objectForKey:kCourseCategoryId] intValue]) {
-            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:i inSection:0];
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:i + 1 inSection:0];
             self.currentVideoIndexpath = indexPath;
             self.currentSectionIndexpath = [NSIndexPath indexPathForRow:0 inSection:0];
             [self reloadVideo:indexPath];
@@ -256,7 +258,7 @@
                 NSDictionary * sectionDic = secondArr[j];
                 if (categoryId == [[sectionDic objectForKey:kCourseSecondID] intValue]) {
                     
-                    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:i inSection:0];
+                    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:i + 1 inSection:0];
                     self.currentVideoIndexpath = indexPath;
                     self.currentSectionIndexpath = [NSIndexPath indexPathForRow:0 inSection:0];
                     [self reloadVideo:indexPath];
@@ -500,13 +502,16 @@
         return [[[UserManager sharedManager] getLivingBackYearList] count];
     }
     if ([tableView isEqual:self.screenTableView]) {
-        return self.categoryArray.count;
+        return self.categoryArray.count + 1;
     }
     if ([tableView isEqual:self.sectionScreentableview]) {
         return self.sectionArray.count;
     }
     if ([tableView isEqual:self.videoTableview]) {
-        return [[[self.categoryArray objectAtIndex:self.currentVideoIndexpath.row] objectForKey:kCourseCategoryCourseInfos] count];
+        if (self.currentVideoIndexpath.row == 0) {
+            return 0;
+        }
+        return [[[self.categoryArray objectAtIndex:self.currentVideoIndexpath.row - 1] objectForKey:kCourseCategoryCourseInfos] count];
     }
     if ([tableView isEqual:self.teacherTableView]) {
         return self.teacherArr.count + 1;
@@ -546,7 +551,14 @@
         UILabel * titleLB = [[UILabel alloc]initWithFrame:CGRectMake(15, 0, headerView.hd_width - 75, 32)];
         titleLB.textColor = [UIColor blackColor];
         titleLB.font = [UIFont boldSystemFontOfSize:14];
-        NSDictionary * infoDic = [self.categoryArray objectAtIndex:self.currentVideoIndexpath.row];
+        NSDictionary * infoDic = [NSDictionary dictionary];
+        if (self.currentVideoIndexpath.row == 0) {
+            infoDic = [self.packageArray objectAtIndex:0];
+        }else
+        {
+            infoDic = [self.categoryArray objectAtIndex:self.currentVideoIndexpath.row - 1];
+        }
+        
         titleLB.text = [infoDic objectForKey:kCourseCategoryName];
         [headerView addSubview:titleLB];
         
@@ -628,14 +640,19 @@
         [cell addSubview:titleLB];
         
         
-        NSDictionary *categoryDic = [self.categoryArray objectAtIndex:indexPath.row];
-        titleLB.text = [categoryDic objectForKey:kCourseCategoryName];
-        
-        if ([indexPath isEqual:self.currentVideoIndexpath]) {
-            titleLB.textColor = UIColorFromRGB(0xff750d);
+        if (indexPath.row == 0) {
+            titleLB.text = @"套餐";
         }else
         {
-            titleLB.textColor = kMainTextColor;
+            NSDictionary *categoryDic = [self.categoryArray objectAtIndex:indexPath.row - 1];
+            titleLB.text = [categoryDic objectForKey:kCourseCategoryName];
+            
+            if ([indexPath isEqual:self.currentVideoIndexpath]) {
+                titleLB.textColor = UIColorFromRGB(0xff750d);
+            }else
+            {
+                titleLB.textColor = kMainTextColor;
+            }
         }
         
         return cell;
@@ -700,7 +717,6 @@
         return cell;
     }
     
-    
     else if ([tableView isEqual:self.sectionScreentableview]) {
         UITableViewCell * cell = [UIUtility getCellWithCellName:@"cellID" inTableView:tableView andCellClass:[UITableViewCell class]];
         cell.backgroundColor = [UIColor whiteColor];
@@ -728,7 +744,15 @@
     else if ([tableView isEqual:self.videoTableview]) {
         CourseSectionTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:kCourseSectionCellID forIndexPath:indexPath];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        NSMutableDictionary * infoDic = [self.categoryArray objectAtIndex:self.currentVideoIndexpath.row];
+        
+        NSMutableDictionary * infoDic = [NSMutableDictionary dictionary];
+        if (self.currentVideoIndexpath.row == 0) {
+            infoDic = [self.packageArray objectAtIndex:0];
+        }else
+        {
+            infoDic = [self.categoryArray objectAtIndex:self.currentVideoIndexpath.row - 1];
+        }
+        
         NSArray * sectionArr = [infoDic objectForKey:kCourseCategoryCourseInfos];
         NSMutableDictionary * sectionInfoDic = [sectionArr objectAtIndex:indexPath.row];
         [sectionInfoDic setObject:[infoDic objectForKey:kCourseCategoryName] forKey:kCourseCategoryName];
@@ -737,6 +761,7 @@
         cell.FoldBlock = ^(NSMutableDictionary *infoDic) {
             [weakSelf.videoTableview reloadData];
 //            [weakSelf.videoTableview scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section] atScrollPosition:UITableViewScrollPositionTop animated:YES];
+            
         };
         return cell;
     }else if ([tableView isEqual:self.yearListTableView])
@@ -913,7 +938,12 @@
         return 110;
     }
     if ([tableView isEqual:self.videoTableview]) {
-        NSDictionary * infoDic = [self.categoryArray objectAtIndex:self.currentVideoIndexpath.row];
+        
+        if (self.currentVideoIndexpath.row == 0) {
+            return 0;
+        }
+        
+        NSDictionary * infoDic = [self.categoryArray objectAtIndex:self.currentVideoIndexpath.row - 1];
         NSArray * sectionArr = [infoDic objectForKey:kCourseCategoryCourseInfos];
         NSDictionary * sectionInfoDic = [sectionArr objectAtIndex:indexPath.row];
         NSArray * array = [sectionInfoDic objectForKey:kCourseCategorySecondCourseInfos];
@@ -936,7 +966,7 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
     if ([tableView isEqual:self.videoTableview]) {
-        return 32;
+        return 0;
     }
     if ([tableView isEqual:self.livingTableview]) {
         if (self.monthIndexPath.row == 1) {
@@ -1445,6 +1475,20 @@
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark - allPackage delegate
+- (void)didReuquestPackageSuccessed
+{
+    self.packageArray = [[CourseraManager sharedManager] getAllPackageList];
+    [self.screenTableView reloadData];
+    [self.videoTableview reloadData];
+    [self.sectionScreentableview reloadData];
+}
+
+- (void)didReuquestPackageFailed:(NSString *)failedInfo
+{
+    
+}
+
 #pragma mark - all course category delegate
 - (void)didRequestAllCourseCategorySuccessed
 {
@@ -1701,7 +1745,11 @@
     
     NSMutableArray * array = [NSMutableArray array];
     
-    self.currentCourseInfo = [self.categoryArray objectAtIndex:indexPath.row];
+    if (indexPath.row == 0) {
+        self.currentCourseInfo = [self.packageArray objectAtIndex:0];
+        return;
+    }
+    self.currentCourseInfo = [self.categoryArray objectAtIndex:indexPath.row - 1];
     
     [self refreshSectiontableViewFrame];
     

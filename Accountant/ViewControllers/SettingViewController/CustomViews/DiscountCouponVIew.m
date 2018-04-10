@@ -28,11 +28,11 @@
 - (void)prepareUI
 {
     UIView * backView = [[UIView alloc]initWithFrame:self.bounds];
-    backView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.4];
+    backView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.4];
     [self addSubview:backView];
     
     CGFloat backImageW = kScreenWidth - 40;
-    CGFloat backImageH = backImageW / kBackImagescal;
+    CGFloat backImageH = backImageW / (kBackImagescal);
     self.backImageView = [[UIImageView alloc]initWithFrame:CGRectMake(20, (kScreenHeight - backImageH) / 2, backImageW, backImageH)];
     self.backImageView.image = [UIImage imageNamed:@"discountCoupon_bg"];
     self.backImageView.userInteractionEnabled = YES;
@@ -67,8 +67,8 @@
     [self.backImageView addSubview:self.discountCouponTable];
     self.discountCouponTable.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.discountCouponTable.tableHeaderView = [self getTableHeaderView];
+    self.discountCouponTable.backgroundColor = [UIColor clearColor];
     [self.discountCouponTable registerClass:[DiscountCouponTCCell class] forCellReuseIdentifier:kCellId];
-    
 }
 
 - (void)refreshUIWith:(NSArray *)dataArray

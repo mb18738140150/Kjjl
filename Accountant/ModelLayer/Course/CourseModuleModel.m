@@ -31,6 +31,7 @@
     self.allCourseModel = [[AllCourseModel alloc] init];
     self.detailCourseModel = [[DetailCourseModel alloc] init];
     self.allCourseCategoryModel = [[AllCourseCategoryModel alloc] init];
+    self.allPackage = [[AllCourseCategoryModel alloc]init];
     self.courseCategoryDetailModel = [[CourseCategoryDetailModel alloc] init];
     self.livingSectionDetailModel = [[HottestCourseModel alloc]init];
     

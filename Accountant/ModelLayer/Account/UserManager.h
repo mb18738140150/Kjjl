@@ -185,6 +185,7 @@
 
 - (void)didRequestAcquireDiscountCouponWithCourseInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_AcquireDiscountCouponProtocol>)object;
 - (NSArray *)getAcquireDiscountCoupon;
+- (void)didRequestAcquireDiscountCouponSuccessWithCourseInfo:(NSDictionary *)infoDic;
 
 // 获取我的积分
 - (void)didRequestIntegralWithCourseInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_RecommendProtocol>)object;
@@ -219,5 +220,8 @@
 - (NSArray *)getGiftList;
 
 - (void)didRequestSubmitGiftCodeWithInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_SubmitGiftCode>)object;
+
+
+
 
 @end
