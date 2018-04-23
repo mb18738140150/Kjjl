@@ -68,7 +68,6 @@
             self.myLabel.attributedText = [self getMyresultStringNOresponse];
         }
     }
-    
 }
 
 - (NSMutableAttributedString *)getMyresultStringNOresponse

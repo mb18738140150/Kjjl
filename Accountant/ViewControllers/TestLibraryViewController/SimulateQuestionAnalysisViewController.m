@@ -20,6 +20,12 @@
 #import "SVProgressHUD.h"
 #import "TestQuestioncollectView.h"
 #import "SlideBlockView.h"
+
+#import "TextAswerCell.h"
+#import "MKPPlaceholderTextView.h"
+
+#define ktextCellId @"textCellID"
+
 @interface SimulateQuestionAnalysisViewController ()<UITableViewDelegate,UITableViewDataSource,UIGestureRecognizerDelegate,TestModuleQuestionCollection,TestModule_CollectQuestionProtocol,TestModule_UncollectQuestionProtocol,UITextViewDelegate>
 
 @property (nonatomic,strong) UITableView            *contentTableView;
@@ -30,6 +36,8 @@
 @property (nonatomic,strong) NSMutableArray         *selectedArray;
 
 @property (nonatomic,assign) int                     totalCount;
+@property (nonatomic, strong)NSString               *currentTextAmswer;//简答题等当前答案
+@property (nonatomic, strong)MKPPlaceholderTextView * textAnswerView;
 
 @property (nonatomic,strong) UIButton               *nextQuestionButton;
 @property (nonatomic,strong) UIButton               *previousQuestionButton;
@@ -98,6 +106,7 @@
 }
 
 static bool isCailiao;
+static bool isTextAswer;
 static bool isFirstCailiaoQuestion;
 
 
@@ -109,10 +118,18 @@ static bool isFirstCailiaoQuestion;
     {
         self.questionInfoDic = [[TestManager sharedManager] getCurrentSimulateQuestionInfo];
     }
-    
+    NSString *type = [self.questionInfoDic objectForKey:kTestQuestionType];
     if (![[self.questionInfoDic objectForKey:kQuestionCaseInfo] isEqualToString:@""]) {
         self.slideBlockView.hidden = NO;
         isCailiao = true;
+        
+        if ([type isEqualToString:@"不定项选择"]) {
+            isTextAswer = NO;
+        }else
+        {
+            isTextAswer = YES;
+        }
+        
         if (![self.cailiaoDetailLabel.text isEqualToString:@""]) {
             
             NSLog(@"self.cailiaoDetailLabel.text = %@", self.cailiaoDetailLabel.text);
@@ -468,6 +485,23 @@ static bool isFirstCailiaoQuestion;
         return cell;
     }
     if (indexPath.section == 2) {
+        
+        if (isTextAswer) {
+            TextAswerCell * cell = (TextAswerCell *)[UIUtility getCellWithCellName:ktextCellId inTableView:tableView andCellClass:[TextAswerCell class]];
+            [cell resetProperty];
+            
+            cell.opinionTextView.editable = NO;
+            cell.opinionTextView.text = [NSString stringWithFormat:@"%@", [self.selectedArray firstObject]];
+            
+            self.textAnswerView = cell.opinionTextView;
+            __weak typeof(self)weakSelf = self;
+            cell.textAnswerBlock = ^(NSString *textAnswer) {
+                weakSelf.currentTextAmswer = textAnswer;
+                
+            };
+            return cell;
+        }
+        
         TestQuestionAnswerTableViewCell *cell = (TestQuestionAnswerTableViewCell *)[UIUtility getCellWithCellName:@"testAnswerCell" inTableView:tableView andCellClass:[TestQuestionAnswerTableViewCell class]];
         NSArray *array = [self.questionInfoDic objectForKey:kTestQuestionAnswers];
         NSDictionary *infoDic = [array objectAtIndex:indexPath.row];
@@ -546,6 +580,9 @@ static bool isFirstCailiaoQuestion;
         return 1;
     }
     if (section == 2) {
+        if (isTextAswer) {
+            return 1;
+        }
         NSArray *answers = [self.questionInfoDic objectForKey:kTestQuestionAnswers];
         return answers.count;
     }

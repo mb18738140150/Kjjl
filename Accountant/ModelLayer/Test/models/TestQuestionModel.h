@@ -21,9 +21,9 @@ typedef enum {
 @property (nonatomic,strong) NSString               *questionType;
 @property (nonatomic,strong) NSString               *questionContent;
 @property (nonatomic,strong) NSString               *questionComplain;
-@property (nonatomic,strong) NSMutableArray         *answers;
+@property (nonatomic,strong) NSMutableArray         *answers;// 问题答案选项
 @property (nonatomic,strong) NSString               *correctAnswerIds;
-@property (nonatomic,strong) NSString               *selectedAnswerIds;
+@property (nonatomic,strong) NSString               *selectedAnswerIds;// 已选答案
 @property (nonatomic, copy) NSString * caseInfo;
 @property (nonatomic, copy) NSString * myAnswer;
 @property (nonatomic, assign)int isResponse;

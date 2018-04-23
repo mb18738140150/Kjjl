@@ -11,12 +11,16 @@
 
 #define kCoursetableViewcellID  @"CoursetableViewcellID"
 
+#define kCellHeight (kCellHeightOfCourseOfVideo +  20)
+
 @interface CourseSectionTableViewCell ()<UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic, strong)UILabel * titleLB;
 @property (nonatomic, strong)UITableView * tableView;
 @property (nonatomic, strong)NSArray * dataArray;
 @property (nonatomic, strong)NSMutableDictionary * infoDic;
+@property (nonatomic, strong)UIView * tipView;
+
 
 @end
 
@@ -39,16 +43,18 @@
 {
     [self.contentView removeAllSubviews];
     
-    UIView * tipView = [[UIView alloc]initWithFrame:CGRectMake(20, 12, 3, 13)];
-    tipView.backgroundColor = UIColorFromRGB(0xfd6d00);
-    [self.contentView addSubview:tipView];
+    self.tipView = [[UIView alloc]initWithFrame:CGRectMake(self.hd_width / 2 - 100, 8, 200, 1)];
+    _tipView.backgroundColor = UIColorFromRGB(0xcccccc);
+    [self.contentView addSubview:_tipView];
     
-    self.titleLB = [[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(tipView.frame) + 6, 10, self.hd_width, 16)];
+    self.titleLB = [[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(_tipView.frame) + 6, 0, self.hd_width, 16)];
     self.titleLB.font = [UIFont systemFontOfSize:12];
+    self.titleLB.backgroundColor = [UIColor whiteColor];
+    self.titleLB.textAlignment = NSTextAlignmentCenter;
     self.titleLB.textColor = UIColorFromRGB(0x666666);
     [self.contentView addSubview:self.titleLB];
     
-    self.tableView = [[UITableView alloc]initWithFrame:CGRectMake(23, CGRectGetMaxY(tipView.frame) + 5, self.hd_width - 20, 100) style:UITableViewStylePlain];
+    self.tableView = [[UITableView alloc]initWithFrame:CGRectMake(23, CGRectGetMaxY(_tipView.frame) + 11, self.hd_width - 20, 100) style:UITableViewStylePlain];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -70,20 +76,30 @@
     if (self.titleLB.text.length == 0) {
         self.titleLB.text = [infoDic objectForKey:kCourseCategoryName];
     }
+    [self resetPropertyUI];
     
     int courseCount = self.dataArray.count;
     int number = [self getRow:infoDic];
     
     dispatch_async(dispatch_get_main_queue(), ^{
         if (number > 3) {
-            self.tableView.hd_height = (number - 1) * kCellHeightOfCourseOfVideo + 30;
+            self.tableView.hd_height = (number - 1) * kCellHeight + 30;
         }else
         {
-            self.tableView.hd_height = number * kCellHeightOfCourseOfVideo;
+            self.tableView.hd_height = number * kCellHeight;
         }
     });
     [self.tableView reloadData];
 }
+
+- (void)resetPropertyUI
+{
+    CGFloat textWidth = [self.titleLB.text boundingRectWithSize:CGSizeMake(MAXFLOAT, self.titleLB.hd_height) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:self.titleLB.font} context:nil].size.width;
+    
+    self.titleLB.frame = CGRectMake((self.hd_width - textWidth - 20) / 2, self.titleLB.hd_y, textWidth + 20, self.titleLB.hd_height);
+    self.tipView.frame = CGRectMake((self.hd_width - textWidth - 60) / 2, self.tipView.hd_y, textWidth + 60, self.tipView.hd_height);
+}
+
 
 - (int )getRow:(NSDictionary *)infoDic
 {
@@ -191,7 +207,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return kCellHeightOfCourseOfVideo;
+    return kCellHeight;
 }
 
 + (CGFloat)getCellHeightWith:(NSDictionary *)infoDic andIsFold:(BOOL)isFold
@@ -202,22 +218,22 @@
     if (courseCount%2 == 0) {
         if (courseCount/2 > 3) {
             if ([[infoDic objectForKey:kIsFold] intValue]) {
-                return 3 * kCellHeightOfCourseOfVideo + 70;
+                return 3 * kCellHeight + 70;
             }
-            return (courseCount/2) * kCellHeightOfCourseOfVideo + 70;
+            return (courseCount/2) * kCellHeight + 70;
         }else
         {
-            return courseCount/2 * kCellHeightOfCourseOfVideo + 30;
+            return courseCount/2 * kCellHeight + 30;
         }
     }else{
         if (courseCount/2 + 1 > 3) {
             if ([[infoDic objectForKey:kIsFold] intValue]) {
-                return 3 * kCellHeightOfCourseOfVideo + 70;
+                return 3 * kCellHeight + 70;
             }
-            return (courseCount/2 + 1) * kCellHeightOfCourseOfVideo + 70;
+            return (courseCount/2 + 1) * kCellHeight + 70;
         }else
         {
-            return (courseCount/2 + 1) * kCellHeightOfCourseOfVideo + 30;
+            return (courseCount/2 + 1) * kCellHeight + 30;
         }
     }
     

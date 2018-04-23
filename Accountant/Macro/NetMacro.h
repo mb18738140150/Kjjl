@@ -90,7 +90,7 @@
 #define kRecommend                      @"51"
 #define kGetRecommend                   @"52"
 #define kGetRecommendIntegral           @"53"
-#define kCommandMemberLevelDetail              @"54"
+#define kCommandMemberLevelDetail       @"54"
 #define kAssistantCenter                @"55"
 #define kPayOrderFromOrderList          @"56"
 #define kSubmitOpinion                  @"57"

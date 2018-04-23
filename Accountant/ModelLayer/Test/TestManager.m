@@ -707,6 +707,10 @@
     NSMutableArray * multipleQuestionArr = [NSMutableArray array];
     NSMutableArray * judgeQuestionArr = [NSMutableArray array];
     NSMutableArray * materialQuestionArr = [NSMutableArray array];
+    NSMutableArray * jiandaQuestionArr = [NSMutableArray array];
+    NSMutableArray * analysisQuestionArr = [NSMutableArray array];
+    NSMutableArray * zongheQuestionArr = [NSMutableArray array];
+    
     
     [self.simulateScoreOperation.simulateResultModel removeAllQuestion];
     for (int i = 0; i < self.testModuleModel.currentSimulateModel.questionArray.count; i++) {
@@ -756,7 +760,19 @@
         }else if ([questionModel.questionType isEqualToString:@"多选题"])
         {
             [multipleQuestionArr addObject:dic];
-        }else
+        }else if ([questionModel.questionType isEqualToString:@"简答题"])
+        {
+            [jiandaQuestionArr addObject:dic];
+        }
+        else if ([questionModel.questionType isEqualToString:@"计算分析题"])
+        {
+            [analysisQuestionArr addObject:dic];
+        }
+        else if ([questionModel.questionType isEqualToString:@"综合题"])
+        {
+            [zongheQuestionArr addObject:dic];
+        }
+        else if ([questionModel.questionType isEqualToString:@"不定项选择题题"])
         {
             [materialQuestionArr addObject:dic];
         }
@@ -769,6 +785,10 @@
     [mdic setObject:multipleQuestionArr forKey:kMultiplequistionArr];
     [mdic setObject:judgeQuestionArr forKey:kJudgequistionArr];
     [mdic setObject:materialQuestionArr forKey:kMaterailQuestionArray];
+    [mdic setObject:jiandaQuestionArr  forKey:kJiandaQuestionArray];
+    [mdic setObject:analysisQuestionArr forKey:kAnalisisQuestionArray];
+    [mdic setObject:zongheQuestionArr forKey:kZongheQuestionArray];
+    
     
     return mdic;
 }

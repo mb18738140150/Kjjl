@@ -69,24 +69,6 @@
                 
             }
         }
-        
-//        for (NSString *str1 in array) {
-//            NSArray *subArray = [str1 componentsSeparatedByString:@"</p>"];
-//            for (NSString *answerStr in subArray) {
-//                if ([answerStr class] != [NSNull class] && answerStr != nil && ![answerStr isEqualToString:@""]) {
-//                    TestAnswerModel *answer = [[TestAnswerModel alloc] init];
-//                    answer.answerContent = answerStr;
-//                    unichar c = [answerStr characterAtIndex:0];
-//                    answer.answerId = [NSString stringWithFormat:@"%c",c];
-//                    if ([a containsString:answer.answerId]) {
-//                        answer.isCorrectAnswer = YES;
-//                    }else{
-//                        answer.isCorrectAnswer = NO;
-//                    }
-//                    [questionModel.answers addObject:answer];
-//                }
-//            }
-//        }
         [self.currentTestSection addQuestion:questionModel];
     }
     if (isObjectNotNil(self.notifiedObject)) {

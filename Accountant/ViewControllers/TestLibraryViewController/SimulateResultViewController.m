@@ -23,6 +23,9 @@
 @property (nonatomic, strong)NSMutableArray * mutipleArr;
 @property (nonatomic, strong)NSMutableArray * judgeQuestionArr;
 @property (nonatomic, strong)NSMutableArray * materailArr;
+@property (nonatomic, strong)NSMutableArray * jiandaArr;
+@property (nonatomic, strong)NSMutableArray * analisisArr;
+@property (nonatomic, strong)NSMutableArray * zongheArr;
 
 @end
 
@@ -36,6 +39,9 @@
     self.mutipleArr = [NSMutableArray array];
     self.judgeQuestionArr = [NSMutableArray array];
     self.materailArr = [NSMutableArray array];
+    self.jiandaArr = [NSMutableArray array];
+    self.analisisArr = [NSMutableArray array];
+    self.zongheArr = [NSMutableArray array];
     
     self.dataDic = [[TestManager sharedManager]getSimulateresult];
     
@@ -43,6 +49,10 @@
     self.mutipleArr = [self.dataDic objectForKey:kMultiplequistionArr];
     self.judgeQuestionArr = [self.dataDic objectForKey:kJudgequistionArr];
     self.materailArr = [self.dataDic objectForKey:kMaterailQuestionArray];
+    self.jiandaArr = [self.dataDic objectForKey:kJiandaQuestionArray];
+    self.analisisArr = [self.dataDic objectForKey:kAnalisisQuestionArray];
+    self.zongheArr = [self.dataDic objectForKey:kZongheQuestionArray];
+    
     [self saveSimulateScoreToDB];
     [self navigationViewSetup];
     [self contentViewSetup];
@@ -236,8 +246,59 @@
         }
     }else if (indexPath.section == 4)
     {
-        [cell resetCellWithinfo:[[self.dataDic objectForKey:kMaterailQuestionArray] objectAtIndex:indexPath.row]];
-        //        cell.questionNumberLabel.text = [NSString stringWithFormat:@"%@", [[[self.dataDic objectForKey:kMaterailQuestionArray] objectAtIndex:indexPath.row] objectForKey:kTestQuestionNumber]];
+        if([self.materailArr count] > 0)
+        {
+            [cell resetCellWithinfo:[[self.dataDic objectForKey:kMaterailQuestionArray] objectAtIndex:indexPath.row]];
+            cell.questionNumberLabel.text = [NSString stringWithFormat:@"%@", [[[self.dataDic objectForKey:kMaterailQuestionArray] objectAtIndex:indexPath.row] objectForKey:kTestQuestionNumber]];;
+        }
+        else if([self.jiandaArr count] > 0)
+        {
+            [cell resetCellWithinfo:[[self.dataDic objectForKey:kJiandaQuestionArray] objectAtIndex:indexPath.row]];
+            cell.questionNumberLabel.text = [NSString stringWithFormat:@"%@", [[[self.dataDic objectForKey:kJiandaQuestionArray] objectAtIndex:indexPath.row] objectForKey:kTestQuestionNumber]];;
+        }
+        else if([self.analisisArr count] > 0)
+        {
+            [cell resetCellWithinfo:[[self.dataDic objectForKey:kAnalisisQuestionArray] objectAtIndex:indexPath.row]];
+            cell.questionNumberLabel.text = [NSString stringWithFormat:@"%@", [[[self.dataDic objectForKey:kAnalisisQuestionArray] objectAtIndex:indexPath.row] objectForKey:kTestQuestionNumber]];
+        }
+        else if([self.zongheArr count] > 0)
+        {
+            [cell resetCellWithinfo:[[self.dataDic objectForKey:kZongheQuestionArray] objectAtIndex:indexPath.row]];
+            cell.questionNumberLabel.text = [NSString stringWithFormat:@"%@", [[[self.dataDic objectForKey:kZongheQuestionArray] objectAtIndex:indexPath.row] objectForKey:kTestQuestionNumber]];
+        }
+    }else if (indexPath.section == 5)
+    {
+        if([self.jiandaArr count] > 0)
+        {
+            [cell resetCellWithinfo:[[self.dataDic objectForKey:kJiandaQuestionArray] objectAtIndex:indexPath.row]];
+            cell.questionNumberLabel.text = [NSString stringWithFormat:@"%@", [[[self.dataDic objectForKey:kJiandaQuestionArray] objectAtIndex:indexPath.row] objectForKey:kTestQuestionNumber]];
+        }
+        else if([self.analisisArr count] > 0)
+        {
+            [cell resetCellWithinfo:[[self.dataDic objectForKey:kAnalisisQuestionArray] objectAtIndex:indexPath.row]];
+            cell.questionNumberLabel.text = [NSString stringWithFormat:@"%@", [[[self.dataDic objectForKey:kAnalisisQuestionArray] objectAtIndex:indexPath.row] objectForKey:kTestQuestionNumber]];
+        }
+        else if([self.zongheArr count] > 0)
+        {
+            [cell resetCellWithinfo:[[self.dataDic objectForKey:kZongheQuestionArray] objectAtIndex:indexPath.row]];
+            cell.questionNumberLabel.text = [NSString stringWithFormat:@"%@", [[[self.dataDic objectForKey:kZongheQuestionArray] objectAtIndex:indexPath.row] objectForKey:kTestQuestionNumber]];
+        }
+    }else if (indexPath.section == 6)
+    {
+        if([self.analisisArr count] > 0)
+        {
+            [cell resetCellWithinfo:[[self.dataDic objectForKey:kAnalisisQuestionArray] objectAtIndex:indexPath.row]];
+            cell.questionNumberLabel.text = [NSString stringWithFormat:@"%@", [[[self.dataDic objectForKey:kAnalisisQuestionArray] objectAtIndex:indexPath.row] objectForKey:kTestQuestionNumber]];
+        }
+        else if([self.zongheArr count] > 0)
+        {
+            [cell resetCellWithinfo:[[self.dataDic objectForKey:kZongheQuestionArray] objectAtIndex:indexPath.row]];
+            cell.questionNumberLabel.text = [NSString stringWithFormat:@"%@", [[[self.dataDic objectForKey:kZongheQuestionArray] objectAtIndex:indexPath.row] objectForKey:kTestQuestionNumber]];
+        }
+    }else if (indexPath.section == 7)
+    {
+        [cell resetCellWithinfo:[[self.dataDic objectForKey:kZongheQuestionArray] objectAtIndex:indexPath.row]];
+        cell.questionNumberLabel.text = [NSString stringWithFormat:@"%@", [[[self.dataDic objectForKey:kZongheQuestionArray] objectAtIndex:indexPath.row] objectForKey:kTestQuestionNumber]];
     }
     return cell;
 }
@@ -317,8 +378,68 @@
             }
         }else if (indexPath.section == 4)
         {
+            if([self.materailArr count] > 0)
+            {
+                SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
+                [headview resetWithTitle:@"不定项"];
+                reusableview = headview;
+            }
+            else if([self.jiandaArr count] > 0)
+            {
+                SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
+                [headview resetWithTitle:@"简答题"];
+                reusableview = headview;
+            }
+            else if([self.analisisArr count] > 0)
+            {
+                SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
+                [headview resetWithTitle:@"计算分析题"];
+                reusableview = headview;
+            }
+            else if([self.zongheArr count] > 0)
+            {
+                SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
+                [headview resetWithTitle:@"综合题"];
+                reusableview = headview;
+            }
+        }else if (indexPath.section == 5)
+        {
+            if([self.jiandaArr count] > 0)
+            {
+                SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
+                [headview resetWithTitle:@"简答题"];
+                reusableview = headview;
+            }
+            else if([self.analisisArr count] > 0)
+            {
+                SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
+                [headview resetWithTitle:@"计算分析题"];
+                reusableview = headview;
+            }
+            else if([self.zongheArr count] > 0)
+            {
+                SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
+                [headview resetWithTitle:@"综合题"];
+                reusableview = headview;
+            }
+        }else if (indexPath.section == 6)
+        {
+            if([self.analisisArr count] > 0)
+            {
+                SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
+                [headview resetWithTitle:@"计算分析题"];
+                reusableview = headview;
+            }
+            else if([self.zongheArr count] > 0)
+            {
+                SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
+                [headview resetWithTitle:@"综合题"];
+                reusableview = headview;
+            }
+        }else if (indexPath.section == 7)
+        {
             SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
-            [headview resetWithTitle:@"不定项"];
+            [headview resetWithTitle:@"综合题"];
             reusableview = headview;
         }
     }
@@ -377,8 +498,67 @@
     }
     else if (section == 4)
     {
-        return [self.materailArr count];
-    }else
+        if([self.materailArr count] > 0)
+        {
+            return [self.materailArr count];
+        }
+        else if([self.jiandaArr count] > 0)
+        {
+            return [self.jiandaArr count];
+        }
+        else if([self.analisisArr count] > 0)
+        {
+            return [self.analisisArr count];
+        }
+        else if([self.zongheArr count] > 0)
+        {
+            return [self.zongheArr count];
+        }
+        else
+        {
+            return 0;
+        }
+    }
+    else if (section == 5)
+    {
+        if([self.jiandaArr count] > 0)
+        {
+            return [self.jiandaArr count];
+        }
+        else if([self.analisisArr count] > 0)
+        {
+            return [self.analisisArr count];
+        }
+        else if([self.zongheArr count] > 0)
+        {
+            return [self.zongheArr count];
+        }
+        else
+        {
+            return 0;
+        }
+    }
+    else if (section == 6)
+    {
+        if([self.analisisArr count] > 0)
+        {
+            return [self.analisisArr count];
+        }
+        else if([self.zongheArr count] > 0)
+        {
+            return [self.zongheArr count];
+        }
+        else
+        {
+            return 0;
+        }
+    }
+    else if (section == 7)
+    {
+        return [self.zongheArr count];
+    }
+    
+    else
     {
         return 1;
     }
@@ -423,7 +603,18 @@
     {
         number++;
     }
-    
+    if([[self.dataDic objectForKey:kJiandaQuestionArray] count] > 0)
+    {
+        number++;
+    }
+    if([[self.dataDic objectForKey:kAnalisisQuestionArray] count] > 0)
+    {
+        number++;
+    }
+    if([[self.dataDic objectForKey:kZongheQuestionArray] count] > 0)
+    {
+        number++;
+    }
     return number + 1;
 }
 

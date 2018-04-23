@@ -137,8 +137,115 @@
                 break;
         }
     };
-    
     return cell;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    UIView * headView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, 50)];
+    headView.backgroundColor = UIColorFromRGB(0xffffff);
+    headView.layer.cornerRadius = 5;
+    headView.layer.masksToBounds = YES;
+    [self.view addSubview:headView];
+    
+    UILabel * titleLB = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth / 2, 50)];
+    titleLB.textColor = UIColorFromRGB(0x333333);
+    titleLB.textAlignment = NSTextAlignmentCenter;
+    
+    UIButton * closeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    closeBtn.frame = CGRectMake(CGRectGetMaxX(titleLB.frame), 10, 30, 30);
+    [closeBtn setTitle:@"140-140" forState:UIControlStateNormal];
+    [closeBtn setTitleColor:UIColorFromRGB(0xff0000) forState:UIControlStateNormal];
+    [closeBtn setImage:[UIImage imageNamed:@""] forState:UIControlStateNormal];
+    [closeBtn setAdjustsImageWhenDisabled:YES];
+    [headView addSubview:closeBtn];
+    
+    UITextField * tf = [[UITextField alloc]initWithFrame:CGRectMake(kScreenWidth / 2, 0, kScreenWidth / 2, 50)];
+    tf.textColor = UIColorFromRGB(0x333333);
+    tf.textAlignment = NSTextAlignmentLeft;
+    tf.background = [UIImage imageNamed:@""];
+    tf.placeholder = @"";
+    [headView addSubview:tf];
+    
+    UIGravityBehavior * gravity = [[UIGravityBehavior alloc]init];
+    [gravity addItem:self.view];
+    gravity.angle = 0;
+    gravity.magnitude = 1.0;
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    return headView;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath

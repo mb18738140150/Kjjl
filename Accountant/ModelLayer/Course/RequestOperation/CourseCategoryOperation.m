@@ -58,6 +58,8 @@
                 courseModel.courseCover = [courseDic objectForKey:@"cover"];
                 courseModel.courseID = [[courseDic objectForKey:@"id"] intValue];
                 courseModel.coueseTeacherName = [courseDic objectForKey:@"teacherName"];
+                courseModel.price = [[courseDic objectForKey:@"price"] doubleValue];
+                courseModel.price = 0;
                 [secondModel addCourseModel:courseModel];
             }
             [model addSecondCourseModel:secondModel];
@@ -75,6 +77,8 @@
                     courseModel.courseCover = [courseDic objectForKey:@"cover"];
                     courseModel.courseID = [[courseDic objectForKey:@"id"] intValue];
                     courseModel.coueseTeacherName = [courseDic objectForKey:@"teacherName"];
+                    courseModel.price = [[courseDic objectForKey:@"price"] doubleValue];
+                    courseModel.price = 0;
                     [secondModel addCourseModel:courseModel];
                 }
                 [model addSecondCourseModel:secondModel];

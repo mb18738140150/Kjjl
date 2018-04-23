@@ -25,6 +25,11 @@
 #import "SlideBlockView.h"
 #import "UIView+HDExtension.h"
 
+#import "TextAswerCell.h"
+#import "MKPPlaceholderTextView.h"
+
+#define ktextCellId @"textCellID"
+
 #define bottomButtonwidht (kScreenWidth-3) / 3
 #define bottomButtonHeight kTabBarHeight - 1
 
@@ -42,6 +47,8 @@
 
 @property (nonatomic,assign) int                     currentQuestionIndex;
 @property (nonatomic,assign) int                     totalCount;
+@property (nonatomic, strong)NSString               *currentTextAmswer;//简答题等当前答案
+@property (nonatomic, strong)MKPPlaceholderTextView * textAnswerView;
 
 @property (nonatomic,strong) DelayButton               *nextQuestionButton;
 @property (nonatomic,strong) DelayButton               *previousQuestionButton;
@@ -152,6 +159,7 @@
 }
 
 static bool isCailiao;
+static bool isTextAswer;
 static bool isFirstCailiaoQuestion;
 
 - (void)reloadQuestionInfo
@@ -171,6 +179,14 @@ static bool isFirstCailiaoQuestion;
     if (![[self.questionInfoDic objectForKey:kQuestionCaseInfo] isEqualToString:@""]) {
         self.slideBlockView.hidden = NO;
         isCailiao = true;
+        
+        if ([type isEqualToString:@"不定项选择"]) {
+            isTextAswer = NO;
+        }else
+        {
+            isTextAswer = YES;
+        }
+        
         if (![self.cailiaoDetailLabel.text isEqualToString:@""]) {
             
             NSLog(@"self.cailiaoDetailLabel.text = %@", self.cailiaoDetailLabel.text);
@@ -210,6 +226,12 @@ static bool isFirstCailiaoQuestion;
 
 - (void)submitQuestion
 {
+    if (isTextAswer) {
+        [[TestManager sharedManager] submitAnswers:[@[self.currentTextAmswer] mutableCopy] andQuestionIndex:self.currentQuestionIndex];
+        return;
+    }
+    
+    
     [self saveQuestionAnswersToDB];
     if (self.selectedArray.count == 0) {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"请先选择答案" delegate:nil cancelButtonTitle:@"知道了" otherButtonTitles:nil];
@@ -241,7 +263,6 @@ static bool isFirstCailiaoQuestion;
     }else{
         [self didShowAnsersCard];
     }
-    
 }
 
 - (void)changetableview
@@ -619,6 +640,7 @@ static bool isFirstCailiaoQuestion;
     self.nextOrPreviousTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.view addSubview:self.nextOrPreviousTableView];
     
+    
     self.contentTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidth, kScreenHeight - kStatusBarHeight - kNavigationBarHeight - kTabBarHeight) style:UITableViewStylePlain];
     self.contentTableView.delegate = self;
     self.contentTableView.dataSource = self;
@@ -627,6 +649,8 @@ static bool isFirstCailiaoQuestion;
     self.contentTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.view addSubview:self.contentTableView];
     
+    UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(donetextAnswerAction)];
+    [self.contentTableView addGestureRecognizer:tap];
     
     self.bottomMenuView = [[UIView alloc] initWithFrame:CGRectMake(0, kScreenHeight-kStatusBarHeight - kNavigationBarHeight - kTabBarHeight, kScreenWidth, kTabBarHeight)];
     self.bottomMenuView.backgroundColor = [UIColor whiteColor];
@@ -705,6 +729,11 @@ static bool isFirstCailiaoQuestion;
     
 }
 
+- (void)donetextAnswerAction
+{
+    [self.textAnswerView resignFirstResponder];
+}
+
 #pragma mark - table delegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(nonnull NSIndexPath *)indexPath
 {
@@ -746,6 +775,22 @@ static bool isFirstCailiaoQuestion;
         return cell;
     }
     if (indexPath.section == 2) {
+        
+        if (isTextAswer) {
+            TextAswerCell * cell = (TextAswerCell *)[UIUtility getCellWithCellName:ktextCellId inTableView:tableView andCellClass:[TextAswerCell class]];
+            [cell resetProperty];
+            
+            cell.opinionTextView.text = [NSString stringWithFormat:@"%@", [self.selectedArray firstObject]];
+            
+            self.textAnswerView = cell.opinionTextView;
+            __weak typeof(self)weakSelf = self;
+            cell.textAnswerBlock = ^(NSString *textAnswer) {
+                weakSelf.currentTextAmswer = textAnswer;
+                [weakSelf submitQuestion];
+            };
+            return cell;
+        }
+        
         TestQuestionAnswerTableViewCell *cell = (TestQuestionAnswerTableViewCell *)[UIUtility getCellWithCellName:@"testAnswerCell" inTableView:tableView andCellClass:[TestQuestionAnswerTableViewCell class]];
         NSArray *array = [self.questionInfoDic objectForKey:kTestQuestionAnswers];
         NSDictionary *infoDic = [array objectAtIndex:indexPath.row];
@@ -805,6 +850,10 @@ static bool isFirstCailiaoQuestion;
         return 1;
     }
     if (section == 2) {
+        if (isTextAswer) {
+            return 1;
+        }
+        
         NSArray *answers = [self.questionInfoDic objectForKey:kTestQuestionAnswers];
         return answers.count;
     }

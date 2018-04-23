@@ -51,7 +51,7 @@
     questionModel.selectArray = answers;
     
     NSMutableString *myStr = [[NSMutableString alloc] init];
-    for (NSNumber *number in answers) {
+    for (NSString *number in answers) {
         [myStr appendString:[NSString stringWithFormat:@"%@",number]];
     }
     questionModel.selectedAnswerIds = myStr;

@@ -110,6 +110,7 @@
     [self.downloadTask resume];
 }
 
+
 - (BOOL)isValideResumeData:(NSData *)resumeData
 {
     if (!resumeData || resumeData.length == 0) {

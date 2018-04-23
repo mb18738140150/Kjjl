@@ -163,6 +163,9 @@
 #define kMultiplequistionArr            @"multiplequestionarr"
 #define kJudgequistionArr               @"judgequestionarr"
 #define kMaterailQuestionArray          @"materailQuestionArr"
+#define kJiandaQuestionArray            @"jiandaQuestionArray"
+#define kAnalisisQuestionArray          @"analisisQuestionArray"
+#define kZongheQuestionArray            @"zongheQuestionArray"
 
 #define kDownloadTaskId                 @"downloadTaskId"
 #define kDownloadState                  @"downloadState"

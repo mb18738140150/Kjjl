@@ -28,6 +28,9 @@
 @property (nonatomic, strong)NSMutableArray * mutipleArr;
 @property (nonatomic, strong)NSMutableArray * judgeQuestionArr;
 @property (nonatomic, strong)NSMutableArray * materailArr;
+@property (nonatomic, strong)NSMutableArray * jiandaArr;
+@property (nonatomic, strong)NSMutableArray * analisisArr;
+@property (nonatomic, strong)NSMutableArray * zongheArr;
 
 @property (nonatomic, copy)SubmitBlock myBlock;
 
@@ -46,12 +49,18 @@
     self.mutipleArr = [NSMutableArray array];
     self.judgeQuestionArr = [NSMutableArray array];
     self.materailArr = [NSMutableArray array];
+    self.jiandaArr = [NSMutableArray array];
+    self.analisisArr = [NSMutableArray array];
+    self.zongheArr = [NSMutableArray array];
     
     self.dataDic = [[TestManager sharedManager]getSimulateresult];
     self.singleArr = [self.dataDic objectForKey:kSinglequistionArr];
     self.mutipleArr = [self.dataDic objectForKey:kMultiplequistionArr];
     self.judgeQuestionArr = [self.dataDic objectForKey:kJudgequistionArr];
     self.materailArr = [self.dataDic objectForKey:kMaterailQuestionArray];
+    self.jiandaArr = [self.dataDic objectForKey:kJiandaQuestionArray];
+    self.analisisArr = [self.dataDic objectForKey:kAnalisisQuestionArray];
+    self.zongheArr = [self.dataDic objectForKey:kZongheQuestionArray];
     
     [self navigationViewSetup];
     [self contentViewSetup];
@@ -124,6 +133,18 @@
     {
         number++;
     }
+    if([[self.dataDic objectForKey:kJiandaQuestionArray] count] > 0)
+    {
+        number++;
+    }
+    if([[self.dataDic objectForKey:kAnalisisQuestionArray] count] > 0)
+    {
+        number++;
+    }
+    if([[self.dataDic objectForKey:kZongheQuestionArray] count] > 0)
+    {
+        number++;
+    }
     return number;
 }
 
@@ -142,6 +163,18 @@
         {
             return [self.materailArr count];
         }
+        else if([self.jiandaArr count] > 0)
+        {
+            return [self.jiandaArr count];
+        }
+        else if([self.analisisArr count] > 0)
+        {
+            return [self.analisisArr count];
+        }
+        else if([self.zongheArr count] > 0)
+        {
+            return [self.zongheArr count];
+        }
         else
         {
             return 0;
@@ -158,7 +191,20 @@
         else if([self.materailArr count] > 0)
         {
             return [self.materailArr count];
-        }else
+        }
+        else if([self.jiandaArr count] > 0)
+        {
+            return [self.jiandaArr count];
+        }
+        else if([self.analisisArr count] > 0)
+        {
+            return [self.analisisArr count];
+        }
+        else if([self.zongheArr count] > 0)
+        {
+            return [self.zongheArr count];
+        }
+        else
         {
             return 0;
         }
@@ -171,15 +217,86 @@
         else if([self.materailArr count] > 0)
         {
             return [self.materailArr count];
-        }else
+        }
+        else if([self.jiandaArr count] > 0)
+        {
+            return [self.jiandaArr count];
+        }
+        else if([self.analisisArr count] > 0)
+        {
+            return [self.analisisArr count];
+        }
+        else if([self.zongheArr count] > 0)
+        {
+            return [self.zongheArr count];
+        }
+        else
         {
             return 0;
         }
     }
     else if (section == 3)
     {
-        return [self.materailArr count];
-    }else
+        if([self.materailArr count] > 0)
+        {
+            return [self.materailArr count];
+        }
+        else if([self.jiandaArr count] > 0)
+        {
+            return [self.jiandaArr count];
+        }
+        else if([self.analisisArr count] > 0)
+        {
+            return [self.analisisArr count];
+        }
+        else if([self.zongheArr count] > 0)
+        {
+            return [self.zongheArr count];
+        }
+        else
+        {
+            return 0;
+        }
+    }
+    else if (section == 4)
+    {
+         if([self.jiandaArr count] > 0)
+        {
+            return [self.jiandaArr count];
+        }
+        else if([self.analisisArr count] > 0)
+        {
+            return [self.analisisArr count];
+        }
+        else if([self.zongheArr count] > 0)
+        {
+            return [self.zongheArr count];
+        }
+        else
+        {
+            return 0;
+        }
+    }
+    else if (section == 5)
+    {
+        if([self.analisisArr count] > 0)
+        {
+            return [self.analisisArr count];
+        }
+        else if([self.zongheArr count] > 0)
+        {
+            return [self.zongheArr count];
+        }
+        else
+        {
+            return 0;
+        }
+    }
+    else if (section == 6)
+    {
+        return [self.zongheArr count];
+    }
+    else
     {
         return 0;
     }
@@ -209,6 +326,18 @@
         {
             [cell resetCellWithInfo:[[self.dataDic objectForKey:kMaterailQuestionArray] objectAtIndex:indexPath.row]];
         }
+        else if([self.jiandaArr count] > 0)
+        {
+            [cell resetCellWithInfo:[[self.dataDic objectForKey:kJiandaQuestionArray] objectAtIndex:indexPath.row]];
+        }
+        else if([self.analisisArr count] > 0)
+        {
+            [cell resetCellWithInfo:[[self.dataDic objectForKey:kAnalisisQuestionArray] objectAtIndex:indexPath.row]];
+        }
+        else if([self.zongheArr count] > 0)
+        {
+            [cell resetCellWithInfo:[[self.dataDic objectForKey:kZongheQuestionArray] objectAtIndex:indexPath.row]];
+        }
     }else if (indexPath.section == 1)
     {
         if([[self.dataDic objectForKey:kSinglequistionArr] count] > 0 && [[self.dataDic objectForKey:kMultiplequistionArr] count] > 0)
@@ -222,6 +351,18 @@
         {
             [cell resetCellWithInfo:[[self.dataDic objectForKey:kMaterailQuestionArray] objectAtIndex:indexPath.row]];
         }
+        else if([self.jiandaArr count] > 0)
+        {
+            [cell resetCellWithInfo:[[self.dataDic objectForKey:kJiandaQuestionArray] objectAtIndex:indexPath.row]];
+        }
+        else if([self.analisisArr count] > 0)
+        {
+            [cell resetCellWithInfo:[[self.dataDic objectForKey:kAnalisisQuestionArray] objectAtIndex:indexPath.row]];
+        }
+        else if([self.zongheArr count] > 0)
+        {
+            [cell resetCellWithInfo:[[self.dataDic objectForKey:kZongheQuestionArray] objectAtIndex:indexPath.row]];
+        }
     }else if (indexPath.section == 2)
     {
         if([[self.dataDic objectForKey:kJudgequistionArr] count] > 0)
@@ -232,9 +373,63 @@
         {
             [cell resetCellWithInfo:[[self.dataDic objectForKey:kMaterailQuestionArray] objectAtIndex:indexPath.row]];
         }
+        else if([self.jiandaArr count] > 0)
+        {
+            [cell resetCellWithInfo:[[self.dataDic objectForKey:kJiandaQuestionArray] objectAtIndex:indexPath.row]];
+        }
+        else if([self.analisisArr count] > 0)
+        {
+            [cell resetCellWithInfo:[[self.dataDic objectForKey:kAnalisisQuestionArray] objectAtIndex:indexPath.row]];
+        }
+        else if([self.zongheArr count] > 0)
+        {
+            [cell resetCellWithInfo:[[self.dataDic objectForKey:kZongheQuestionArray] objectAtIndex:indexPath.row]];
+        }
     }else if (indexPath.section == 3)
     {
-        [cell resetCellWithInfo:[[self.dataDic objectForKey:kMaterailQuestionArray] objectAtIndex:indexPath.row]];
+        if([self.materailArr count] > 0)
+        {
+            [cell resetCellWithInfo:[[self.dataDic objectForKey:kMaterailQuestionArray] objectAtIndex:indexPath.row]];
+        }
+        else if([self.jiandaArr count] > 0)
+        {
+            [cell resetCellWithInfo:[[self.dataDic objectForKey:kJiandaQuestionArray] objectAtIndex:indexPath.row]];
+        }
+        else if([self.analisisArr count] > 0)
+        {
+            [cell resetCellWithInfo:[[self.dataDic objectForKey:kAnalisisQuestionArray] objectAtIndex:indexPath.row]];
+        }
+        else if([self.zongheArr count] > 0)
+        {
+            [cell resetCellWithInfo:[[self.dataDic objectForKey:kZongheQuestionArray] objectAtIndex:indexPath.row]];
+        }
+    }else if (indexPath.section == 4)
+    {
+         if([self.jiandaArr count] > 0)
+        {
+            [cell resetCellWithInfo:[[self.dataDic objectForKey:kJiandaQuestionArray] objectAtIndex:indexPath.row]];
+        }
+        else if([self.analisisArr count] > 0)
+        {
+            [cell resetCellWithInfo:[[self.dataDic objectForKey:kAnalisisQuestionArray] objectAtIndex:indexPath.row]];
+        }
+        else if([self.zongheArr count] > 0)
+        {
+            [cell resetCellWithInfo:[[self.dataDic objectForKey:kZongheQuestionArray] objectAtIndex:indexPath.row]];
+        }
+    }else if (indexPath.section == 5)
+    {
+       if([self.analisisArr count] > 0)
+        {
+            [cell resetCellWithInfo:[[self.dataDic objectForKey:kAnalisisQuestionArray] objectAtIndex:indexPath.row]];
+        }
+        else if([self.zongheArr count] > 0)
+        {
+            [cell resetCellWithInfo:[[self.dataDic objectForKey:kZongheQuestionArray] objectAtIndex:indexPath.row]];
+        }
+    }else if (indexPath.section == 6)
+    {
+        [cell resetCellWithInfo:[[self.dataDic objectForKey:kZongheQuestionArray] objectAtIndex:indexPath.row]];
     }
     return cell;
 }
@@ -266,6 +461,24 @@
                 [headview resetWithTitle:@"不定项"];
                 reusableview = headview;
             }
+            else if([self.jiandaArr count] > 0)
+            {
+                SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
+                [headview resetWithTitle:@"简答题"];
+                reusableview = headview;
+            }
+            else if([self.analisisArr count] > 0)
+            {
+                SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
+                [headview resetWithTitle:@"计算分析题"];
+                reusableview = headview;
+            }
+            else if([self.zongheArr count] > 0)
+            {
+                SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
+                [headview resetWithTitle:@"综合题"];
+                reusableview = headview;
+            }
         }else if (indexPath.section == 1)
         {
             if([[self.dataDic objectForKey:kMultiplequistionArr] count] > 0)
@@ -284,6 +497,24 @@
                 [headview resetWithTitle:@"不定项"];
                 reusableview = headview;
             }
+            else if([self.jiandaArr count] > 0)
+            {
+                SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
+                [headview resetWithTitle:@"简答题"];
+                reusableview = headview;
+            }
+            else if([self.analisisArr count] > 0)
+            {
+                SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
+                [headview resetWithTitle:@"计算分析题"];
+                reusableview = headview;
+            }
+            else if([self.zongheArr count] > 0)
+            {
+                SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
+                [headview resetWithTitle:@"综合题"];
+                reusableview = headview;
+            }
         }else if (indexPath.section == 2)
         {
             if([[self.dataDic objectForKey:kJudgequistionArr] count] > 0)
@@ -297,10 +528,88 @@
                 [headview resetWithTitle:@"不定项"];
                 reusableview = headview;
             }
+            else if([self.jiandaArr count] > 0)
+            {
+                SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
+                [headview resetWithTitle:@"简答题"];
+                reusableview = headview;
+            }
+            else if([self.analisisArr count] > 0)
+            {
+                SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
+                [headview resetWithTitle:@"计算分析题"];
+                reusableview = headview;
+            }
+            else if([self.zongheArr count] > 0)
+            {
+                SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
+                [headview resetWithTitle:@"综合题"];
+                reusableview = headview;
+            }
         }else if (indexPath.section == 3)
         {
+            if([self.materailArr count] > 0)
+            {
+                SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
+                [headview resetWithTitle:@"不定项"];
+                reusableview = headview;
+            }
+            else if([self.jiandaArr count] > 0)
+            {
+                SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
+                [headview resetWithTitle:@"简答题"];
+                reusableview = headview;
+            }
+            else if([self.analisisArr count] > 0)
+            {
+                SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
+                [headview resetWithTitle:@"计算分析题"];
+                reusableview = headview;
+            }
+            else if([self.zongheArr count] > 0)
+            {
+                SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
+                [headview resetWithTitle:@"综合题"];
+                reusableview = headview;
+            }
+        }else if (indexPath.section == 4)
+        {
+           if([self.jiandaArr count] > 0)
+            {
+                SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
+                [headview resetWithTitle:@"简答题"];
+                reusableview = headview;
+            }
+            else if([self.analisisArr count] > 0)
+            {
+                SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
+                [headview resetWithTitle:@"计算分析题"];
+                reusableview = headview;
+            }
+            else if([self.zongheArr count] > 0)
+            {
+                SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
+                [headview resetWithTitle:@"综合题"];
+                reusableview = headview;
+            }
+        }else if (indexPath.section == 5)
+        {
+             if([self.analisisArr count] > 0)
+            {
+                SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
+                [headview resetWithTitle:@"计算分析题"];
+                reusableview = headview;
+            }
+            else if([self.zongheArr count] > 0)
+            {
+                SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
+                [headview resetWithTitle:@"综合题"];
+                reusableview = headview;
+            }
+        }else if (indexPath.section == 6)
+        {
             SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
-            [headview resetWithTitle:@"不定项"];
+            [headview resetWithTitle:@"综合题"];
             reusableview = headview;
         }
     }
