@@ -41,7 +41,7 @@
             return 3;
             break;
         case 3:
-            return 3;
+            return 0;
             break;
         case 4:
             return 1;

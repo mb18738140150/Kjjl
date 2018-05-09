@@ -203,6 +203,7 @@
         [infoDic setObject:@([s intForColumn:@"simulateQuestionCount"]) forKey:kTestSimulateQuestionCount];
         [infoDic setObject:@([s intForColumn:@"currentIndex"]) forKey:@"currentIndex"];
         [infoDic setObject:@([s doubleForColumn:@"time"]) forKey:@"time"];
+        [infoDic setObject:[s stringForColumn:@"type"] forKey:@"type"];
         
         NSString * str = [s stringForColumn:@"questionsStr"];
         NSData * date = [str dataUsingEncoding:NSUTF8StringEncoding];

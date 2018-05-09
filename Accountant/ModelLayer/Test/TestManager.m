@@ -401,6 +401,45 @@
     self.testModuleModel.currentQuestionIndex = index;
 }
 
+- (void)resetCurrentTestQuestionProcess
+{
+    for (int i = 0; i< self.testModuleModel.currentTestSection.questionArray.count; i++) {
+        TestQuestionModel * model = self.testModuleModel.currentTestSection.questionArray[i];
+        if (model.questionId == model.lastLogId) {
+            self.testModuleModel.currentQuestionIndex = i;
+        }
+    }
+}
+
+- (void)resetCurrentSimulateQuestionProcess
+{
+    for (int i = 0; i< self.testModuleModel.currentSimulateModel.questionArray.count; i++) {
+        TestQuestionModel * model = self.testModuleModel.currentSimulateModel.questionArray[i];
+        if (model.questionId == model.lastLogId) {
+            self.testModuleModel.currentQuestionIndex = i;
+        }
+    }
+}
+
+- (void)cleanTextProcess
+{
+    for (int i = 0; i< self.testModuleModel.currentTestSection.questionArray.count; i++) {
+        TestQuestionModel * model = self.testModuleModel.currentTestSection.questionArray[i];
+        if (model.selectArray.count) {
+            model.selectArray = [NSArray array];
+        }
+    }
+}
+- (void)cleanSimulateProcess
+{
+    for (int i = 0; i< self.testModuleModel.currentSimulateModel.questionArray.count; i++) {
+        TestQuestionModel * model = self.testModuleModel.currentSimulateModel.questionArray[i];
+        if (model.selectArray.count) {
+            model.selectArray = [NSArray array];
+        }
+    }
+}
+
 - (int)getTestSectionTotalCount
 {
     return (int)self.testModuleModel.currentTestSection.questionArray.count;
@@ -410,8 +449,6 @@
 {
     [self.testModuleModel submitSectionQuestionAnswers:answerArray andIndex:questionIndex];
 }
-
-
 
 - (void)showQuestionAnswerWithQuestionIndex:(int)questionIndex
 {
@@ -443,6 +480,27 @@
     return self.testModuleModel.logId;
 }
 
+- (NSArray *)getAllCategory
+{
+    NSMutableArray * dataArray = [NSMutableArray array];
+    for (NSDictionary * infoDic in self.allCategoryOperation.allCategoryArray) {
+        NSMutableDictionary * lDic = [NSMutableDictionary dictionary];
+        [lDic setObject:[infoDic objectForKey:@"id"] forKey:@"id"];
+        [lDic setObject:[infoDic objectForKey:@"name"] forKey:@"name"];
+        NSMutableArray * subjectArr = [NSMutableArray array];
+        for (NSDictionary * cateDic in [infoDic objectForKey:@"subject"]) {
+            NSMutableDictionary * cDic = [NSMutableDictionary dictionary];
+            [cDic setObject:[cateDic objectForKey:@"id"] forKey:kTestCategoryId];
+            [cDic setObject:[cateDic objectForKey:@"name"] forKey:kTestCategoryName];
+            [cDic setObject:[infoDic objectForKey:@"id"] forKey:kLID];
+            [subjectArr addObject:cDic];
+        }
+        [lDic setObject:subjectArr forKey:@"subject"];
+        [dataArray addObject:lDic];
+    }
+    
+    return dataArray;
+}
 
 - (NSArray *)getTestRecord
 {
@@ -463,11 +521,12 @@
     [dic setObject:questionModel.questionContent forKey:kTestQuestionContent];
     [dic setObject:questionModel.questionComplain forKey:kTestQuestionComplain];
     [dic setObject:questionModel.questionType forKey:kTestQuestionType];
+    [dic setObject:@(questionModel.questionTypeId) forKey:kTestQuestionTypeId];
     [dic setObject:questionModel.correctAnswerIds forKey:kTestQuestionCorrectAnswersId];
     [dic setObject:@(questionModel.questionIsAnswered) forKey:kTestQuestionIsAnswered];
     [dic setObject:@(questionModel.questionIsCollected) forKey:kTestQuestionIsCollected];
     [dic setObject:questionModel.caseInfo forKey:kQuestionCaseInfo];
-    
+    [dic setObject:@(questionModel.lastLogId) forKey:kLastLogId];
     
     NSMutableArray *array = [[NSMutableArray alloc] init];
     for (TestAnswerModel *answerModel in questionModel.answers) {
@@ -505,10 +564,12 @@
         [dic setObject:questionModel.questionContent forKey:kTestQuestionContent];
         [dic setObject:questionModel.questionComplain forKey:kTestQuestionComplain];
         [dic setObject:questionModel.questionType forKey:kTestQuestionType];
+        [dic setObject:@(questionModel.questionTypeId) forKey:kTestQuestionTypeId];
         [dic setObject:questionModel.correctAnswerIds forKey:kTestQuestionCorrectAnswersId];
         [dic setObject:@(questionModel.questionIsAnswered) forKey:kTestQuestionIsAnswered];
         [dic setObject:@(questionModel.questionIsCollected) forKey:kTestQuestionIsCollected];
         [dic setObject:questionModel.caseInfo forKey:kQuestionCaseInfo];
+        [dic setObject:@(questionModel.lastLogId) forKey:kLastLogId];
         
         NSMutableArray *array = [[NSMutableArray alloc] init];
         for (TestAnswerModel *answerModel in questionModel.answers) {
@@ -538,10 +599,13 @@
     [dic setObject:questionModel.questionContent forKey:kTestQuestionContent];
     [dic setObject:questionModel.questionComplain forKey:kTestQuestionComplain];
     [dic setObject:questionModel.questionType forKey:kTestQuestionType];
+    [dic setObject:@(questionModel.questionTypeId) forKey:kTestQuestionTypeId];
     [dic setObject:questionModel.correctAnswerIds forKey:kTestQuestionCorrectAnswersId];
     [dic setObject:@(questionModel.questionIsAnswered) forKey:kTestQuestionIsAnswered];
     [dic setObject:@(questionModel.questionIsCollected) forKey:kTestQuestionIsCollected];
     [dic setObject:questionModel.caseInfo forKey:kQuestionCaseInfo];
+    [dic setObject:@(questionModel.lastLogId) forKey:kLastLogId];
+    
     NSMutableArray *array = [[NSMutableArray alloc] init];
     for (TestAnswerModel *answerModel in questionModel.answers) {
         NSMutableDictionary *dic1 = [NSMutableDictionary new];
@@ -571,11 +635,15 @@
     [dic setObject:questionModel.questionContent forKey:kTestQuestionContent];
     [dic setObject:questionModel.questionComplain forKey:kTestQuestionComplain];
     [dic setObject:questionModel.questionType forKey:kTestQuestionType];
+    [dic setObject:@(questionModel.questionTypeId) forKey:kTestQuestionTypeId];
     [dic setObject:questionModel.correctAnswerIds forKey:kTestQuestionCorrectAnswersId];
     [dic setObject:@(questionModel.questionIsAnswered) forKey:kTestQuestionIsAnswered];
     [dic setObject:@(questionModel.questionIsShowAnswer) forKey:kTestQuestionIsShowAnswer];
     [dic setObject:@(questionModel.questionIsCollected) forKey:kTestQuestionIsCollected];
     [dic setObject:questionModel.caseInfo forKey:kQuestionCaseInfo];
+    [dic setObject:@(questionModel.lastLogId) forKey:kLastLogId];
+    
+    
     NSMutableArray *array = [[NSMutableArray alloc] init];
     for (TestAnswerModel *answerModel in questionModel.answers) {
         NSMutableDictionary *dic1 = [NSMutableDictionary new];
@@ -603,12 +671,15 @@
     [dic setObject:questionModel.questionContent forKey:kTestQuestionContent];
     [dic setObject:questionModel.questionComplain forKey:kTestQuestionComplain];
     [dic setObject:questionModel.questionType forKey:kTestQuestionType];
+    [dic setObject:@(questionModel.questionTypeId) forKey:kTestQuestionTypeId];
     [dic setObject:questionModel.correctAnswerIds forKey:kTestQuestionCorrectAnswersId];
     [dic setObject:@(questionModel.questionIsAnswered) forKey:kTestQuestionIsAnswered];
     [dic setObject:@(questionModel.questionIsShowAnswer) forKey:kTestQuestionIsShowAnswer];
     [dic setObject:@(questionModel.questionIsCollected) forKey:kTestQuestionIsCollected];
     [dic setObject:questionModel.caseInfo forKey:kQuestionCaseInfo];
     [dic setObject:@(questionModel.isResponse) forKey:kTestIsResponse];
+    [dic setObject:@(questionModel.lastLogId) forKey:kLastLogId];
+    
     if (questionModel.myAnswer) {
         [dic setObject:questionModel.myAnswer forKey:kTestMyanswer];
     }
@@ -652,10 +723,13 @@
         [dic setObject:questionModel.questionContent forKey:kTestQuestionContent];
         [dic setObject:questionModel.questionComplain forKey:kTestQuestionComplain];
         [dic setObject:questionModel.questionType forKey:kTestQuestionType];
+        [dic setObject:@(questionModel.questionTypeId) forKey:kTestQuestionTypeId];
         [dic setObject:questionModel.correctAnswerIds forKey:kTestQuestionCorrectAnswersId];
         [dic setObject:@(questionModel.questionIsAnswered) forKey:kTestQuestionIsAnswered];
         [dic setObject:@(questionModel.questionIsCollected) forKey:kTestQuestionIsCollected];
         [dic setObject:questionModel.caseInfo forKey:kQuestionCaseInfo];
+        [dic setObject:@(questionModel.lastLogId) forKey:kLastLogId];
+        
         NSMutableArray *array = [[NSMutableArray alloc] init];
         for (TestAnswerModel *answerModel in questionModel.answers) {
             NSMutableDictionary *dic1 = [NSMutableDictionary new];
@@ -700,6 +774,7 @@
 - (NSDictionary *)getSimulateresult
 {
     NSMutableDictionary * mdic = [NSMutableDictionary dictionary];
+    NSMutableArray * dataArray = [NSMutableArray array];
     
     NSMutableArray * rightQuestionArr = [NSMutableArray array];
     NSMutableArray * wrongQuestionArr = [NSMutableArray array];
@@ -728,12 +803,14 @@
         [dic setObject:questionModel.questionContent forKey:kTestQuestionContent];
         [dic setObject:questionModel.questionComplain forKey:kTestQuestionComplain];
         [dic setObject:questionModel.questionType forKey:kTestQuestionType];
+        [dic setObject:@(questionModel.questionTypeId) forKey:kTestQuestionTypeId];
         [dic setObject:questionModel.correctAnswerIds forKey:kTestQuestionCorrectAnswersId];
         [dic setObject:@(questionModel.questionIsAnswered) forKey:kTestQuestionIsAnswered];
         [dic setObject:@(questionModel.questionIsCollected) forKey:kTestQuestionIsCollected];
         [dic setObject:@(questionModel.isAnsweredCorrect) forKey:kTestQuestionIsAnswerCorrect];
         [dic setObject:@(questionModel.questionNumber) forKey:kTestQuestionNumber];
         [dic setObject:questionModel.caseInfo forKey:kQuestionCaseInfo];
+        [dic setObject:@(questionModel.lastLogId) forKey:kLastLogId];
         NSMutableArray *array = [[NSMutableArray alloc] init];
         for (TestAnswerModel *answerModel in questionModel.answers) {
             NSMutableDictionary *dic1 = [NSMutableDictionary new];
@@ -752,35 +829,34 @@
             [self.simulateScoreOperation.simulateResultModel addQuestion:questionModel];
         }
         
-        if ([questionModel.questionType isEqualToString:@"单选题"]) {
-            [singleQuestionArr addObject:dic];
-        }else if ([questionModel.questionType isEqualToString:@"判断题"])
-        {
-            [judgeQuestionArr addObject:dic];
-        }else if ([questionModel.questionType isEqualToString:@"多选题"])
-        {
-            [multipleQuestionArr addObject:dic];
-        }else if ([questionModel.questionType isEqualToString:@"简答题"])
-        {
-            [jiandaQuestionArr addObject:dic];
-        }
-        else if ([questionModel.questionType isEqualToString:@"计算分析题"])
-        {
-            [analysisQuestionArr addObject:dic];
-        }
-        else if ([questionModel.questionType isEqualToString:@"综合题"])
-        {
-            [zongheQuestionArr addObject:dic];
-        }
-        else if ([questionModel.questionType isEqualToString:@"不定项选择题题"])
-        {
-            [materialQuestionArr addObject:dic];
+        
+        BOOL haveType = NO;
+        for (int j = 0; j < dataArray.count; j++) {
+            NSMutableArray * array = [dataArray objectAtIndex:j];
+            NSDictionary * model = [array objectAtIndex:0];
+            if ([[model objectForKey:kTestQuestionType] isEqualToString:questionModel.questionType]) {
+                haveType = YES;
+                [array addObject:dic];
+            }else
+            {
+                continue;
+            }
+            if (haveType) {
+                break;
+            }
         }
         
+        if (!haveType) {
+            NSMutableArray * array = [NSMutableArray array];
+            [array addObject:dic];
+            [dataArray addObject:array];
+        }
     }
     
     [mdic setObject:rightQuestionArr forKey:kRightquistionArr];
     [mdic setObject:wrongQuestionArr forKey:kWrongquistionArr];
+    [mdic setObject:dataArray forKey:kDataArray];
+    
     [mdic setObject:singleQuestionArr forKey:kSinglequistionArr];
     [mdic setObject:multipleQuestionArr forKey:kMultiplequistionArr];
     [mdic setObject:judgeQuestionArr forKey:kJudgequistionArr];
@@ -788,7 +864,6 @@
     [mdic setObject:jiandaQuestionArr  forKey:kJiandaQuestionArray];
     [mdic setObject:analysisQuestionArr forKey:kAnalisisQuestionArray];
     [mdic setObject:zongheQuestionArr forKey:kZongheQuestionArray];
-    
     
     return mdic;
 }

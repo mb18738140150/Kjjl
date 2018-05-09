@@ -13,7 +13,7 @@
 - (void)refreshWithInfo:(NSDictionary *)infoDic
 {
     [self.contentView removeAllSubviews];
-    
+    self.backgroundColor = [UIColor whiteColor];
     self.titleLB = [[UILabel alloc]initWithFrame:CGRectMake(1, 1, self.hd_width - 2, self.hd_height - 2)];
     self.titleLB.layer.cornerRadius = 3;
     self.titleLB.layer.borderWidth = 1;
@@ -22,6 +22,7 @@
     self.titleLB.textColor = UIColorFromRGB(0x333333);
     self.titleLB.font = kMainFont;
     self.titleLB.textAlignment = NSTextAlignmentCenter;
+    self.titleLB.text = [infoDic objectForKey:@"name"];
     [self.contentView addSubview:self.titleLB];
     
 }

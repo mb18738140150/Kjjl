@@ -19,6 +19,7 @@ typedef enum {
 @property (nonatomic,assign) int                     questionId;
 //@property (nonatomic,assign) TestQuestionType        questionType;
 @property (nonatomic,strong) NSString               *questionType;
+@property (nonatomic, assign)int                    questionTypeId;
 @property (nonatomic,strong) NSString               *questionContent;
 @property (nonatomic,strong) NSString               *questionComplain;
 @property (nonatomic,strong) NSMutableArray         *answers;// 问题答案选项
@@ -34,6 +35,8 @@ typedef enum {
 @property (nonatomic, assign)int uid;//接收时对应 unitId：节id
 @property (nonatomic, assign)int sid;//接收时对应 simulationId：模拟卷id
 @property (nonatomic, assign)int isEasyWrong;
+
+@property (nonatomic, assign)int lastLogId;
 
 @property (nonatomic,assign) BOOL                    questionIsAnswered;// 是否一作答
 @property (nonatomic, assign) BOOL                   questionIsShowAnswer;//是否显示答案及解析

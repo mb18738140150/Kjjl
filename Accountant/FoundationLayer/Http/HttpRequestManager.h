@@ -43,6 +43,8 @@
 
 - (void)requestAllPackageWithProcessDelegate:(id<HttpRequestProtocol>)delegate;
 
+- (void)requestPackageDetailWithPackageId:(int)packageId andProcessDelegate:(id<HttpRequestProtocol>)delegate;
+
 - (void)requestResetPwdWithOldPassword:(NSString *)oldPwd andNewPwd:(NSString *)newPwd andProcessDelegate:(id<HttpRequestProtocol>)delegate;
 
 - (void)requestQuestionPublishWithInfo:(NSDictionary *)questionInfo andProcessDelegate:(id<HttpRequestProtocol>)delegate;

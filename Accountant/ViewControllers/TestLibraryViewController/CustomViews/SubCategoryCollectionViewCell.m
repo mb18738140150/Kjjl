@@ -27,7 +27,7 @@
     CGSize cellSize = self.frame.size;
     self.imageView = [[UIImageView alloc] initWithFrame:CGRectMake(cellSize.width/2 - 20, 10, 40, 40)];
     //        subImageView.backgroundColor = [UIColor grayColor];
-    self.imageView.image = [UIImage imageNamed:[infoDic objectForKey:kTestCategoryImageName]];
+//    self.imageView.image = [UIImage imageNamed:[infoDic objectForKey:kTestCategoryImageName]];
 //    [self addSubview:self.imageView];
     
     self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(40, 5, cellSize.width - 50, 30)];

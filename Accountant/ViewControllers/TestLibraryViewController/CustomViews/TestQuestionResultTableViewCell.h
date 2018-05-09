@@ -19,6 +19,9 @@
 @property (nonatomic,strong) UILabel        *correctTextLabel;
 @property (nonatomic,strong) UILabel        *myTextLabel;
 
+@property (nonatomic, strong)UITextView * contentLB;
+@property (nonatomic, assign)BOOL isTextAnswer;
+
 @property (nonatomic, assign)BOOL isRecord;
 - (void)resetWithInfo:(NSDictionary *)infoDic;
 

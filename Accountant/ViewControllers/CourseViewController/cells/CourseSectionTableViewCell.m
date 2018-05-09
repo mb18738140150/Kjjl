@@ -43,15 +43,15 @@
 {
     [self.contentView removeAllSubviews];
     
-    self.tipView = [[UIView alloc]initWithFrame:CGRectMake(self.hd_width / 2 - 100, 8, 200, 1)];
+    self.tipView = [[UIView alloc]initWithFrame:CGRectMake(self.hd_width / 2 - 100, 13, 200, 1)];
     _tipView.backgroundColor = UIColorFromRGB(0xcccccc);
     [self.contentView addSubview:_tipView];
     
-    self.titleLB = [[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(_tipView.frame) + 6, 0, self.hd_width, 16)];
+    self.titleLB = [[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(_tipView.frame) + 6, 5, self.hd_width, 16)];
     self.titleLB.font = [UIFont systemFontOfSize:12];
     self.titleLB.backgroundColor = [UIColor whiteColor];
     self.titleLB.textAlignment = NSTextAlignmentCenter;
-    self.titleLB.textColor = UIColorFromRGB(0x666666);
+    self.titleLB.textColor = UIColorFromRGB(0x555555);
     [self.contentView addSubview:self.titleLB];
     
     self.tableView = [[UITableView alloc]initWithFrame:CGRectMake(23, CGRectGetMaxY(_tipView.frame) + 11, self.hd_width - 20, 100) style:UITableViewStylePlain];

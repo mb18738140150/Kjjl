@@ -169,4 +169,6 @@
 
 +(HttpConfigModel *)allPackage:(NSDictionary *)infoDic;
 
++(HttpConfigModel *)getPackageDetail:(int)packageId;
+
 @end

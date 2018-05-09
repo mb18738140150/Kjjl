@@ -26,9 +26,10 @@
 {
     
     [self refreshWith:self.useState];
+    [self refreshWithUseStaet:self.canUse];
 }
 
-- (void)refreshWith:(DiscountCouponUserState)state
+- (void)refreshWith:(DiscountCouponState)state
 {
     self.useStateImageView.hidden = YES;
     self.titleLB.textColor = UIColorFromRGB(0x333333);
@@ -69,6 +70,11 @@
     }
 }
 
+- (void)refreshWithUseStaet:(DiscountCouponUseState)canUse
+{
+    
+}
+
 - (void)displayLayer:(CALayer *)layer
 {
     UIBezierPath * path = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(0, 0, 200, 300) cornerRadius:5];
@@ -99,7 +105,6 @@
     CGPathRelease(path);
     
     [self.xuxianView.layer addSublayer:shapLayer];
- 
 }
 
 

@@ -13,4 +13,5 @@
 @property (nonatomic, strong)UITableView * tableView;
 @property (nonatomic, strong)NSDictionary * infoDic;
 
+@property (nonatomic, copy)void(^payBlock)(NSDictionary * infoDic);
 @end

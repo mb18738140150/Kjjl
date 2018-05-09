@@ -62,6 +62,12 @@
     if (dic.allKeys.count == 0) {
         return;
     }
+    if (self.isLivingDetail) {
+        UIView * topView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, 5)];
+        topView.backgroundColor = UIColorFromRGB(0xeeeeee);
+        [self addSubview:topView];
+    }
+    
     self.cellInfoDic = dic;
     self.headerImageView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 20, kHeightOfCellHeaderImage, kHeightOfCellHeaderImage)];
     self.headerImageView.layer.cornerRadius = self.headerImageView.hd_height / 2;

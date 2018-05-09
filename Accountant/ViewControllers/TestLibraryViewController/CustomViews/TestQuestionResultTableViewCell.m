@@ -19,6 +19,7 @@
     [self.myTextLabel removeFromSuperview];
     [self.correctLabel removeFromSuperview];
     [self.correctTextLabel removeFromSuperview];
+    [self.contentLB removeFromSuperview];
     [self.bgView removeFromSuperview];
     
     self.bgView = [[UIView alloc] initWithFrame:CGRectMake(20, 10, kScreenWidth-40, kHeightOfTestMyAnswer-20)];
@@ -27,22 +28,40 @@
     
     //    CGSize bgViewSize = self.bgView.frame.size;
     
-    self.correctLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 15, kScreenWidth - 30, 20)];
-    NSString *test = [NSString stringWithFormat:@"正确答案:%@", [infoDic objectForKey:kTestQuestionCorrectAnswersId]];
-    self.correctLabel.textColor = kMainTextColor;
-    self.correctLabel.font = [UIFont systemFontOfSize:16];
+    NSString * answerStr = [NSString stringWithFormat:@"正确答案:%@", [infoDic objectForKey:kTestQuestionCorrectAnswersId]];
+    NSAttributedString * attributeStr1 = [[NSAttributedString alloc] initWithData:[answerStr dataUsingEncoding:NSUnicodeStringEncoding] options:@{NSDocumentTypeDocumentAttribute:NSHTMLTextDocumentType} documentAttributes:nil error:nil];
+    CGFloat height = [attributeStr1 boundingRectWithSize:CGSizeMake(kScreenWidth - 40, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin context:nil].size.height;
     
-    NSMutableAttributedString *attributeStr = [[NSMutableAttributedString alloc]initWithString:test];
-    NSDictionary * dic = @{NSForegroundColorAttributeName:kCommonMainColor};
-    [attributeStr setAttributes:dic range:NSMakeRange(5, test.length - 5)];
-    self.correctLabel.attributedText = attributeStr;
+    if (!self.isTextAnswer) {
+        height = 20;
+    }
     
-    [self addSubview:self.correctLabel];
+    if (self.isTextAnswer) {
+        self.contentLB = [[UITextView alloc]initWithFrame:CGRectMake(20, 10, kScreenWidth - 40, height)];
+        self.contentLB.editable = NO;
+        self.contentLB.textColor = UIColorFromRGB(0x666666);
+        self.contentLB.font = kMainFont;
+        [self addSubview:self.contentLB];
+        self.contentLB.scrollEnabled = NO;
+        self.contentLB.attributedText = attributeStr1;
+    }else{
+        self.correctLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 15, kScreenWidth - 30, height)];
+        self.correctLabel.textColor = kMainTextColor;
+        self.correctLabel.font = [UIFont systemFontOfSize:16];
+        NSString * answerStr = [NSString stringWithFormat:@"正确答案:%@", [infoDic objectForKey:kTestQuestionCorrectAnswersId]];
+        NSMutableAttributedString *attributeStr = [[NSMutableAttributedString alloc]initWithString:answerStr];
+        NSDictionary * dic = @{NSForegroundColorAttributeName:kCommonMainColor};
+        [attributeStr setAttributes:dic range:NSMakeRange(5, answerStr.length - 5)];
+        self.correctLabel.attributedText = attributeStr;
+        [self addSubview:self.correctLabel];
+    }
     
     self.myLabel = [[UILabel alloc]initWithFrame:CGRectMake(kScreenWidth - 15 - 80, 15, 80, 20)];
     self.myLabel.font = [UIFont systemFontOfSize:16];
     self.myLabel.textAlignment = NSTextAlignmentRight;
-    [self addSubview:self.myLabel];
+    if (!self.isTextAnswer) {
+        [self addSubview:self.myLabel];
+    }
     
     NSArray *selectedArray = [infoDic objectForKey:kTestQuestionSelectedAnswers];
     NSMutableString *myStr = [[NSMutableString alloc] init];

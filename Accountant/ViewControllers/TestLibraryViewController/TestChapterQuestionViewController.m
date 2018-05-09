@@ -28,7 +28,7 @@
 #define bottomButtonwidht (kScreenWidth-3) / 3
 #define bottomButtonHeight kTabBarHeight - 1
 
-@interface TestChapterQuestionViewController ()<UITableViewDelegate,UITableViewDataSource,UIGestureRecognizerDelegate,TestModuleQuestionCollection,TestModule_CollectQuestionProtocol,TestModule_UncollectQuestionProtocol,UIAlertViewDelegate,UITextViewDelegate>
+@interface TestChapterQuestionViewController ()<UITableViewDelegate,UITableViewDataSource,UIGestureRecognizerDelegate,TestModuleQuestionCollection,TestModule_CollectQuestionProtocol,TestModule_UncollectQuestionProtocol,UIAlertViewDelegate,UITextViewDelegate,UIGestureRecognizerDelegate>
 
 @property (nonatomic,strong) UITableView            *contentTableView;
 
@@ -111,9 +111,11 @@
 
 - (void)resetquestionInfo
 {
-    NSDictionary * infoDic = self.currentsectionQuestionInfoDic;
+//    NSDictionary * infoDic = self.currentsectionQuestionInfoDic;
     
-    if (infoDic) {
+    NSDictionary * infoDic = [[TestManager sharedManager] getCurrentSectionQuestionInfo];
+    
+    if ([[infoDic objectForKey:@"lastLogId"] intValue] > 0) {
         
         UIAlertView * alert = [[UIAlertView alloc]initWithTitle:nil message:@"是否按上次进度继续做题" delegate:self cancelButtonTitle:@"从新做" otherButtonTitles:@"继续上次", nil];
         [alert show];
@@ -128,26 +130,13 @@
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if (buttonIndex == 0) {
+        [[TestManager sharedManager]cleanTextProcess];
         [[TestManager sharedManager] resetCurrentQuestionInfos];
         self.totalCount = [[TestManager sharedManager] getTestSectionTotalCount];
     }else
     {
-        NSDictionary * infoDic = self.currentsectionQuestionInfoDic;
-        NSArray * questionsArr = [infoDic objectForKey:@"questionsStr"];
-        for (int i = 0; i < questionsArr.count; i++) {
-            NSDictionary * quesrionInfoDic = [questionsArr objectAtIndex:i];
-            NSMutableArray * selectArr = [quesrionInfoDic objectForKey:kTestQuestionSelectedAnswers];
-            
-            [[TestManager sharedManager] submitAnswers:selectArr andQuestionIndex:i];
-        }
-        
         self.totalCount = [[TestManager sharedManager] getTestSectionTotalCount];
-        if (self.totalCount == [[infoDic objectForKey:@"currentIndex"] intValue]) {
-            [[TestManager sharedManager]resetCurrentQuestionInfos];
-        }else
-        {
-            [[TestManager sharedManager] resetCurrentQuestionInfoswith:[[infoDic objectForKey:@"currentIndex"] intValue]];
-        }
+        [[TestManager sharedManager]resetCurrentTestQuestionProcess];
     }
     
     [self reloadQuestionInfo];
@@ -158,39 +147,47 @@
 - (void)submitQuestion
 {
     if (isTextAswer) {
+        if (self.currentTextAmswer.length == 0) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"请先填写答案" delegate:nil cancelButtonTitle:@"知道了" otherButtonTitles:nil];
+            [alert show];
+            return;
+        }
+        
         [[TestManager sharedManager] submitAnswers:[@[self.currentTextAmswer] mutableCopy] andQuestionIndex:self.currentQuestionIndex];
-        return;
+    }else
+    {
+        
+        if (self.selectedArray.count == 0) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"请先选择答案" delegate:nil cancelButtonTitle:@"知道了" otherButtonTitles:nil];
+            [alert show];
+            return;
+        }
+        
+        [self.selectedArray sortUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+            NSNumber *num1 = obj1;
+            NSNumber *num2 = obj2;
+            NSComparisonResult result = [num1 compare:num2];
+            return result == NSOrderedDescending;
+        }];
+        
+        [[TestManager sharedManager] submitAnswers:self.selectedArray andQuestionIndex:self.currentQuestionIndex];
+        NSMutableString *myStr = [[NSMutableString alloc] init];
+        for (NSString *number in self.selectedArray) {
+            [myStr appendString:[NSString stringWithFormat:@"%@",number]];
+        }
+        
+        if (![myStr isEqualToString:[self.questionInfoDic objectForKey:kTestQuestionCorrectAnswersId]]) {
+            [[TestManager sharedManager] didRequestTestAddMyWrongQuestionWithQuestionId:[[self.questionInfoDic objectForKey:kTestQuestionId] intValue]];
+        }
     }
     
     
-    if (self.selectedArray.count == 0) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"请先选择答案" delegate:nil cancelButtonTitle:@"知道了" otherButtonTitles:nil];
-        [alert show];
-        return;
-    }
-    
-    [self.selectedArray sortUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
-        NSNumber *num1 = obj1;
-        NSNumber *num2 = obj2;
-        NSComparisonResult result = [num1 compare:num2];
-        return result == NSOrderedDescending;
-    }];
-    
-    [[TestManager sharedManager] submitAnswers:self.selectedArray andQuestionIndex:self.currentQuestionIndex];
     if (self.questionType == TestQuestionTypeChapter) {
         [self addQuestionDetailHistory];
     }
-    NSMutableString *myStr = [[NSMutableString alloc] init];
-    for (NSString *number in self.selectedArray) {
-        [myStr appendString:[NSString stringWithFormat:@"%@",number]];
+    if (self.currentQuestionIndex < self.totalCount-1){
+        [self nextQuestion];
     }
-    
-    if (![myStr isEqualToString:[self.questionInfoDic objectForKey:kTestQuestionCorrectAnswersId]]) {
-        [[TestManager sharedManager] didRequestTestAddMyWrongQuestionWithQuestionId:[[self.questionInfoDic objectForKey:kTestQuestionId] intValue]];
-    }
-    
-    [self reloadQuestionInfo];
-    [self reloadCurrentTableView];
 }
 
 - (void)showQuestionAnswer
@@ -215,16 +212,18 @@ static bool isFirstCailiaoQuestion;
     }else{
         self.isClickShowAnswer = NO;
     }
+    self.currentTextAmswer = @"";
+    NSArray * answers = [self.questionInfoDic objectForKey:kTestQuestionAnswers];
+    if (answers.count == 0) {
+        isTextAswer = YES;
+    }else
+    {
+        isTextAswer = NO;
+    }
     
     if (![[self.questionInfoDic objectForKey:kQuestionCaseInfo] isEqualToString:@""]) {
         self.slideBlockView.hidden = NO;
         isCailiao = true;
-        if ([type isEqualToString:@"不定项选择"]) {
-            isTextAswer = NO;
-        }else
-        {
-            isTextAswer = YES;
-        }
         
         if (![self.cailiaoDetailLabel.text isEqualToString:@""]) {
             
@@ -381,7 +380,6 @@ static bool isFirstCailiaoQuestion;
     }
 }
 
-
 - (void)reloadCurrentTableView
 {
     [self.contentTableView reloadData];
@@ -415,20 +413,7 @@ static bool isFirstCailiaoQuestion;
         isCorrect = NO;
     }
     
-    NSNumber *qType = @0;
-    NSString * questionType = [self.questionInfoDic objectForKey:kTestQuestionType];
-    if ([questionType isEqualToString:@"单选题"]) {
-        qType = @1;
-    }else if ([questionType isEqualToString:@"多选题"])
-    {
-        qType = @2;
-    }else if ([questionType isEqualToString:@"判断题"])
-    {
-        qType = @3;
-    }else
-    {
-        qType = @4;
-    }
+    NSNumber *qType = [self.questionInfoDic objectForKey:kTestQuestionTypeId];
     
     NSDictionary *dic = @{kLID:[self.questionInfoDic objectForKey:kLID],
                           kKID:[self.questionInfoDic objectForKey:kKID],
@@ -577,6 +562,8 @@ static bool isFirstCailiaoQuestion;
     [self.view addSubview:self.contentTableView];
     
     UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(donetextAnswerAction)];
+    tap.delegate = self;
+    tap.numberOfTouchesRequired = 1; 
     [self.contentTableView addGestureRecognizer:tap];
     
     self.submitButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -650,6 +637,14 @@ static bool isFirstCailiaoQuestion;
     [self showQuestionAnswer];
 }
 
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
+{
+    if ([NSStringFromClass([touch.view class]) isEqualToString:@"UITableViewCellContentView"] ) {
+        return NO;
+    }
+    return YES;
+}
+
 #pragma mark - table delegate
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -667,6 +662,11 @@ static bool isFirstCailiaoQuestion;
 {
     if (!self.isShowAnswer) {
         if (indexPath.section == 2) {
+            
+            if (isTextAswer) {
+                return;
+            }
+            
             NSArray *array = [self.questionInfoDic objectForKey:kTestQuestionAnswers];
             NSDictionary *infoDic = [array objectAtIndex:indexPath.row];
             NSString *answerId = [infoDic objectForKey:kTestAnserId];
@@ -678,10 +678,10 @@ static bool isFirstCailiaoQuestion;
             if (self.isClickShowAnswer) {
                 [self.selectedArray removeAllObjects];
                 [self.selectedArray addObject:answerId];
+                [self submitQuestion];
             }else{
                 
             }
-            [self submitQuestion];
             [self saveProgress];
             [tableView reloadData];
         }
@@ -727,6 +727,7 @@ static bool isFirstCailiaoQuestion;
         TestQuestionContentTableViewCell *cell = (TestQuestionContentTableViewCell *)[UIUtility getCellWithCellName:@"testContentCell" inTableView:tableView andCellClass:[TestQuestionContentTableViewCell class]];
         cell.questionCurrentIndex = self.currentQuestionIndex;
         cell.questionTotalCount = self.totalCount;
+        cell.isTextAnswer = isTextAswer;
         [cell resetWithInfo:self.questionInfoDic];
         return cell;
     }
@@ -736,13 +737,15 @@ static bool isFirstCailiaoQuestion;
             TextAswerCell * cell = (TextAswerCell *)[UIUtility getCellWithCellName:ktextCellId inTableView:tableView andCellClass:[TextAswerCell class]];
             [cell resetProperty];
             
-            cell.opinionTextView.text = [NSString stringWithFormat:@"%@", [self.selectedArray firstObject]];
+            if ([self.selectedArray firstObject]) {
+                cell.opinionTextView.text = [NSString stringWithFormat:@"%@", [self.selectedArray firstObject]];
+                self.currentTextAmswer = [NSString stringWithFormat:@"%@", [self.selectedArray firstObject]];
+            }
             
             self.textAnswerView = cell.opinionTextView;
             __weak typeof(self)weakSelf = self;
             cell.textAnswerBlock = ^(NSString *textAnswer) {
                 weakSelf.currentTextAmswer = textAnswer;
-                [weakSelf submitQuestion];
             };
             return cell;
         }
@@ -767,12 +770,12 @@ static bool isFirstCailiaoQuestion;
             }
             cell.backgroundColor = kBackgroundGrayColor;
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
-            //            [self.submitButton removeFromSuperview];
-            //            if (!self.isShowAnswer) {
-            //                if (!self.isClickShowAnswer) {
-            //                    [cell addSubview:self.submitButton];
-            //                }
-            //            }
+            
+            if (!self.isClickShowAnswer) {
+                [self.submitButton removeFromSuperview];
+                [cell addSubview:self.submitButton];
+            }
+            
             return cell;
         }
     }else{
@@ -785,7 +788,7 @@ static bool isFirstCailiaoQuestion;
             {
                 cell.isRecord = NO;
             }
-            
+            cell.isTextAnswer = isTextAswer;
             [cell resetWithInfo:self.questionInfoDic];
             return cell;
         }
@@ -804,12 +807,24 @@ static bool isFirstCailiaoQuestion;
         return 10;
     }
     if (indexPath.section == 1) {
+        
+        if (isTextAswer) {
+            NSAttributedString * attributeStr = [[NSAttributedString alloc] initWithData:[[self.questionInfoDic objectForKey:kTestQuestionContent] dataUsingEncoding:NSUnicodeStringEncoding] options:@{NSDocumentTypeDocumentAttribute:NSHTMLTextDocumentType} documentAttributes:nil error:nil];
+            
+            CGFloat height = [attributeStr boundingRectWithSize:CGSizeMake(kScreenWidth - 40, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin context:nil].size.height;
+            return height + 30 + 10;
+        }
+        
         UIFont *font = [UIFont systemFontOfSize:17];
         
         CGFloat height = [UIUtility getSpaceLabelHeght:[self.questionInfoDic objectForKey:kTestQuestionContent] font:kMainFont width:(kScreenWidth - 40)];
         return height + 30 + 10;
     }
     if (indexPath.section == 2) {
+        
+        if (isTextAswer) {
+            return 140;
+        }
         
         NSArray *array = [self.questionInfoDic objectForKey:kTestQuestionAnswers];
         NSDictionary *infoDic = [array objectAtIndex:indexPath.row];
@@ -823,6 +838,14 @@ static bool isFirstCailiaoQuestion;
     }
     if (indexPath.section == 3) {
         if (self.isShowAnswer) {
+            
+            if (isTextAswer) {
+                NSAttributedString * attributeStr = [[NSAttributedString alloc] initWithData:[[self.questionInfoDic objectForKey:kTestQuestionCorrectAnswersId] dataUsingEncoding:NSUnicodeStringEncoding] options:@{NSDocumentTypeDocumentAttribute:NSHTMLTextDocumentType} documentAttributes:nil error:nil];
+                
+                CGFloat height = [attributeStr boundingRectWithSize:CGSizeMake(kScreenWidth - 40, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin context:nil].size.height;
+                return height + 30 + 10;
+            }
+            
             return 50;
         }else{
             return kHeightOfTestNextQuestionCell;

@@ -17,6 +17,14 @@
 
 @implementation TestAllCategoryOperation
 
+- (NSMutableArray *)allCategoryArray
+{
+    if (!_allCategoryArray) {
+        _allCategoryArray = [NSMutableArray array];
+    }
+    return _allCategoryArray;
+}
+
 - (void)didRequestTestAllCategoryWithNotifiedObject:(id<TestModule_AllCategoryProtocol>)notifiedObject
 {
     self.notifiedObject = notifiedObject;
@@ -25,12 +33,25 @@
 
 - (void)didRequestSuccessed:(NSDictionary *)successInfo
 {
-    [self.allCategoryArray removeAllObjects];
+    self.allCategoryArray = [successInfo objectForKey:@"data"];
+    if (isObjectNotNil(self.notifiedObject)) {
+        [self.notifiedObject didRequestAllTestCategorySuccess];
+    }
 }
 
 - (void)didRequestFailed:(NSString *)failInfo
 {
-    
+    if (isObjectNotNil(self.notifiedObject)) {
+        [self.notifiedObject didRequestAllTestCategoryFailed:failInfo];
+    }
+}
+
+- (void)didRequestFailedWithInfo:(NSDictionary *)failedInfo
+{
+    self.allCategoryArray = [failedInfo objectForKey:@"data"];
+    if (isObjectNotNil(self.notifiedObject)) {
+        [self.notifiedObject didRequestAllTestCategorySuccess];
+    }
 }
 
 @end

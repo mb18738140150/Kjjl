@@ -326,7 +326,12 @@
     ProblemContentViewController * ProVC = [[ProblemContentViewController alloc]init];
     ProVC.title = [infoDic objectForKey:@"problemTitle"];
     ProVC.name = [infoDic objectForKey:@"problemContent"];
+    
+    NSLog(@"[infoDic objectForKey:@\"problemContent\"] = %@", [infoDic objectForKey:@"problemContent"]);
+    
     [self.navigationController pushViewController:ProVC animated:YES];
+    
+    
 }
 
 @end

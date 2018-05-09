@@ -122,6 +122,12 @@
     [self startPostWithConfig:categoryHttp andProcessDelegate:delegate];
 }
 
+- (void)requestPackageDetailWithPackageId:(int)packageId andProcessDelegate:(id<HttpRequestProtocol>)delegate
+{
+    HttpConfigModel *categoryHttp = [HttpConfigCreator getPackageDetail:packageId];
+    [self startPostWithConfig:categoryHttp andProcessDelegate:delegate];
+}
+
 - (void)requestResetPwdWithOldPassword:(NSString *)oldPwd andNewPwd:(NSString *)newPwd andProcessDelegate:(id<HttpRequestProtocol>)delegate
 {
     HttpConfigModel *reset = [HttpConfigCreator getResetPwdConfigWithOldPwd:oldPwd andNewPwd:newPwd];
@@ -536,6 +542,9 @@
             }else{
 //                NSLog(@"%@",responseObject);
                 if ([[responseObject objectForKey:@"errorMsg"] isKindOfClass:[NSNull class]] ||  [[responseObject objectForKey:@"errorMsg"] length] == 0) {
+                    if ([[responseObject objectForKey:@"command"] intValue] == 21) {
+                        [delegate didRequestFailedWithInfo:responseObject];
+                    }
                     [delegate didRequestFailed:@"暂无数据"];
                 }else{
                     [delegate didRequestFailed:[responseObject objectForKey:@"errorMsg"]];

@@ -36,7 +36,7 @@
     [self addSubview:self.addBtn];
     
     [self.musBtn addTarget:self action:@selector(musAction) forControlEvents:UIControlEventTouchUpInside];
-    [self.musBtn addTarget:self action:@selector(addAction) forControlEvents:UIControlEventTouchUpInside];
+    [self.addBtn addTarget:self action:@selector(addAction) forControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)reset

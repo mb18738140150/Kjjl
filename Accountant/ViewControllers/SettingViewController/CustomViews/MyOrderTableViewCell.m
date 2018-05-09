@@ -30,7 +30,13 @@
     [self.myOrderCourseIconImageView sd_setImageWithURL:[NSURL URLWithString:[infoDic objectForKey:kCourseCover]]];
     self.myOrderCOurseNameLB.text = [infoDic objectForKey:kCourseName];
     self.myOrderCoursetimeLengthLB.text = [infoDic objectForKey:kDeadLineTime];
-    self.myOrderCOursePriceLB.text = [NSString stringWithFormat:@"%@", [infoDic objectForKey:kPrice]];
+    int payType = [[infoDic objectForKey:@"payType"] intValue];
+    if (payType == 1) {
+        self.myOrderCOursePriceLB.text = @"微信支付";
+    }else
+    {
+        self.myOrderCOursePriceLB.text = @"支付宝支付";
+    }
     
     if ([[infoDic objectForKey:kOrderStatus] intValue] == 0) {
         self.myOrderPayStateLB.text = @"待付款";

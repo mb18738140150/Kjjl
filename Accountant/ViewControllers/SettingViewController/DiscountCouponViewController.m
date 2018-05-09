@@ -154,10 +154,14 @@
     btn.layer.cornerRadius = 4;
     btn.layer.masksToBounds = YES;
     
+    lCell.canUse = DiscountCoupon_canUse;
     if (self.myDscountCoupon) {
         [lCell resetWithInfo:self.dataSourseArry[indexPath.row]];
     }else
     {
+        if (indexPath.section) {
+            lCell.canUse = DiscountCoupon_cannotUse;
+        }
         NSDictionary * infoDic = self.dataSourseArry[indexPath.section][indexPath.row];
         [lCell resetWithInfo:infoDic];
     }
@@ -187,7 +191,6 @@
         [self.navigationController pushViewController:detailVc animated:YES];
         return;
     }
-    
     self.indexPath = indexPath;
     
     if (indexPath.section == 0 && self.selectDiscountCouponBlock) {

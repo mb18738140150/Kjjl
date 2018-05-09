@@ -25,8 +25,9 @@
 #import "ShowPhotoViewController.h"
 #import "LivingChatViewController.h"
 #import "RCDLiveChatRoomViewController.h"
+#import "PackageDetailViewController.h"
 
-@interface TabbarViewController ()<UITabBarControllerDelegate,CourseModule_DetailCourseProtocol,UserModule_AssistantCenterProtocol>
+@interface TabbarViewController ()<UITabBarControllerDelegate,CourseModule_DetailCourseProtocol,UserModule_AssistantCenterProtocol,CourseModule_PackageDetailProtocol>
 
 @property (nonatomic,strong) MainViewController             *mainViewController;
 @property (nonatomic,strong) SettingViewController          *settingViewController;
@@ -39,7 +40,7 @@
 @property (nonatomic,assign) BOOL                            isPlayFromLoacation;
 @property (nonatomic,assign) int                             chapterId;
 @property (nonatomic,assign) int                             videoId;
-
+@property (nonatomic, strong)NSNumber * packageId;
 @end
 
 @implementation TabbarViewController
@@ -200,6 +201,21 @@
 - (void)courseClick:(NSNotification *)notification
 {
     NSDictionary *infoDic = notification.object;
+    if ([[infoDic objectForKey:@"package"] boolValue]) {
+        
+        if ([WXApi isWXAppSupportApi] && [WXApi isWXAppInstalled]) {
+            [SVProgressHUD show];
+            [[CourseraManager sharedManager] didRequestPackageDetailWithPackageId:[[infoDic objectForKey:kCourseID] intValue] NotifiedObject:self];
+            self.packageId = [infoDic objectForKey:kCourseID];
+            return;
+        }
+        [SVProgressHUD showErrorWithStatus:@"暂无数据"];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1*NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [SVProgressHUD dismiss];
+        });
+        return;
+    }
+    
     [infoDic objectForKey:kCourseID];
     BOOL isStartFromLoaction = [[infoDic objectForKey:kCourseIsStartFromLoaction] boolValue];
     [CourseraManager sharedManager].courseModuleModel.detailCourseModel.courseModel.courseID = [[infoDic objectForKey:kCourseID] intValue];
@@ -289,6 +305,26 @@
 //            [self setSelectedIndex:0];
 //        }
 //    }
+}
+
+#pragma mark - packageDetail
+- (void)didReuquestPackageDetailSuccessed
+{
+    [SVProgressHUD dismiss];
+    PackageDetailViewController * packageDetailVC = [[PackageDetailViewController alloc]init];
+    packageDetailVC.packageId = self.packageId;
+    UINavigationController * nav = [[UINavigationController alloc]initWithRootViewController:packageDetailVC];
+    [self presentViewController:nav animated:YES completion:nil];
+}
+
+- (void)didReuquestPackageDetailFailed:(NSString *)failedInfo
+{
+    [SVProgressHUD dismiss];
+    [SVProgressHUD showErrorWithStatus:failedInfo];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [SVProgressHUD dismiss];
+        [self.navigationController popViewControllerAnimated:YES];
+    });
 }
 
 #pragma mark - course detail func

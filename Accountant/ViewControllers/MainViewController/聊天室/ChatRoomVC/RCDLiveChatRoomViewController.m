@@ -47,6 +47,8 @@
 #import "CansultTeachersListView.h"
 #import "BuyCourseViewController.h"
 #import "LivingCourseBackDownLoadViewController.h"
+#import "LivingCourseDetailButton.h"
+#import "LivingCourseDetailButton+category.h"
 
 #define kRandomColor [UIColor colorWithRed:arc4random_uniform(256) / 255.0 green:arc4random_uniform(256) / 255.0 blue:arc4random_uniform(256) / 255.0 alpha:1]
 
@@ -54,6 +56,11 @@
 #define MinHeight_InputView 50.0f
 #define kBounds [UIScreen mainScreen].bounds.size
 
+typedef enum : NSUInteger {
+    LivingCourseDetailButton_none,
+    LivingCourseDetailButton_download,
+    LivingCourseDetailButton_pay,
+} LivingCourseDetailButtonType;
 
 
 @interface RCDLiveChatRoomViewController () <
@@ -63,6 +70,8 @@ UIScrollViewDelegate, UINavigationControllerDelegate,RCTKInputBarControlDelegate
 
 @property(nonatomic, strong)RCDLiveCollectionViewHeader *collectionViewHeader;
 
+@property (nonatomic, assign)LivingCourseDetailButtonType * livingType;
+
 @property (nonatomic, strong) ZXVideoPlayerController           *videoController;
 @property (nonatomic,strong) ZXVideo                            *playingVideo;
 @property (nonatomic, strong)LivingStateView                        *stateImageView;
@@ -71,7 +80,7 @@ UIScrollViewDelegate, UINavigationControllerDelegate,RCTKInputBarControlDelegate
 @property (nonatomic, strong)LivingChatViewController * chatVC;
 @property (nonatomic, strong)LivingCourseListView              *livingListView;
 
-@property (nonatomic, strong)UIButton * downLoadBtn;
+@property (nonatomic, strong)LivingCourseDetailButton * downLoadBtn;
 
 /**
  *  存储长按返回的消息的model
@@ -270,10 +279,22 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
         switch ([[self.infoDic objectForKey:kLivingState] intValue]) {
             case 0:
             case 1:
+            {
+                self.downLoadBtn.hidden = YES;
+                if ([[self.infoDic objectForKey:kIsLivingCourseFree] intValue] == 0 && [[self.infoDic objectForKey:kHaveJurisdiction] intValue] == 0) {
+                    if ([WXApi isWXAppInstalled] && [WXApi isWXAppSupportApi]) {
+                        self.downLoadBtn.hidden = NO;
+                        self.livingType = LivingCourseDetailButton_pay;
+                        [self resetPay];
+                    }
+                }
+            }
+                break;
             case 2:
             {
                 self.downLoadBtn.hidden = YES;
                 if ([[self.infoDic objectForKey:kIsLivingCourseFree] intValue] == 0 && [[self.infoDic objectForKey:kHaveJurisdiction] intValue] == 0) {
+                    
                     [SVProgressHUD showErrorWithStatus:@"暂无观看权限"];
                     self.playingVideo.playUrl = @"";
                     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -286,8 +307,15 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
             case 3:
             {
                 self.downLoadBtn.hidden = NO;
+                self.livingType = LivingCourseDetailButton_download;
+                [self resetDownload];
                 if ([[self.infoDic objectForKey:kIsDownload] intValue] == 0) {
                     self.downLoadBtn.hidden = YES;
+                    if ([WXApi isWXAppInstalled] && [WXApi isWXAppSupportApi]) {
+                        self.downLoadBtn.hidden = NO;
+                        self.livingType = LivingCourseDetailButton_pay;
+                        [self resetPay];
+                    }
                 }
                 if ([[self.infoDic objectForKey:kIsBack] intValue] == 0) {
                     
@@ -626,12 +654,7 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
                 [delegate.window addSubview:weakSelf.cansultView];
             }];
             UIAlertAction * payAction = [UIAlertAction actionWithTitle:@"购买" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                BuyCourseViewController * buyVC = [[BuyCourseViewController alloc]init];
-                buyVC.infoDic = weakSelf.infoDic;
-                buyVC.isLiving = YES;
-                [weakSelf.videoController pausePlay];
-                UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:buyVC];
-                [weakSelf presentViewController:nav animated:YES completion:nil];
+                [weakSelf buyAction];
             }];
             
             [alertVC addAction:cancelAction];
@@ -648,6 +671,17 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
         default:
             break;
     }
+}
+
+#pragma mark - buyAction
+- (void)buyAction
+{
+    BuyCourseViewController * buyVC = [[BuyCourseViewController alloc]init];
+    buyVC.infoDic = self.infoDic;
+    buyVC.isLiving = YES;
+    [self.videoController pausePlay];
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:buyVC];
+    [self presentViewController:nav animated:YES completion:nil];
 }
 
 - (void)setPlayStateViewIsLogin:(BOOL)isLogin
@@ -738,7 +772,7 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
     [self.view addSubview:self.segmentC];
     
     self.downLoadBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    _downLoadBtn.frame = CGRectMake(kScreenWidth - 70, kZXVideoPlayerOriginalHeight, 60, 42);
+    _downLoadBtn.frame = CGRectMake(kScreenWidth / 4 * 3, kZXVideoPlayerOriginalHeight, kScreenWidth / 4, 42);
     [_downLoadBtn setTitle:@"下载" forState:UIControlStateNormal];
     _downLoadBtn.titleLabel.font = [UIFont systemFontOfSize:12];
     [_downLoadBtn setTitleColor:UIColorFromRGB(0x999999) forState:UIControlStateNormal];
@@ -952,6 +986,8 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
     [self.portraitsCollectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"cell"];
 }
 
+
+#pragma mark - initUI初始化页面控件
 /**
  *  初始化页面控件
  */
@@ -1055,12 +1091,16 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
                  action:@selector(clapButtonPressed:)
        forControlEvents:UIControlEventTouchUpInside];
 //    [self.view addSubview:_clapBtn];
-    
+    __weak typeof(self)weakSelf = self;
     if (self.videoDetailView == nil) {
         self.videoDetailView = [[LivingDetailView alloc]initWithFrame:CGRectMake(kScreenWidth, 0, kScreenWidth, (kScreenHeight - 42 - kZXVideoPlayerOriginalHeight))];
         self.videoDetailView.backgroundColor = [UIColor whiteColor];
         self.videoDetailView.infoDic = self.infoDic;
         [self.videoDetailView.tableView reloadData];
+        self.videoDetailView.payBlock = ^(NSDictionary *infoDic) {
+            [weakSelf buyAction];
+        };
+        
         [self.contentView addSubview:self.videoDetailView];
     }
     
@@ -1071,7 +1111,6 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
 //        self.privateChatView.bounds.origin.y = -(kScreenHeight - 42 - kZXVideoPlayerOriginalHeight);
     }
     
-    __weak typeof(self)weakSelf = self;
     if (self.livingListView == nil) {
         self.livingListView = [[LivingCourseListView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, (kScreenHeight - 42 - kZXVideoPlayerOriginalHeight))];
         self.livingListView.backgroundColor = [UIColor whiteColor];
@@ -1160,10 +1199,21 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
 - (void)refreshWith:(NSDictionary *)infoDic
 {
     self.infoDic = infoDic;
-    
+    self.livingType = LivingCourseDetailButton_none;
     switch ([[self.infoDic objectForKey:kLivingState] intValue]) {
         case 0:
         case 1:
+        {
+            self.downLoadBtn.hidden = YES;
+            if ([[self.infoDic objectForKey:kIsLivingCourseFree] intValue] == 0 && [[self.infoDic objectForKey:kHaveJurisdiction] intValue] == 0) {
+                if ([WXApi isWXAppInstalled] && [WXApi isWXAppSupportApi]) {
+                    self.downLoadBtn.hidden = NO;
+                    self.livingType = LivingCourseDetailButton_pay;
+                    [self resetPay];
+                }
+            }
+        }
+            break;
         case 2:
         {
             self.downLoadBtn.hidden = YES;
@@ -1182,8 +1232,15 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
         case 3:
         {
             self.downLoadBtn.hidden = NO;
+            self.livingType = LivingCourseDetailButton_download;
+            [self resetDownload];
             if ([[self.infoDic objectForKey:kIsDownload] intValue] == 0) {
                 self.downLoadBtn.hidden = YES;
+                if ([WXApi isWXAppInstalled] && [WXApi isWXAppSupportApi]) {
+                    self.downLoadBtn.hidden = NO;
+                    self.livingType = LivingCourseDetailButton_pay;
+                    [self resetPay];
+                }
             }
             if ([[self.infoDic objectForKey:kIsBack] intValue] == 0) {
                 
@@ -1243,6 +1300,27 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
         [self setPlayStateViewIsLogin:YES];
     });
     
+}
+
+- (void)resetDownload
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.downLoadBtn setTitle:@"下载" forState:UIControlStateNormal];
+        self.downLoadBtn.titleLabel.font = [UIFont systemFontOfSize:12];
+        [self.downLoadBtn setTitleColor:UIColorFromRGB(0x999999) forState:UIControlStateNormal];
+    });
+}
+
+- (void)resetPay
+{
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.downLoadBtn setImage:[UIImage imageNamed:@"icon_buy"] forState:UIControlStateNormal];
+        [self.downLoadBtn setTitle:@"购买" forState:UIControlStateNormal];
+        self.downLoadBtn.titleLabel.font = [UIFont systemFontOfSize:12];
+        [self.downLoadBtn setTitleColor:UIColorFromRGB(0xffffff) forState:UIControlStateNormal];
+        self.downLoadBtn.backgroundColor = UIRGBColor(255, 152, 2);
+    });
 }
 
 -(void)showInputBar:(id)sender{
@@ -2415,11 +2493,30 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
 #pragma mark - downLoadVides
 - (void)downLoadVides
 {
-    LivingCourseBackDownLoadViewController * backDownLoadVC = [[LivingCourseBackDownLoadViewController alloc]init];
-    backDownLoadVC.videoInfoArray = [[CourseraManager sharedManager] getLivingSectionBackDetailArray];
-    [self.videoController pause];
-    UINavigationController * nav = [[UINavigationController alloc]initWithRootViewController:backDownLoadVC];
-    [self presentViewController:nav animated:YES completion:nil];
+    
+    if (self.livingType == LivingCourseDetailButton_download) {
+        if([[[CourseraManager sharedManager] getLivingSectionBackDetailArray] count] == 0)
+        {
+            UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"暂无下载数据" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+            [alert show];
+            return;
+        }
+        
+        LivingCourseBackDownLoadViewController * backDownLoadVC = [[LivingCourseBackDownLoadViewController alloc]init];
+        backDownLoadVC.videoInfoArray = [[CourseraManager sharedManager] getLivingSectionBackDetailArray];
+        [self.videoController pause];
+        UINavigationController * nav = [[UINavigationController alloc]initWithRootViewController:backDownLoadVC];
+        [self presentViewController:nav animated:YES completion:nil];
+    }else if(self.livingType == LivingCourseDetailButton_pay)
+    {
+        BuyCourseViewController * buyVC = [[BuyCourseViewController alloc]init];
+        buyVC.infoDic = self.infoDic;
+        buyVC.isLiving = YES;
+        [self.videoController pausePlay];
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:buyVC];
+        [self presentViewController:nav animated:YES completion:nil];
+    }
+    
 }
 
 @end

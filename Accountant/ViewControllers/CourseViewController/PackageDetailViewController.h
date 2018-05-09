@@ -10,4 +10,6 @@
 
 @interface PackageDetailViewController : UIViewController
 
+@property (nonatomic, strong)NSNumber * packageId;
+
 @end

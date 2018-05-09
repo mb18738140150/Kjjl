@@ -12,5 +12,6 @@
 
 - (void)didRequestSuccessed:(NSDictionary *)successInfo;
 - (void)didRequestFailed:(NSString *)failInfo;
+- (void)didRequestFailedWithInfo:(NSDictionary *)failedInfo;
 
 @end

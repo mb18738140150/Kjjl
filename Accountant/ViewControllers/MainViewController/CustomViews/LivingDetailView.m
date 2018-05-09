@@ -9,6 +9,7 @@
 #import "LivingDetailView.h"
 #import "QuestionReplyTableViewCell.h"
 #import "LivingDetailTableViewCell.h"
+#import "LivingCourseDetailCell.h"
 
 @interface LivingDetailView()<UITableViewDelegate, UITableViewDataSource>
 
@@ -33,22 +34,23 @@
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [self.tableView registerClass:[QuestionReplyTableViewCell class] forCellReuseIdentifier:@"questionReplyCell"];
     [self.tableView registerClass:[LivingDetailTableViewCell class] forCellReuseIdentifier:@"livingDetailCell"];
+    [self.tableView registerNib:[UINib nibWithNibName:@"LivingCourseDetailCell" bundle:nil] forCellReuseIdentifier:@"LivingCourseDetailCell"];
 }
 
 #pragma mark - table delegate
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.section == 0) {
+    if (indexPath.row == 2) {
         UIFont *font = kMainFont;
         CGFloat contentHeight = [UIUtility getSpaceLabelHeght:[self.infoDic objectForKey:kTeacherDetail] font:font width:kScreenWidth - 40];
         return 20 + kHeightOfCellHeaderImage + 10 + contentHeight + 10;
     }
-    if (indexPath.section > 0) {
+    if (indexPath.row == 1) {
         UIFont *font = kMainFont;
-        CGFloat contentHeight = [UIUtility getSpaceLabelHeght:[self.infoDic objectForKey:kLivingDetail] font:font width:kScreenWidth - 40];
-        return  10 + contentHeight + 10;
+        CGFloat contentHeight = [UIUtility getSpaceLabelHeght:[self.infoDic objectForKey:kLivingDetail] font:font width:kScreenWidth - 20];
+        return  10 + contentHeight + 10 + 36;
     }
-    return 0;
+    return 102;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
@@ -79,34 +81,44 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 40;
+    return 0;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 2;
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 1;
+    return 3;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.section == 0) {
+    if (indexPath.row == 2) {
         static NSString *cellName = @"questionReplyCell";
         QuestionReplyTableViewCell *cell = (QuestionReplyTableViewCell *)[UIUtility getCellWithCellName:cellName inTableView:tableView andCellClass:[QuestionReplyTableViewCell class]];
         [cell resetLivingDetailCellWithInfoDic:self.infoDic];
         return cell;
     }
-    if (indexPath.section == 1) {
+    if (indexPath.row == 1) {
         static NSString *cellName = @"livingDetailCell";
         LivingDetailTableViewCell *cell = (LivingDetailTableViewCell *)[UIUtility getCellWithCellName:cellName inTableView:tableView andCellClass:[LivingDetailTableViewCell class]];
         [cell resetWithInfoDic:self.infoDic];
         return cell;
     }
-    return nil;
+    static NSString *cellName = @"LivingCourseDetailCell";
+    LivingCourseDetailCell *cell = (LivingCourseDetailCell *)[UIUtility getCellWithCellName:cellName inTableView:tableView andCellClass:[LivingCourseDetailCell class]];
+    [cell resetWithInfoDic:self.infoDic];
+    __weak typeof(self)weakSelf = self;
+    cell.payBlock = ^(NSDictionary *infoDic) {
+        if (weakSelf.payBlock) {
+            weakSelf.payBlock(weakSelf.infoDic);
+        }
+    };
+    
+    return cell;
 }
 
 @end

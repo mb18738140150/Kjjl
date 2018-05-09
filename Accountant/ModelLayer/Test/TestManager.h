@@ -36,6 +36,7 @@ typedef enum {
  */
 - (void)didRequestTestAllCategoryWithNotifiedObject:(id<TestModule_AllCategoryProtocol>)notifiedObject;
 
+- (NSArray *)getAllCategory;
 
 /**
  请求某一题库类型的章节信息
@@ -204,6 +205,12 @@ typedef enum {
  */
 - (void)resetCurrentQuestionInfos;
 - (void)resetCurrentQuestionInfoswith:(int)index;
+
+- (void)resetCurrentTestQuestionProcess;// 获取当前章节练习进度
+- (void)resetCurrentSimulateQuestionProcess;// 获取当前章节练习进度
+
+- (void)cleanTextProcess;
+- (void)cleanSimulateProcess;
 
 /**
  获取当前问题的index

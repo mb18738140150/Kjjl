@@ -32,7 +32,6 @@
     [[HttpRequestManager sharedManager] requestAllPackageWithProcessDelegate:self];;
 }
 
-
 #pragma mark - http delegate
 - (void)didRequestSuccessed:(NSDictionary *)successInfo
 {
@@ -55,7 +54,8 @@
             courseModel.courseName = [courseDic objectForKey:@"packageName"];
             courseModel.courseCover = [courseDic objectForKey:@"packageCover"];
             courseModel.courseID = [[courseDic objectForKey:@"packageId"] intValue];
-            courseModel.price = [[courseDic objectForKey:@"packagePrice"] doubleValue];
+            courseModel.priceSection = [courseDic objectForKey:@"packagePrice"];
+            courseModel.isRecommend = [[courseDic objectForKey:@"isRecommend"] intValue];
             [secondModel addCourseModel:courseModel];
         }
         [model addSecondCourseModel:secondModel];

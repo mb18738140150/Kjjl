@@ -15,6 +15,14 @@
     // Initialization code
 }
 
+- (void)resetUIWithInfo:(NSDictionary *)infoDic
+{
+    [self.packageIconImageView sd_setImageWithURL:[NSURL URLWithString:[infoDic objectForKey:@"packageCover"]] placeholderImage:[UIImage imageNamed:@""]];
+    self.packageTitleLB.text = [infoDic objectForKey:@"packageName"];
+    self.priceLB.text = [NSString stringWithFormat:@"￥ %@", [infoDic objectForKey:@"packagePrice"]];
+    
+}
+
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
 

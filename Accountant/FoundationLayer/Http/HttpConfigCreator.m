@@ -802,6 +802,16 @@
     return c;
 }
 
++(HttpConfigModel *)getPackageDetail:(int)packageId
+{
+    HttpConfigModel *c = [[HttpConfigModel alloc] init];
+    NSDictionary *dic = @{kCommand:kPackageDetail,
+                          @"packageId":@(packageId)
+                          };
+    [self setConfigModel:c withInfo:dic];
+    return c;
+}
+
 #pragma mark - utility
 + (void)setConfigModel:(HttpConfigModel *)configModel withInfo:(NSDictionary *)parameters
 {

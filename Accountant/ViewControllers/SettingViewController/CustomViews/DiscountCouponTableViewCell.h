@@ -12,12 +12,17 @@ typedef enum : NSUInteger {
     DiscountCouponUserState_normal,
     DiscountCouponUserState_haveUseed,
     DiscountCouponUserState_expire,
-} DiscountCouponUserState;
+} DiscountCouponState;
 
+typedef enum : NSUInteger {
+    DiscountCoupon_canUse,
+    DiscountCoupon_cannotUse,
+} DiscountCouponUseState;
 
 @interface DiscountCouponTableViewCell : UITableViewCell
 
-@property (nonatomic, assign)DiscountCouponUserState useState;
+@property (nonatomic, assign)DiscountCouponState useState;
+@property (nonatomic, assign)DiscountCouponUseState canUse;
 
 @property (weak, nonatomic) IBOutlet UILabel *titleLB;
 @property (weak, nonatomic) IBOutlet UILabel *activityLB;

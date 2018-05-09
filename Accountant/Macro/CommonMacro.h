@@ -29,6 +29,7 @@
 #define kOldPrice           @"oldPrice"
 #define kRealityPrice       @"realityPrice"
 #define kIsDownload         @"isDownload"
+#define kIsRecommend        @"isRecommend"
 
 #define kLivingTime         @"livingTime"
 #define kLivinglastTime     @"lastTime"
@@ -139,6 +140,7 @@
 #define kTestQuestionComplain           @"testQuestionComplain"
 #define kTestQuestionContent            @"testQuestionContent"
 #define kTestQuestionType               @"testQuestionType"
+#define kTestQuestionTypeId             @"testQuestionTypeId"
 #define kTestQuestionCorrectAnswersId   @"testQuestionCorrectAnswersId"
 #define kTestQuestionIsCollected        @"testQuestionIsCollected"
 #define kTestQuestionIsAnswerCorrect    @"testQuestionIsAnswerCorrect"
@@ -148,6 +150,7 @@
 #define kTestAddHistoryType             @"testHistoryType"
 #define kTestAddDetailHistoryLogId      @"testAddQuestionLogId"
 #define kQuestionCaseInfo               @"testSimulateQuestionCaseInfo"
+#define kLastLogId                      @"lastLogId"
 
 #define kTestIsEasyWrong                @"isEasyWrong"
 #define kLogName                        @"logName"
@@ -159,6 +162,7 @@
 
 #define kRightquistionArr               @"rightquestionarr"
 #define kWrongquistionArr               @"wrongquestionarr"
+#define kDataArray                      @"dataArray"
 #define kSinglequistionArr              @"singlequestionarr"
 #define kMultiplequistionArr            @"multiplequestionarr"
 #define kJudgequistionArr               @"judgequestionarr"

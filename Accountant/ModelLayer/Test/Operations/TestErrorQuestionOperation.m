@@ -38,6 +38,14 @@
         questionModel.isEasyWrong = [[dic objectForKey:@"isEasyWrong"] intValue];
         questionModel.questionId = [[dic objectForKey:@"id"] intValue];
         questionModel.questionType = [dic objectForKey:@"questionType"];
+        
+        questionModel.questionTypeId = [[dic objectForKey:@"questionTypeId"] intValue];
+        questionModel.lastLogId = [[successInfo objectForKey:@"lastLogId"] longValue];
+        questionModel.selectArray = [self selectArrayWith:[dic objectForKey:@"myAnswers"]];
+        if (questionModel.selectArray.count > 0) {
+            questionModel.questionIsAnswered = YES;
+        }
+        
         questionModel.questionContent = [dic objectForKey:@"question"];
         questionModel.questionComplain = [dic objectForKey:@"analysis"];
         questionModel.correctAnswerIds = [dic objectForKey:@"answer"];
@@ -94,6 +102,27 @@
     if (isObjectNotNil(self.notifiedObject)) {
         [self.notifiedObject didRequestErrorQuestionSuccess];
     }
+}
+
+- (NSArray *)selectArrayWith:(NSString *)selectStr
+{
+    NSMutableArray * dataArr = [NSMutableArray array];
+    if (selectStr.length == 0) {
+        return dataArr;
+    }
+    if (selectStr.length > 4) {
+        [dataArr addObject:selectStr];
+    }else
+    {
+        
+        for (int i = 0; i< selectStr.length; i++) {
+            NSString * selectAnswer = [selectStr substringWithRange:NSMakeRange(i, 1)];
+            [dataArr addObject:selectAnswer];
+            
+        }
+    }
+    
+    return dataArr;
 }
 
 - (void)didRequestFailed:(NSString *)failInfo

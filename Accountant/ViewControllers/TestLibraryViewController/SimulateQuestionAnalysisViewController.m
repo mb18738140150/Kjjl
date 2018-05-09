@@ -119,16 +119,25 @@ static bool isFirstCailiaoQuestion;
         self.questionInfoDic = [[TestManager sharedManager] getCurrentSimulateQuestionInfo];
     }
     NSString *type = [self.questionInfoDic objectForKey:kTestQuestionType];
+    
+    NSArray * answers = [self.questionInfoDic objectForKey:kTestQuestionAnswers];
+    if (answers.count == 0) {
+        isTextAswer = YES;
+    }else
+    {
+        isTextAswer = NO;
+    }
+    
     if (![[self.questionInfoDic objectForKey:kQuestionCaseInfo] isEqualToString:@""]) {
         self.slideBlockView.hidden = NO;
         isCailiao = true;
         
-        if ([type isEqualToString:@"不定项选择"]) {
-            isTextAswer = NO;
-        }else
-        {
-            isTextAswer = YES;
-        }
+//        if ([type isEqualToString:@"不定项选择"]) {
+//            isTextAswer = NO;
+//        }else
+//        {
+//            isTextAswer = YES;
+//        }
         
         if (![self.cailiaoDetailLabel.text isEqualToString:@""]) {
             
@@ -296,21 +305,6 @@ static bool isFirstCailiaoQuestion;
         [myStr appendString:[NSString stringWithFormat:@"%@",number]];
     }
     return myStr;
-}
-
-- (void)addQuestionDetailHistory
-{
-    BOOL isCorrect;
-    if ([[self.questionInfoDic objectForKey:kTestQuestionCorrectAnswersId] isEqualToString:[self getSelectedAnswersIdString]]) {
-        isCorrect = YES;
-    }else{
-        isCorrect = NO;
-    }
-    NSDictionary *dic = @{kTestAddDetailHistoryLogId:@([[TestManager sharedManager] getLogId]),
-                          kTestQuestionId:[self.questionInfoDic objectForKey:kTestQuestionId],
-                          kTestAnserId:[self getSelectedAnswersIdString],
-                          kTestQuestionResult:@(isCorrect)};
-    [[TestManager sharedManager] didRequestAddTestHistoryDetailWithInfo:dic];
 }
 
 #pragma mark - delegate
@@ -481,6 +475,7 @@ static bool isFirstCailiaoQuestion;
         TestQuestionContentTableViewCell *cell = (TestQuestionContentTableViewCell *)[UIUtility getCellWithCellName:@"testContentCell" inTableView:tableView andCellClass:[TestQuestionContentTableViewCell class]];
         cell.questionCurrentIndex = self.currentQuestionIndex;
         cell.questionTotalCount = self.totalCount;
+        cell.isTextAnswer = isTextAswer;
         [cell resetWithInfo:self.questionInfoDic];
         return cell;
     }
@@ -491,13 +486,14 @@ static bool isFirstCailiaoQuestion;
             [cell resetProperty];
             
             cell.opinionTextView.editable = NO;
-            cell.opinionTextView.text = [NSString stringWithFormat:@"%@", [self.selectedArray firstObject]];
+            if ([self.selectedArray firstObject]) {
+                cell.opinionTextView.text = [NSString stringWithFormat:@"%@", [self.selectedArray firstObject]];
+            }
             
             self.textAnswerView = cell.opinionTextView;
             __weak typeof(self)weakSelf = self;
             cell.textAnswerBlock = ^(NSString *textAnswer) {
                 weakSelf.currentTextAmswer = textAnswer;
-                
             };
             return cell;
         }
@@ -517,6 +513,8 @@ static bool isFirstCailiaoQuestion;
     if (indexPath.section == 3) {
         TestQuestionResultTableViewCell *cell = (TestQuestionResultTableViewCell *)[UIUtility getCellWithCellName:@"testResultCell" inTableView:tableView andCellClass:[TestQuestionResultTableViewCell class]];
         cell.backgroundColor = kBackgroundGrayColor;
+        
+        cell.isTextAnswer = isTextAswer;
         [cell resetWithInfo:self.questionInfoDic];
         return cell;
     }
@@ -534,12 +532,24 @@ static bool isFirstCailiaoQuestion;
         return 10;
     }
     if (indexPath.section == 1) {
+        
+        if (isTextAswer) {
+            NSAttributedString * attributeStr = [[NSAttributedString alloc] initWithData:[[self.questionInfoDic objectForKey:kTestQuestionContent] dataUsingEncoding:NSUnicodeStringEncoding] options:@{NSDocumentTypeDocumentAttribute:NSHTMLTextDocumentType} documentAttributes:nil error:nil];
+            
+            CGFloat height = [attributeStr boundingRectWithSize:CGSizeMake(kScreenWidth - 40, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin context:nil].size.height;
+            return height + 30 + 10;
+        }
+        
         UIFont *font = kMainFont;
         
         CGFloat height = [UIUtility getSpaceLabelHeght:[self.questionInfoDic objectForKey:kTestQuestionContent] font:font width:(kScreenWidth - 40)];
         return height + 30 + 10;
     }
     if (indexPath.section == 2) {
+        
+        if (isTextAswer) {
+            return 140;
+        }
         
         NSArray *array = [self.questionInfoDic objectForKey:kTestQuestionAnswers];
         NSDictionary *infoDic = [array objectAtIndex:indexPath.row];
@@ -554,6 +564,12 @@ static bool isFirstCailiaoQuestion;
     }
     if (indexPath.section == 3) {
         //        return kHeightOfTestMyAnswer;
+        if (isTextAswer) {
+            NSAttributedString * attributeStr = [[NSAttributedString alloc] initWithData:[[self.questionInfoDic objectForKey:kTestQuestionCorrectAnswersId] dataUsingEncoding:NSUnicodeStringEncoding] options:@{NSDocumentTypeDocumentAttribute:NSHTMLTextDocumentType} documentAttributes:nil error:nil];
+            
+            CGFloat height = [attributeStr boundingRectWithSize:CGSizeMake(kScreenWidth - 40, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin context:nil].size.height;
+            return height + 30 + 10;
+        }
         return 50;
         
     }

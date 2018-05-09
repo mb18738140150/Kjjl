@@ -40,10 +40,10 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSDictionary * infoDic = self.dataArr[indexPath.row];
-    if ([[infoDic objectForKey:kLivingState] intValue] == 2 || [[infoDic objectForKey:kLivingState] intValue] == 3) {
-        return 81;
-    }
-    return 110;
+    return 81;
+//    if ([[infoDic objectForKey:kLivingState] intValue] == 2 || [[infoDic objectForKey:kLivingState] intValue] == 3) {
+//    }
+//    return 110;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -60,7 +60,7 @@
 {
     ClassroomLivingTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:kClassroomLivingcellId forIndexPath:indexPath];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    
+    cell.livingDetailVC = YES;
     NSDictionary * dic = [self.dataArr objectAtIndex:indexPath.row] ;
     [cell resetWithDic:dic];
     

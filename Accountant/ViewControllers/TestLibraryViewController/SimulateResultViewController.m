@@ -19,13 +19,8 @@
 
 @property (nonatomic, strong)UICollectionView * collectionView;
 @property (nonatomic, strong)NSDictionary * dataDic;
-@property (nonatomic, strong)NSMutableArray * singleArr;
-@property (nonatomic, strong)NSMutableArray * mutipleArr;
-@property (nonatomic, strong)NSMutableArray * judgeQuestionArr;
-@property (nonatomic, strong)NSMutableArray * materailArr;
-@property (nonatomic, strong)NSMutableArray * jiandaArr;
-@property (nonatomic, strong)NSMutableArray * analisisArr;
-@property (nonatomic, strong)NSMutableArray * zongheArr;
+@property (nonatomic, strong)NSMutableArray                          *dataArray;
+
 
 @end
 
@@ -35,23 +30,10 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     self.dataDic = [NSDictionary dictionary];
-    self.singleArr = [NSMutableArray array];
-    self.mutipleArr = [NSMutableArray array];
-    self.judgeQuestionArr = [NSMutableArray array];
-    self.materailArr = [NSMutableArray array];
-    self.jiandaArr = [NSMutableArray array];
-    self.analisisArr = [NSMutableArray array];
-    self.zongheArr = [NSMutableArray array];
+    self.dataArray = [NSMutableArray array];
     
     self.dataDic = [[TestManager sharedManager]getSimulateresult];
-    
-    self.singleArr = [self.dataDic objectForKey:kSinglequistionArr];
-    self.mutipleArr = [self.dataDic objectForKey:kMultiplequistionArr];
-    self.judgeQuestionArr = [self.dataDic objectForKey:kJudgequistionArr];
-    self.materailArr = [self.dataDic objectForKey:kMaterailQuestionArray];
-    self.jiandaArr = [self.dataDic objectForKey:kJiandaQuestionArray];
-    self.analisisArr = [self.dataDic objectForKey:kAnalisisQuestionArray];
-    self.zongheArr = [self.dataDic objectForKey:kZongheQuestionArray];
+    self.dataArray = [self.dataDic objectForKey:kDataArray];
     
     [self saveSimulateScoreToDB];
     [self navigationViewSetup];
@@ -198,108 +180,11 @@
     }
     
     SimulateResultCollectionViewCell * cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"simulaterestltcellid" forIndexPath:indexPath];
-    if (indexPath.section == 1) {
-        if ([[self.dataDic objectForKey:kSinglequistionArr] count] > 0) {
-            [cell resetCellWithinfo:[[self.dataDic objectForKey:kSinglequistionArr] objectAtIndex:indexPath.row]];
-            cell.questionNumberLabel.text =
-            [NSString stringWithFormat:@"%@", [[[self.dataDic objectForKey:kSinglequistionArr] objectAtIndex:indexPath.row] objectForKey:kTestQuestionNumber]];
-        }else if([[self.dataDic objectForKey:kMultiplequistionArr] count] > 0)
-        {
-            [cell resetCellWithinfo:[[self.dataDic objectForKey:kMultiplequistionArr] objectAtIndex:indexPath.row]];
-            cell.questionNumberLabel.text = [NSString stringWithFormat:@"%@", [[[self.dataDic objectForKey:kMultiplequistionArr] objectAtIndex:indexPath.row] objectForKey:kTestQuestionNumber]];
-        }else if([[self.dataDic objectForKey:kJudgequistionArr] count] > 0)
-        {
-            [cell resetCellWithinfo:[[self.dataDic objectForKey:kJudgequistionArr] objectAtIndex:indexPath.row]];
-            cell.questionNumberLabel.text = [NSString stringWithFormat:@"%@", [[[self.dataDic objectForKey:kJudgequistionArr] objectAtIndex:indexPath.row] objectForKey:kTestQuestionNumber]];
-        }else if([self.materailArr count] > 0)
-        {
-            [cell resetCellWithinfo:[[self.dataDic objectForKey:kMaterailQuestionArray] objectAtIndex:indexPath.row]];
-            cell.questionNumberLabel.text = [NSString stringWithFormat:@"%@", [[[self.dataDic objectForKey:kMaterailQuestionArray] objectAtIndex:indexPath.row] objectForKey:kTestQuestionNumber]];
-        }
-    }else if (indexPath.section == 2)
-    {
-        if([[self.dataDic objectForKey:kSinglequistionArr] count] > 0 && [[self.dataDic objectForKey:kMultiplequistionArr] count] > 0)
-        {
-            [cell resetCellWithinfo:[[self.dataDic objectForKey:kMultiplequistionArr] objectAtIndex:indexPath.row]];
-            
-            cell.questionNumberLabel.text = [NSString stringWithFormat:@"%@", [[[self.dataDic objectForKey:kMultiplequistionArr] objectAtIndex:indexPath.row] objectForKey:kTestQuestionNumber]];
-        }else if([[self.dataDic objectForKey:kJudgequistionArr] count] > 0)
-        {
-            [cell resetCellWithinfo:[[self.dataDic objectForKey:kJudgequistionArr] objectAtIndex:indexPath.row]];
-            cell.questionNumberLabel.text = [NSString stringWithFormat:@"%@", [[[self.dataDic objectForKey:kJudgequistionArr] objectAtIndex:indexPath.row] objectForKey:kTestQuestionNumber]];
-        }else if([self.materailArr count] > 0)
-        {
-            [cell resetCellWithinfo:[[self.dataDic objectForKey:kMaterailQuestionArray] objectAtIndex:indexPath.row]];
-            cell.questionNumberLabel.text = [NSString stringWithFormat:@"%@", [[[self.dataDic objectForKey:kMaterailQuestionArray] objectAtIndex:indexPath.row] objectForKey:kTestQuestionNumber]];
-        }
-    }else if (indexPath.section == 3)
-    {
-        if([[self.dataDic objectForKey:kJudgequistionArr] count] > 0)
-        {
-            [cell resetCellWithinfo:[[self.dataDic objectForKey:kJudgequistionArr] objectAtIndex:indexPath.row]];
-            
-            cell.questionNumberLabel.text = [NSString stringWithFormat:@"%@", [[[self.dataDic objectForKey:kJudgequistionArr] objectAtIndex:indexPath.row] objectForKey:kTestQuestionNumber]];
-        }else if([self.materailArr count] > 0)
-        {
-            [cell resetCellWithinfo:[[self.dataDic objectForKey:kMaterailQuestionArray] objectAtIndex:indexPath.row]];
-            cell.questionNumberLabel.text = [NSString stringWithFormat:@"%@", [[[self.dataDic objectForKey:kMaterailQuestionArray] objectAtIndex:indexPath.row] objectForKey:kTestQuestionNumber]];
-        }
-    }else if (indexPath.section == 4)
-    {
-        if([self.materailArr count] > 0)
-        {
-            [cell resetCellWithinfo:[[self.dataDic objectForKey:kMaterailQuestionArray] objectAtIndex:indexPath.row]];
-            cell.questionNumberLabel.text = [NSString stringWithFormat:@"%@", [[[self.dataDic objectForKey:kMaterailQuestionArray] objectAtIndex:indexPath.row] objectForKey:kTestQuestionNumber]];;
-        }
-        else if([self.jiandaArr count] > 0)
-        {
-            [cell resetCellWithinfo:[[self.dataDic objectForKey:kJiandaQuestionArray] objectAtIndex:indexPath.row]];
-            cell.questionNumberLabel.text = [NSString stringWithFormat:@"%@", [[[self.dataDic objectForKey:kJiandaQuestionArray] objectAtIndex:indexPath.row] objectForKey:kTestQuestionNumber]];;
-        }
-        else if([self.analisisArr count] > 0)
-        {
-            [cell resetCellWithinfo:[[self.dataDic objectForKey:kAnalisisQuestionArray] objectAtIndex:indexPath.row]];
-            cell.questionNumberLabel.text = [NSString stringWithFormat:@"%@", [[[self.dataDic objectForKey:kAnalisisQuestionArray] objectAtIndex:indexPath.row] objectForKey:kTestQuestionNumber]];
-        }
-        else if([self.zongheArr count] > 0)
-        {
-            [cell resetCellWithinfo:[[self.dataDic objectForKey:kZongheQuestionArray] objectAtIndex:indexPath.row]];
-            cell.questionNumberLabel.text = [NSString stringWithFormat:@"%@", [[[self.dataDic objectForKey:kZongheQuestionArray] objectAtIndex:indexPath.row] objectForKey:kTestQuestionNumber]];
-        }
-    }else if (indexPath.section == 5)
-    {
-        if([self.jiandaArr count] > 0)
-        {
-            [cell resetCellWithinfo:[[self.dataDic objectForKey:kJiandaQuestionArray] objectAtIndex:indexPath.row]];
-            cell.questionNumberLabel.text = [NSString stringWithFormat:@"%@", [[[self.dataDic objectForKey:kJiandaQuestionArray] objectAtIndex:indexPath.row] objectForKey:kTestQuestionNumber]];
-        }
-        else if([self.analisisArr count] > 0)
-        {
-            [cell resetCellWithinfo:[[self.dataDic objectForKey:kAnalisisQuestionArray] objectAtIndex:indexPath.row]];
-            cell.questionNumberLabel.text = [NSString stringWithFormat:@"%@", [[[self.dataDic objectForKey:kAnalisisQuestionArray] objectAtIndex:indexPath.row] objectForKey:kTestQuestionNumber]];
-        }
-        else if([self.zongheArr count] > 0)
-        {
-            [cell resetCellWithinfo:[[self.dataDic objectForKey:kZongheQuestionArray] objectAtIndex:indexPath.row]];
-            cell.questionNumberLabel.text = [NSString stringWithFormat:@"%@", [[[self.dataDic objectForKey:kZongheQuestionArray] objectAtIndex:indexPath.row] objectForKey:kTestQuestionNumber]];
-        }
-    }else if (indexPath.section == 6)
-    {
-        if([self.analisisArr count] > 0)
-        {
-            [cell resetCellWithinfo:[[self.dataDic objectForKey:kAnalisisQuestionArray] objectAtIndex:indexPath.row]];
-            cell.questionNumberLabel.text = [NSString stringWithFormat:@"%@", [[[self.dataDic objectForKey:kAnalisisQuestionArray] objectAtIndex:indexPath.row] objectForKey:kTestQuestionNumber]];
-        }
-        else if([self.zongheArr count] > 0)
-        {
-            [cell resetCellWithinfo:[[self.dataDic objectForKey:kZongheQuestionArray] objectAtIndex:indexPath.row]];
-            cell.questionNumberLabel.text = [NSString stringWithFormat:@"%@", [[[self.dataDic objectForKey:kZongheQuestionArray] objectAtIndex:indexPath.row] objectForKey:kTestQuestionNumber]];
-        }
-    }else if (indexPath.section == 7)
-    {
-        [cell resetCellWithinfo:[[self.dataDic objectForKey:kZongheQuestionArray] objectAtIndex:indexPath.row]];
-        cell.questionNumberLabel.text = [NSString stringWithFormat:@"%@", [[[self.dataDic objectForKey:kZongheQuestionArray] objectAtIndex:indexPath.row] objectForKey:kTestQuestionNumber]];
-    }
+    
+    [cell resetCellWithinfo:[self.dataArray[indexPath.section - 1] objectAtIndex:indexPath.row]];
+    cell.questionNumberLabel.text =
+    [NSString stringWithFormat:@"%@", [[self.dataArray[indexPath.section - 1] objectAtIndex:indexPath.row] objectForKey:kTestQuestionNumber]];
+    
     return cell;
 }
 
@@ -321,127 +206,10 @@
     UICollectionReusableView *reusableview = nil;
     if (kind == UICollectionElementKindSectionHeader) {
         
-        if (indexPath.section == 0) {
-            SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
-            reusableview = headview;
-        }else if (indexPath.section == 1) {
-            if ([[self.dataDic objectForKey:kSinglequistionArr] count] > 0) {
-                SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
-                [headview resetWithTitle:@"单选"];
-                reusableview = headview;
-            }else if([[self.dataDic objectForKey:kMultiplequistionArr] count] > 0)
-            {
-                SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
-                [headview resetWithTitle:@"多选"];
-                reusableview = headview;
-            }else if([[self.dataDic objectForKey:kJudgequistionArr] count] > 0)
-            {
-                SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
-                [headview resetWithTitle:@"判断"];
-                reusableview = headview;
-            }else if([self.materailArr count] > 0)
-            {
-                SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
-                [headview resetWithTitle:@"不定项"];
-                reusableview = headview;
-            }
-        }else if (indexPath.section == 2)
-        {
-            if([[self.dataDic objectForKey:kMultiplequistionArr] count] > 0)
-            {
-                SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
-                [headview resetWithTitle:@"多选"];
-                reusableview = headview;
-            }else if([[self.dataDic objectForKey:kJudgequistionArr] count] > 0)
-            {
-                SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
-                [headview resetWithTitle:@"判断"];
-                reusableview = headview;
-            }else if([self.materailArr count] > 0)
-            {
-                SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
-                [headview resetWithTitle:@"不定项"];
-                reusableview = headview;
-            }
-        }else if (indexPath.section == 3)
-        {
-            if([[self.dataDic objectForKey:kJudgequistionArr] count] > 0)
-            {
-                SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
-                [headview resetWithTitle:@"判断"];
-                reusableview = headview;
-            }else if([self.materailArr count] > 0)
-            {
-                SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
-                [headview resetWithTitle:@"不定项"];
-                reusableview = headview;
-            }
-        }else if (indexPath.section == 4)
-        {
-            if([self.materailArr count] > 0)
-            {
-                SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
-                [headview resetWithTitle:@"不定项"];
-                reusableview = headview;
-            }
-            else if([self.jiandaArr count] > 0)
-            {
-                SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
-                [headview resetWithTitle:@"简答题"];
-                reusableview = headview;
-            }
-            else if([self.analisisArr count] > 0)
-            {
-                SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
-                [headview resetWithTitle:@"计算分析题"];
-                reusableview = headview;
-            }
-            else if([self.zongheArr count] > 0)
-            {
-                SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
-                [headview resetWithTitle:@"综合题"];
-                reusableview = headview;
-            }
-        }else if (indexPath.section == 5)
-        {
-            if([self.jiandaArr count] > 0)
-            {
-                SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
-                [headview resetWithTitle:@"简答题"];
-                reusableview = headview;
-            }
-            else if([self.analisisArr count] > 0)
-            {
-                SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
-                [headview resetWithTitle:@"计算分析题"];
-                reusableview = headview;
-            }
-            else if([self.zongheArr count] > 0)
-            {
-                SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
-                [headview resetWithTitle:@"综合题"];
-                reusableview = headview;
-            }
-        }else if (indexPath.section == 6)
-        {
-            if([self.analisisArr count] > 0)
-            {
-                SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
-                [headview resetWithTitle:@"计算分析题"];
-                reusableview = headview;
-            }
-            else if([self.zongheArr count] > 0)
-            {
-                SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
-                [headview resetWithTitle:@"综合题"];
-                reusableview = headview;
-            }
-        }else if (indexPath.section == 7)
-        {
-            SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
-            [headview resetWithTitle:@"综合题"];
-            reusableview = headview;
-        }
+        SimulateresultCollectionReusableView *headview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"simulateresultReusableViewid" forIndexPath:indexPath];
+        NSDictionary * questionInfoDic = [self.dataArray[indexPath.section - 1] objectAtIndex:0];
+        [headview resetWithTitle:[questionInfoDic objectForKey:kTestQuestionType]];
+        reusableview = headview;
     }
     return reusableview;
 }
@@ -449,118 +217,11 @@
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    if (section == 1) {
-        if ([self.singleArr count] > 0) {
-            return [[self.dataDic objectForKey:kSinglequistionArr] count];
-        }else if([self.mutipleArr count] > 0)
-        {
-            return [[self.dataDic objectForKey:kMultiplequistionArr] count];
-        }else if([self.judgeQuestionArr count] > 0)
-        {
-            return [[self.dataDic objectForKey:kJudgequistionArr] count];
-        }else if([self.materailArr count] > 0)
-        {
-            return [self.materailArr count];
-        }
-        else
-        {
-            return 0;
-        }
-    }else if (section == 2)
-    {
-        if([[self.dataDic objectForKey:kMultiplequistionArr] count] > 0)
-        {
-            return [[self.dataDic objectForKey:kMultiplequistionArr] count];
-        }else if([[self.dataDic objectForKey:kJudgequistionArr] count] > 0)
-        {
-            return [[self.dataDic objectForKey:kJudgequistionArr] count];
-        }
-        else if([self.materailArr count] > 0)
-        {
-            return [self.materailArr count];
-        }else
-        {
-            return 0;
-        }
-    }else if (section == 3)
-    {
-        if([[self.dataDic objectForKey:kJudgequistionArr] count] > 0)
-        {
-            return [[self.dataDic objectForKey:kJudgequistionArr] count];
-        }
-        else if([self.materailArr count] > 0)
-        {
-            return [self.materailArr count];
-        }else
-        {
-            return 0;
-        }
-    }
-    else if (section == 4)
-    {
-        if([self.materailArr count] > 0)
-        {
-            return [self.materailArr count];
-        }
-        else if([self.jiandaArr count] > 0)
-        {
-            return [self.jiandaArr count];
-        }
-        else if([self.analisisArr count] > 0)
-        {
-            return [self.analisisArr count];
-        }
-        else if([self.zongheArr count] > 0)
-        {
-            return [self.zongheArr count];
-        }
-        else
-        {
-            return 0;
-        }
-    }
-    else if (section == 5)
-    {
-        if([self.jiandaArr count] > 0)
-        {
-            return [self.jiandaArr count];
-        }
-        else if([self.analisisArr count] > 0)
-        {
-            return [self.analisisArr count];
-        }
-        else if([self.zongheArr count] > 0)
-        {
-            return [self.zongheArr count];
-        }
-        else
-        {
-            return 0;
-        }
-    }
-    else if (section == 6)
-    {
-        if([self.analisisArr count] > 0)
-        {
-            return [self.analisisArr count];
-        }
-        else if([self.zongheArr count] > 0)
-        {
-            return [self.zongheArr count];
-        }
-        else
-        {
-            return 0;
-        }
-    }
-    else if (section == 7)
-    {
-        return [self.zongheArr count];
-    }
-    
-    else
-    {
+    if (section == 0) {
         return 1;
+    }else
+    {
+        return [self.dataArray[section - 1] count];
     }
 }
 
@@ -586,36 +247,8 @@
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
 {
-    int number = 0;
-    if ([self.singleArr count] > 0) {
-        number++;
-    }
-    if([self.mutipleArr count] > 0)
-    {
-        number++;
-    }
-    if([self.judgeQuestionArr count] > 0)
-    {
-        number++;
-    }
     
-    if([self.materailArr count] > 0)
-    {
-        number++;
-    }
-    if([[self.dataDic objectForKey:kJiandaQuestionArray] count] > 0)
-    {
-        number++;
-    }
-    if([[self.dataDic objectForKey:kAnalisisQuestionArray] count] > 0)
-    {
-        number++;
-    }
-    if([[self.dataDic objectForKey:kZongheQuestionArray] count] > 0)
-    {
-        number++;
-    }
-    return number + 1;
+    return self.dataArray.count + 1;
 }
 
 - (void)didReceiveMemoryWarning {

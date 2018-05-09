@@ -60,6 +60,7 @@ static const CGFloat kVideoPlayerControllerAnimationTimeInterval = 0.3f;
         [self.view addSubview:self.videoControl];
         self.videoControl.frame = self.view.bounds;
         self.rate = CurrentRate_1;
+        [self setCurrentPlaybackRate:self.rate];
         UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(panDirection:)];
         pan.delegate = self;
         [self.videoControl addGestureRecognizer:pan];
@@ -699,7 +700,6 @@ static const CGFloat kVideoPlayerControllerAnimationTimeInterval = 0.3f;
 /// 播放按钮点击
 - (void)playButtonClick
 {
-    [self changePlayRate:self.rate];
     [self play];
     self.videoControl.playButton.hidden = YES;
     self.videoControl.pauseButton.hidden = NO;

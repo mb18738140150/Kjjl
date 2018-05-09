@@ -36,7 +36,7 @@
 {
     self.backgroundColor = UIRGBColor(200, 200, 200);
     
-    self.priceView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth / 3, 50)];
+    self.priceView = [[UIView alloc]initWithFrame:CGRectMake(kScreenWidth / 3, 0, kScreenWidth / 3, 50)];
     self.priceView.backgroundColor = UIRGBColor(230, 230, 230);
     [self addSubview:self.priceView];
     
@@ -54,7 +54,7 @@
     
     
     self.cansultBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.cansultBtn.frame = CGRectMake(kScreenWidth / 3, 0, kScreenWidth / 3, 50);
+    self.cansultBtn.frame = CGRectMake(0, 0, kScreenWidth / 3, 50);
     [self.cansultBtn setImage:[UIImage imageNamed:@"btn_zixun"] forState:UIControlStateNormal];
     self.cansultBtn.backgroundColor = UIRGBColor(240, 240, 240);
     [self.cansultBtn setTitle:@"咨询" forState:UIControlStateNormal];

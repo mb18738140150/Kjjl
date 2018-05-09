@@ -58,8 +58,13 @@
                 courseModel.courseCover = [courseDic objectForKey:@"cover"];
                 courseModel.courseID = [[courseDic objectForKey:@"id"] intValue];
                 courseModel.coueseTeacherName = [courseDic objectForKey:@"teacherName"];
-                courseModel.price = [[courseDic objectForKey:@"price"] doubleValue];
-                courseModel.price = 0;
+                NSString * price = @"0";
+                if ([[courseDic objectForKey:@"price"] isKindOfClass:[NSNull class]] || [[courseDic objectForKey:@"price"] isEqualToString:@"<null>"]) {
+                }else
+                {
+                    price = [courseDic objectForKey:@"price"];
+                }
+                courseModel.price = [price doubleValue];
                 [secondModel addCourseModel:courseModel];
             }
             [model addSecondCourseModel:secondModel];
@@ -77,8 +82,13 @@
                     courseModel.courseCover = [courseDic objectForKey:@"cover"];
                     courseModel.courseID = [[courseDic objectForKey:@"id"] intValue];
                     courseModel.coueseTeacherName = [courseDic objectForKey:@"teacherName"];
-                    courseModel.price = [[courseDic objectForKey:@"price"] doubleValue];
-                    courseModel.price = 0;
+                    NSString * price = @"0";
+                    if ([[courseDic objectForKey:@"price"] isKindOfClass:[NSNull class]] || [[courseDic objectForKey:@"price"] isEqualToString:@"<null>"]) {
+                    }else
+                    {
+                        price = [courseDic objectForKey:@"price"];
+                    }
+                    courseModel.price = [price doubleValue];
                     [secondModel addCourseModel:courseModel];
                 }
                 [model addSecondCourseModel:secondModel];

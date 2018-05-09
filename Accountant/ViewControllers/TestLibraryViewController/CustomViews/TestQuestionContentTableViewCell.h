@@ -20,6 +20,10 @@
 @property (nonatomic,assign) int                         questionTotalCount;
 @property (nonatomic,assign) int                         questionCurrentIndex;
 
+@property (nonatomic, strong)UITextView * contentLB;
+@property (nonatomic, assign)BOOL isTextAnswer;
+
+
 - (void)resetWithInfo:(NSDictionary *)infoDic;
 
 @end

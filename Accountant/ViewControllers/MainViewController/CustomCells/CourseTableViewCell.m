@@ -51,8 +51,6 @@
     
     self.courseInfoArray = infoArray;
     
-    
-    
     CGFloat startx = kCellEdgeOfCourseImage;
     self.courseImage1 = [[UIImageView alloc] initWithFrame:CGRectMake(startx, 10, kImageWidthOfCourse, kImageHeightOfCourse)];
     self.courseLabel1 = [[UILabel alloc] initWithFrame:CGRectMake(self.courseImage1.frame.origin.x, self.courseImage1.frame.origin.y + kImageHeightOfCourse + 10, kImageWidthOfCourse, 20)];
@@ -63,6 +61,7 @@
     
     self.courseLabel1.font = [UIFont systemFontOfSize:14];
     self.courseLabel1.text = [info1 objectForKey:kCourseName];
+    self.courseLabel1.textColor = UIColorFromRGB(0x888888);
     
     self.priceLabel1.font = kMainFont;
     self.priceLabel1.text = [NSString stringWithFormat:@"￥%@", [info1 objectForKey:kPrice]];
@@ -75,7 +74,9 @@
     [self addSubview:self.courseImage1];
     [self addSubview:self.courseLabel1];
     if (self.isVideoCourse) {
-        [self addSubview:self.priceLabel1];
+        if ([WXApi isWXAppSupportApi] && [WXApi isWXAppInstalled]) {
+            [self addSubview:self.priceLabel1];
+        }
         self.courseImage1.hd_x = 0;
         self.courseImage1.hd_width = kImageWidthOfCourseOfVideo;
         self.courseImage1.hd_height = kImageHeightOfCourseOfVideo;
@@ -106,7 +107,6 @@
     self.priceLabel1 = [[UILabel alloc] initWithFrame:CGRectMake(self.courseLabel1.frame.origin.x, self.courseLabel1.frame.origin.y + 20 + 5, kImageWidthOfCourse, 15)];
     self.priceLabel2 = [[UILabel alloc] initWithFrame:CGRectMake(self.courseLabel2.frame.origin.x, self.courseLabel2.frame.origin.y + 20 + 5, kImageWidthOfCourse, 15)];
     
-    
     NSDictionary *info1 = [infoArray objectAtIndex:0];
     NSDictionary *info2 = [infoArray objectAtIndex:1];
     [self.courseImage1 sd_setImageWithURL:[NSURL URLWithString:[info1 objectForKey:kCourseCover]]];
@@ -123,6 +123,8 @@
     
     self.courseLabel1.text = [info1 objectForKey:kCourseName];
     self.courseLabel2.text = [info2 objectForKey:kCourseName];
+    self.courseLabel1.textColor = UIColorFromRGB(0x888888);
+    self.courseLabel2.textColor = UIColorFromRGB(0x888888);
     
     self.priceLabel1.font = kMainFont;
     self.priceLabel1.text = [NSString stringWithFormat:@"￥%@", [info1 objectForKey:kPrice]];
@@ -144,8 +146,11 @@
     [self addSubview:self.courseLabel2];
     [self addSubview:self.courseLabel1];
     if (self.isVideoCourse) {
-        [self addSubview:self.priceLabel1];
-        [self addSubview:self.priceLabel2];
+        if ([WXApi isWXAppSupportApi] && [WXApi isWXAppInstalled]) {
+            [self addSubview:self.priceLabel1];
+            [self addSubview:self.priceLabel2];
+        }
+        
         self.courseImage1.hd_x = 0;
         self.courseImage1.hd_height = kImageHeightOfCourseOfVideo;
         self.courseImage1.hd_width = kImageWidthOfCourseOfVideo;

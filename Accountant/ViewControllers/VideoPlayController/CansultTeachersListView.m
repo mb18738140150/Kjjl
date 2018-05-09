@@ -42,7 +42,7 @@
     UITapGestureRecognizer *backTap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(dismissAction)];
     [backView addGestureRecognizer:backTap];
     
-    self.tableView = [[UITableView alloc]initWithFrame:CGRectMake(0, kScreenHeight - self.teachersArray.count * 50 - 50 - 80, kScreenWidth, self.teachersArray.count * 50 + 50 + 80) style:UITableViewStylePlain];
+    self.tableView = [[UITableView alloc]initWithFrame:CGRectMake(0, kScreenHeight - self.teachersArray.count * 50 - 50 - 35, kScreenWidth, self.teachersArray.count * 50 + 50 + 80) style:UITableViewStylePlain];
     self.tableView.backgroundColor = [UIColor whiteColor];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
@@ -66,7 +66,8 @@
     SettingTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kSettingCellID forIndexPath:indexPath];
     NSDictionary * teacherInfo = self.teachersArray[indexPath.row];
     [cell.iconImageView sd_setImageWithURL:[NSURL URLWithString:[teacherInfo objectForKey:@"assistantIconUrl"]] placeholderImage:[UIImage imageNamed:@"img_tx"]];
-    
+    cell.tipDetailLB.hidden = YES;
+    cell.memberLevelBtn.hidden = YES;
     cell.titleLB.text = [teacherInfo objectForKey:@"assistantName"];
     return cell;
 }
@@ -91,7 +92,7 @@
     contentLB.numberOfLines = 0;
     contentLB.textColor = kCommonMainTextColor_150;
     contentLB.font = kMainFont;
-    [headView addSubview:contentLB];
+//    [headView addSubview:contentLB];
     
     return headView;
 }
@@ -126,7 +127,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 80;
+    return 35;
 }
 
 - (void)dismissAction

@@ -39,6 +39,12 @@
         questionModel.isEasyWrong = [[dic objectForKey:@"isEasyWrong"] intValue];
         questionModel.questionId = [[dic objectForKey:@"id"] intValue];
         questionModel.questionType = [dic objectForKey:@"questionType"];
+        questionModel.questionTypeId = [[dic objectForKey:@"questionTypeId"] intValue];
+        questionModel.lastLogId = [[successInfo objectForKey:@"lastLogId"] longValue];
+        questionModel.selectArray = [self selectArrayWith:[dic objectForKey:@"myAnswers"]];
+        if (questionModel.selectArray.count > 0) {
+            questionModel.questionIsAnswered = YES;
+        }
         questionModel.myAnswer = [dic objectForKey:kTestMyanswer];
         questionModel.isResponse = [[dic objectForKey:kTestIsResponse] intValue];
         
@@ -81,6 +87,27 @@
     if (isObjectNotNil(self.testDailyPracticeNotifiedObject)) {
         [self.testDailyPracticeNotifiedObject didRequestTestDailyPracticeQuestionSuccess];
     }
+}
+
+- (NSArray *)selectArrayWith:(NSString *)selectStr
+{
+    NSMutableArray * dataArr = [NSMutableArray array];
+    if (selectStr.length == 0) {
+        return dataArr;
+    }
+    if (selectStr.length > 4) {
+        [dataArr addObject:selectStr];
+    }else
+    {
+        
+        for (int i = 0; i< selectStr.length; i++) {
+            NSString * selectAnswer = [selectStr substringWithRange:NSMakeRange(i, 1)];
+            [dataArr addObject:selectAnswer];
+            
+        }
+    }
+    
+    return dataArr;
 }
 
 - (NSString * )replaceOtherString:(NSString *)string

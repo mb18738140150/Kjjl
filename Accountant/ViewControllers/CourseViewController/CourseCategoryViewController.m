@@ -111,6 +111,8 @@
 
 @property (nonatomic, strong)NSDictionary *selectOrderLivingSectionInfoDic;// 预约课
 
+@property (nonatomic, strong)NSDictionary *recommendInfoDic;// 最热课程
+
 @end
 
 @implementation CourseCategoryViewController
@@ -196,7 +198,6 @@
         {
             [self reloadLivingTableViewData];
         }
-        
     }
 }
 
@@ -432,10 +433,10 @@
 #pragma mark = 登录头部视图
 - (UIView *)getTableHeadView
 {
-    UIView *headView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, 100)];
+    UIView *headView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth - 75, 100)];
     headView.backgroundColor = kBackgroundGrayColor;
     
-    UILabel * titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 25, kScreenWidth, 15)];
+    UILabel * titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 25, headView.hd_width - 50, 15)];
     titleLabel.text = @"立即登录，查看课程";
     titleLabel.textColor = kCommonMainTextColor_50;
     titleLabel.font = kMainFont;
@@ -443,7 +444,7 @@
     [headView addSubview:titleLabel];
     
     UIButton * loginBT = [UIButton buttonWithType:UIButtonTypeCustom];
-    loginBT.frame = CGRectMake(kScreenWidth / 2  - 50,CGRectGetMaxY(titleLabel.frame) + 20, 100, 25);
+    loginBT.frame = CGRectMake(headView.hd_width / 2  - 50,CGRectGetMaxY(titleLabel.frame) + 20, 100, 25);
     loginBT.layer.cornerRadius = loginBT.hd_height / 2;
     loginBT.layer.masksToBounds = YES;
     loginBT.backgroundColor = UIRGBColor(15, 66, 250);
@@ -453,7 +454,7 @@
     [headView addSubview:loginBT];
     
     UIButton * registeBT = [UIButton buttonWithType:UIButtonTypeCustom];
-    registeBT.frame = CGRectMake(kScreenWidth / 2 + 10,CGRectGetMaxY(titleLabel.frame) + 20, 100, 25);
+    registeBT.frame = CGRectMake(headView.hd_width / 2 + 10,CGRectGetMaxY(titleLabel.frame) + 20, 100, 25);
     registeBT.layer.cornerRadius = loginBT.hd_height / 2;
     registeBT.layer.masksToBounds = YES;
     registeBT.layer.borderWidth = 1;
@@ -468,6 +469,26 @@
     [registeBT addTarget:self action:@selector(registerClick) forControlEvents:UIControlEventTouchUpInside];
     
     return headView;
+}
+
+#pragma mark - 热门产品
+- (UIView *)getHoePackagetableView
+{
+    UIView * headView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth - 75, 82)];
+    headView.backgroundColor = UIColorFromRGB(0xffffff);
+    
+    UIButton * hotPackageBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    hotPackageBtn.frame = CGRectMake(25, 20, headView.hd_width - 50, 42);
+    [hotPackageBtn.imageView sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@", [self.recommendInfoDic objectForKey:kCourseCover]]] placeholderImage:[UIImage imageNamed:@""]];
+    [headView addSubview:hotPackageBtn];
+    [hotPackageBtn addTarget:self action:@selector(hotPackageDetailAction) forControlEvents:UIControlEventTouchUpInside];
+    
+    return headView;
+}
+
+- (void)hotPackageDetailAction
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationOfCourseClick object:self.recommendInfoDic];
 }
 
 - (void)loginClick
@@ -509,9 +530,9 @@
     }
     if ([tableView isEqual:self.videoTableview]) {
         if (self.currentVideoIndexpath.row == 0) {
-            return 0;
+            return [[[self.packageArray objectAtIndex:self.currentVideoIndexpath.row ] objectForKey:kCourseCategoryCourseInfos] count];
         }
-        return [[[self.categoryArray objectAtIndex:self.currentVideoIndexpath.row - 1] objectForKey:kCourseCategoryCourseInfos] count];
+        return [[[self.categoryArray objectAtIndex:self.currentVideoIndexpath.row] objectForKey:kCourseCategoryCourseInfos] count];
     }
     if ([tableView isEqual:self.teacherTableView]) {
         return self.teacherArr.count + 1;
@@ -558,7 +579,7 @@
         {
             infoDic = [self.categoryArray objectAtIndex:self.currentVideoIndexpath.row - 1];
         }
-        
+//        infoDic = [self.categoryArray objectAtIndex:self.currentVideoIndexpath.row];
         titleLB.text = [infoDic objectForKey:kCourseCategoryName];
         [headerView addSubview:titleLB];
         
@@ -639,20 +660,20 @@
         titleLB.textAlignment = 1;
         [cell addSubview:titleLB];
         
-        
         if (indexPath.row == 0) {
             titleLB.text = @"套餐";
         }else
         {
             NSDictionary *categoryDic = [self.categoryArray objectAtIndex:indexPath.row - 1];
             titleLB.text = [categoryDic objectForKey:kCourseCategoryName];
-            
-            if ([indexPath isEqual:self.currentVideoIndexpath]) {
-                titleLB.textColor = UIColorFromRGB(0xff750d);
-            }else
-            {
-                titleLB.textColor = kMainTextColor;
-            }
+        }
+//        NSDictionary *categoryDic = [self.categoryArray objectAtIndex:indexPath.row];
+//        titleLB.text = [categoryDic objectForKey:kCourseCategoryName];
+        if ([indexPath isEqual:self.currentVideoIndexpath]) {
+            titleLB.textColor = UIColorFromRGB(0xff750d);
+        }else
+        {
+            titleLB.textColor = kMainTextColor;
         }
         
         return cell;
@@ -752,7 +773,7 @@
         {
             infoDic = [self.categoryArray objectAtIndex:self.currentVideoIndexpath.row - 1];
         }
-        
+//        infoDic = [self.categoryArray objectAtIndex:self.currentVideoIndexpath.row];
         NSArray * sectionArr = [infoDic objectForKey:kCourseCategoryCourseInfos];
         NSMutableDictionary * sectionInfoDic = [sectionArr objectAtIndex:indexPath.row];
         [sectionInfoDic setObject:[infoDic objectForKey:kCourseCategoryName] forKey:kCourseCategoryName];
@@ -932,18 +953,23 @@
     }
     if ([tableView isEqual:self.livingTableview] && indexPath.section != 0 && self.monthIndexPath.row == 0) {
         NSDictionary * dic = [self.livingCourseArr[indexPath.section] objectAtIndex:indexPath.row];
-        if ([[dic objectForKey:kLivingState] intValue] == 2 || [[dic objectForKey:kLivingState] intValue] == 3) {
-            return 81;
-        }
-        return 110;
+        return 81;
+//        if ([[dic objectForKey:kLivingState] intValue] == 2 || [[dic objectForKey:kLivingState] intValue] == 3) {
+//        }
+//        return 110;
     }
     if ([tableView isEqual:self.videoTableview]) {
         
         if (self.currentVideoIndexpath.row == 0) {
-            return 0;
+
+            NSDictionary * infoDic = [self.packageArray objectAtIndex:self.currentVideoIndexpath.row];
+            NSArray * sectionArr = [infoDic objectForKey:kCourseCategoryCourseInfos];
+            NSDictionary * sectionInfoDic = [sectionArr objectAtIndex:indexPath.row];
+
+            return [CourseSectionTableViewCell getCellHeightWith:sectionInfoDic andIsFold:YES];
         }
         
-        NSDictionary * infoDic = [self.categoryArray objectAtIndex:self.currentVideoIndexpath.row - 1];
+        NSDictionary * infoDic = [self.categoryArray objectAtIndex:self.currentVideoIndexpath.row];
         NSArray * sectionArr = [infoDic objectForKey:kCourseCategoryCourseInfos];
         NSDictionary * sectionInfoDic = [sectionArr objectAtIndex:indexPath.row];
         NSArray * array = [sectionInfoDic objectForKey:kCourseCategorySecondCourseInfos];
@@ -1478,7 +1504,15 @@
 #pragma mark - allPackage delegate
 - (void)didReuquestPackageSuccessed
 {
+    [SVProgressHUD dismiss];
+    [self.videoTableview.mj_header endRefreshing];
     self.packageArray = [[CourseraManager sharedManager] getAllPackageList];
+    self.recommendInfoDic = [[CourseraManager sharedManager]getRecommendInfoDic];
+    if ([[UserManager sharedManager] isUserLogin]) {
+        if (self.recommendInfoDic.allKeys.count > 0) {
+            self.videoTableview.tableHeaderView = [self getHoePackagetableView];
+        }
+    }
     [self.screenTableView reloadData];
     [self.videoTableview reloadData];
     [self.sectionScreentableview reloadData];
@@ -1486,7 +1520,8 @@
 
 - (void)didReuquestPackageFailed:(NSString *)failedInfo
 {
-    
+    [SVProgressHUD dismiss];
+    [self.videoTableview.mj_header endRefreshing];
 }
 
 #pragma mark - all course category delegate
@@ -1747,10 +1782,15 @@
     
     if (indexPath.row == 0) {
         self.currentCourseInfo = [self.packageArray objectAtIndex:0];
+        [self.videoTableview reloadData];
+        [self.screenTableView reloadData];
+        [self.sectionScreentableview reloadData];
         return;
+    }else
+    {
+        self.currentCourseInfo = [self.categoryArray objectAtIndex:indexPath.row - 1];
     }
-    self.currentCourseInfo = [self.categoryArray objectAtIndex:indexPath.row - 1];
-    
+//    self.currentCourseInfo = [self.categoryArray objectAtIndex:indexPath.row];
     [self refreshSectiontableViewFrame];
     
     for (NSDictionary * courseSecondInfo in [self.currentCourseInfo objectForKey:kCourseCategoryCourseInfos]) {

@@ -21,7 +21,7 @@
     
     MKPPlaceholderTextView *textView = [[MKPPlaceholderTextView alloc]init];
     textView.placeholder = @"这里录入答案";
-    textView.frame = CGRectMake(20, 20, kScreenWidth - 20, 100);
+    textView.frame = CGRectMake(20, 20, kScreenWidth - 40, 100);
     textView.delegate = self;
     textView.layer.cornerRadius = 5;
     textView.layer.masksToBounds = YES;

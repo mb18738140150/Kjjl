@@ -41,7 +41,7 @@
 //#define SERVICE_ID_XIAONENG2 @"op_1000_1483495280515"
 #define OrderAlerttag 2000
 
-@interface MainViewController ()<UITableViewDelegate,CourseModule_HottestCourseProtocl,ImageModule_BannerProtocol,QuestionModule_QuestionProtocol, CourseModule_NotStartLivingCourse,UIAlertViewDelegate,CourseModule_LivingSectionDetail,CourseModule_LivingSectionDetail,CourseModule_AllCourseProtocol,UserModule_LevelDetailProtocol,UserModule_AcquireDiscountCouponProtocol>
+@interface MainViewController ()<UITableViewDelegate,CourseModule_HottestCourseProtocl,ImageModule_BannerProtocol,QuestionModule_QuestionProtocol, CourseModule_NotStartLivingCourse,UIAlertViewDelegate,CourseModule_LivingSectionDetail,CourseModule_LivingSectionDetail,CourseModule_AllCourseProtocol,UserModule_LevelDetailProtocol,UserModule_AcquireDiscountCouponProtocol,TestModule_AllCategoryProtocol>
 
 @property (nonatomic,strong)    UITableView                     *contentTableView;
 @property (nonatomic,strong)    ContentTableViewDataSource      *contentTableSource;
@@ -128,11 +128,11 @@
     [[CourseraManager sharedManager] didRequestHottestCoursesWithNotifiedObject:self];
     [[CourseraManager sharedManager] didRequestAllCourseCategoryWithNotifiedObject:self];
     [[QuestionManager sharedManager] didRequestMainPageQuestionRequestWithNotifiedObject:self];
-    
+    [[TestManager sharedManager] didRequestTestAllCategoryWithNotifiedObject:self];
     [[CourseraManager sharedManager]didRequestNotStartLivingCourseWithInfo:@{@"Month":@([NSString getCurrentMonth]),@"year":[NSString stringWithFormat:@"%d", [NSString getCurrentYear]]} NotifiedObject:self];
     [[UserManager sharedManager] didRequestAssistantWithInfo:@{} withNotifiedObject:nil];
     [[UserManager sharedManager]didRequestLevelDetailWithNotifiedObject:self];
-    [[UserManager sharedManager] didRequestAcquireDiscountCouponWithCourseInfo:@{} withNotifiedObject:self];
+//    [[UserManager sharedManager] didRequestAcquireDiscountCouponWithCourseInfo:@{} withNotifiedObject:self];
 }
 
 - (void)allCourseClick
@@ -481,6 +481,16 @@
     [self requestEnd];
 }
 
+- (void)didRequestAllTestCategorySuccess
+{
+    
+}
+
+- (void)didRequestAllTestCategoryFailed:(NSString *)failedInfo
+{
+    
+}
+
 #pragma mark - acquireDiscountConpon
 - (void)didRequestAcquireDiscountCouponSuccessed
 {
@@ -501,9 +511,13 @@
         [weakSelf acquireDiscountCouponSuccesse];
     };
     self.discountCouponView.getDiscountCouponBlock = ^{
+//        [weakSelf.discountCouponView removeFromSuperview];
+//        DiscountCouponViewController * discountVC = [[DiscountCouponViewController alloc]init];
+//        [weakSelf.navigationController pushViewController:discountVC animated:YES];
+//        [weakSelf acquireDiscountCouponSuccesse];
+        
         [weakSelf.discountCouponView removeFromSuperview];
-        DiscountCouponViewController * discountVC = [[DiscountCouponViewController alloc]init];
-        [weakSelf.navigationController pushViewController:discountVC animated:YES];
+        weakSelf.discountCouponView = nil;
         [weakSelf acquireDiscountCouponSuccesse];
     };
 }

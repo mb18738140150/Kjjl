@@ -10,9 +10,14 @@
 #import "PackageDetailHeadCell.h"
 #import "PackageDetailCourseCell.h"
 #import "CansultTeachersListView.h"
+#import "CourseraManager.h"
+#import "PackageDetailIntroduceCell.h"
+#import "PackageDetailSelectView.h"
+#import "BuyDetailViewController.h"
 
 #define kHeadCellID @"PackageDetailHeadCell"
 #define kCourseCellID @"PackageDetailCourseCellID"
+#define kPackageDetailIntroduce @"PackageDetailIntroduceCell"
 
 @interface PackageDetailViewController ()<UITableViewDelegate, UITableViewDataSource,UIWebViewDelegate,UIScrollViewDelegate>
 
@@ -24,6 +29,11 @@
 @property (nonatomic, strong)UIButton * consultBtn;
 @property (nonatomic, strong)UIButton * shoppingCarBtn;
 @property (nonatomic, strong)UIButton * buyBtn;
+@property (nonatomic, strong)PackageDetailSelectView * packageDetailSelectView;
+
+@property (nonatomic, strong)NSDictionary * packageDetailInfoDic;
+@property (nonatomic, strong)NSArray * packageSpecificationArr;// 规格列表
+@property (nonatomic, strong)NSDictionary * packageSelectSpecificationIndoDic;// 已选套餐规格
 
 @end
 
@@ -31,7 +41,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+    self.packageDetailInfoDic = [[CourseraManager sharedManager] getPackageDetailInfo];
+    self.packageSpecificationArr = [self.packageDetailInfoDic objectForKey:@"data"];
     [self navigationViewSetup];
     [self prepareUI];
 }
@@ -45,7 +56,7 @@
     self.navigationItem.title = @"商品详情";
     self.edgesForExtendedLayout = UIRectEdgeNone;
     self.automaticallyAdjustsScrollViewInsets = NO;
-    self.navigationItem.titleView = [self prepareTitleView];
+//    self.navigationItem.titleView = [self prepareTitleView];
     //    self.navigationController.navigationBarHidden = YES;
     
     self.navigationController.navigationBar.barTintColor = kCommonNavigationBarColor;
@@ -57,7 +68,6 @@
 
 - (UIView *)prepareTitleView
 {
-    
     UIView * titleView = [[UIView alloc]initWithFrame:CGRectMake(0, 7, kScreenWidth - 100, 30)];
     titleView.backgroundColor = [UIColor whiteColor];
     
@@ -79,7 +89,7 @@
 
 - (void)backAction:(UIButton *)button
 {
-    [self.navigationController popViewControllerAnimated:YES];
+    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)changeSlect:(UISegmentedControl *)segment
@@ -101,6 +111,7 @@
     
     [self.tableview registerNib:[UINib nibWithNibName:@"PackageDetailHeadCell" bundle:nil] forCellReuseIdentifier:kHeadCellID];
     [self.tableview registerNib:[UINib nibWithNibName:@"PackageDetailCourseCell" bundle:nil] forCellReuseIdentifier:kCourseCellID];
+    [self.tableview registerClass:[PackageDetailIntroduceCell class] forCellReuseIdentifier:kPackageDetailIntroduce];
     [self.view addSubview:self.tableview];
     
     UIView * bottomView = [[UIView alloc]initWithFrame:CGRectMake(0, CGRectGetMaxY(self.tableview.frame), kScreenWidth, 50)];
@@ -153,7 +164,6 @@
     [_buyBtn addTarget:self action:@selector(buyAction) forControlEvents:UIControlEventTouchUpInside];
     [bottomView addSubview:_buyBtn];
     
-    
     __weak typeof(self)weakSelf = self;
     self.cansultView = [[CansultTeachersListView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, kScreenHeight) andTeachersArr:[[UserManager sharedManager] getAssistantList]];
     self.cansultView.dismissBlock = ^{
@@ -161,6 +171,18 @@
     };
     self.cansultView.cansultBlock = ^(NSDictionary *infoDic) {
         [weakSelf cantactTeacherAction:infoDic];
+    };
+    
+    self.packageDetailSelectView = [[PackageDetailSelectView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, kScreenHeight)];
+    self.packageDetailSelectView.dataArray = self.packageSpecificationArr;
+    self.packageDetailSelectView.imageUrl = [self.packageDetailInfoDic objectForKey:@"packageCover"];
+    self.packageDetailSelectView.selectBlock = ^(NSDictionary *infoDic) {
+        [weakSelf.packageDetailSelectView removeFromSuperview];
+        weakSelf.packageSelectSpecificationIndoDic = infoDic;
+        [weakSelf.tableview reloadData];
+    };
+    self.packageDetailSelectView.dismissBlock = ^{
+        [weakSelf.packageDetailSelectView removeFromSuperview];
     };
 }
 
@@ -183,7 +205,26 @@
 
 - (void)buyAction
 {
-    
+    if (self.packageSpecificationArr.count > 0 && self.packageSelectSpecificationIndoDic == nil) {
+        AppDelegate * delegate = [UIApplication sharedApplication].delegate;
+        [delegate.window addSubview:self.packageDetailSelectView];
+    }else
+    {
+        NSMutableDictionary * infoDic = [NSMutableDictionary dictionary];
+        if (self.packageSelectSpecificationIndoDic) {
+            [infoDic setObject:[self.packageSelectSpecificationIndoDic objectForKey:@"price"] forKey:kPrice];
+            [infoDic setObject:[self.packageSelectSpecificationIndoDic objectForKey:@"id"] forKey:kMemberLevelId];
+        }else
+        {
+            [infoDic setObject:[self.packageDetailInfoDic objectForKey:@"packagePrice"] forKey:kPrice];
+            [infoDic setObject:self.packageId forKey:kMemberLevelId];
+        }
+        
+        BuyDetailViewController *buyVC = [[BuyDetailViewController alloc]init];
+        buyVC.infoDic = infoDic;
+        buyVC.payCourseType = PayCourseType_Member;
+        [self.navigationController pushViewController:buyVC animated:YES];
+    }
 }
 
 #pragma mark - cantactTeacher
@@ -223,16 +264,52 @@
     if (indexPath.row == 0) {
         PackageDetailHeadCell * cell = [tableView dequeueReusableCellWithIdentifier:kHeadCellID forIndexPath:indexPath];
         
+        [cell resetUIWithInfo:self.packageDetailInfoDic];
+        
         return cell;
     }else if (indexPath.row == 1){
         PackageDetailCourseCell * cell = [tableView dequeueReusableCellWithIdentifier:kCourseCellID forIndexPath:indexPath];
-        
+        NSString * specificationStr = @"";
+        if (self.packageSelectSpecificationIndoDic) {
+            specificationStr = [NSString stringWithFormat:@"已选择\"%@\"", [self.packageSelectSpecificationIndoDic objectForKey:@"name"]];
+        }else
+        {
+            specificationStr = @"请选择套餐规格";
+        }
+        cell.selectCourseLB.text = specificationStr;
         return cell;
     }else
     {
-        return nil;
+        PackageDetailIntroduceCell * cell = [tableView dequeueReusableCellWithIdentifier:kPackageDetailIntroduce forIndexPath:indexPath];
+        [cell resetWitnInfo:self.packageDetailInfoDic];
+        return cell;
     }
-    
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath.row == 0) {
+        return 230;
+    }else if (indexPath.row == 1)
+    {
+        if (self.packageSpecificationArr.count > 0) {
+            return 50;
+        }else
+        {
+            return 0;
+        }
+    }else
+    {
+        return 145;
+    }
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath.row == 1) {
+        AppDelegate * delegate = [UIApplication sharedApplication].delegate;
+        [delegate.window addSubview:self.packageDetailSelectView];
+    }
 }
 
 #pragma mark - scrollView delegate

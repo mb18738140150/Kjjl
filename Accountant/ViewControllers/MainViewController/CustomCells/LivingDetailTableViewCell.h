@@ -10,6 +10,7 @@
 
 @interface LivingDetailTableViewCell : UITableViewCell
 
+@property (nonatomic, strong)UILabel * topLB;
 @property(nonatomic, strong)UILabel * contentLB;
 
 - (void)resetWithInfoDic:(NSDictionary *)infoDic;

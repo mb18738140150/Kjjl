@@ -341,9 +341,12 @@
 
 /**
  获取所有套餐
- 
  */
 - (void)didRequestAllPackageWithNotifiedObject:(id<CourseModule_PackageProtocol>)object;
 - (NSArray *)getAllPackageList;
+- (NSDictionary *)getRecommendInfoDic;
+
+- (void)didRequestPackageDetailWithPackageId:(int)packageId NotifiedObject:(id<CourseModule_PackageDetailProtocol>)object;
+- (NSDictionary *)getPackageDetailInfo;
 
 @end

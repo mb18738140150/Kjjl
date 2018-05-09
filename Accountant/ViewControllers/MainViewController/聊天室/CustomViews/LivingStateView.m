@@ -71,7 +71,7 @@
     self.loginBtn.frame = CGRectMake(kScreenWidth / 2 - 40, CGRectGetMaxY(self.timeLB.frame) + 10, 80, 30);
     self.loginBtn.layer.cornerRadius = 4;
     self.loginBtn.layer.masksToBounds = YES;
-    self.loginBtn.backgroundColor = UIRGBColor(19, 32, 255);
+    self.loginBtn.backgroundColor = UIRGBColor(255, 152, 2);
     [self.loginBtn setTitle:@"登录/注册" forState:UIControlStateNormal];
     [self.loginBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     self.loginBtn.titleLabel.font = kMainFont;
@@ -276,7 +276,7 @@
     
     NSMutableAttributedString * mTimeStr = [[NSMutableAttributedString alloc]initWithString:timeString];
     
-    NSDictionary * timeAttribute = @{NSFontAttributeName:[UIFont systemFontOfSize:25],NSForegroundColorAttributeName:[UIColor redColor]};
+    NSDictionary * timeAttribute = @{NSFontAttributeName:[UIFont systemFontOfSize:25],NSForegroundColorAttributeName:UIRGBColor(255, 152, 2)};
     [mTimeStr setAttributes:timeAttribute range:NSMakeRange(dayRange.location, dayRange.length - 1)];
     [mTimeStr setAttributes:timeAttribute range:NSMakeRange(hourRange.location, hourRange.length - 2)];
     [mTimeStr setAttributes:timeAttribute range:NSMakeRange(minuteRange.location, minuteRange.length - 2)];

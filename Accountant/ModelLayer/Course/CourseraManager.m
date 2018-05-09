@@ -27,6 +27,7 @@
 #import "HotSearchOperation.h"
 #import "LivingSectionDetailOperation.h"
 #import "PackageOperation.h"
+#import "PackageDetailOperation.h"
 
 @interface CourseraManager ()
 
@@ -47,6 +48,7 @@
 @property (nonatomic,strong)HotSearchOperation              *hotSearchOperation;
 @property (nonatomic,strong)LivingSectionDetailOperation    *livingSectionDetailOperation;
 @property (nonatomic, strong)PackageOperation               *packageOperation;
+@property (nonatomic, strong)PackageDetailOperation         *packageDetailOperation;
 
 @end
 
@@ -117,6 +119,9 @@
         
         self.packageOperation = [[PackageOperation alloc]init];
         [self.packageOperation setCurrentAllPackageModel:self.courseModuleModel.allPackage];
+        
+        self.packageDetailOperation = [[PackageDetailOperation alloc]init];
+        
     }
     return self;
 }
@@ -166,6 +171,11 @@
 - (void)didRequestAllPackageWithNotifiedObject:(id<CourseModule_PackageProtocol>)object
 {
     [self.packageOperation didRequestAllPackageWithNotifiedObject:object];
+}
+
+- (void)didRequestPackageDetailWithPackageId:(int)packageId NotifiedObject:(id<CourseModule_PackageDetailProtocol>)object
+{
+    [self.packageDetailOperation didRequestPackageDetailWithpackageId:packageId andNotifiedObject:object];
 }
 
 - (void)didRequestCategoryDetailWithCategoryId:(int)categoryId andUserId:(int)userId withNotifiedObject:(id<CourseModule_CourseCategoryDetailProtocol>)object
@@ -721,14 +731,16 @@
     for (CourseCategoryModel *model in self.courseModuleModel.allPackage.allCategory) {
         NSMutableDictionary *tmpDic = [[NSMutableDictionary alloc] init];
         
-        [tmpDic setObject:@(model.categoryId) forKey:kCourseCategoryId];
-        [tmpDic setObject:model.categoryImageUrl forKey:kCourseCategoryCoverUrl];
+        
         NSMutableArray *array1 = [[NSMutableArray alloc] init];
         for (CourseCategorysecondModel *courseSecondModel in model.categrorySecondCoursesArray) {
             NSMutableDictionary *tmpDic2 = [[NSMutableDictionary alloc] init];
             [tmpDic2 setObject:@(courseSecondModel.categorySecondId) forKey:kCourseSecondID];
             [tmpDic2 setObject:courseSecondModel.categorySecondName forKey:kCourseSecondName];
-            [tmpDic2 setObject:courseSecondModel.categorySecondImageUrl forKey:kCourseSecondCover];
+            [tmpDic setObject:@(courseSecondModel.categorySecondId) forKey:kCourseCategoryId];
+            [tmpDic setObject:courseSecondModel.categorySecondName forKey:kCourseCategoryName];
+            
+//            [tmpDic2 setObject:courseSecondModel.categorySecondImageUrl forKey:kCourseSecondCover];
             [tmpDic2 setObject:@(1) forKey:kIsFold];
             NSMutableArray * array2 = [[NSMutableArray alloc]init];
             for (CourseModel *courseModel in courseSecondModel.categroryCoursesArray) {
@@ -736,7 +748,9 @@
                 [tmpDic3 setObject:@(courseModel.courseID) forKey:kCourseID];
                 [tmpDic3 setObject:courseModel.courseName forKey:kCourseName];
                 [tmpDic3 setObject:courseModel.courseCover forKey:kCourseCover];
-                [tmpDic3 setObject:courseModel.coueseTeacherName forKey:kCourseTeacherName];
+                [tmpDic3 setObject:courseModel.priceSection forKey:kPrice];
+                [tmpDic3 setObject:@(courseModel.isRecommend) forKey:kIsRecommend];
+                [tmpDic3 setObject:@(YES) forKey:@"package"];
                 [array2 addObject:tmpDic3];
             }
             [tmpDic2 setObject:array2 forKey:kCourseCategorySecondCourseInfos];
@@ -750,6 +764,34 @@
     return array;
 }
 
+- (NSDictionary *)getRecommendInfoDic
+{
+    NSDictionary * infoDic = [NSDictionary dictionary];
+    for (CourseCategoryModel *model in self.courseModuleModel.allPackage.allCategory) {
+       
+        for (CourseCategorysecondModel *courseSecondModel in model.categrorySecondCoursesArray) {
+            
+            for (CourseModel *courseModel in courseSecondModel.categroryCoursesArray) {
+                if (courseModel.isRecommend) {
+                    NSMutableDictionary * tmpDic3 = [[NSMutableDictionary alloc]init];
+                    [tmpDic3 setObject:@(courseModel.courseID) forKey:kCourseID];
+                    [tmpDic3 setObject:courseModel.courseName forKey:kCourseName];
+                    [tmpDic3 setObject:courseModel.courseCover forKey:kCourseCover];
+                    [tmpDic3 setObject:courseModel.priceSection forKey:kPrice];
+                    [tmpDic3 setObject:@(courseModel.isRecommend) forKey:kIsRecommend];
+                    [tmpDic3 setObject:@(YES) forKey:@"package"];
+                    infoDic = tmpDic3;
+                }
+            }
+        }
+    }
+    return infoDic;
+}
+
+- (NSDictionary *)getPackageDetailInfo
+{
+    return self.packageDetailOperation.infoDic;
+}
 
 - (NSArray *)getMainVCCategoryArray
 {

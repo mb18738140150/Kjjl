@@ -38,6 +38,8 @@
 
 @property (nonatomic, assign)double price;
 @property (nonatomic, assign)double oldPrice;
+@property (nonatomic, strong)NSString *priceSection;// 价格区间
+@property (nonatomic, assign)int isRecommend;
 
 // 直播课
 @property (nonatomic, strong)NSString *teacherPortraitUrl;

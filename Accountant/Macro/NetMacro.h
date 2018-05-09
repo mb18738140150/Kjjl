@@ -10,11 +10,11 @@
 #define NetMacro_h
 
 // 会计教练
-//#define kRootUrl @"http://f.kjb360.cn/kjjldata.ashx"
-#define kRootUrl @"http://test.kjjl100.com/kjjldata.ashx"
+#define kRootUrl @"http://f.kjb360.cn/kjjldata.ashx"
+//#define kRootUrl @"http://test.kjjl100.com/kjjldata.ashx"
 // 题库
-//#define kRootKJBUrl @"http://f.kjb360.cn/getdata.ashx"
-#define kRootKJBUrl @"http://test.kjjl100.com/getdata.ashx"
+#define kRootKJBUrl @"http://f.kjb360.cn/getdata.ashx"
+//#define kRootKJBUrl @"http://test.kjjl100.com/getdata.ashx"
 #define kMD5String @"tianmingkeji"
 
 
@@ -37,7 +37,7 @@
 #define kCommandResetPwd                @"10"
 #define kCommandQuestionDetail          @"12"
 #define kCommandPublishQuestion         @"13"
-#define kCommandTestCategory            @"14"
+#define kCommandTestCategory            @"21"
 #define kCommandTestChapterInfo         @"6"
 #define kCommandTestSectionQuestion     @"7"
 #define kCommandTestNote                @"17"
@@ -102,6 +102,6 @@
 #define kDiscountCoupon                 @"63"
 #define kAcquireDiscountCouponSuccess   @"64"
 #define kGetAllPackage                  @"65"
-
+#define kPackageDetail               @"66"
 
 #endif /* NetMacro_h */

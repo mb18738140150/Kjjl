@@ -51,7 +51,7 @@
     _failType = failType;
     if (failType == FailType_NoData) {
         self.imageView.image = [UIImage imageNamed:@"组-2"];
-        self.titleLB.text = @"没有匹配数据";
+        self.titleLB.text = @"暂无数据";
     }else
     {
         self.imageView.image = [UIImage imageNamed:@"on-web"];

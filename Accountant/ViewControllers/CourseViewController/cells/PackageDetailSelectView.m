@@ -26,6 +26,12 @@
 {
     self.backgroundColor = [UIColor colorWithWhite:0 alpha:0.4];
     
+    UIView * topView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, 450)];
+    topView.backgroundColor = [UIColor clearColor];
+    UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(dismissAction)];
+    [topView addGestureRecognizer:tap];
+    [self addSubview:topView];
+    
     self.backGroundView = [[UIView alloc]initWithFrame:CGRectMake(0, self.hd_height - 450, kScreenWidth, 450)];
     self.backGroundView.backgroundColor = [UIColor whiteColor];
     [self addSubview:self.backGroundView];
@@ -64,6 +70,8 @@
     self.guigeCollectionView = [[UICollectionView alloc]initWithFrame:CGRectMake(19, CGRectGetMaxY(self.guigeLB.frame) + 20, kScreenWidth - 38, 137) collectionViewLayout:layout];
     self.guigeCollectionView.delegate = self;
     self.guigeCollectionView.dataSource = self;
+    [self.guigeCollectionView registerClass:[PackageDetailSelectCell class] forCellWithReuseIdentifier:kCellID];
+    self.guigeCollectionView.backgroundColor = [UIColor whiteColor];
     [self.backGroundView addSubview:self.guigeCollectionView];
     
     self.buyCountLB = [[UILabel alloc]initWithFrame:CGRectMake(10, CGRectGetMaxY(self.guigeCollectionView.frame) + 34, 100, 20)];
@@ -80,13 +88,32 @@
     [self.backGroundView addSubview:self.packageCountView];
     
     self.sureBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.sureBtn.frame = CGRectMake(0, kScreenHeight - 50, kScreenWidth, 50);
+    self.sureBtn.frame = CGRectMake(0, self.backGroundView.hd_height - 50, kScreenWidth, 50);
     self.sureBtn.backgroundColor = UIRGBColor(254, 88, 38);
     [self.sureBtn setTitle:@"确定" forState:UIControlStateNormal];
     [self.sureBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     self.sureBtn.titleLabel.font = [UIFont systemFontOfSize:18];
     [self.backGroundView addSubview:self.sureBtn];
-    
+    [self.sureBtn addTarget:self action:@selector(sureAction) forControlEvents:UIControlEventTouchUpInside];
+}
+
+- (void)dismissAction
+{
+    if (self.dismissBlock) {
+        self.dismissBlock();
+    }
+}
+
+- (void)sureAction
+{
+    if (self.selectInfoDic == nil) {
+        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"请先选择规格" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+        [alert show];
+        return;
+    }
+    if (self.selectBlock) {
+        self.selectBlock(self.selectInfoDic);
+    }
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
@@ -97,7 +124,7 @@
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     PackageDetailSelectCell * cell = [collectionView dequeueReusableCellWithReuseIdentifier:kCellID forIndexPath:indexPath];
-    [cell refreshWithInfo:@{}];
+    [cell refreshWithInfo:self.dataArray[indexPath.row]];
     
     if ([self.selectIndexPath isEqual:indexPath]) {
         [cell resetSelectState];
@@ -109,17 +136,32 @@
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     self.selectIndexPath = indexPath;
-    
-    [self refreshUIWithInfo:@{}];
+    self.selectInfoDic = self.dataArray[indexPath.row];
+    [self refreshUIWithInfo:self.selectInfoDic];
 }
 
 - (void)refreshUIWithInfo:(NSDictionary *)infoDic
 {
-    self.priceLB.text = [infoDic objectForKey:@"price"];
-    self.storeCountLB.text = [infoDic objectForKey:@"storeCount"];
-    self.selectLB.text = [infoDic objectForKey:@"select"];
+    [self.iconImageView sd_setImageWithURL:[NSURL URLWithString:self.imageUrl] placeholderImage:[UIImage imageNamed:@""]];
+    self.priceLB.text = [NSString stringWithFormat:@"￥%@", [infoDic objectForKey:@"price"]];
+    self.storeCountLB.text = [NSString stringWithFormat:@"库存：%@", [infoDic objectForKey:@"count"]];
+    self.selectLB.text = [infoDic objectForKey:@"name"];
     [self.packageCountView reset];
     [self.guigeCollectionView reloadData];
+}
+
+- (void)resetUI
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.guigeCollectionView reloadData];
+    });
+    [self refreshUIWithInfo:self.dataArray[0]];
+}
+
+- (void)setDataArray:(NSArray *)dataArray
+{
+    _dataArray = dataArray;
+    [self resetUI];
 }
 
 @end

@@ -35,6 +35,21 @@
     self.payTypeLB.layer.cornerRadius = 2;
     self.payTypeLB.layer.masksToBounds = YES;
     
+    if (self.livingDetailVC) {
+        self.titleLBLayoutLeft.constant = 28;
+        self.livingLBLayoutLeft.constant = 28;
+        self.bofangImageView.hidden = NO;
+        self.bofangImageView.image = [UIImage imageNamed:@"icon_bofang"];
+        self.teacherIconImageView.hidden = YES;
+        self.teachernameLB.hidden = YES;
+        
+    }else
+    {
+        self.teacherIconImageView.hidden = NO;
+        self.teachernameLB.hidden = NO;
+        self.bofangImageView.hidden = YES;
+    }
+    
     [self.livingIconImageView sd_setImageWithURL:[NSURL URLWithString:[infoDic objectForKey:kTeacherPortraitUrl]] placeholderImage:[UIImage imageNamed:@"course_pic2.png"]];
     
     self.livingTitleleLabel.text = [infoDic objectForKey:kCourseSecondName];
@@ -56,7 +71,6 @@
     self.livingTeacherNameLB.text = [self getLivingTime:timeStr];
     
     self.timeLB.text = [self getTimeWith:timeStr];
-    self.countDowmLB.text = [self getTimeWith:timeStr];
 
     self.teachernameLB.text = [infoDic objectForKey:kCourseTeacherName];
     
@@ -77,26 +91,30 @@
 //    self.shakeView.hidden = YES;
 //    self.livingLabel.hidden = YES;
     
-    
-    
     switch ([[infoDic objectForKey:kLivingState] intValue]) {
         case 0:
-            self.CountDownImageView.image = [UIImage imageNamed:@"livingCourse_time"];
-            self.CountDownImageView.hidden = NO;
-            self.countDowmLB.hidden = NO;
-            self.livingStateImageView.hidden = YES;
-            self.timeLB.hidden = YES;
+            self.bofangImageView.image = [UIImage imageNamed:@"icon_suo"];
+            self.livingStateImageView.image = [UIImage imageNamed:@"livingCourse_time"];
             [self.stateBT setTitle:@"预约" forState:UIControlStateNormal] ;
+            self.stateBT.backgroundColor = UIColorFromRGB(0xff1d1c);
             self.stateBT.tag = 1000 + LivingPlayType_order;
+            if (self.livingDetailVC) {
+                self.livingStateImageView.image = [UIImage imageNamed:@"icon_time2"];
+                self.timeLB.textColor = UIColorFromRGB(0xff1c1c);
+            }
+            
             break;
         case 1:
+            self.bofangImageView.image = [UIImage imageNamed:@"icon_suo"];
             self.livingStateImageView.image = [UIImage imageNamed:@"livingCourse_time"];
             [self.stateBT setTitle:@"已预约" forState:UIControlStateNormal];
+            self.stateBT.backgroundColor = UIColorFromRGB(0xff1d1c);
             self.stateBT.tag = 1000 + LivingPlayType_ordered;
-            self.CountDownImageView.hidden = NO;
-            self.countDowmLB.hidden = NO;
-            self.livingStateImageView.hidden = YES;
-            self.timeLB.hidden = YES;
+            self.livingStateImageView.image = [UIImage imageNamed:@"livingCourse_time"];
+            if (self.livingDetailVC) {
+                self.livingStateImageView.image = [UIImage imageNamed:@"icon_time2"];
+                self.timeLB.textColor = UIColorFromRGB(0xff1c1c);
+            }
             break;
         case 2:
             [self.stateBT setTitle:@"听课" forState:UIControlStateNormal];
@@ -105,24 +123,24 @@
             self.timeLB.text = @"直播中";
             self.livingStateImageView.image = [UIImage imageNamed:@"livingCourse_组"];
             self.stateBT.tag = 1000 + LivingPlayType_living;
-            self.CountDownImageView.hidden = YES;
-            self.countDowmLB.hidden = YES;
-            self.livingStateImageView.hidden = NO;
-            self.timeLB.hidden = NO;
+            if (self.livingDetailVC) {
+                self.livingStateImageView.image = [UIImage imageNamed:@"icon_zbz"];
+                self.timeLB.textColor = UIColorFromRGB(0x00c754);
+            }
             break;
         case 3:
             [self.stateBT setTitle:@"回放" forState:UIControlStateNormal];
+            self.stateBT.backgroundColor = UIColorFromRGB(0xff7f00);
             if ([[infoDic objectForKey:kPlayBackUrl] length] == 0) {
                 [self.stateBT setTitle:@"上传中" forState:UIControlStateNormal];
             }
-//            self.stateBT.backgroundColor = UIRGBColor(250, 150, 25);
             self.timeLB.text = @"已结束";
             self.livingStateImageView.image = [UIImage imageNamed:@"livingCourse_back"];
             self.stateBT.tag = 1000 + LivingPlayType_videoBack;
-            self.CountDownImageView.hidden = YES;
-            self.countDowmLB.hidden = YES;
-            self.livingStateImageView.hidden = NO;
-            self.timeLB.hidden = NO;
+            if (self.livingDetailVC) {
+                self.livingStateImageView.image = [UIImage imageNamed:@"icon_yjs"];
+                self.timeLB.textColor = UIColorFromRGB(0xff7e00);
+            }
             break;
         
         default:
@@ -174,10 +192,10 @@
     
     dispatch_async(dispatch_get_main_queue(), ^{
         if (_day == 0 && _hour == 0 && _minute > 0 && _minute < 15) {
-            self.countDowmLB.text = @"即将开始";
+            self.timeLB.text = @"即将开始";
         }else
         {
-            self.countDowmLB.text = [NSString stringWithFormat:@"%ld天%ld小时%ld分钟", (long)self.day, (long)self.hour,(long)self.minute];
+            self.timeLB.text = [NSString stringWithFormat:@"%ld天%ld小时%ld分钟", (long)self.day, (long)self.hour,(long)self.minute];
         }
     });
 }

@@ -18,5 +18,6 @@
 @property (weak, nonatomic) IBOutlet UIImageView *postageImageView;
 @property (weak, nonatomic) IBOutlet UILabel *postageLB;
 
+- (void)resetUIWithInfo:(NSDictionary *)infoDic;
 
 @end

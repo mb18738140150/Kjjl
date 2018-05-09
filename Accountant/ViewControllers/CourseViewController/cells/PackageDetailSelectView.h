@@ -24,7 +24,13 @@
 @property (nonatomic, assign)int buyCount;
 @property (nonatomic, strong)UIButton * sureBtn;
 
+@property (nonatomic, strong)NSString *imageUrl;
 @property (nonatomic, strong)NSArray * dataArray;
 @property (nonatomic, strong)NSIndexPath * selectIndexPath;
+@property (nonatomic, strong)NSDictionary * selectInfoDic;
+@property (nonatomic, copy)void(^selectBlock)(NSDictionary * infoDic);
+@property (nonatomic, copy)void(^dismissBlock)();
+
+- (void)resetUI;
 
 @end
