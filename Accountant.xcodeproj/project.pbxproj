@@ -748,8 +748,6 @@
 		00613BF6201AC3E000AA6264 /* icon1题库@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 00613BF4201AC3E000AA6264 /* icon1题库@2x.png */; };
 		00613BF7201AC3E000AA6264 /* icon1题库@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 00613BF5201AC3E000AA6264 /* icon1题库@3x.png */; };
 		0061677C1FB3DD1600394E30 /* MSegmentControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 0061677B1FB3DD1600394E30 /* MSegmentControl.m */; };
-		006167861FB3E17C00394E30 /* icon_bq@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0061677E1FB3E17C00394E30 /* icon_bq@2x.png */; };
-		006167871FB3E17C00394E30 /* icon_bq@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0061677F1FB3E17C00394E30 /* icon_bq@3x.png */; };
 		006167881FB3E17C00394E30 /* icon_error@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 006167801FB3E17C00394E30 /* icon_error@2x.png */; };
 		006167891FB3E17C00394E30 /* icon_error@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 006167811FB3E17C00394E30 /* icon_error@3x.png */; };
 		0061678A1FB3E17C00394E30 /* icon_Right@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 006167821FB3E17C00394E30 /* icon_Right@2x.png */; };
@@ -910,6 +908,8 @@
 		007881A51EF915D000E3E96D /* CourseTypeBottomCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 007881A31EF915D000E3E96D /* CourseTypeBottomCollectionViewCell.m */; };
 		007881A61EF915D000E3E96D /* CourseTypeBottomCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 007881A41EF915D000E3E96D /* CourseTypeBottomCollectionViewCell.xib */; };
 		007881A91EF9222700E3E96D /* ReplyView.m in Sources */ = {isa = PBXBuildFile; fileRef = 007881A81EF9222700E3E96D /* ReplyView.m */; };
+		007A103820A41B70004B996E /* icon_bq1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 007A103620A41B6F004B996E /* icon_bq1@2x.png */; };
+		007A103920A41B70004B996E /* icon_bq1@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 007A103720A41B6F004B996E /* icon_bq1@3x.png */; };
 		007BD6681FF1F73A009914F9 /* AssistantCenterOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 007BD6671FF1F73A009914F9 /* AssistantCenterOperation.m */; };
 		007F099F2074D58A0013293C /* discountCoupon_bg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 007F09972074D5820013293C /* discountCoupon_bg@2x.png */; };
 		007F09A02074D58A0013293C /* discountCoupon_bg@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 007F09982074D5820013293C /* discountCoupon_bg@3x.png */; };
@@ -1054,6 +1054,8 @@
 		00AFD4701E72429E001B9A15 /* DownloadRquestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 00AFD46F1E72429E001B9A15 /* DownloadRquestOperation.m */; };
 		00B4258D1EA44D4D0099F332 /* DelayButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 00B4258C1EA44D4D0099F332 /* DelayButton.m */; };
 		00B425901EA44D650099F332 /* DelayButton+helper.m in Sources */ = {isa = PBXBuildFile; fileRef = 00B4258F1EA44D650099F332 /* DelayButton+helper.m */; };
+		00BA461620A961A7000CFAFF /* buyCoin@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 00BA461420A961A6000CFAFF /* buyCoin@2x.png */; };
+		00BA461720A961A7000CFAFF /* buyCoin@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 00BA461520A961A6000CFAFF /* buyCoin@3x.png */; };
 		00BAA3301E88AF8200A22353 /* TestViewQuestionModels.m in Sources */ = {isa = PBXBuildFile; fileRef = 00BAA32F1E88AF8200A22353 /* TestViewQuestionModels.m */; };
 		00BAA3331E88B03300A22353 /* TestViewQuestionAnswerModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 00BAA3321E88B03300A22353 /* TestViewQuestionAnswerModel.m */; };
 		00BAA33C1E88F21300A22353 /* TestSimulateViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00BAA33B1E88F21300A22353 /* TestSimulateViewController.m */; };
@@ -1086,6 +1088,18 @@
 		00CB49CC2089727F00B9EBAC /* PackageDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00CB49CB2089727F00B9EBAC /* PackageDetailViewController.m */; };
 		00CBA73F2092F420003997DD /* PackageDetailOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 00CBA73E2092F420003997DD /* PackageDetailOperation.m */; };
 		00CBA74220931462003997DD /* PackageDetailIntroduceCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 00CBA74120931462003997DD /* PackageDetailIntroduceCell.m */; };
+		00D0DC0D20A7C7BA00F2DFFD /* BuyCoinHeadTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 00D0DC0B20A7C7BA00F2DFFD /* BuyCoinHeadTableViewCell.m */; };
+		00D0DC0E20A7C7BA00F2DFFD /* BuyCoinHeadTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 00D0DC0C20A7C7BA00F2DFFD /* BuyCoinHeadTableViewCell.xib */; };
+		00D0DC1220A7C9F200F2DFFD /* BuyCoinTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 00D0DC1020A7C9F200F2DFFD /* BuyCoinTableViewCell.m */; };
+		00D0DC1320A7C9F200F2DFFD /* BuyCoinTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 00D0DC1120A7C9F200F2DFFD /* BuyCoinTableViewCell.xib */; };
+		00D0DC1920A7CAEF00F2DFFD /* buyCoin_n@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 00D0DC1520A7CAEF00F2DFFD /* buyCoin_n@2x.png */; };
+		00D0DC1A20A7CAEF00F2DFFD /* buyCoin_n@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 00D0DC1620A7CAEF00F2DFFD /* buyCoin_n@3x.png */; };
+		00D0DC1B20A7CAEF00F2DFFD /* buyCoin_select@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 00D0DC1720A7CAEF00F2DFFD /* buyCoin_select@2x.png */; };
+		00D0DC1C20A7CAEF00F2DFFD /* buyCoin_select@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 00D0DC1820A7CAEF00F2DFFD /* buyCoin_select@3x.png */; };
+		00D0DC2020A7CBC900F2DFFD /* BuyCoinFootTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 00D0DC1E20A7CBC900F2DFFD /* BuyCoinFootTableViewCell.m */; };
+		00D0DC2120A7CBC900F2DFFD /* BuyCoinFootTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 00D0DC1F20A7CBC900F2DFFD /* BuyCoinFootTableViewCell.xib */; };
+		00D0DC2420A80E6100F2DFFD /* VerifyInAppPuchaseOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 00D0DC2320A80E6100F2DFFD /* VerifyInAppPuchaseOperation.m */; };
+		00D0DC2720A80E8700F2DFFD /* MyCoinOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 00D0DC2620A80E8700F2DFFD /* MyCoinOperation.m */; };
 		00D747CB1F580B5B00F34756 /* message_tip@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 00D747C91F580B5B00F34756 /* message_tip@2x.png */; };
 		00D747CC1F580B5B00F34756 /* message_tip@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 00D747CA1F580B5B00F34756 /* message_tip@3x.png */; };
 		00D7F2771E7A173B00AE3012 /* TestLibraryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00D7F2761E7A173B00AE3012 /* TestLibraryViewController.m */; };
@@ -1178,6 +1192,7 @@
 		00F362A11EFBB35B007F6819 /* 状态栏@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 00F362891EFBB35B007F6819 /* 状态栏@3x.png */; };
 		00F362A21EFBB35B007F6819 /* 顶部导航蓝@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 00F3628A1EFBB35B007F6819 /* 顶部导航蓝@2x.png */; };
 		00F362A31EFBB35B007F6819 /* 顶部导航蓝@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 00F3628B1EFBB35B007F6819 /* 顶部导航蓝@3x.png */; };
+		00F6ECF020A5693A00DF9274 /* AppIconViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00F6ECEF20A5693A00DF9274 /* AppIconViewController.m */; };
 		263A3F6F1E75967800E73B30 /* DownloadVideoPlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 263A3F6E1E75967800E73B30 /* DownloadVideoPlayerViewController.m */; };
 		26E4CF031E718F3F00D6739F /* AllCategoryTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 26E4CF021E718F3F00D6739F /* AllCategoryTableViewCell.m */; };
 		26E4CF361E71959400D6739F /* classIcon_1_1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 26E4CF041E71959400D6739F /* classIcon_1_1@2x.png */; };
@@ -2270,8 +2285,6 @@
 		00613BF5201AC3E000AA6264 /* icon1题库@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon1题库@3x.png"; sourceTree = "<group>"; };
 		0061677A1FB3DD1600394E30 /* MSegmentControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSegmentControl.h; sourceTree = "<group>"; };
 		0061677B1FB3DD1600394E30 /* MSegmentControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSegmentControl.m; sourceTree = "<group>"; };
-		0061677E1FB3E17C00394E30 /* icon_bq@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_bq@2x.png"; sourceTree = "<group>"; };
-		0061677F1FB3E17C00394E30 /* icon_bq@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_bq@3x.png"; sourceTree = "<group>"; };
 		006167801FB3E17C00394E30 /* icon_error@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_error@2x.png"; sourceTree = "<group>"; };
 		006167811FB3E17C00394E30 /* icon_error@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_error@3x.png"; sourceTree = "<group>"; };
 		006167821FB3E17C00394E30 /* icon_Right@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_Right@2x.png"; sourceTree = "<group>"; };
@@ -2490,6 +2503,8 @@
 		007881A41EF915D000E3E96D /* CourseTypeBottomCollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CourseTypeBottomCollectionViewCell.xib; sourceTree = "<group>"; };
 		007881A71EF9222700E3E96D /* ReplyView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReplyView.h; sourceTree = "<group>"; };
 		007881A81EF9222700E3E96D /* ReplyView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReplyView.m; sourceTree = "<group>"; };
+		007A103620A41B6F004B996E /* icon_bq1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_bq1@2x.png"; sourceTree = "<group>"; };
+		007A103720A41B6F004B996E /* icon_bq1@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_bq1@3x.png"; sourceTree = "<group>"; };
 		007BD6661FF1F73A009914F9 /* AssistantCenterOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AssistantCenterOperation.h; sourceTree = "<group>"; };
 		007BD6671FF1F73A009914F9 /* AssistantCenterOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AssistantCenterOperation.m; sourceTree = "<group>"; };
 		007F09972074D5820013293C /* discountCoupon_bg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "discountCoupon_bg@2x.png"; sourceTree = "<group>"; };
@@ -2735,6 +2750,8 @@
 		00B4258C1EA44D4D0099F332 /* DelayButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DelayButton.m; sourceTree = "<group>"; };
 		00B4258E1EA44D650099F332 /* DelayButton+helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "DelayButton+helper.h"; sourceTree = "<group>"; };
 		00B4258F1EA44D650099F332 /* DelayButton+helper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "DelayButton+helper.m"; sourceTree = "<group>"; };
+		00BA461420A961A6000CFAFF /* buyCoin@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "buyCoin@2x.png"; sourceTree = "<group>"; };
+		00BA461520A961A6000CFAFF /* buyCoin@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "buyCoin@3x.png"; sourceTree = "<group>"; };
 		00BAA32E1E88AF8200A22353 /* TestViewQuestionModels.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestViewQuestionModels.h; sourceTree = "<group>"; };
 		00BAA32F1E88AF8200A22353 /* TestViewQuestionModels.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestViewQuestionModels.m; sourceTree = "<group>"; };
 		00BAA3311E88B03300A22353 /* TestViewQuestionAnswerModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestViewQuestionAnswerModel.h; sourceTree = "<group>"; };
@@ -2790,6 +2807,23 @@
 		00CBA73E2092F420003997DD /* PackageDetailOperation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PackageDetailOperation.m; sourceTree = "<group>"; };
 		00CBA74020931462003997DD /* PackageDetailIntroduceCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PackageDetailIntroduceCell.h; sourceTree = "<group>"; };
 		00CBA74120931462003997DD /* PackageDetailIntroduceCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PackageDetailIntroduceCell.m; sourceTree = "<group>"; };
+		00D0DC0A20A7C7BA00F2DFFD /* BuyCoinHeadTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BuyCoinHeadTableViewCell.h; sourceTree = "<group>"; };
+		00D0DC0B20A7C7BA00F2DFFD /* BuyCoinHeadTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BuyCoinHeadTableViewCell.m; sourceTree = "<group>"; };
+		00D0DC0C20A7C7BA00F2DFFD /* BuyCoinHeadTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BuyCoinHeadTableViewCell.xib; sourceTree = "<group>"; };
+		00D0DC0F20A7C9F200F2DFFD /* BuyCoinTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BuyCoinTableViewCell.h; sourceTree = "<group>"; };
+		00D0DC1020A7C9F200F2DFFD /* BuyCoinTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BuyCoinTableViewCell.m; sourceTree = "<group>"; };
+		00D0DC1120A7C9F200F2DFFD /* BuyCoinTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BuyCoinTableViewCell.xib; sourceTree = "<group>"; };
+		00D0DC1520A7CAEF00F2DFFD /* buyCoin_n@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "buyCoin_n@2x.png"; sourceTree = "<group>"; };
+		00D0DC1620A7CAEF00F2DFFD /* buyCoin_n@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "buyCoin_n@3x.png"; sourceTree = "<group>"; };
+		00D0DC1720A7CAEF00F2DFFD /* buyCoin_select@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "buyCoin_select@2x.png"; sourceTree = "<group>"; };
+		00D0DC1820A7CAEF00F2DFFD /* buyCoin_select@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "buyCoin_select@3x.png"; sourceTree = "<group>"; };
+		00D0DC1D20A7CBC900F2DFFD /* BuyCoinFootTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BuyCoinFootTableViewCell.h; sourceTree = "<group>"; };
+		00D0DC1E20A7CBC900F2DFFD /* BuyCoinFootTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BuyCoinFootTableViewCell.m; sourceTree = "<group>"; };
+		00D0DC1F20A7CBC900F2DFFD /* BuyCoinFootTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BuyCoinFootTableViewCell.xib; sourceTree = "<group>"; };
+		00D0DC2220A80E6100F2DFFD /* VerifyInAppPuchaseOperation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VerifyInAppPuchaseOperation.h; sourceTree = "<group>"; };
+		00D0DC2320A80E6100F2DFFD /* VerifyInAppPuchaseOperation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VerifyInAppPuchaseOperation.m; sourceTree = "<group>"; };
+		00D0DC2520A80E8700F2DFFD /* MyCoinOperation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MyCoinOperation.h; sourceTree = "<group>"; };
+		00D0DC2620A80E8700F2DFFD /* MyCoinOperation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MyCoinOperation.m; sourceTree = "<group>"; };
 		00D747C91F580B5B00F34756 /* message_tip@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "message_tip@2x.png"; sourceTree = "<group>"; };
 		00D747CA1F580B5B00F34756 /* message_tip@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "message_tip@3x.png"; sourceTree = "<group>"; };
 		00D7F2751E7A173B00AE3012 /* TestLibraryViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestLibraryViewController.h; sourceTree = "<group>"; };
@@ -2923,6 +2957,8 @@
 		00F362891EFBB35B007F6819 /* 状态栏@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "状态栏@3x.png"; sourceTree = "<group>"; };
 		00F3628A1EFBB35B007F6819 /* 顶部导航蓝@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "顶部导航蓝@2x.png"; sourceTree = "<group>"; };
 		00F3628B1EFBB35B007F6819 /* 顶部导航蓝@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "顶部导航蓝@3x.png"; sourceTree = "<group>"; };
+		00F6ECEE20A5693A00DF9274 /* AppIconViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppIconViewController.h; sourceTree = "<group>"; };
+		00F6ECEF20A5693A00DF9274 /* AppIconViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppIconViewController.m; sourceTree = "<group>"; };
 		263A3F6D1E75967800E73B30 /* DownloadVideoPlayerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DownloadVideoPlayerViewController.h; sourceTree = "<group>"; };
 		263A3F6E1E75967800E73B30 /* DownloadVideoPlayerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DownloadVideoPlayerViewController.m; sourceTree = "<group>"; };
 		26E4CF011E718F3F00D6739F /* AllCategoryTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AllCategoryTableViewCell.h; sourceTree = "<group>"; };
@@ -4731,8 +4767,8 @@
 		0061677D1FB3E17C00394E30 /* memberDetail */ = {
 			isa = PBXGroup;
 			children = (
-				0061677E1FB3E17C00394E30 /* icon_bq@2x.png */,
-				0061677F1FB3E17C00394E30 /* icon_bq@3x.png */,
+				007A103620A41B6F004B996E /* icon_bq1@2x.png */,
+				007A103720A41B6F004B996E /* icon_bq1@3x.png */,
 				006167801FB3E17C00394E30 /* icon_error@2x.png */,
 				006167811FB3E17C00394E30 /* icon_error@3x.png */,
 				006167821FB3E17C00394E30 /* icon_Right@2x.png */,
@@ -4794,6 +4830,10 @@
 				005DD69620284689006A2FB8 /* GiftListOperation.m */,
 				005DD698202846A3006A2FB8 /* SubmitGiftCodeOperation.h */,
 				005DD699202846A3006A2FB8 /* SubmitGiftCodeOperation.m */,
+				00D0DC2220A80E6100F2DFFD /* VerifyInAppPuchaseOperation.h */,
+				00D0DC2320A80E6100F2DFFD /* VerifyInAppPuchaseOperation.m */,
+				00D0DC2520A80E8700F2DFFD /* MyCoinOperation.h */,
+				00D0DC2620A80E8700F2DFFD /* MyCoinOperation.m */,
 			);
 			name = operations;
 			sourceTree = "<group>";
@@ -5048,6 +5088,8 @@
 				000C918E1FD548990075E67C /* DiscountCouponViewController.m */,
 				006AEEC51FD7979600092330 /* DiscountCouponDetailViewController.h */,
 				006AEEC61FD7979600092330 /* DiscountCouponDetailViewController.m */,
+				00F6ECEE20A5693A00DF9274 /* AppIconViewController.h */,
+				00F6ECEF20A5693A00DF9274 /* AppIconViewController.m */,
 				0088D62820045D7D00A307D2 /* AssistantViewController.h */,
 				0088D62920045D7D00A307D2 /* AssistantViewController.m */,
 				0075061820158CC00019FC49 /* ProblemContentViewController.h */,
@@ -5483,6 +5525,15 @@
 				005C3D11205B559A004F547F /* DiscountCouponVIew.m */,
 				005C3D25205B64B4004F547F /* DiscountCouponTCCell.h */,
 				005C3D26205B64B4004F547F /* DiscountCouponTCCell.m */,
+				00D0DC0A20A7C7BA00F2DFFD /* BuyCoinHeadTableViewCell.h */,
+				00D0DC0B20A7C7BA00F2DFFD /* BuyCoinHeadTableViewCell.m */,
+				00D0DC0C20A7C7BA00F2DFFD /* BuyCoinHeadTableViewCell.xib */,
+				00D0DC0F20A7C9F200F2DFFD /* BuyCoinTableViewCell.h */,
+				00D0DC1020A7C9F200F2DFFD /* BuyCoinTableViewCell.m */,
+				00D0DC1120A7C9F200F2DFFD /* BuyCoinTableViewCell.xib */,
+				00D0DC1D20A7CBC900F2DFFD /* BuyCoinFootTableViewCell.h */,
+				00D0DC1E20A7CBC900F2DFFD /* BuyCoinFootTableViewCell.m */,
+				00D0DC1F20A7CBC900F2DFFD /* BuyCoinFootTableViewCell.xib */,
 			);
 			path = CustomViews;
 			sourceTree = "<group>";
@@ -5567,6 +5618,19 @@
 				00C64A501F079AE500EE8165 /* UINavigationController+Cloudox.m */,
 			);
 			name = Nav;
+			sourceTree = "<group>";
+		};
+		00D0DC1420A7CAEF00F2DFFD /* buycoin */ = {
+			isa = PBXGroup;
+			children = (
+				00BA461420A961A6000CFAFF /* buyCoin@2x.png */,
+				00BA461520A961A6000CFAFF /* buyCoin@3x.png */,
+				00D0DC1520A7CAEF00F2DFFD /* buyCoin_n@2x.png */,
+				00D0DC1620A7CAEF00F2DFFD /* buyCoin_n@3x.png */,
+				00D0DC1720A7CAEF00F2DFFD /* buyCoin_select@2x.png */,
+				00D0DC1820A7CAEF00F2DFFD /* buyCoin_select@3x.png */,
+			);
+			path = buycoin;
 			sourceTree = "<group>";
 		};
 		00D7F2741E7A172A00AE3012 /* TestLibraryViewController */ = {
@@ -5758,6 +5822,7 @@
 		00F362731EFBB35B007F6819 /* 我的 */ = {
 			isa = PBXGroup;
 			children = (
+				00D0DC1420A7CAEF00F2DFFD /* buycoin */,
 				0088D62F20046D6B00A307D2 /* helpCenter */,
 				0048F64E1FDA1E6700C82216 /* plain */,
 				0050389D1FD8CF35002661F2 /* recommend */,
@@ -6036,6 +6101,7 @@
 				005538731EF4C6CF00097978 /* tiku-icon1@3x.png in Resources */,
 				000C91A11FD5497C0075E67C /* icon_yhq@3x.png in Resources */,
 				26E4CF571E71959400D6739F /* classIcon_4_3@3x.png in Resources */,
+				00D0DC2120A7CBC900F2DFFD /* BuyCoinFootTableViewCell.xib in Resources */,
 				003371A4208F193700A3F619 /* icon_suo@3x.png in Resources */,
 				26E4CF4A1E71959400D6739F /* classIcon_3_1@2x.png in Resources */,
 				0056E0111EF3742D00656BFE /* course-person@3x.png in Resources */,
@@ -6062,9 +6128,11 @@
 				00454CDB1EFD11CF00E32A3B /* tiku_text@2x.png in Resources */,
 				00613BF7201AC3E000AA6264 /* icon1题库@3x.png in Resources */,
 				003E62E52011E70F0002ED07 /* icon_yuan@2x.png in Resources */,
+				00D0DC1B20A7CAEF00F2DFFD /* buyCoin_select@2x.png in Resources */,
 				0068182E1FC7B36B000011AB /* icon_fy1@2x.png in Resources */,
 				00366BCD1FD68AB00092182A /* img_qbkc@2x.png in Resources */,
 				004643561F8DCA35001AD03C /* mainLiving_teacher@2x.png in Resources */,
+				00BA461620A961A7000CFAFF /* buyCoin@2x.png in Resources */,
 				0033719F208F193700A3F619 /* icon_sc_n@2x.png in Resources */,
 				0056215D1F10736B00E447A8 /* logo.png in Resources */,
 				007881A61EF915D000E3E96D /* CourseTypeBottomCollectionViewCell.xib in Resources */,
@@ -6084,6 +6152,7 @@
 				0048F65E1FDA1E6700C82216 /* img_xxjh@3x.png in Resources */,
 				00181CBF1FAAF15B00D40F08 /* btn_sc_pre@2x.png in Resources */,
 				005924161EFA3AA3006EE8A1 /* community_btn@3x.png in Resources */,
+				00D0DC0E20A7C7BA00F2DFFD /* BuyCoinHeadTableViewCell.xib in Resources */,
 				00366BC51FD68AB00092182A /* img_dy@2x.png in Resources */,
 				004E77401EF2154400DBE807 /* shouye-banner@2x.png in Resources */,
 				006AEEE91FD7C05100092330 /* img_top@2x.png in Resources */,
@@ -6186,6 +6255,7 @@
 				0098A63A1E70F38400D5E7E6 /* Info.plist in Resources */,
 				004643661F8E0098001AD03C /* livingCourse_time@3x.png in Resources */,
 				005539431EF4DD9E00097978 /* trankle@3x.png in Resources */,
+				00D0DC1A20A7CAEF00F2DFFD /* buyCoin_n@3x.png in Resources */,
 				003AC4061E667DBD00713502 /* kr-video-player-fullscreen@2x.png in Resources */,
 				004E77311EF2154300DBE807 /* shouye-1@3x.png in Resources */,
 				00DA6CF81EA84FE600382C90 /* ScreenCollectionViewCell.xib in Resources */,
@@ -6277,9 +6347,10 @@
 				00F362931EFBB35B007F6819 /* main-icon2@3x.png in Resources */,
 				0055385D1EF4C6CF00097978 /* tiku_圆角矩形-1@3x.png in Resources */,
 				005539321EF4DD9E00097978 /* public-share@2x.png in Resources */,
-				006167871FB3E17C00394E30 /* icon_bq@3x.png in Resources */,
+				00BA461720A961A7000CFAFF /* buyCoin@3x.png in Resources */,
 				007F09A22074D58A0013293C /* discountCoupon_bt@3x.png in Resources */,
 				00D7F2D01E7A8E1100AE3012 /* classImg-1-4@2x.png in Resources */,
+				00D0DC1920A7CAEF00F2DFFD /* buyCoin_n@2x.png in Resources */,
 				004E76FA1EF210F700DBE807 /* me50-50-1@3x.png in Resources */,
 				00366BBA1FD68AB00092182A /* icon_hg@3x.png in Resources */,
 				00AA665A1EA5AA5200064189 /* Arrow@3x.png in Resources */,
@@ -6398,6 +6469,7 @@
 				003371A9208F193700A3F619 /* icon_wang@2x.png in Resources */,
 				0046436C1F8E0098001AD03C /* 组-5@3x.png in Resources */,
 				0056E0241EF3867300656BFE /* course_pic2@2x.png in Resources */,
+				007A103820A41B70004B996E /* icon_bq1@2x.png in Resources */,
 				003AC4141E667DBD00713502 /* zx-video-player-fastForward@2x.png in Resources */,
 				000A11D81E78D6B7003A6764 /* add@3x.png in Resources */,
 				003371A7208F193700A3F619 /* icon_tx@2x.png in Resources */,
@@ -6584,6 +6656,7 @@
 				005038B31FD8CF35002661F2 /* img_jljf@3x.png in Resources */,
 				0056E0121EF3742D00656BFE /* course-pic1@2x.png in Resources */,
 				0020EF61202BED8C00590E7A /* icon_wd_fl@3x.png in Resources */,
+				00D0DC1C20A7CAEF00F2DFFD /* buyCoin_select@3x.png in Resources */,
 				006596281F8CA059002DFD90 /* main_newCourse_exchange@2x.png in Resources */,
 				0033719E208F193700A3F619 /* icon_more@3x.png in Resources */,
 				0048F6711FDA83B200C82216 /* StudyPlanProjectTableViewCell.xib in Resources */,
@@ -6606,6 +6679,7 @@
 				005539341EF4DD9E00097978 /* public-wechat@2x.png in Resources */,
 				0056E0181EF3742D00656BFE /* course-章节@2x.png in Resources */,
 				004E770A1EF210F700DBE807 /* 首页act50-50@3x.png in Resources */,
+				007A103920A41B70004B996E /* icon_bq1@3x.png in Resources */,
 				00366BCB1FD68AB00092182A /* img_nbzl@2x.png in Resources */,
 				00D7F2D81E7A8E1100AE3012 /* classImg-3-1@2x.png in Resources */,
 				0061678D1FB3E17C00394E30 /* icon_xsj@3x.png in Resources */,
@@ -6621,7 +6695,6 @@
 				004E76FC1EF210F700DBE807 /* 我的@3x.png in Resources */,
 				0055387F1EF4C6CF00097978 /* tiku-组-6@3x.png in Resources */,
 				00D7F2D51E7A8E1100AE3012 /* classImg-2-2@3x.png in Resources */,
-				006167861FB3E17C00394E30 /* icon_bq@2x.png in Resources */,
 				005A44601FB14D5100916D89 /* nbzl@2x.png in Resources */,
 				0078818C1EF8BA1200E3E96D /* shouye-顶部导航@2x.png in Resources */,
 				0055393A1EF4DD9E00097978 /* head-pic@2x.png in Resources */,
@@ -6637,6 +6710,7 @@
 				0055385E1EF4C6CF00097978 /* tiku_返回@2x.png in Resources */,
 				006AEEDD1FD7C05100092330 /* icon_jfgz@2x.png in Resources */,
 				003AC4171E667DBD00713502 /* zx-video-player-lock@3x.png in Resources */,
+				00D0DC1320A7C9F200F2DFFD /* BuyCoinTableViewCell.xib in Resources */,
 				005538611EF4C6CF00097978 /* tiku_trankle@3x.png in Resources */,
 				0056E0171EF3742D00656BFE /* course-消息(5)@3x.png in Resources */,
 				00A5056A1E8A0877000F8E39 /* tiku-1@2x.png in Resources */,
@@ -6779,6 +6853,7 @@
 				00DA6CF01EA8457B00382C90 /* NSDictionary+Unicode.m in Sources */,
 				0021305C2085F2F600F35749 /* PackageDetailSelectView.m in Sources */,
 				000309F61E6E7F9900155F76 /* QuestionReplyTableViewCell.m in Sources */,
+				00F6ECF020A5693A00DF9274 /* AppIconViewController.m in Sources */,
 				00501F631F396369009774D8 /* RCDLive.m in Sources */,
 				00A694D31E7FCBF500A7D10D /* CollectCourseOperation.m in Sources */,
 				000C91861FD4E4070075E67C /* MyOrderListViewController.m in Sources */,
@@ -6815,6 +6890,7 @@
 				00560A50202164FB00DD468D /* LivingBackYearListOperation.m in Sources */,
 				00CB49CC2089727F00B9EBAC /* PackageDetailViewController.m in Sources */,
 				009F32D61E80B81A004F41B1 /* SubCategoryCollectionViewCell.m in Sources */,
+				00D0DC2020A7CBC900F2DFFD /* BuyCoinFootTableViewCell.m in Sources */,
 				003AC42D1E667DBD00713502 /* CourseModuleModel.m in Sources */,
 				0059865F1F67E6FB00C864DC /* ForgetPasswordViewController.m in Sources */,
 				00C64A511F079AE500EE8165 /* UINavigationController+Cloudox.m in Sources */,
@@ -6885,6 +6961,7 @@
 				005538CD1EF4D18F00097978 /* ProcessView.m in Sources */,
 				003AC4361E667DBD00713502 /* DownloaderManager.m in Sources */,
 				006AEEF71FD7CE8300092330 /* GetMoreIntegralViewController.m in Sources */,
+				00D0DC2720A80E8700F2DFFD /* MyCoinOperation.m in Sources */,
 				00501F371F396369009774D8 /* RCDLiveChatRoomViewController.m in Sources */,
 				00024CB91E7136CD00002756 /* DownLoadViewController.m in Sources */,
 				00A694C71E7FABEB00A7D10D /* MyVideoNoteTableViewCell.m in Sources */,
@@ -6989,6 +7066,7 @@
 				0049D96D1F7B7BA400C9B35B /* LivingCourseTableViewCell.m in Sources */,
 				003AC43D1E667DBD00713502 /* PlayingVideoOperation.m in Sources */,
 				00592B621E7B8DFA00AB77E8 /* HistoryCourseOperation.m in Sources */,
+				00D0DC2420A80E6100F2DFFD /* VerifyInAppPuchaseOperation.m in Sources */,
 				00DA6CEA1EA83CE600382C90 /* JRSwizzle.m in Sources */,
 				0061677C1FB3DD1600394E30 /* MSegmentControl.m in Sources */,
 				003AC42F1E667DBD00713502 /* AllCourseModel.m in Sources */,
@@ -7000,6 +7078,7 @@
 				003AC4481E667DBD00713502 /* MainViewController.m in Sources */,
 				003AC4421E667DBD00713502 /* AllCourseViewController.m in Sources */,
 				007618C51E839FA0004615E0 /* AppInfoModel.m in Sources */,
+				00D0DC1220A7C9F200F2DFFD /* BuyCoinTableViewCell.m in Sources */,
 				00C386AF1F00A452001EA2EA /* SettingDetailViewController.m in Sources */,
 				005882EB1E94C9D000EB7E49 /* SimulateResultCollectionViewCell.m in Sources */,
 				0048F92D1FC521F90023B02B /* PayCourseOperation.m in Sources */,
@@ -7040,6 +7119,7 @@
 				00EA7B391E6A69BA00B95EB5 /* CourseCategoryDetailModel.m in Sources */,
 				00501F3B1F396369009774D8 /* RCDLiveInputView.m in Sources */,
 				00D7F2A01E7A3A2800AE3012 /* TZAssetCell.m in Sources */,
+				00D0DC0D20A7C7BA00F2DFFD /* BuyCoinHeadTableViewCell.m in Sources */,
 				000E8ED31E825FBD00842562 /* YUFoldingTableView.m in Sources */,
 				0098A6361E70F38400D5E7E6 /* FMDatabaseAdditions.m in Sources */,
 				002FC9001F023AFB001511AE /* LiveStreamOperation.m in Sources */,
@@ -7306,7 +7386,7 @@
 					"$(PROJECT_DIR)/Accountant/ViewControllers/MainViewController/聊天室/Live/UCLOUD",
 					"$(PROJECT_DIR)/Accountant/Frameworks/OpenSDK1.8.1",
 				);
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"-Objc",
 					"-all_load",
@@ -7348,7 +7428,7 @@
 					"$(PROJECT_DIR)/Accountant/ViewControllers/MainViewController/聊天室/Live/UCLOUD",
 					"$(PROJECT_DIR)/Accountant/Frameworks/OpenSDK1.8.1",
 				);
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"-Objc",
 					"-all_load",

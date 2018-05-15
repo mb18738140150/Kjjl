@@ -135,13 +135,13 @@
         lCell.useState = DiscountCouponUserState_normal;
     }
     switch (self.segmentC.selectIndex) {
-        case 0:
+        case 1:
             lCell.useState = DiscountCouponUserState_normal;
             break;
-        case 1:
+        case 2:
             lCell.useState = DiscountCouponUserState_haveUseed;
             break;
-        case 2:
+        case 3:
             lCell.useState = DiscountCouponUserState_expire;
             break;
             
@@ -187,7 +187,7 @@
 {
     if (self.myDscountCoupon) {
         DiscountCouponDetailViewController * detailVc = [[DiscountCouponDetailViewController alloc]init];
-        [detailVc refreshUIWith:self.dataSourseArry[indexPath.row]];
+        detailVc.infoDic = self.dataSourseArry[indexPath.row];
         [self.navigationController pushViewController:detailVc animated:YES];
         return;
     }
@@ -195,7 +195,7 @@
     
     if (indexPath.section == 0 && self.selectDiscountCouponBlock) {
         NSDictionary * infoDic = [self.dataSourseArry[indexPath.section] objectAtIndex:indexPath.row];
-        self.selectDiscountCouponBlock(@{kPrice:[infoDic objectForKey:kPrice]});
+        self.selectDiscountCouponBlock(@{kPrice:[infoDic objectForKey:@"CouponPrice"],@"CouponId":[infoDic objectForKey:@"CouponId"]});
     }
     [self.tableView reloadData];
     [self.navigationController popViewControllerAnimated:YES];
@@ -232,9 +232,9 @@
     titleLabel.backgroundColor = UIColorFromRGB(0xedf0f0);
     titleLabel.font = [UIFont systemFontOfSize:12];
     titleLabel.textAlignment = 1;
-    titleLabel.text = [NSString stringWithFormat:@"可使用的优惠券(%ld张)", self.dataSourseArry.count];
+    titleLabel.text = [NSString stringWithFormat:@"可使用的优惠券(%ld张)", [self.dataSourseArry[0] count]];
     if (section == 1) {
-        titleLabel.text = [NSString stringWithFormat:@"不可使用的优惠券(%ld张)", self.dataSourseArry.count];
+        titleLabel.text = [NSString stringWithFormat:@"不可使用的优惠券(%ld张)",[self.dataSourseArry[1] count]];
     }
     CGFloat width = [UIUtility getWidthWithText:titleLabel.text font:[UIFont systemFontOfSize:12] height:16];
     titleLabel.frame = CGRectMake(headView.hd_centerX - (width + 20) / 2, 12, width + 20, 16);

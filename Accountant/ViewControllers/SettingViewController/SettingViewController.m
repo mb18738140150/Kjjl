@@ -28,7 +28,7 @@
 #import "DiscountCouponViewController.h"
 #import "DredgeMemberViewController.h"
 #import "IntegralViewController.h"
-
+#import "AppIconViewController.h"
 #import "RecommendDetailViewController.h"
 #import "RecommendViewController.h"
 #import "StudyPlanViewController.h"
@@ -151,7 +151,7 @@
                            ];
     
     
-    self.dataArray = @[@[@{@"imageName":@"icon_hy",@"title":[[UserManager sharedManager] getLevelStr],@"tip":@""}],@[@{@"imageName":@"icon_dd",@"title":@"订单",@"tip":@""},@{@"imageName":@"icon_xz1",@"title":@"下载",@"tip":@""},@{@"imageName":@"icon_wd_fl",@"title":@"会员福利",@"tip":@""}],@[@{@"imageName":@"icon_jf",@"title":@"积分",@"tip":@""},@{@"imageName":@"icon_kq",@"title":@"卡券",@"tip":@""},@{@"imageName":@"icon_ewm",@"title":@"推广二维码",@"tip":@""}],@[@{@"imageName":@"icon_kf",@"title":@"客服中心",@"tip":@""}]];
+    self.dataArray = @[@[@{@"imageName":@"icon_hy",@"title":[[UserManager sharedManager] getLevelStr],@"tip":@""}],@[@{@"imageName":@"icon_dd",@"title":@"订单",@"tip":@""},@{@"imageName":@"icon_xz1",@"title":@"下载",@"tip":@""},@{@"imageName":@"icon_wd_fl",@"title":@"会员福利",@"tip":@""}],@[@{@"imageName":@"buyCoin",@"title":@"学习币",@"tip":@""},@{@"imageName":@"icon_kq",@"title":@"卡券",@"tip":@""},@{@"imageName":@"icon_ewm",@"title":@"推广二维码",@"tip":@""}],@[@{@"imageName":@"icon_kf",@"title":@"客服中心",@"tip":@""}]];
 }
 
 - (void)courseCategoryClick:(NSNotification *)notifier
@@ -304,11 +304,17 @@
             break;
         case 3:
         {
+            
             if (indexPath.row == 0) {
+                
+                AppIconViewController * iconVC = [[AppIconViewController alloc]init];
+                iconVC.hidesBottomBarWhenPushed = YES;
+                [self.navigationController pushViewController:iconVC animated:YES];
+                
                 NSLog(@"积分");
-                IntegralViewController * integralVC = [[IntegralViewController alloc]initWithNibName:@"IntegralViewController" bundle:nil];
-                integralVC.hidesBottomBarWhenPushed = YES;
-                [self.navigationController pushViewController:integralVC animated:YES];
+//                IntegralViewController * integralVC = [[IntegralViewController alloc]initWithNibName:@"IntegralViewController" bundle:nil];
+//                integralVC.hidesBottomBarWhenPushed = YES;
+//                [self.navigationController pushViewController:integralVC animated:YES];
                 
             }else if (indexPath.row == 1)
             {

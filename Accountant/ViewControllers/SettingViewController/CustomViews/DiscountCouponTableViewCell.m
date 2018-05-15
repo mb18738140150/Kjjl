@@ -25,6 +25,12 @@
 - (void)resetWithInfo:(NSDictionary *)infoDic
 {
     
+    self.titleLB.text = [NSString stringWithFormat:@"%@", [infoDic objectForKey:@"CouponName"]];
+    self.activityLB.text = [NSString stringWithFormat:@"%@", [infoDic objectForKey:@"MakeText"]];
+    self.deadlineLB.text = [NSString stringWithFormat:@"有效期至：%@", [infoDic objectForKey:@"EndDate"]];
+    self.discountPriceLB.text = [NSString stringWithFormat:@"%@", [infoDic objectForKey:@"CouponPrice"]];
+    self.manPriceLB.text = [NSString stringWithFormat:@"满%@可用", [infoDic objectForKey:@"Area"]];
+    
     [self refreshWith:self.useState];
     [self refreshWithUseStaet:self.canUse];
 }
@@ -37,6 +43,9 @@
     self.deadlineLB.textColor = UIColorFromRGB(0x999999);
     self.discountPriceLB.textColor = UIColorFromRGB(0xff4f01);
     self.manPriceLB.textColor = UIColorFromRGB(0x999999);
+    
+    
+    
     switch (state) {
         case DiscountCouponUserState_normal:
 //        {
@@ -72,7 +81,24 @@
 
 - (void)refreshWithUseStaet:(DiscountCouponUseState)canUse
 {
-    
+    switch (canUse) {
+        case DiscountCoupon_canUse:
+            {
+                
+            }
+            break;
+        case DiscountCoupon_cannotUse:
+        {
+            self.useStateImageView.hidden = YES;
+            self.titleLB.textColor = UIColorFromRGB(0xcccccc);
+            self.activityLB.textColor = UIColorFromRGB(0xcccccc);
+            self.deadlineLB.textColor = UIColorFromRGB(0xcccccc);
+            self.discountPriceLB.textColor = UIColorFromRGB(0xcccccc);
+            self.manPriceLB.textColor = UIColorFromRGB(0xcccccc);
+        }
+        default:
+            break;
+    }
 }
 
 - (void)displayLayer:(CALayer *)layer

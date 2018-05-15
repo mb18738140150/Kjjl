@@ -11,8 +11,9 @@
 #import "MemberDetailView.h"
 #import "BuyDetailViewController.h"
 #import "CansultTeachersListView.h"
+#import "AppIconViewController.h"
 
-@interface MemberDetailViewController ()<UIWebViewDelegate>
+@interface MemberDetailViewController ()<UIWebViewDelegate,UserModule_PayOrderProtocol,UIAlertViewDelegate>
 
 @property (nonatomic, strong)MSegmentControl *memberLevelSegment;
 @property (nonatomic, strong)UIScrollView *scrollView;
@@ -184,11 +185,56 @@
 {
     NSLog(@"buy %@", infoDic);
     
-    BuyDetailViewController *buyVC = [[BuyDetailViewController alloc]init];
-    buyVC.infoDic = infoDic;
-    buyVC.payCourseType = PayCourseType_Member;
-    [self.navigationController pushViewController:buyVC animated:YES];
-    
+    if ([WXApi isWXAppSupportApi] && [WXApi isWXAppInstalled]) {
+        BuyDetailViewController *buyVC = [[BuyDetailViewController alloc]init];
+        buyVC.infoDic = infoDic;
+        buyVC.payCourseType = PayCourseType_Member;
+        [self.navigationController pushViewController:buyVC animated:YES];
+        
+    }else
+    {
+        NSLog(@"%@", infoDic);
+        if ([[infoDic objectForKey:kPrice] intValue] > [[UserManager sharedManager] getMyGoldCoins]) {
+            UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"您的金币数量不足请先购买金币" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+            [alert show];
+        }else
+        {
+            [SVProgressHUD show];
+            NSDictionary * infoDic1 = @{@"courseId":[infoDic objectForKey:kMemberLevelId],
+                                        @"payType":@3,
+                                        @"courseType":@(PayCourseType_Member),
+                                        @"discountCouponId":@0};
+            [[UserManager sharedManager] payOrderWith:infoDic1 withNotifiedObject:self];
+        }
+    }
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 1) {
+        AppIconViewController * appVC = [[AppIconViewController alloc]init];
+        [self.navigationController pushViewController:appVC animated:YES];
+    }
+}
+
+#pragma mark - payOrderDelegate
+- (void)didRequestPayOrderSuccessed
+{
+    [SVProgressHUD dismiss];
+    [SVProgressHUD showSuccessWithStatus:@"购买成功"];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [SVProgressHUD dismiss];
+    });
+    [self.navigationController popToRootViewControllerAnimated:YES];
+}
+
+- (void)didRequestPayOrderFailed:(NSString *)failedInfo
+{
+    [SVProgressHUD dismiss];
+    [SVProgressHUD showErrorWithStatus:failedInfo];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [SVProgressHUD dismiss];
+    });
 }
 
 @end

@@ -17,7 +17,6 @@
 
 @implementation LiveStreamOperation
 
-
 - (void)setCurrentSearchLiveStreamWithModel:(HottestCourseModel *)model
 {
     self.liveStreamModel = model;

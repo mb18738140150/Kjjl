@@ -21,7 +21,7 @@
     [coder encodeObject:@(self.level) forKey:@"level"];
     [coder encodeObject:self.rongToken forKey:@"rongToken"];
     [coder encodeObject:self.levelDetail forKey:@"levelDetail"];
-    
+    [coder encodeObject:@(self.goldCoins) forKey:@"goldCoins"];
 }
 
 - (instancetype)initWithCoder:(NSCoder *)coder
@@ -36,7 +36,7 @@
         self.level = [[coder decodeObjectForKey:@"level"] intValue];
         self.rongToken = [coder decodeObjectForKey:@"rongToken"];
         self.levelDetail = [NSString stringWithFormat:@"%@", [coder decodeObjectForKey:@"levelDetail"]];
-        
+        self.goldCoins = [[coder decodeObjectForKey:@"goldCoins"] intValue];
     }
     return self;
 }

@@ -36,7 +36,7 @@
     self.backGroundView.backgroundColor = [UIColor whiteColor];
     [self addSubview:self.backGroundView];
     
-    self.iconImageView = [[UIImageView alloc]initWithFrame:CGRectMake(10, -49, 115, 115)];
+    self.iconImageView = [[UIImageView alloc]initWithFrame:CGRectMake(10, -40, 100.0 / 8 * 14, 100)];
     self.iconImageView.image = [UIImage imageNamed:@""];
     self.iconImageView.layer.cornerRadius = 10;
     self.layer.masksToBounds = YES;
@@ -52,7 +52,7 @@
     self.storeCountLB.textColor = UIColorFromRGB(0x333333);
     [self.backGroundView addSubview:self.storeCountLB];
     
-    self.selectLB = [[UILabel alloc]initWithFrame:CGRectMake(self.priceLB.hd_x, CGRectGetMaxY(self.storeCountLB.frame) + 15, self.priceLB.hd_width, 15)];
+    self.selectLB = [[UILabel alloc]initWithFrame:CGRectMake(self.priceLB.hd_x, CGRectGetMaxY(self.priceLB.frame) + 10, self.priceLB.hd_width, 15)];
     self.selectLB.font = [UIFont systemFontOfSize:12];
     self.selectLB.textColor = UIColorFromRGB(0xcccccc);
     [self.backGroundView addSubview:self.selectLB];
@@ -145,6 +145,7 @@
     [self.iconImageView sd_setImageWithURL:[NSURL URLWithString:self.imageUrl] placeholderImage:[UIImage imageNamed:@""]];
     self.priceLB.text = [NSString stringWithFormat:@"￥%@", [infoDic objectForKey:@"price"]];
     self.storeCountLB.text = [NSString stringWithFormat:@"库存：%@", [infoDic objectForKey:@"count"]];
+    self.storeCountLB.hidden = YES;
     self.selectLB.text = [infoDic objectForKey:@"name"];
     [self.packageCountView reset];
     [self.guigeCollectionView reloadData];

@@ -17,6 +17,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *promissLB;
 @property (weak, nonatomic) IBOutlet UIImageView *postageImageView;
 @property (weak, nonatomic) IBOutlet UILabel *postageLB;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *imageHeight;
 
 - (void)resetUIWithInfo:(NSDictionary *)infoDic;
 

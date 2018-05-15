@@ -155,6 +155,9 @@
                     infoDic = dic;
                 }
             }
+            if (![infoDic objectForKey:kCourseSecondID]) {
+                infoDic = [[[CourseraManager sharedManager] getLivingSectionDetailArray] objectAtIndex:0];
+            }
         }
         
         chatRoomVC.isLivingCourse = YES;
@@ -165,7 +168,6 @@
     chatRoomVC.contentURL = [infoDic objectForKey:kCourseURL];
     chatRoomVC.infoDic = infoDic;
     [self presentViewController:chatRoomVC animated:YES completion:nil];
-    
 }
 
 - (void)loginClick:(NSNotification *)notification
@@ -203,11 +205,11 @@
     NSDictionary *infoDic = notification.object;
     if ([[infoDic objectForKey:@"package"] boolValue]) {
         
+        [SVProgressHUD show];
+        [[CourseraManager sharedManager] didRequestPackageDetailWithPackageId:[[infoDic objectForKey:kCourseID] intValue] NotifiedObject:self];
+        self.packageId = [infoDic objectForKey:kCourseID];
+        return;
         if ([WXApi isWXAppSupportApi] && [WXApi isWXAppInstalled]) {
-            [SVProgressHUD show];
-            [[CourseraManager sharedManager] didRequestPackageDetailWithPackageId:[[infoDic objectForKey:kCourseID] intValue] NotifiedObject:self];
-            self.packageId = [infoDic objectForKey:kCourseID];
-            return;
         }
         [SVProgressHUD showErrorWithStatus:@"暂无数据"];
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1*NSEC_PER_SEC)), dispatch_get_main_queue(), ^{

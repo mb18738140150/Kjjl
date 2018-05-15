@@ -39,14 +39,14 @@
     self.payBtn.layer.cornerRadius = 3;
     self.payBtn.layer.masksToBounds = YES;
     
-    if ([WXApi isWXAppInstalled] && [WXApi isWXAppSupportApi]) {
-        self.priceLB.hidden = NO;
-        self.payBtn.hidden = NO;
-    }else
-    {
-        self.priceLB.hidden = YES;
-        self.payBtn.hidden = YES;
-    }
+    self.priceLB.hidden = NO;
+    self.payBtn.hidden = NO;
+//    if ([WXApi isWXAppInstalled] && [WXApi isWXAppSupportApi]) {
+//    }else
+//    {
+//        self.priceLB.hidden = YES;
+//        self.payBtn.hidden = YES;
+//    }
 }
 
 - (IBAction)payAction:(id)sender {

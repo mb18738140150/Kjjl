@@ -15,11 +15,13 @@
 #define kClassroomLivingcellId @"ClassroomLivingTableViewCellID"
 #define OrderAlerttag 2000
 
-@interface SearchReaultViewController ()<UITableViewDelegate, UITableViewDataSource,UIAlertViewDelegate,UserModule_OrderLivingCourseProtocol>
+@interface SearchReaultViewController ()<UITableViewDelegate, UITableViewDataSource,UIAlertViewDelegate,UserModule_OrderLivingCourseProtocol,CourseModule_LivingSectionDetail>
 
 @property (nonatomic, strong)UITableView * tableView;
 @property (nonatomic, strong)NSArray * dataArray;
 @property (nonatomic, assign)int orderCourseId;
+@property (nonatomic, strong)NSDictionary * selectCourseInfoDic;
+
 @end
 
 @implementation SearchReaultViewController
@@ -68,12 +70,8 @@
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tableView.backgroundColor = UIRGBColor(238, 241, 241);
     
-    if (self.searchResultType == SearchResultType_videoCourse) {
-        [self.tableView registerClass:[CoursecategoryTableViewCell class] forCellReuseIdentifier:kClassroomcellId];
-    }else
-    {
-        [self.tableView registerNib:[UINib nibWithNibName:@"ClassroomLivingTableViewCell" bundle:nil] forCellReuseIdentifier:kClassroomLivingcellId];
-    }
+    [self.tableView registerClass:[CoursecategoryTableViewCell class] forCellReuseIdentifier:kClassroomcellId];
+    [self.tableView registerNib:[UINib nibWithNibName:@"ClassroomLivingTableViewCell" bundle:nil] forCellReuseIdentifier:kClassroomLivingcellId];
     
     [self.view addSubview:self.tableView];
 }
@@ -90,17 +88,23 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    CoursecategoryTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:kClassroomcellId forIndexPath:indexPath];
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    cell.courseType = CourseCategoryType_nomal;
+    [cell resetCellContent:[self.dataArray objectAtIndex:indexPath.row]];
+    return cell;
     if (self.searchResultType == SearchResultType_videoCourse) {
+    }else
+    {
+//        ClassroomLivingTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:kClassroomLivingcellId forIndexPath:indexPath];
+//        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+//        [cell resetWithDic:[self.dataArray objectAtIndex:indexPath.row]];
+//        return cell;
+        
         CoursecategoryTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:kClassroomcellId forIndexPath:indexPath];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell.courseType = CourseCategoryType_nomal;
         [cell resetCellContent:[self.dataArray objectAtIndex:indexPath.row]];
-        return cell;
-    }else
-    {
-        ClassroomLivingTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:kClassroomLivingcellId forIndexPath:indexPath];
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        [cell resetWithDic:[self.dataArray objectAtIndex:indexPath.row]];
         return cell;
     }
 }
@@ -113,34 +117,27 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSDictionary *info = [self.dataArray objectAtIndex:indexPath.row];
+    self.selectCourseInfoDic = info;
     self.orderCourseId = [[info objectForKey:kCourseID] intValue];
     if (self.searchResultType == SearchResultType_videoCourse) {
         [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationOfCourseClick object:info];
     }else
     {
-        if ([[info objectForKey:kLivingState] intValue] == 2) {
-            if ([[UserManager sharedManager] isUserLogin]){
-                
-                if ([[info objectForKey:kLivingState] intValue] != 3) {
-                    UIAlertView *orderAlert = [[UIAlertView alloc]initWithTitle:nil message:@"您还未预约，是否预约？" delegate:self cancelButtonTitle:@"否" otherButtonTitles:@"是", nil];
-                    orderAlert.tag = OrderAlerttag;
-                    [orderAlert show];
-                }else
-                {
-                    LivingCourseViewController * vc = [[LivingCourseViewController alloc]init];
-                    vc.infoDic = info;
-                    vc.hidesBottomBarWhenPushed = YES;
-                    [self.navigationController pushViewController:vc animated:YES];
-                    
-                }
-                
-            }else
-            {
-                [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationOfLoginClick object:nil];
-            }
+        if ([[UserManager sharedManager] isUserLogin]){
             
-            return;
+            [SVProgressHUD show];
+            NSDictionary * dic1 = @{kCourseID:[info objectForKey:kCourseID],
+                                    kteacherId:@"",
+                                    @"month":@(0)};
+            [[CourseraManager sharedManager] didrequestLivingSectionDetailWithInfo:dic1 andNotifiedObject:self];
+            
+        }else
+        {
+            [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationOfLoginClick object:nil];
         }
+//        跟我学成本核算
+        return;
+        
     }
 }
 #pragma mark - alertDelegate
@@ -152,6 +149,25 @@
 //            [[UserManager sharedManager] didRequestOrderLivingCourseOperationWithCourseId:self.orderCourseId withNotifiedObject:self];
         }
     }
+}
+
+
+#pragma mark - LivingSectionDetailProtocal
+
+- (void)didRequestLivingSectionDetailSuccessed
+{
+    [SVProgressHUD dismiss];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationOfLivingChatClick object:self.selectCourseInfoDic];
+}
+
+- (void)didRequestLivingSectionDetailFailed:(NSString *)failedInfo
+{
+    if ([failedInfo isEqualToString:@"暂无数据"]) {
+        failedInfo = @"暂无课程";
+    }
+    
+    [SVProgressHUD dismiss];
 }
 
 #pragma mark - orderLivingCourseProtocal

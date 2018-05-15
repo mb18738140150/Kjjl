@@ -7,14 +7,21 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <WebKit/WebKit.h>
 
-@interface PackageDetailIntroduceCell : UITableViewCell
+@interface PackageDetailIntroduceCell : UITableViewCell<WKUIDelegate,WKNavigationDelegate,UIScrollViewDelegate>
 
 @property (nonatomic, strong)UIView * tipView;
 @property (nonatomic, strong)UILabel * titleLB;
+@property (nonatomic, assign)CGFloat height;
 
 @property (nonatomic, strong)UITextView * textView;
+@property (nonatomic, strong)UIImageView * introImageView;
+@property (nonatomic, strong)WKWebView * webView;
 
-- (void)resetWitnInfo:(NSDictionary *)infoDic;
+@property (nonatomic, copy)void(^imgeComplateBlock)(CGFloat height);
+
+- (void)resetWitnInfo:(NSDictionary *)infoDic andImage:(UIImageView *)imageView;
+- (void)resetWithInfo:(NSDictionary *)infoDic;
 
 @end

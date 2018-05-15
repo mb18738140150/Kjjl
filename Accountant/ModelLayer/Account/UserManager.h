@@ -221,7 +221,11 @@
 
 - (void)didRequestSubmitGiftCodeWithInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_SubmitGiftCode>)object;
 
+// 验证苹果支付结果
+- (void)didRequestVerifyInAppPurchaseWithInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_VerifyInAppPurchase>)object;
+- (void)resetGoldCoinCount:(int )count;
 
-
-
+// 获取我的金币
+- (int)getMyGoldCoins;
+- (void)didRequestMyCoinsWithInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_MyCoin>)object;
 @end

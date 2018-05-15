@@ -173,4 +173,16 @@
 
 @end
 
+@protocol UserModule_VerifyInAppPurchase <NSObject>
 
+- (void)didRequestInAppPurchaseSuccessed;
+- (void)didRequestInAppPurchaseFailed:(NSString *)failedInfo;
+
+@end
+
+@protocol UserModule_MyCoin <NSObject>
+
+- (void)didRequestMyCoinSuccessed;
+- (void)didRequestMyCoinFailed:(NSString *)failedInfo;
+
+@end

@@ -486,10 +486,10 @@
     // 联系老师
     if (![[self.playCourseInfo objectForKey:kCanWatch] intValue]) {
         
-        BOOL isBuy = NO;
-        if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"weixin://"]] && [WXApi isWXAppInstalled] && [WXApi isWXAppSupportApi]) {
-            isBuy = YES;
-        }
+        BOOL isBuy = YES;
+        //        isBuy = YES;
+        //        if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"weixin://"]] && [WXApi isWXAppInstalled] && [WXApi isWXAppSupportApi]) {
+        //        }
         
         self.videoFunctionView = [[VideoFunctionView alloc]initWithFrame:CGRectMake(0, kScreenHeight - 50, kScreenWidth, 50) andIsBuy:isBuy];
         [self.videoFunctionView refreshWithInfoDic:self.playCourseInfo];
@@ -505,12 +505,20 @@
         };
         
         self.videoFunctionView.buyBlock = ^{
+            if (![[UserManager sharedManager] isUserLogin]) {
+                [SVProgressHUD showErrorWithStatus:@"请先登录"];
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    [SVProgressHUD dismiss];
+                });
+                return;
+            }
             BuyCourseViewController * buyVC = [[BuyCourseViewController alloc]init];
             buyVC.infoDic = weakSelf.playCourseInfo;
             [weakSelf.videoController pausePlay];
             UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:buyVC];
             [weakSelf presentViewController:nav animated:YES completion:nil];
         };
+        
     }
     
     self.cansultView = [[CansultTeachersListView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, kScreenHeight) andTeachersArr:[[UserManager sharedManager] getAssistantList]];

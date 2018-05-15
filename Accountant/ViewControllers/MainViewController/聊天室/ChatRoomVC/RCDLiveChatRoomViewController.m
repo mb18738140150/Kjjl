@@ -282,11 +282,11 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
             {
                 self.downLoadBtn.hidden = YES;
                 if ([[self.infoDic objectForKey:kIsLivingCourseFree] intValue] == 0 && [[self.infoDic objectForKey:kHaveJurisdiction] intValue] == 0) {
-                    if ([WXApi isWXAppInstalled] && [WXApi isWXAppSupportApi]) {
-                        self.downLoadBtn.hidden = NO;
-                        self.livingType = LivingCourseDetailButton_pay;
-                        [self resetPay];
-                    }
+                    self.downLoadBtn.hidden = NO;
+                    self.livingType = LivingCourseDetailButton_pay;
+                    [self resetPay];
+//                    if ([WXApi isWXAppInstalled] && [WXApi isWXAppSupportApi]) {
+//                    }
                 }
             }
                 break;
@@ -311,11 +311,11 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
                 [self resetDownload];
                 if ([[self.infoDic objectForKey:kIsDownload] intValue] == 0) {
                     self.downLoadBtn.hidden = YES;
-                    if ([WXApi isWXAppInstalled] && [WXApi isWXAppSupportApi]) {
-                        self.downLoadBtn.hidden = NO;
-                        self.livingType = LivingCourseDetailButton_pay;
-                        [self resetPay];
-                    }
+                    self.downLoadBtn.hidden = NO;
+                    self.livingType = LivingCourseDetailButton_pay;
+                    [self resetPay];
+//                    if ([WXApi isWXAppInstalled] && [WXApi isWXAppSupportApi]) {
+//                    }
                 }
                 if ([[self.infoDic objectForKey:kIsBack] intValue] == 0) {
                     
@@ -1206,11 +1206,11 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
         {
             self.downLoadBtn.hidden = YES;
             if ([[self.infoDic objectForKey:kIsLivingCourseFree] intValue] == 0 && [[self.infoDic objectForKey:kHaveJurisdiction] intValue] == 0) {
-                if ([WXApi isWXAppInstalled] && [WXApi isWXAppSupportApi]) {
-                    self.downLoadBtn.hidden = NO;
-                    self.livingType = LivingCourseDetailButton_pay;
-                    [self resetPay];
-                }
+                self.downLoadBtn.hidden = NO;
+                self.livingType = LivingCourseDetailButton_pay;
+                [self resetPay];
+//                if ([WXApi isWXAppInstalled] && [WXApi isWXAppSupportApi]) {
+//                }
             }
         }
             break;
@@ -1236,11 +1236,11 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
             [self resetDownload];
             if ([[self.infoDic objectForKey:kIsDownload] intValue] == 0) {
                 self.downLoadBtn.hidden = YES;
-                if ([WXApi isWXAppInstalled] && [WXApi isWXAppSupportApi]) {
-                    self.downLoadBtn.hidden = NO;
-                    self.livingType = LivingCourseDetailButton_pay;
-                    [self resetPay];
-                }
+                self.downLoadBtn.hidden = NO;
+                self.livingType = LivingCourseDetailButton_pay;
+                [self resetPay];
+//                if ([WXApi isWXAppInstalled] && [WXApi isWXAppSupportApi]) {
+//                }
             }
             if ([[self.infoDic objectForKey:kIsBack] intValue] == 0) {
                 

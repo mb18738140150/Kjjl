@@ -31,6 +31,7 @@
     self.userModel.rongToken = @"";
     self.userModel.level = 0;
     self.userModel.level = 0;
+    self.userModel.goldCoins = 0;
     self.userModel.codeview = 1;
     [self encodeUserInfo];
 }

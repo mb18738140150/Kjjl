@@ -41,7 +41,7 @@
 //#define SERVICE_ID_XIAONENG2 @"op_1000_1483495280515"
 #define OrderAlerttag 2000
 
-@interface MainViewController ()<UITableViewDelegate,CourseModule_HottestCourseProtocl,ImageModule_BannerProtocol,QuestionModule_QuestionProtocol, CourseModule_NotStartLivingCourse,UIAlertViewDelegate,CourseModule_LivingSectionDetail,CourseModule_LivingSectionDetail,CourseModule_AllCourseProtocol,UserModule_LevelDetailProtocol,UserModule_AcquireDiscountCouponProtocol,TestModule_AllCategoryProtocol>
+@interface MainViewController ()<UITableViewDelegate,CourseModule_HottestCourseProtocl,ImageModule_BannerProtocol,QuestionModule_QuestionProtocol, CourseModule_NotStartLivingCourse,UIAlertViewDelegate,CourseModule_LivingSectionDetail,CourseModule_LivingSectionDetail,CourseModule_AllCourseProtocol,UserModule_LevelDetailProtocol,UserModule_AcquireDiscountCouponProtocol,TestModule_AllCategoryProtocol,UIWebViewDelegate,UserModule_MyCoin>
 
 @property (nonatomic,strong)    UITableView                     *contentTableView;
 @property (nonatomic,strong)    ContentTableViewDataSource      *contentTableSource;
@@ -132,7 +132,9 @@
     [[CourseraManager sharedManager]didRequestNotStartLivingCourseWithInfo:@{@"Month":@([NSString getCurrentMonth]),@"year":[NSString stringWithFormat:@"%d", [NSString getCurrentYear]]} NotifiedObject:self];
     [[UserManager sharedManager] didRequestAssistantWithInfo:@{} withNotifiedObject:nil];
     [[UserManager sharedManager]didRequestLevelDetailWithNotifiedObject:self];
-//    [[UserManager sharedManager] didRequestAcquireDiscountCouponWithCourseInfo:@{} withNotifiedObject:self];
+    
+    [[UserManager sharedManager] didRequestAcquireDiscountCouponWithCourseInfo:@{} withNotifiedObject:self];
+    [[UserManager sharedManager] didRequestMyCoinsWithInfo:@{} withNotifiedObject:self];
 }
 
 - (void)allCourseClick
@@ -455,6 +457,17 @@
     self.courseVCdidload = YES;
 }
 
+#pragma mark - myCoin
+- (void)didRequestMyCoinSuccessed
+{
+    
+}
+
+- (void)didRequestMyCoinFailed:(NSString *)failedInfo
+{
+    
+}
+
 #pragma mark - hottest course delegate
 - (void)didRequestHottestCourseSuccessed
 {
@@ -511,24 +524,34 @@
         [weakSelf acquireDiscountCouponSuccesse];
     };
     self.discountCouponView.getDiscountCouponBlock = ^{
-//        [weakSelf.discountCouponView removeFromSuperview];
-//        DiscountCouponViewController * discountVC = [[DiscountCouponViewController alloc]init];
-//        [weakSelf.navigationController pushViewController:discountVC animated:YES];
-//        [weakSelf acquireDiscountCouponSuccesse];
-        
         [weakSelf.discountCouponView removeFromSuperview];
-        weakSelf.discountCouponView = nil;
+        DiscountCouponViewController * discountVC = [[DiscountCouponViewController alloc]init];
+        discountVC.hidesBottomBarWhenPushed = YES;
+        discountVC.myDscountCoupon = YES;
+        [weakSelf.navigationController pushViewController:discountVC animated:YES];
         [weakSelf acquireDiscountCouponSuccesse];
+        
+//        [weakSelf.discountCouponView removeFromSuperview];
+//        weakSelf.discountCouponView = nil;
+//        [weakSelf acquireDiscountCouponSuccesse];
     };
 }
 
 - (void)didRequestAcquireDiscountCouponFailed:(NSString *)failedInfo
 {
+    
 }
 
 - (void)acquireDiscountCouponSuccesse
 {
-    [[UserManager sharedManager] didRequestAcquireDiscountCouponSuccessWithCourseInfo:@{}];
+    NSArray * couponArr = [[UserManager sharedManager] getAcquireDiscountCoupon];
+    NSMutableArray * arr = [NSMutableArray array];
+    for (NSDictionary * infoDic in couponArr) {
+        [arr addObject:[infoDic objectForKey:@"CouponId"]];
+    }
+    NSString * couponIdStr = [arr componentsJoinedByString:@","];
+    
+    [[UserManager sharedManager] didRequestAcquireDiscountCouponSuccessWithCourseInfo:@{@"couponIdStr":couponIdStr}];
 }
 
 #pragma mark - banner delegate
@@ -612,58 +635,74 @@
 - (void)lookMessage
 {
     
-//    LivingChatViewController * chatVC = [[LivingChatViewController alloc]init];
-//    chatVC.conversationType = ConversationType_PRIVATE;
-//    chatVC.targetId = @"3273";
-//    chatVC.hidesBottomBarWhenPushed = YES;
-//    [self.navigationController pushViewController:chatVC animated:YES];
-//    return;
+    NSDictionary * teacherInfo = [[[UserManager sharedManager] getAssistantList] firstObject];
+    NSString  *qqNumber=[teacherInfo objectForKey:@"assistantQQ"];
+    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"mqq://"]]) {
+        UIWebView * webView = [[UIWebView alloc]initWithFrame:CGRectZero];
+        NSURL * url = [NSURL URLWithString:[NSString stringWithFormat:@"mqq://im/chat?chat_type=wpa&uin=%@&version=1&src_type=web",qqNumber]];
+        
+        NSURLRequest * request = [NSURLRequest requestWithURL:url];
+        webView.delegate = self;
+        [webView loadRequest:request];
+        [self.view addSubview:webView];
+    }else
+    {
+        [SVProgressHUD showErrorWithStatus:@"对不起，您还没安装QQ"];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [SVProgressHUD dismiss];
+        });
+    }
+    return;
     
     if ([[UserManager sharedManager] getUserId]) {
-        RCDCustomerServiceViewController * chatService = [[RCDCustomerServiceViewController alloc]init];
-        chatService.conversationType = ConversationType_CUSTOMERSERVICE;
         
-        chatService.targetId = SERVICE_ID;
+        /*
+         RCDCustomerServiceViewController * chatService = [[RCDCustomerServiceViewController alloc]init];
+         chatService.conversationType = ConversationType_CUSTOMERSERVICE;
+         
+         chatService.targetId = SERVICE_ID;
+         
+         RCCustomerServiceInfo *csInfo = [[RCCustomerServiceInfo alloc] init];
+         csInfo.userId = [RCIMClient sharedRCIMClient].currentUserInfo.userId;
+         csInfo.nickName = @"昵称";
+         csInfo.loginName = @"登录名称";
+         csInfo.name = @"用户名称";
+         csInfo.grade = @"11级";
+         csInfo.gender = @"男";
+         csInfo.birthday = @"2016.5.1";
+         csInfo.age = @"36";
+         csInfo.profession = @"software engineer";
+         csInfo.portraitUrl =
+         [RCIMClient sharedRCIMClient].currentUserInfo.portraitUri;
+         csInfo.province = @"beijing";
+         csInfo.city = @"beijing";
+         csInfo.memo = @"这是一个好顾客!";
+         
+         csInfo.mobileNo = @"13800000000";
+         csInfo.email = @"test@example.com";
+         csInfo.address = @"北京市北苑路北泰岳大厦";
+         csInfo.QQ = @"88888888";
+         csInfo.weibo = @"my weibo account";
+         csInfo.weixin = @"myweixin";
+         
+         csInfo.page = @"卖化妆品的页面来的";
+         csInfo.referrer = @"客户端";
+         csInfo.enterUrl = @"testurl";
+         csInfo.skillId = @"技能组";
+         csInfo.listUrl = @[@"用户浏览的第一个商品Url",
+         @"用户浏览的第二个商品Url"];
+         csInfo.define = @"自定义信息";
+         
+         chatService.csInfo = csInfo;
+         chatService.title = @"客服";
+         
+         chatService.hidesBottomBarWhenPushed = YES;
+         UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:nil action:nil];
+         self.navigationItem.backBarButtonItem = item;
+         
+         [self.navigationController pushViewController:chatService animated:YES];
+         */
         
-        RCCustomerServiceInfo *csInfo = [[RCCustomerServiceInfo alloc] init];
-        csInfo.userId = [RCIMClient sharedRCIMClient].currentUserInfo.userId;
-        csInfo.nickName = @"昵称";
-        csInfo.loginName = @"登录名称";
-        csInfo.name = @"用户名称";
-        csInfo.grade = @"11级";
-        csInfo.gender = @"男";
-        csInfo.birthday = @"2016.5.1";
-        csInfo.age = @"36";
-        csInfo.profession = @"software engineer";
-        csInfo.portraitUrl =
-        [RCIMClient sharedRCIMClient].currentUserInfo.portraitUri;
-        csInfo.province = @"beijing";
-        csInfo.city = @"beijing";
-        csInfo.memo = @"这是一个好顾客!";
-        
-        csInfo.mobileNo = @"13800000000";
-        csInfo.email = @"test@example.com";
-        csInfo.address = @"北京市北苑路北泰岳大厦";
-        csInfo.QQ = @"88888888";
-        csInfo.weibo = @"my weibo account";
-        csInfo.weixin = @"myweixin";
-        
-        csInfo.page = @"卖化妆品的页面来的";
-        csInfo.referrer = @"客户端";
-        csInfo.enterUrl = @"testurl";
-        csInfo.skillId = @"技能组";
-        csInfo.listUrl = @[@"用户浏览的第一个商品Url",
-                           @"用户浏览的第二个商品Url"];
-        csInfo.define = @"自定义信息";
-        
-        chatService.csInfo = csInfo;
-        chatService.title = @"客服";
-        
-        chatService.hidesBottomBarWhenPushed = YES;
-        UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStylePlain target:nil action:nil];
-        self.navigationItem.backBarButtonItem = item;
-        
-        [self.navigationController pushViewController:chatService animated:YES];
     }else
     {
         [[NSNotificationCenter defaultCenter]postNotificationName:kNotificationOfLoginClick object:nil];

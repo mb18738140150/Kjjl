@@ -34,7 +34,7 @@
     
     [self navigationViewSetup];
     [self prepareUI];
-    [self refreshUIWith:@{}];
+    [self refreshUIWith:self.infoDic];
 }
 
 - (void)navigationViewSetup
@@ -117,16 +117,28 @@
     self.useBtn.layer.cornerRadius = 5;
     self.useBtn.layer.masksToBounds = YES;
     self.useBtn.titleLabel.font = [UIFont systemFontOfSize:15];
-    [self.backImageView addSubview:self.useBtn];
+//    [self.backImageView addSubview:self.useBtn];
 }
 
 - (void)refreshUIWith:(NSDictionary *)infoDic
 {
-    self.priceLB.attributedText = [self getPriceText:@"100"];
-    self.stateLB.text = @"未使用";
-    self.titleLB.text = @"现金抵用券";
-    self.detailLB.attributedText = [UIUtility getSpaceLabelStr:@"使用条件：最低消费1000\n消费仅限会员购买使用，消费不低于1000元" withFont:[UIFont systemFontOfSize:14]  withAlignment:NSTextAlignmentCenter];
-    self.expireTimeLB.attributedText = [UIUtility getSpaceLabelStr:@"有效期：2017.10.12至2017.12.20\n不允许和其他抵用券叠加使用" withFont:[UIFont systemFontOfSize:12]  withAlignment:NSTextAlignmentCenter];
+    self.priceLB.attributedText = [self getPriceText:[infoDic objectForKey:@"CouponPrice"]];
+    switch ([[infoDic objectForKey:@"State"] intValue]) {
+        case 0:
+            self.stateLB.text = @"未使用";
+            break;
+        case 1:
+            self.stateLB.text = @"已使用";
+            break;
+        case 2:
+            self.stateLB.text = @"已过期";
+            break;
+        default:
+            break;
+    }
+    self.titleLB.text = [NSString stringWithFormat:@"%@", [infoDic objectForKey:@"CouponName"]];
+    self.detailLB.attributedText = [UIUtility getSpaceLabelStr:[NSString stringWithFormat:@"使用条件：最低消费%@\n消费仅限会员购买使用，消费不低于%@元", [infoDic objectForKey:@"Area"],[infoDic objectForKey:@"Area"]] withFont:[UIFont systemFontOfSize:14]  withAlignment:NSTextAlignmentCenter];
+    self.expireTimeLB.attributedText = [UIUtility getSpaceLabelStr:[NSString stringWithFormat:@"有效期：%@\n不允许和其他抵用券叠加使用", [infoDic objectForKey:@"EndDate"]] withFont:[UIFont systemFontOfSize:12]  withAlignment:NSTextAlignmentCenter];
     
 }
 

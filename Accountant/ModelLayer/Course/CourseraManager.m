@@ -632,6 +632,10 @@
 - (NSDictionary *)getPlayCourseInfo
 {
     CourseModel *model = self.courseModuleModel.detailCourseModel.courseModel;
+    if (model.price == 0.0) {
+        model.canWatch = 1;
+    }
+    
     NSDictionary *dic = @{kCourseID:@(model.courseID),
                           kCourseCover:model.courseCover,
                           kCourseName:model.courseName,

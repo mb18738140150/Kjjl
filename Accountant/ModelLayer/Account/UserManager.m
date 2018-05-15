@@ -35,6 +35,8 @@
 #import "GiftListOperation.h"
 #import "AcquireDiscountCouponOperation.h"
 #import "AcquireDiscountCouponSuccess.h"
+#import "VerifyInAppPuchaseOperation.h"
+#import "MyCoinOperation.h"
 
 @interface UserManager()
 
@@ -67,6 +69,8 @@
 @property (nonatomic, strong)SubmitGiftCodeOperation    *submitGiftCodeOperation;
 @property (nonatomic, strong)AcquireDiscountCouponOperation *acquireDisCountOperation;
 @property (nonatomic, strong)AcquireDiscountCouponSuccess   *acquireDisCountSuccessOperation;
+@property (nonatomic, strong)VerifyInAppPuchaseOperation *verifyInAppPurchaseOperation;
+@property (nonatomic, strong)MyCoinOperation            *myCoinOperation;
 
 @end
 
@@ -113,6 +117,8 @@
         self.livingBackYearLiatOperation = [[LivingBackYearListOperation alloc]init];
         self.giftLIstOperation = [[GiftListOperation alloc]init];
         self.submitGiftCodeOperation = [[SubmitGiftCodeOperation alloc]init];
+        self.verifyInAppPurchaseOperation = [[VerifyInAppPuchaseOperation alloc]init];
+        self.myCoinOperation = [[MyCoinOperation alloc]init];
     }
     return self;
 }
@@ -234,6 +240,16 @@
 - (void)didRequestLivingBackYearListWithInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_LivingBackYearList>)object
 {
     [self.livingBackYearLiatOperation didRequestLivingBackYearListWithInfo:infoDic withNotifiedObject:object];
+}
+
+- (void)didRequestVerifyInAppPurchaseWithInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_VerifyInAppPurchase>)object
+{
+    [self.verifyInAppPurchaseOperation didRequestVerifyInAppPurchaseWithInfo:infoDic withNotifiedObject:object];
+}
+
+- (void)didRequestMyCoinsWithInfo:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_MyCoin>)object
+{
+    [self.myCoinOperation didRequestMyCoinWithNotifiedObject:object];
 }
 
 - (void)logout
@@ -460,7 +476,7 @@
 {
     NSMutableArray * array = [NSMutableArray array];
     for (NSDictionary * infoDic in self.discountCouponOperation.discountCouponArray) {
-        if ([[infoDic objectForKey:@"useType"] intValue] == 0) {
+        if ([[infoDic objectForKey:@"State"] intValue] == 0) {
             [array addObject:infoDic];
         }
     }
@@ -471,7 +487,7 @@
 {
     NSMutableArray * array = [NSMutableArray array];
     for (NSDictionary * infoDic in self.discountCouponOperation.discountCouponArray) {
-        if ([[infoDic objectForKey:@"useType"] intValue] == 2) {
+        if ([[infoDic objectForKey:@"State"] intValue] == 2) {
             [array addObject:infoDic];
         }
     }
@@ -484,9 +500,9 @@
     NSMutableArray * canUseArray = [NSMutableArray array];
     NSMutableArray *cannotArray = [NSMutableArray array];
     for (NSDictionary * infoDic in self.discountCouponOperation.discountCouponArray) {
-        if ([[infoDic objectForKey:@"useType"] intValue] == 0 &&  [[infoDic objectForKey:@"manPrice"] doubleValue] <= price) {
+        if ([[infoDic objectForKey:@"State"] intValue] == 0 &&  [[infoDic objectForKey:@"Area"] doubleValue] <= price) {
             [canUseArray addObject:infoDic];
-        }else if ([[infoDic objectForKey:@"useType"] intValue] == 0)
+        }else if ([[infoDic objectForKey:@"State"] intValue] == 0)
         {
             [cannotArray addObject:infoDic];
         }
@@ -500,7 +516,7 @@
 {
     NSMutableArray * array = [NSMutableArray array];
     for (NSDictionary * infoDic in self.discountCouponOperation.discountCouponArray) {
-        if ([[infoDic objectForKey:@"useType"] intValue] == 1) {
+        if ([[infoDic objectForKey:@"State"] intValue] == 1) {
             [array addObject:infoDic];
         }
         
@@ -545,6 +561,16 @@
 - (NSArray *)getGiftList
 {
     return self.giftLIstOperation.livingBackYearList;
+}
+
+- (void)resetGoldCoinCount:(int )count
+{
+    self.userModuleModels.currentUserModel.goldCoins = count;
+}
+
+- (int)getMyGoldCoins
+{
+    return self.userModuleModels.currentUserModel.goldCoins;
 }
 
 @end

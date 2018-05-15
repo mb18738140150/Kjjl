@@ -64,7 +64,8 @@
     self.courseLabel1.textColor = UIColorFromRGB(0x888888);
     
     self.priceLabel1.font = kMainFont;
-    self.priceLabel1.text = [NSString stringWithFormat:@"￥%@", [info1 objectForKey:kPrice]];
+    
+    self.priceLabel1.text = [NSString stringWithFormat:@"%@",[self getPrice:[info1 objectForKey:kPrice]]];
     self.priceLabel1.textColor = UIColorFromRGB(0xff0000);
     
     self.courseImage1.userInteractionEnabled = YES;
@@ -90,6 +91,18 @@
         self.priceLabel1.font = [UIFont systemFontOfSize:12];
     }
     
+}
+
+- (NSString *)getPrice:(NSNumber *)price
+{
+    NSString * priceStr = @"";
+    if (price.intValue > 0) {
+        priceStr = [NSString stringWithFormat:@"￥%@", price];
+    }else
+    {
+        priceStr = @"免费";
+    }
+    return priceStr;
 }
 
 - (void)resetCellContentWithTwoCourseInfo:(NSArray *)infoArray
@@ -127,9 +140,9 @@
     self.courseLabel2.textColor = UIColorFromRGB(0x888888);
     
     self.priceLabel1.font = kMainFont;
-    self.priceLabel1.text = [NSString stringWithFormat:@"￥%@", [info1 objectForKey:kPrice]];
+    self.priceLabel1.text = [NSString stringWithFormat:@"%@", [self getPrice:[info1 objectForKey:kPrice]]];
     self.priceLabel2.font = kMainFont;
-    self.priceLabel2.text = [NSString stringWithFormat:@"￥%@", [info1 objectForKey:kPrice]];
+    self.priceLabel2.text = [NSString stringWithFormat:@"%@", [self getPrice:[info2 objectForKey:kPrice]]];
     self.priceLabel1.textColor = UIColorFromRGB(0xff0000);
     self.priceLabel2.textColor = UIColorFromRGB(0xff0000);
     

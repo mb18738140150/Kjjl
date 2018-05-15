@@ -65,9 +65,8 @@
     self.shikanEndLB.textAlignment = NSTextAlignmentCenter;
     self.shikanEndLB.textColor = [UIColor whiteColor];
     self.shikanEndLB.backgroundColor = [UIColor blackColor];
-    self.shikanEndLB.text = @"试看结束";
+    self.shikanEndLB.text = @"试学结束";
     [self addSubview:self.shikanEndLB];
-    
     
     if (![[UserManager sharedManager] isUserLogin]) {
         self.state = VideoState_notLogin;
@@ -91,7 +90,7 @@
             break;
         case VideoState_noJurisdiction:
         {
-            [self.loginBtn setTitle:@"试看" forState:UIControlStateNormal];
+            [self.loginBtn setTitle:@"试学" forState:UIControlStateNormal];
         }
             break;
         case VideoState_shikanEnd:

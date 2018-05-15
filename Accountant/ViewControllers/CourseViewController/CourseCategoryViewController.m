@@ -532,7 +532,7 @@
         if (self.currentVideoIndexpath.row == 0) {
             return [[[self.packageArray objectAtIndex:self.currentVideoIndexpath.row ] objectForKey:kCourseCategoryCourseInfos] count];
         }
-        return [[[self.categoryArray objectAtIndex:self.currentVideoIndexpath.row] objectForKey:kCourseCategoryCourseInfos] count];
+        return [[[self.categoryArray objectAtIndex:self.currentVideoIndexpath.row - 1] objectForKey:kCourseCategoryCourseInfos] count];
     }
     if ([tableView isEqual:self.teacherTableView]) {
         return self.teacherArr.count + 1;
@@ -969,7 +969,7 @@
             return [CourseSectionTableViewCell getCellHeightWith:sectionInfoDic andIsFold:YES];
         }
         
-        NSDictionary * infoDic = [self.categoryArray objectAtIndex:self.currentVideoIndexpath.row];
+        NSDictionary * infoDic = [self.categoryArray objectAtIndex:self.currentVideoIndexpath.row - 1];
         NSArray * sectionArr = [infoDic objectForKey:kCourseCategoryCourseInfos];
         NSDictionary * sectionInfoDic = [sectionArr objectAtIndex:indexPath.row];
         NSArray * array = [sectionInfoDic objectForKey:kCourseCategorySecondCourseInfos];

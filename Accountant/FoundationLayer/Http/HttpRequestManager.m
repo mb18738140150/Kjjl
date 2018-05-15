@@ -448,7 +448,7 @@
 
 - (void)requestAcquireDiscountCouponSuccessWithInfoDic:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate
 {
-    HttpConfigModel * s = [HttpConfigCreator acquireDiscountCouponSuccess];
+    HttpConfigModel * s = [HttpConfigCreator acquireDiscountCouponSuccess:infoDic];
     [self startPostWithConfig:s andProcessDelegate:delegate];
 }
 
@@ -521,6 +521,18 @@
 - (void)requestAllPackageWith:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate
 {
     HttpConfigModel * s = [HttpConfigCreator allPackage:infoDic];
+    [self startPostWithConfig:s andProcessDelegate:delegate];
+}
+
+- (void)requestInAppPurchaseWith:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate
+{
+    HttpConfigModel * s = [HttpConfigCreator verifyAppleInAppPurchase:infoDic];
+    [self startPostWithConfig:s andProcessDelegate:delegate];
+}
+
+- (void)requestGetMyGoldCoinWithProcessDelegate:(id<HttpRequestProtocol>)delegate
+{
+    HttpConfigModel * s = [HttpConfigCreator getMyGolgCoin];
     [self startPostWithConfig:s andProcessDelegate:delegate];
 }
 

@@ -35,4 +35,6 @@
 
 @property (nonatomic, copy)NSString                *levelDetail;
 
+@property (nonatomic, assign)int goldCoins;
+
 @end

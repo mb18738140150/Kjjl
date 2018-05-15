@@ -25,6 +25,8 @@
 - (void)didRequestSuccessed:(NSDictionary *)successInfo
 {
     self.payOrderDetailInfo = successInfo;
+    
+    [[UserManager sharedManager] resetGoldCoinCount:[[successInfo objectForKey:@"coinCount"] intValue]];
     if (isObjectNotNil(self.notifiedObject)) {
         [self.notifiedObject didRequestPayOrderSuccessed];
     }

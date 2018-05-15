@@ -643,7 +643,10 @@
 + (HttpConfigModel *)discountCoupon
 {
     HttpConfigModel *c = [[HttpConfigModel alloc] init];
-    NSDictionary *dic = @{kCommand:kDiscountCoupon};
+    NSDictionary *dic = @{kCommand:kDiscountCoupon,
+                          @"page":@(1),
+                          @"type":@(3)
+                          };
     [self setConfigModel:c withInfo:dic];
     return c;
 }
@@ -656,10 +659,13 @@
     return c;
 }
 
-+ (HttpConfigModel *)acquireDiscountCouponSuccess
++ (HttpConfigModel *)acquireDiscountCouponSuccess:(NSDictionary *)infoDic
 {
     HttpConfigModel *c = [[HttpConfigModel alloc] init];
-    NSDictionary *dic = @{kCommand:kAcquireDiscountCouponSuccess};
+    NSDictionary *dic = @{kCommand:kAcquireDiscountCouponSuccess,
+                          @"couponIdStr":[infoDic objectForKey:@"couponIdStr"],
+                          @"page":@(1)
+                          };
     [self setConfigModel:c withInfo:dic];
     return c;
 }
@@ -807,6 +813,25 @@
     HttpConfigModel *c = [[HttpConfigModel alloc] init];
     NSDictionary *dic = @{kCommand:kPackageDetail,
                           @"packageId":@(packageId)
+                          };
+    [self setConfigModel:c withInfo:dic];
+    return c;
+}
+
++(HttpConfigModel *)verifyAppleInAppPurchase:(NSDictionary *)infoDic
+{
+    HttpConfigModel *c = [[HttpConfigModel alloc] init];
+    NSDictionary *dic = @{kCommand:kInAPPPurchase,
+                          @"currentCoinCount":[infoDic objectForKey:@"ReceiptData"]
+                          };
+    [self setConfigModel:c withInfo:dic];
+    return c;
+}
+
++(HttpConfigModel *)getMyGolgCoin
+{
+    HttpConfigModel *c = [[HttpConfigModel alloc] init];
+    NSDictionary *dic = @{kCommand:kMyGoldCoin
                           };
     [self setConfigModel:c withInfo:dic];
     return c;

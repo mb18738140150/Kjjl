@@ -10,14 +10,14 @@
 #import "CansultTeachersListView.h"
 #import "CoursePriceTableViewCell.h"
 #import "MemberIntroduceTableViewCell.h"
-
+#import "AppIconViewController.h"
 #import "MemberDetailViewController.h"
 #import "BuyDetailViewController.h"
 
 #define kCoursePriceCellID @"CoursePriceCellID"
 #define kMemberCellId @"MemberCellId"
 
-@interface BuyCourseViewController ()<UITableViewDelegate, UITableViewDataSource,UIWebViewDelegate>
+@interface BuyCourseViewController ()<UITableViewDelegate, UITableViewDataSource,UIWebViewDelegate,UIAlertViewDelegate,UserModule_PayOrderProtocol>
 
 @property (nonatomic, strong)UITableView * tableView;
 @property (nonatomic, strong)CansultTeachersListView            *cansultView;
@@ -188,16 +188,70 @@
 
 - (void)buyCourse:(NSDictionary *)infoDic
 {
-    BuyDetailViewController *buyVC = [[BuyDetailViewController alloc]init];
-    buyVC.infoDic = infoDic;
-    if (self.isLiving) {
-        buyVC.payCourseType = PayCourseType_LivingCourse;
+    if ([WXApi isWXAppSupportApi] && [WXApi isWXAppInstalled]) {
+        BuyDetailViewController *buyVC = [[BuyDetailViewController alloc]init];
+        buyVC.infoDic = infoDic;
+        if (self.isLiving) {
+            buyVC.payCourseType = PayCourseType_LivingCourse;
+        }else
+        {
+            buyVC.payCourseType = PayCourseType_Course;
+        }
+        [self.navigationController pushViewController:buyVC animated:YES];
     }else
     {
-        buyVC.payCourseType = PayCourseType_Course;
+        NSLog(@"%@", infoDic);
+        if ([[infoDic objectForKey:kPrice] intValue] > [[UserManager sharedManager] getMyGoldCoins]) {
+            UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"您的金币数量不足请先购买金币" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"确定", nil];
+            [alert show];
+        }else
+        {
+            PayCourseType type1;
+            if (self.isLiving) {
+                type1 = PayCourseType_LivingCourse;
+            }else
+            {
+                type1 = PayCourseType_Course;
+            }
+            [SVProgressHUD show];
+            NSDictionary * infoDic1 = @{@"courseId":[infoDic objectForKey:kCourseID],
+                                       @"payType":@3,
+                                       @"courseType":@(type1),
+                                       @"discountCouponId":@0};
+            [[UserManager sharedManager] payOrderWith:infoDic1 withNotifiedObject:self];
+        }
+        
     }
-    [self.navigationController pushViewController:buyVC animated:YES];
 }
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 1) {
+        AppIconViewController * appVC = [[AppIconViewController alloc]init];
+        [self.navigationController pushViewController:appVC animated:YES];
+    }
+}
+
+#pragma mark - payOrderDelegate
+- (void)didRequestPayOrderSuccessed
+{
+    [SVProgressHUD dismiss];
+    [SVProgressHUD showSuccessWithStatus:@"购买成功"];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [SVProgressHUD dismiss];
+    });
+    [self.navigationController popToRootViewControllerAnimated:YES];
+}
+
+- (void)didRequestPayOrderFailed:(NSString *)failedInfo
+{
+    [SVProgressHUD dismiss];
+    [SVProgressHUD showErrorWithStatus:failedInfo];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [SVProgressHUD dismiss];
+    });
+}
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

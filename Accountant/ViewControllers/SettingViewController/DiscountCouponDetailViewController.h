@@ -10,6 +10,6 @@
 
 @interface DiscountCouponDetailViewController : UIViewController
 
-- (void)refreshUIWith:(NSDictionary *)infoDic;
+@property (nonatomic, strong)NSDictionary * infoDic;
 
 @end

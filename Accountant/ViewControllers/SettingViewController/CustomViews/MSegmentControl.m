@@ -72,7 +72,7 @@
         NSDictionary * infoDic = memberDetailList[i];
         if ([[infoDic objectForKey:@"chaozhi"] intValue] == 1) {
             UIImageView * imageview = [[UIImageView alloc]initWithFrame:CGRectMake(CGRectGetMaxX(button.frame) - 23, button.hd_y - 3, 20, 25)];
-            imageview.image = [UIImage imageNamed:@"icon_bq"];
+            imageview.image = [UIImage imageNamed:@"icon_bq1"];
             [backView addSubview:imageview];
         }
     }

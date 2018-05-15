@@ -175,6 +175,10 @@
 
 - (void)requestAllPackageWith:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate;
 
+- (void)requestInAppPurchaseWith:(NSDictionary *)infoDic andProcessDelegate:(id<HttpRequestProtocol>)delegate;
+
+- (void)requestGetMyGoldCoinWithProcessDelegate:(id<HttpRequestProtocol>)delegate;
+
 #pragma mark - 未使用
 - (void)requestSearchKeyWord:(NSString *)keyWords;
 @end

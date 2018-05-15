@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="154" id="KGk-i7-Jjw" customClass="BuyCoinFootTableViewCell">
+            <rect key="frame" x="0.0" y="0.0" width="372" height="154"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" restorationIdentifier="BuyCoinFootTableViewCell" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="372" height="153.5"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="充值说明" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="elb-Fx-Ea3">
+                        <rect key="frame" x="10" y="22" width="57.5" height="15"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="15" id="Xdu-Rk-I0K"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7Rt-KL-hOB">
+                        <rect key="frame" x="0.0" y="0.0" width="372" height="8"/>
+                        <color key="backgroundColor" red="0.94901960784313721" green="0.94901960784313721" blue="0.94901960784313721" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="8" id="doP-TT-czu"/>
+                        </constraints>
+                    </view>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1、充值比例：￥1=1金币 \n 2、根据苹果公司规定，iOS设备上的充值不能再非iOS设备上使用 \n 如需帮助，请联系客服" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="frO-ca-Mrd">
+                        <rect key="frame" x="10" y="47" width="352" height="14.5"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                        <color key="textColor" red="0.40000000000000002" green="0.40000000000000002" blue="0.40000000000000002" alpha="1" colorSpace="calibratedRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="frO-ca-Mrd" firstAttribute="top" secondItem="elb-Fx-Ea3" secondAttribute="bottom" constant="10" id="2lS-WW-XdO"/>
+                    <constraint firstItem="frO-ca-Mrd" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="10" id="DXD-hf-ccR"/>
+                    <constraint firstItem="7Rt-KL-hOB" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="HRC-9C-TGF"/>
+                    <constraint firstItem="7Rt-KL-hOB" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="VxR-a9-714"/>
+                    <constraint firstItem="elb-Fx-Ea3" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="10" id="kZq-fF-SZv"/>
+                    <constraint firstItem="elb-Fx-Ea3" firstAttribute="top" secondItem="7Rt-KL-hOB" secondAttribute="bottom" constant="14" id="o5H-Cg-T9d"/>
+                    <constraint firstAttribute="trailing" secondItem="frO-ca-Mrd" secondAttribute="trailing" constant="10" id="soe-7a-Gaw"/>
+                    <constraint firstAttribute="trailing" secondItem="7Rt-KL-hOB" secondAttribute="trailing" id="vU7-Xe-Rit"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="detailLB" destination="frO-ca-Mrd" id="OvG-4c-2Zt"/>
+            </connections>
+            <point key="canvasLocation" x="-229" y="44"/>
+        </tableViewCell>
+    </objects>
+</document>

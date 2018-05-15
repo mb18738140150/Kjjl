@@ -135,7 +135,7 @@
 
 + (HttpConfigModel *)acquireDiscountCoupon;
 
-+ (HttpConfigModel *)acquireDiscountCouponSuccess;
++ (HttpConfigModel *)acquireDiscountCouponSuccess:(NSDictionary *)infoDic;
 
 + (HttpConfigModel *)orderList;
 
@@ -170,5 +170,9 @@
 +(HttpConfigModel *)allPackage:(NSDictionary *)infoDic;
 
 +(HttpConfigModel *)getPackageDetail:(int)packageId;
+
++(HttpConfigModel *)verifyAppleInAppPurchase:(NSDictionary *)infoDic;
+
++(HttpConfigModel *)getMyGolgCoin;
 
 @end

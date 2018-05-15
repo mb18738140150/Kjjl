@@ -106,8 +106,8 @@
     }
     
     NSString * disCOuntCouponId = @"";
-    if ([self.discountCouponIinfo objectForKey:@"discountCouponId"]) {
-        disCOuntCouponId = [self.discountCouponIinfo objectForKey:@"discountCouponId"];
+    if ([self.discountCouponIinfo objectForKey:@"CouponId"]) {
+        disCOuntCouponId = [self.discountCouponIinfo objectForKey:@"CouponId"];
     }
     
     NSNumber *payType = @1;
@@ -130,7 +130,7 @@
 {
     NSDictionary * weichatInfoDic = @{@"imageName":@"icon_wxzf",@"title":@"微信支付",@"payType":@(PayType_weichat)};
     NSDictionary * aliPayInfoDic = @{@"imageName":@"icon_zfb",@"title":@"支付宝支付",@"payType":@(PayType_alipay)};
-//    [self.payTypeArray addObject:aliPayInfoDic];
+    [self.payTypeArray addObject:aliPayInfoDic];
     [self.payTypeArray addObject:weichatInfoDic];
 }
 
@@ -142,7 +142,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (section == 3) {
-        return 1;
+        return self.payTypeArray.count;
     }
     return 1;
 }

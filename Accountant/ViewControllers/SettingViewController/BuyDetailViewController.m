@@ -70,7 +70,7 @@
     NSDictionary * weichatInfoDic = @{@"imageName":@"icon_wxzf",@"title":@"微信支付",@"payType":@(PayType_weichat)};
     NSDictionary * aliPayInfoDic = @{@"imageName":@"icon_zfb",@"title":@"支付宝支付",@"payType":@(PayType_alipay)};
     [self.payTypeArray addObject:weichatInfoDic];
-//    [self.payTypeArray addObject:aliPayInfoDic];
+    [self.payTypeArray addObject:aliPayInfoDic];
 }
 
 - (void)addNotification
@@ -85,7 +85,7 @@
 
 - (void)prepareUI
 {
-    self.tableview = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, 100) style:UITableViewStylePlain];
+    self.tableview = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, 150) style:UITableViewStylePlain];
     self.tableview.delegate = self;
     self.tableview.dataSource = self;
     [self.tableview registerClass:[PayDetailTableViewCell class] forCellReuseIdentifier:@"cellID"];
@@ -105,7 +105,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 2;
+    return self.payTypeArray.count + 1;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -120,7 +120,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.row == 1) {
+    if (indexPath.row == self.payTypeArray.count) {
         DredgeMemberSelectDCTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:@"DredgeMemberSelectDCTableViewCellID" forIndexPath:indexPath];
         [cell resetCell:self.discountCouponIinfo];
         return cell;
@@ -151,7 +151,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     __weak typeof(self)weakSelf = self;
-    if (indexPath.row == 1) {
+    if (indexPath.row == self.payTypeArray.count) {
         DiscountCouponViewController * vc = [[DiscountCouponViewController alloc]init];
         vc.myDscountCoupon = NO;
         vc.price = [[self.infoDic objectForKey:kPrice] doubleValue];
@@ -185,8 +185,8 @@
     }
     
     NSString * disCOuntCouponId = @"";
-    if ([self.discountCouponIinfo objectForKey:@"discountCouponId"]) {
-        disCOuntCouponId = [self.discountCouponIinfo objectForKey:@"discountCouponId"];
+    if ([self.discountCouponIinfo objectForKey:@"CouponId"]) {
+        disCOuntCouponId = [self.discountCouponIinfo objectForKey:@"CouponId"];
     }
     
     NSNumber *payType = @1;

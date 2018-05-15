@@ -91,7 +91,7 @@
     if (!_shikanBtn) {
         _shikanBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         _shikanBtn.backgroundColor = [UIColor whiteColor];
-        [_shikanBtn setTitle:@"试看" forState:UIControlStateNormal];
+        [_shikanBtn setTitle:@"试学" forState:UIControlStateNormal];
         _shikanBtn.titleLabel.font = [UIFont systemFontOfSize:12];
         [_shikanBtn setTitleColor:UIColorFromRGB(0xff740e) forState:UIControlStateNormal];
         _shikanBtn.layer.cornerRadius = 2;

@@ -103,5 +103,8 @@
 #define kAcquireDiscountCouponSuccess   @"64"
 #define kGetAllPackage                  @"65"
 #define kPackageDetail               @"66"
+#define kInAPPPurchase                  @"67"
+#define kMyGoldCoin                     @"68"
+
 
 #endif /* NetMacro_h */
