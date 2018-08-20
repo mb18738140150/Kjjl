@@ -37,6 +37,9 @@
 
 @property (nonatomic,strong) AFNetworkReachabilityManager   *netManager;
 
+@property (nonatomic, strong)PackageDetailViewController * packageDetailVC;
+@property (nonatomic, strong)UINavigationController * nav;
+
 @property (nonatomic,assign) BOOL                            isPlayFromLoacation;
 @property (nonatomic,assign) int                             chapterId;
 @property (nonatomic,assign) int                             videoId;
@@ -143,6 +146,38 @@
 {
     NSDictionary * infoDic = notification.object;
     
+    RCDLiveChatRoomViewController *chatRoomVC = [[RCDLiveChatRoomViewController alloc]init];
+    
+    if (![infoDic objectForKey:kChatRoomID]) {
+        if ([infoDic objectForKey:kCourseSecondID] && [[infoDic objectForKey:kCourseSecondID] intValue] == 0) {
+            infoDic = [[[CourseraManager sharedManager] getLivingSectionDetailArray] objectAtIndex:0];
+        }else
+        {
+            for (NSDictionary *dic in [[CourseraManager sharedManager] getLivingSectionDetailArray]) {
+                if ([[infoDic objectForKey:kCourseSecondID]isEqual:[dic objectForKey:kCourseSecondID]]) {
+                    infoDic = dic;
+                }
+            }
+            if (![infoDic objectForKey:kCourseSecondID]) {
+                infoDic = [[[CourseraManager sharedManager] getLivingSectionDetailArray] objectAtIndex:0];
+            }
+        }
+        
+        chatRoomVC.isLivingCourse = YES;
+    }
+    
+//    NSMutableDictionary * dic = [[NSMutableDictionary alloc]initWithDictionary:infoDic];
+//    [dic setObject:@2 forKey:kLivingState];
+    
+    chatRoomVC.conversationType = ConversationType_CHATROOM;
+    chatRoomVC.targetId = [NSString stringWithFormat:@"%@", [infoDic objectForKey:kChatRoomID]];
+    chatRoomVC.contentURL = [infoDic objectForKey:kCourseURL];
+    chatRoomVC.infoDic = infoDic;
+    [self presentViewController:chatRoomVC animated:YES completion:nil];
+}
+
+- (void)joinChatRoom:(NSDictionary * )infoDic
+{
     RCDLiveChatRoomViewController *chatRoomVC = [[RCDLiveChatRoomViewController alloc]init];
     
     if (![infoDic objectForKey:kChatRoomID]) {
@@ -313,9 +348,16 @@
 - (void)didReuquestPackageDetailSuccessed
 {
     [SVProgressHUD dismiss];
-    PackageDetailViewController * packageDetailVC = [[PackageDetailViewController alloc]init];
-    packageDetailVC.packageId = self.packageId;
-    UINavigationController * nav = [[UINavigationController alloc]initWithRootViewController:packageDetailVC];
+    if (self.packageDetailVC == nil) {
+        self.packageDetailVC = [[PackageDetailViewController alloc]init];
+        _packageDetailVC.packageId = self.packageId;
+    }else
+    {
+        _packageDetailVC.packageId = self.packageId;
+        [_packageDetailVC refreshWithId];
+    }
+    
+    UINavigationController * nav = [[UINavigationController alloc]initWithRootViewController:_packageDetailVC];
     [self presentViewController:nav animated:YES completion:nil];
 }
 

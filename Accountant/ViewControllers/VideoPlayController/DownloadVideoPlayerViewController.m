@@ -255,7 +255,6 @@
     return 50;
 }
 
-
 #pragma mark - ui setup
 
 - (void)initalTable
@@ -291,6 +290,5 @@
 {
     [self.videoController backstop];
 }
-
 
 @end

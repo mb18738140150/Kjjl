@@ -35,13 +35,16 @@
                 return 3;
             }else
             {
-                return 2;
+                return 1;
             }
         }
             return 3;
             break;
         case 3:
-            return 2;
+            if ([WXApi isWXAppInstalled] && [WXApi isWXAppSupportApi]) {
+                return 2;
+            }
+            return 1;
             break;
         case 4:
             return 1;

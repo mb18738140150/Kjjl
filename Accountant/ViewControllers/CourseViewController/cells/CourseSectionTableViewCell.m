@@ -21,7 +21,6 @@
 @property (nonatomic, strong)NSMutableDictionary * infoDic;
 @property (nonatomic, strong)UIView * tipView;
 
-
 @end
 
 @implementation CourseSectionTableViewCell
@@ -129,21 +128,28 @@
     return number;
 }
 
-
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{   
+{
+    if ([WXApi isWXAppInstalled] && [WXApi isWXAppSupportApi]) {
+        
+    }else
+    {
+        if (self.isTaocan) {
+            return 0;
+        }
+    }
+    
     int number = [self getRow:@{}];
     return number;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    
     NSArray *array = self.dataArray;
     if (array.count == 0) {
         return nil;
@@ -180,6 +186,7 @@
         {
             CourseTableViewCell * courseCell = [tableView dequeueReusableCellWithIdentifier:kCoursetableViewcellID forIndexPath:indexPath];
             courseCell.isVideoCourse = YES;
+            courseCell.isTaocan = self.isTaocan;
             NSArray *allCourseInfo = array;
             NSArray *subarray;
             if ((indexPath.row+1) * 2 <= allCourseInfo.count) {

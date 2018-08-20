@@ -71,11 +71,11 @@ typedef BOOL(^RunloopBlock)(void);
     
     NSLog(@"%@",[[self.questionsInfoArray objectAtIndex:indexPath.row] description] );
     
-    [self addTask:^BOOL{
-        
-        [cell resetCellWithInfo:[weakSelf.questionsInfoArray objectAtIndex:indexPath.row]];
-        return YES;
-    } withKey:indexPath];
+    [cell resetCellWithInfo:[weakSelf.questionsInfoArray objectAtIndex:indexPath.row]];
+//    [self addTask:^BOOL{
+//
+//        return YES;
+//    } withKey:indexPath];
     
     return cell;
 }

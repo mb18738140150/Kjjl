@@ -552,6 +552,12 @@
             if (result == 1) {
                 [delegate didRequestSuccessed:responseObject];
             }else{
+#warning 此段代码需删除**********
+                if ([[responseObject objectForKey:@"command"] intValue] == 62) {
+                    [delegate didRequestFailedWithInfo:responseObject];
+                    return ;
+                }
+                
 //                NSLog(@"%@",responseObject);
                 if ([[responseObject objectForKey:@"errorMsg"] isKindOfClass:[NSNull class]] ||  [[responseObject objectForKey:@"errorMsg"] length] == 0) {
                     if ([[responseObject objectForKey:@"command"] intValue] == 21) {
@@ -567,15 +573,15 @@
         }
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        NSLog(@"%@",error);
+//        NSLog(@"%@",error);
         NSLog(@"****code = %ld \n*** userinfo = %@ \n***%@",error.code,error.userInfo,error.domain);
         if (delegate != nil) {
+            
             [delegate didRequestFailed:kNetError];
         }else{
             return ;
         }
     }];
-    
     
     
     /*

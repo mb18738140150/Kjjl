@@ -12,6 +12,8 @@
 
 @property (nonatomic, copy)void (^FoldBlock)(NSMutableDictionary *infoDic);
 
+@property (nonatomic, assign)BOOL isTaocan;
+
 - (void)resetWithInfoDic:(NSDictionary *)infoDic;
 
 + (CGFloat)getCellHeightWith:(NSDictionary *)infoDic andIsFold:(BOOL)isFold;

@@ -126,7 +126,7 @@
         upBtn.layer.cornerRadius = 4;
         upBtn.layer.masksToBounds = YES;
         [upBtn addTarget:self action:@selector(upgradeMemberLevel) forControlEvents:UIControlEventTouchUpInside];
-        if ([WXApi isWXAppSupportApi] && [WXApi isWXAppInstalled]) {
+        if ([WXApi isWXAppSupportApi] && [WXApi isWXAppInstalled] && [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"mqq://"]]) {
             [backView addSubview:upBtn];
         }
         

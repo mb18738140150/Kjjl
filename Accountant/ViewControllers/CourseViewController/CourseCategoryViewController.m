@@ -530,7 +530,14 @@
     }
     if ([tableView isEqual:self.videoTableview]) {
         if (self.currentVideoIndexpath.row == 0) {
-            return [[[self.packageArray objectAtIndex:self.currentVideoIndexpath.row ] objectForKey:kCourseCategoryCourseInfos] count];
+            
+            if ([WXApi isWXAppInstalled] && [WXApi isWXAppSupportApi]) {
+                
+                return [[[self.packageArray objectAtIndex:self.currentVideoIndexpath.row ] objectForKey:kCourseCategoryCourseInfos] count];
+            }{
+                return 0;
+            }
+            
         }
         return [[[self.categoryArray objectAtIndex:self.currentVideoIndexpath.row - 1] objectForKey:kCourseCategoryCourseInfos] count];
     }
@@ -777,6 +784,14 @@
         NSArray * sectionArr = [infoDic objectForKey:kCourseCategoryCourseInfos];
         NSMutableDictionary * sectionInfoDic = [sectionArr objectAtIndex:indexPath.row];
         [sectionInfoDic setObject:[infoDic objectForKey:kCourseCategoryName] forKey:kCourseCategoryName];
+        
+        if (self.currentVideoIndexpath.row == 0) {
+            cell.isTaocan = YES;
+        }else
+        {
+            cell.isTaocan = NO;
+        }
+        
         [cell resetWithInfoDic:sectionInfoDic];
         
         cell.FoldBlock = ^(NSMutableDictionary *infoDic) {

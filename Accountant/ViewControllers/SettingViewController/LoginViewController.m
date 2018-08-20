@@ -367,7 +367,7 @@
         [SVProgressHUD dismiss];
         [self dismissSelf];
         
-        [self connectRongyun];
+//        [self connectRongyun];
         [self getMemberLevelDetail];
         [self getCommonProblemList];
         [self getAssistantLiat];
@@ -375,6 +375,7 @@
         
         if ([[NSUserDefaults standardUserDefaults] objectForKey:@"registrationID"]) {
             NSString *registrationID = [[NSUserDefaults standardUserDefaults] objectForKey:@"registrationID"];
+            
             [[UserManager sharedManager] didRequestBindJPushWithCID:registrationID withNotifiedObject:self];
         }else
         {

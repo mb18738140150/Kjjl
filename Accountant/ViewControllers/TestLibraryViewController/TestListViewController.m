@@ -29,6 +29,8 @@
 @property (nonatomic, strong)NSMutableDictionary *currentDBCourseInfoDic;
 @property (nonatomic, strong)NSDictionary * currentSectionQuestionInfoDic;
 
+@property (nonatomic, assign)CGFloat contentOffset_Y;
+
 @end
 
 @implementation TestListViewController
@@ -206,6 +208,7 @@
     self.failView.refreshBlock = ^(){
         [weakSelf startRequest];
     };
+    
 }
 
 #pragma mark - ui
@@ -244,8 +247,6 @@
                                       *)gestureRecognizer{
     return YES; //YES：允许右滑返回  NO：禁止右滑返回
 }
-
-
 
 #pragma mark - table view delegate
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -443,15 +444,26 @@
             [rowArray addObject:[NSIndexPath indexPathForRow:i inSection:index]];
         }
     }
+    self.contentOffset_Y = self.contentTableView.contentOffset.y;
     if (rowArray.count) {
         if (currentIsOpen) {
-            [self.contentTableView deleteRowsAtIndexPaths:[NSArray arrayWithArray:rowArray] withRowAnimation:UITableViewRowAnimationTop];
+            [self.contentTableView deleteRowsAtIndexPaths:[NSArray arrayWithArray:rowArray] withRowAnimation:UITableViewRowAnimationNone];
+            [UIView animateWithDuration:0.1 animations:^{
+                [self.contentTableView setContentOffset:CGPointMake(0, self.contentOffset_Y) animated:NO];
+            }];
+            
         }else{
-            [self.contentTableView insertRowsAtIndexPaths:[NSArray arrayWithArray:rowArray] withRowAnimation:UITableViewRowAnimationTop];
+            [self.contentTableView insertRowsAtIndexPaths:[NSArray arrayWithArray:rowArray] withRowAnimation:UITableViewRowAnimationNone];
+            [UIView animateWithDuration:0.1 animations:^{
+                [self.contentTableView setContentOffset:CGPointMake(0, self.contentOffset_Y) animated:NO];
+            }];
         }
     }
+    NSLog(@"self.contentTableView 开始刷新");
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        NSLog(@"%.2f",self.contentTableView.contentOffset.y);
+    });
 }
-
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -461,7 +473,6 @@
 - (void)dealloc
 {
     NSLog(@"章节练习界面销毁了******");
-    
 }
 
 /*

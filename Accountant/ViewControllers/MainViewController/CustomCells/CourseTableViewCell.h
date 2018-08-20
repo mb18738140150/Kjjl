@@ -11,6 +11,7 @@
 @interface CourseTableViewCell : UITableViewCell
 
 @property (nonatomic, assign)BOOL isVideoCourse;
+@property (nonatomic, assign)BOOL isTaocan;
 
 - (void)resetCellContentWithTwoCourseInfo:(NSArray *)infoArray;
 

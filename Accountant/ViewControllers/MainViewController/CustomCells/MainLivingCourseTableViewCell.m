@@ -46,8 +46,8 @@
     self.courseCoverImageView.layer.masksToBounds = YES;
     [self.contentView addSubview:self.courseCoverImageView];
     
-    self.payImageView = [[UIImageView alloc]initWithFrame:CGRectMake(CGRectGetMaxX(self.courseCoverImageView.frame) - 43, 7, 40, 16)];
-    self.payImageView.image = [UIImage imageNamed:@"会员免费"];
+//    self.payImageView = [[UIImageView alloc]initWithFrame:CGRectMake(CGRectGetMaxX(self.courseCoverImageView.frame) - 43, 7, 40, 16)];
+//    self.payImageView.image = [UIImage imageNamed:@"会员免费"];
 //    [self.contentView addSubview:self.payImageView];
     
     /*

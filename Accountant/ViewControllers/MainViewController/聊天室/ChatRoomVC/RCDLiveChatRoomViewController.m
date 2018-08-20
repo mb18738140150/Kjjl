@@ -292,7 +292,9 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
                 break;
             case 2:
             {
-                self.downLoadBtn.hidden = YES;
+                self.downLoadBtn.hidden = NO;
+                self.livingType = LivingCourseDetailButton_pay;
+                [self resetPay];
                 if ([[self.infoDic objectForKey:kIsLivingCourseFree] intValue] == 0 && [[self.infoDic objectForKey:kHaveJurisdiction] intValue] == 0) {
                     
                     [SVProgressHUD showErrorWithStatus:@"暂无观看权限"];
@@ -314,8 +316,7 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
                     self.downLoadBtn.hidden = NO;
                     self.livingType = LivingCourseDetailButton_pay;
                     [self resetPay];
-//                    if ([WXApi isWXAppInstalled] && [WXApi isWXAppSupportApi]) {
-//                    }
+
                 }
                 if ([[self.infoDic objectForKey:kIsBack] intValue] == 0) {
                     
@@ -341,39 +342,93 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
     
     [self.portraitsCollectionView registerClass:[RCDLivePortraitViewCell class] forCellWithReuseIdentifier:@"portraitcell"];
     __weak RCDLiveChatRoomViewController *weakSelf = self;
+#warning 888888888888888888
+//    [self.infoDic setValue:@2 forKey:kLivingState];
+    
+    
+    
     
     if ([[self.infoDic objectForKey:kLivingState] intValue] == 2) {
         //聊天室类型进入时需要调用加入聊天室接口，退出时需要调用退出聊天室接口
         if (ConversationType_CHATROOM == self.conversationType && [[UserManager sharedManager] isUserLogin]) {
-            [[RCIMClient sharedRCIMClient]
-             joinChatRoom:self.targetId
-             messageCount:self.defaultHistoryMessageCountOfChatRoom
-             success:^{
-                 dispatch_async(dispatch_get_main_queue(), ^{
-                     [self initializedLiveSubViews];
+            
+            NSLog(@"%d", [[RCIM sharedRCIM] getConnectionStatus]);
+            /*
+             ConnectionStatus_Unconnected,
+             ConnectionStatus_SignUp, ConnectionStatus_KICKED_OFFLINE_BY_OTHER_CLIENT,
+             ConnectionStatus_TOKEN_INCORRECT
+             */
+            if ([[RCIM sharedRCIM] getConnectionStatus] != ConnectionStatus_Unconnected && [[RCIM sharedRCIM] getConnectionStatus] != ConnectionStatus_SignUp && [[RCIM sharedRCIM] getConnectionStatus] != ConnectionStatus_KICKED_OFFLINE_BY_OTHER_CLIENT && [[RCIM sharedRCIM] getConnectionStatus] != ConnectionStatus_TOKEN_INCORRECT) {
+                [[RCIMClient sharedRCIMClient]
+                 joinChatRoom:self.targetId
+                 messageCount:self.defaultHistoryMessageCountOfChatRoom
+                 success:^{
+                     dispatch_async(dispatch_get_main_queue(), ^{
+                         [self initializedLiveSubViews];
+                         
+                     });
+                 }
+                 error:^(RCErrorCode status) {
                      
-                     /*
-                      
-                      //                 [self.livePlayingManager startPlaying];
-                      RCInformationNotificationMessage *joinChatroomMessage = [[RCInformationNotificationMessage alloc]init];
-                      joinChatroomMessage.message = [NSString stringWithFormat: @"%@加入了聊天室",[RCDLive sharedRCDLive].currentUserInfo.name];
-                      //                 [self sendMessage:joinChatroomMessage pushContent:nil];
-                      */
+                     NSLog(@"%ld",(long)status);
                      
-                 });
-             }
-             error:^(RCErrorCode status) {
-                 
-                 NSLog(@"%ld",(long)status);
-                 
-                 dispatch_async(dispatch_get_main_queue(), ^{
-                     if (status == KICKED_FROM_CHATROOM) {
-                         [weakSelf loadErrorAlert:NSLocalizedStringFromTable(@"JoinChatRoomRejected", @"RongCloudKit", nil)];
-                     } else {
-                         [weakSelf loadErrorAlert:NSLocalizedStringFromTable(@"JoinChatRoomFailed", @"RongCloudKit", nil)];
+                     dispatch_async(dispatch_get_main_queue(), ^{
+                         if (status == KICKED_FROM_CHATROOM) {
+                             [weakSelf loadErrorAlert:NSLocalizedStringFromTable(@"JoinChatRoomRejected", @"RongCloudKit", nil)];
+                         } else {
+                             [weakSelf loadErrorAlert:NSLocalizedStringFromTable(@"JoinChatRoomFailed", @"RongCloudKit", nil)];
+                         }
+                     });
+                 }];
+            }else
+            {
+                [[RCIM sharedRCIM] connectWithToken:[[UserManager sharedManager] getRongToken] success:^(NSString *userId) {
+                    NSLog(@"连接融云成功");
+                    [[RCDLive sharedRCDLive] setReciveMessageAndConnectionStatusDelegate];
+                    RCUserInfo *user = [RCUserInfo new];
+                    
+                    user.userId = [NSString stringWithFormat:@"%d", [UserManager sharedManager].getUserId];
+                    user.name = [[UserManager sharedManager] getUserNickName];
+                    user.portraitUri = [[UserManager sharedManager] getIconUrl];
+                    
+                    [[RCIM sharedRCIM]refreshUserInfoCache:user withUserId:user.userId];
+                    [RCIM sharedRCIM].currentUserInfo.userId = user.userId;
+                    [RCIM sharedRCIM].currentUserInfo.name = user.name;
+                    [RCIM sharedRCIM].currentUserInfo.portraitUri = user.portraitUri;
+                    
+                    [[RCIMClient sharedRCIMClient]
+                     joinChatRoom:self.targetId
+                     messageCount:self.defaultHistoryMessageCountOfChatRoom
+                     success:^{
+                         dispatch_async(dispatch_get_main_queue(), ^{
+                             [self initializedLiveSubViews];
+                             
+                         });
                      }
-                 });
-             }];
+                     error:^(RCErrorCode status) {
+                         
+                         NSLog(@"%ld",(long)status);
+                         
+                         dispatch_async(dispatch_get_main_queue(), ^{
+                             if (status == KICKED_FROM_CHATROOM) {
+                                 [weakSelf loadErrorAlert:NSLocalizedStringFromTable(@"JoinChatRoomRejected", @"RongCloudKit", nil)];
+                             } else {
+                                 [weakSelf loadErrorAlert:NSLocalizedStringFromTable(@"JoinChatRoomFailed", @"RongCloudKit", nil)];
+                             }
+                         });
+                     }];
+                    
+                } error:^(RCConnectErrorCode status) {
+                    NSLog(@"连接失败");
+                    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:nil message:@"连接融云失败，请从新登录" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+                    [alert show];
+                } tokenIncorrect:^{
+                    NSLog(@"token过期");
+                    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:nil message:@"Token失效，请从新登录" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+                    [alert show];
+                }];
+            }
+
         }
     }
     
@@ -381,7 +436,6 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(haveLogin:) name:kNotificationOfLoginSuccess object:nil];
     
     [[NSUserDefaults standardUserDefaults]setObject:[self.infoDic objectForKey:kAssistantID] forKey:kAssistantID];
-    
 }
 
 
@@ -917,7 +971,7 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
                                                 [[NSNotificationCenter defaultCenter] removeObserver:self];
                                               
                                             //断开融云连接，如果你退出聊天室后还有融云的其他通讯功能操作，可以不用断开融云连接，否则断开连接后需要重新connectWithToken才能使用融云的功能
-//                                                [[RCDLive sharedRCDLive]logoutRongCloud];
+                                                [[RCDLive sharedRCDLive]logoutRongCloud];
                                               
                                                 dispatch_async(dispatch_get_main_queue(), ^{
                                                     [self dismissViewControllerAnimated:YES completion:nil];
@@ -1118,7 +1172,6 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
         self.livingListView.selectLivingSectionInfoDic = self.infoDic;
         [self.livingListView.tableView reloadData];
         
-        
         self.livingListView.countDownBlock = ^(NSDictionary *infoDic) {
             if (!infoDic) {
                 return ;
@@ -1216,7 +1269,9 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
             break;
         case 2:
         {
-            self.downLoadBtn.hidden = YES;
+            self.downLoadBtn.hidden = NO;
+            self.livingType = LivingCourseDetailButton_pay;
+            [self resetPay];
             if ([[self.infoDic objectForKey:kIsLivingCourseFree] intValue] == 0 && [[self.infoDic objectForKey:kHaveJurisdiction] intValue] == 0) {
                 [SVProgressHUD showErrorWithStatus:@"暂无观看权限"];
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -1272,7 +1327,7 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
     self.timer = nil;
     
     self.targetId = [infoDic objectForKey:kChatRoomID];
-    [self joinChatRoom];
+    
     self.videoDetailView.infoDic = self.infoDic;
     [self.videoDetailView.tableView reloadData];
     
@@ -2058,13 +2113,48 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
 {
     __weak typeof(self)weakSelf = self;
     
+    if ([[RCIM sharedRCIM] getConnectionStatus] != ConnectionStatus_Unconnected && [[RCIM sharedRCIM] getConnectionStatus] != ConnectionStatus_SignUp && [[RCIM sharedRCIM] getConnectionStatus] != ConnectionStatus_KICKED_OFFLINE_BY_OTHER_CLIENT && [[RCIM sharedRCIM] getConnectionStatus] != ConnectionStatus_TOKEN_INCORRECT) {
+        [self joinChatRoom1];
+    }else{
+        [[RCIM sharedRCIM] connectWithToken:[[UserManager sharedManager] getRongToken] success:^(NSString *userId) {
+            NSLog(@"连接融云成功");
+            [[RCDLive sharedRCDLive] setReciveMessageAndConnectionStatusDelegate];
+            RCUserInfo *user = [RCUserInfo new];
+            
+            user.userId = [NSString stringWithFormat:@"%d", [UserManager sharedManager].getUserId];
+            user.name = [[UserManager sharedManager] getUserNickName];
+            user.portraitUri = [[UserManager sharedManager] getIconUrl];
+            
+            [[RCIM sharedRCIM]refreshUserInfoCache:user withUserId:user.userId];
+            [RCIM sharedRCIM].currentUserInfo.userId = user.userId;
+            [RCIM sharedRCIM].currentUserInfo.name = user.name;
+            [RCIM sharedRCIM].currentUserInfo.portraitUri = user.portraitUri;
+            
+            [weakSelf joinChatRoom1];
+            
+        } error:^(RCConnectErrorCode status) {
+            NSLog(@"连接失败");
+            UIAlertView * alert = [[UIAlertView alloc] initWithTitle:nil message:@"连接融云失败，请从新登录" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+            [alert show];
+        } tokenIncorrect:^{
+            NSLog(@"token过期");
+            UIAlertView * alert = [[UIAlertView alloc] initWithTitle:nil message:@"Token失效，请从新登录" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+            [alert show];
+        }];
+    }
+    
+}
+
+- (void)joinChatRoom1
+{
+     __weak typeof(self)weakSelf = self;
     [[RCIMClient sharedRCIMClient]
      joinChatRoom:self.targetId
      messageCount:self.defaultHistoryMessageCountOfChatRoom
      success:^{
          [self registerNotification];
          dispatch_async(dispatch_get_main_queue(), ^{
-
+             
              NSLog(@"self.conversationDataRepository.count = ****** %ld", (long)self.conversationDataRepository.count);
              self.conversationMessageCollectionView.dataSource = self;
              self.conversationMessageCollectionView.delegate = self;
@@ -2360,7 +2450,9 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
         case 1:
         case 2:
         {
-            self.downLoadBtn.hidden = YES;
+            self.downLoadBtn.hidden = NO;
+            self.livingType = LivingCourseDetailButton_pay;
+            [self resetPay];
             if ([[self.infoDic objectForKey:kIsLivingCourseFree] intValue] == 0 && [[self.infoDic objectForKey:kHaveJurisdiction] intValue] == 0) {
                 [SVProgressHUD showErrorWithStatus:@"暂无观看权限"];
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -2396,7 +2488,12 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
     
     [self.segmentC showTitlesWith:@[@(2),@(3)]];
     
-    [self joinChatRoom];
+    if ([[self.infoDic objectForKey:kLivingState] intValue] == 2) {
+        [self joinChatRoom];
+    }else
+    {
+        [self quitChatRoom];
+    }
     
     self.livingListView.selectLivingSectionInfoDic = self.infoDic;
     [self.livingListView.tableView reloadData];
@@ -2421,7 +2518,9 @@ static NSString *const RCDLiveGiftMessageCellIndentifier = @"RCDLiveGiftMessageC
             case 1:
             case 2:
             {
-                self.downLoadBtn.hidden = YES;
+                self.downLoadBtn.hidden = NO;
+                self.livingType = LivingCourseDetailButton_pay;
+                [self resetPay];
                 if ([[self.infoDic objectForKey:kIsLivingCourseFree] intValue] == 0 && [[self.infoDic objectForKey:kHaveJurisdiction] intValue] == 0) {
                     [SVProgressHUD showErrorWithStatus:@"暂无观看权限"];
                     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{

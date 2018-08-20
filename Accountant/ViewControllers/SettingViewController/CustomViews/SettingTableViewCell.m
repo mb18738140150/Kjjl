@@ -44,6 +44,14 @@
     if ([self.titleLB.text isEqualToString:@"K5"]) {
         self.memberLevelBtn.hidden = YES;
     }
+    if ([WXApi isWXAppSupportApi] && [WXApi isWXAppInstalled])
+    {
+        
+    }else
+    {
+        self.titleLB.hidden = YES;
+        self.memberLevelBtn.hidden = YES;
+    }
     
     self.tipDetailLB.text = [infoDic objectForKey:@"tip"];
 }

@@ -684,7 +684,6 @@
 		005CE59C1F73926000324B31 /* ShakeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 005CE59B1F73926000324B31 /* ShakeView.m */; };
 		005CE5A01F73B01D00324B31 /* LivingSectionDetailTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 005CE59E1F73B01D00324B31 /* LivingSectionDetailTableViewCell.m */; };
 		005CE5A11F73B01D00324B31 /* LivingSectionDetailTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 005CE59F1F73B01D00324B31 /* LivingSectionDetailTableViewCell.xib */; };
-		005CE5A41F73B97C00324B31 /* LivingSectionDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 005CE5A31F73B97C00324B31 /* LivingSectionDetailViewController.m */; };
 		005DD68D2028380C006A2FB8 /* FuliViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 005DD68C2028380C006A2FB8 /* FuliViewController.m */; };
 		005DD69120283C2C006A2FB8 /* FuliTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 005DD68F20283C2C006A2FB8 /* FuliTableViewCell.m */; };
 		005DD69220283C2C006A2FB8 /* FuliTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 005DD69020283C2C006A2FB8 /* FuliTableViewCell.xib */; };
@@ -1072,6 +1071,7 @@
 		00C64A3D1F07281900EE8165 /* LivingCourseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00C64A3C1F07281900EE8165 /* LivingCourseViewController.m */; };
 		00C64A4E1F07986B00EE8165 /* UIViewController+Cloudox.m in Sources */ = {isa = PBXBuildFile; fileRef = 00C64A4D1F07986B00EE8165 /* UIViewController+Cloudox.m */; };
 		00C64A511F079AE500EE8165 /* UINavigationController+Cloudox.m in Sources */ = {isa = PBXBuildFile; fileRef = 00C64A501F079AE500EE8165 /* UINavigationController+Cloudox.m */; };
+		00C7067B20CE577800B504DD /* LivingSectionDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 005CE5A31F73B97C00324B31 /* LivingSectionDetailViewController.m */; };
 		00C71D321EFE3F4C00B55B84 /* TestCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00C71D311EFE3F4C00B55B84 /* TestCollectionViewController.m */; };
 		00C71D351EFE455900B55B84 /* tiku_收藏-选中@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 00C71D331EFE455900B55B84 /* tiku_收藏-选中@2x.png */; };
 		00C71D361EFE455900B55B84 /* tiku_收藏-选中@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 00C71D341EFE455900B55B84 /* tiku_收藏-选中@3x.png */; };
@@ -6953,7 +6953,6 @@
 				009170EE1E85053F00EF757F /* TestQuestionResultTableViewCell.m in Sources */,
 				00BAA33C1E88F21300A22353 /* TestSimulateViewController.m in Sources */,
 				0098A6231E70E35900D5E7E6 /* QuestionMainViewOperation.m in Sources */,
-				005CE5A41F73B97C00324B31 /* LivingSectionDetailViewController.m in Sources */,
 				00516F0C1FAFF2C600FA9ED6 /* BuyCourseViewController.m in Sources */,
 				00501F2E1F396369009774D8 /* RCDLiveGiftMessageCell.m in Sources */,
 				00D7F2A11E7A3A2800AE3012 /* TZAssetModel.m in Sources */,
@@ -7076,6 +7075,7 @@
 				003AC4211E667DBD00713502 /* ZXVideoPlayerBatteryView.m in Sources */,
 				00A505661E89F010000F8E39 /* TestSimulateListTableViewCell.m in Sources */,
 				003AC4481E667DBD00713502 /* MainViewController.m in Sources */,
+				00C7067B20CE577800B504DD /* LivingSectionDetailViewController.m in Sources */,
 				003AC4421E667DBD00713502 /* AllCourseViewController.m in Sources */,
 				007618C51E839FA0004615E0 /* AppInfoModel.m in Sources */,
 				00D0DC1220A7C9F200F2DFFD /* BuyCoinTableViewCell.m in Sources */,

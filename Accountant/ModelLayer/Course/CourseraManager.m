@@ -265,7 +265,9 @@
         NSDictionary *dic = @{kCourseID:@(model.courseID),
                               kCourseCover:model.courseCover,
                               kCourseName:model.courseName,
-                              kCourseTeacherName:model.coueseTeacherName};
+                              kCourseTeacherName:model.coueseTeacherName,
+                              kPrice:@(model.price)
+                              };
         [hottestArray addObject:dic];
     }
     
@@ -827,6 +829,7 @@
                         [tmpDic3 setObject:courseModel.courseName forKey:kCourseName];
                         [tmpDic3 setObject:courseModel.courseCover forKey:kCourseCover];
                         [tmpDic3 setObject:courseModel.coueseTeacherName forKey:kCourseTeacherName];
+                        [tmpDic3 setObject:@(courseModel.price) forKey:kPrice];
                         [array2 addObject:tmpDic3];
                     }
                     [tmpDic2 setObject:array2 forKey:kCourseCategorySecondCourseInfos];

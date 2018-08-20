@@ -210,6 +210,7 @@
         
         CourseTableViewCell *courseCell = (CourseTableViewCell *)[self getCellWithCellName:courseCellName inTableView:tableView andCellClass:[CourseTableViewCell class]];
         NSArray *array = [[CourseraManager sharedManager] getHottestCourseArray];
+        
         if (array.count == 0) {
             
         }else{

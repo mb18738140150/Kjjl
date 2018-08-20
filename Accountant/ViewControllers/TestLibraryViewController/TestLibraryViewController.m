@@ -218,12 +218,6 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.collectView reloadData];
-//        [self.questionTypeCollectionView reloadData];
-    });
-    
 }
 
 #pragma mark - response func
@@ -275,28 +269,30 @@
 
 - (void)searchClick
 {
-    if (!self.isFold) {
-        
-        self.collectView.hidden = NO;
-        self.backView.hidden = NO;
-        self.collectView.frame = CGRectMake(0, 0, kScreenWidth, 0);
-        [UIView animateWithDuration:0.3 animations:^{
-            self.collectView.frame = CGRectMake(0, 0, kScreenWidth, 240);
-            self.titleImageView.transform = CGAffineTransformRotate(self.titleImageView.transform, M_PI);
-        } completion:^(BOOL finished) {
-        }];
-    }else
-    {
-        self.collectView.frame = CGRectMake(0, 0, kScreenWidth, 240);
-        [UIView animateWithDuration:0.3 animations:^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        if (!self.isFold) {
+            
+            self.collectView.hidden = NO;
+            self.backView.hidden = NO;
             self.collectView.frame = CGRectMake(0, 0, kScreenWidth, 0);
-            self.titleImageView.transform = CGAffineTransformRotate(self.titleImageView.transform, -M_PI);
-        } completion:^(BOOL finished) {
-            self.collectView.hidden = YES;
-            self.backView.hidden = YES;
-        }];
-    }
-    self.isFold = !self.isFold;
+            [UIView animateWithDuration:0.3 animations:^{
+                self.collectView.frame = CGRectMake(0, 0, kScreenWidth, 240);
+                self.titleImageView.transform = CGAffineTransformRotate(self.titleImageView.transform, M_PI);
+            } completion:^(BOOL finished) {
+            }];
+        }else
+        {
+            self.collectView.frame = CGRectMake(0, 0, kScreenWidth, 240);
+            [UIView animateWithDuration:0.3 animations:^{
+                self.collectView.frame = CGRectMake(0, 0, kScreenWidth, 0);
+                self.titleImageView.transform = CGAffineTransformRotate(self.titleImageView.transform, -M_PI);
+            } completion:^(BOOL finished) {
+                self.collectView.hidden = YES;
+                self.backView.hidden = YES;
+            }];
+        }
+        self.isFold = !self.isFold;
+    });
 }
 
 - (void)contentViewSetup
@@ -363,9 +359,8 @@
         self.titleLabel.text = self.cateName;
         [self.collectView reloadData];
         [self.questionTypeCollectionView reloadData];
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self searchClick];
-        });
+        
+        [self searchClick];
         [[NSUserDefaults standardUserDefaults] setObject:[dic objectForKey:kTestCategoryId] forKey:kTestCategoryId];
         [[NSUserDefaults standardUserDefaults] setObject:[dic objectForKey:kLID] forKey:kLID];
         
@@ -396,7 +391,6 @@
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
 {
     if ([collectionView isEqual:self.collectView]) {
-        NSLog(@"self.categoryArray.count = %d", self.categoryArray.count);
         return self.categoryArray.count;
     }
     return 1;
@@ -405,10 +399,8 @@
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
     if ([collectionView isEqual:self.collectView]) {
-        NSLog(@"[[self.categoryArray[section] objectForKey:@\"subject\"] count] = %d", [[self.categoryArray[section] objectForKey:@"subject"] count]);
         return [[self.categoryArray[section] objectForKey:@"subject"] count];
     }
-    NSLog(@"***** zoule *****");
     return 4;
 }
 

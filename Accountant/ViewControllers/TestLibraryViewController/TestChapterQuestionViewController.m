@@ -801,6 +801,7 @@ static bool isFirstCailiaoQuestion;
     return nil;
 }
 
+
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section == 0) {
@@ -854,6 +855,14 @@ static bool isFirstCailiaoQuestion;
     if (indexPath.section == 4) {
         NSString *str = [self.questionInfoDic objectForKey:kTestQuestionComplain];
         CGFloat height = [UIUtility getSpaceLabelHeght:str font:kMainFont width:(kScreenWidth - 40)];
+        
+        if (isTextAswer) {
+            NSAttributedString * attributeStr = [[NSAttributedString alloc] initWithData:[[self.questionInfoDic objectForKey:kTestQuestionCorrectAnswersId] dataUsingEncoding:NSUnicodeStringEncoding] options:@{NSDocumentTypeDocumentAttribute:NSHTMLTextDocumentType} documentAttributes:nil error:nil];
+            
+            CGFloat height = [attributeStr boundingRectWithSize:CGSizeMake(kScreenWidth - 40, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin context:nil].size.height;
+            return height + 30 + 10;
+        }
+        
         return height + 30 + 20;
     }
     if (indexPath.section == 5) {

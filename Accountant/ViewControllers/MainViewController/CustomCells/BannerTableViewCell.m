@@ -19,6 +19,9 @@
 @property (nonatomic, strong)UIImageView * titleImageView;
 @property (nonatomic, strong)UILabel * detailsLB;
 
+@property (nonatomic, assign)CGFloat y;
+@property (nonatomic,assign)CGFloat height;
+
 @end
 
 @implementation BannerTableViewCell
@@ -44,13 +47,22 @@
 
 - (void)resetSubviews
 {
+    [self.contentView removeAllSubviews];
     [self.backView removeFromSuperview];
     [self.titleImageView removeFromSuperview];
     [self.detailsLB removeFromSuperview];
     [self.bannerScrollView removeFromSuperview];
-    self.bannerScrollView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0, 0, kScreenWidth, 2 * kCellHeightOfCategoryView + 30 + 30) imageNamesGroup:self.bannerImgUrlArray];
+    
+    self.y = 0;
+    self.height = 2 * kCellHeightOfCategoryView + 30 + 30;
+    if (kTabBarHeight == 83) {
+        self.y = -20;
+        self.height = 2 * kCellHeightOfCategoryView + 30 + 30 + 20;
+    }
+    
+    self.bannerScrollView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0, self.y, kScreenWidth, self.height) imageNamesGroup:self.bannerImgUrlArray];
     self.bannerScrollView.autoScrollTimeInterval = 10;
-    [self addSubview:self.bannerScrollView];
+    [self.contentView addSubview:self.bannerScrollView];
     
     self.backgroundColor = [UIColor colorWithWhite:0.95 alpha:1];
     
@@ -73,7 +85,7 @@
 
 - (void)setupView
 {
-    self.bannerScrollView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0, 0, kScreenWidth, 2 * kCellHeightOfCategoryView + 30 + 30) imageNamesGroup:self.bannerImgUrlArray];
+    self.bannerScrollView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0, self.y, kScreenWidth, self.height) imageNamesGroup:self.bannerImgUrlArray];
     self.bannerScrollView.autoScrollTimeInterval = 10;
     [self addSubview:self.bannerScrollView];
 }

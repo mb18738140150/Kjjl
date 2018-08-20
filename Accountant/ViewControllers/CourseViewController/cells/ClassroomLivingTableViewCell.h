@@ -35,7 +35,7 @@ typedef enum : NSUInteger {
 @property (weak, nonatomic) IBOutlet UIButton *stateBT;
 
 @property (weak, nonatomic) IBOutlet UIView *markView;
-@property (weak, nonatomic) IBOutlet ShakeView *shakeView;
+@property (strong, nonatomic) ShakeView *shakeView;
 @property (weak, nonatomic) IBOutlet UILabel *livingLabel;
 
 @property (weak, nonatomic) IBOutlet UIImageView *CountDownImageView;

@@ -133,8 +133,11 @@
     [[UserManager sharedManager] didRequestAssistantWithInfo:@{} withNotifiedObject:nil];
     [[UserManager sharedManager]didRequestLevelDetailWithNotifiedObject:self];
     
-    [[UserManager sharedManager] didRequestAcquireDiscountCouponWithCourseInfo:@{} withNotifiedObject:self];
     [[UserManager sharedManager] didRequestMyCoinsWithInfo:@{} withNotifiedObject:self];
+    
+    if ([WXApi isWXAppSupportApi] && [WXApi isWXAppInstalled] && [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"mqq://"]]) {
+        [[UserManager sharedManager] didRequestAcquireDiscountCouponWithCourseInfo:@{} withNotifiedObject:self];
+    }
 }
 
 - (void)allCourseClick
@@ -222,11 +225,11 @@
         cellHeight = kCellHeightOfCourseTitle;
     }
     if (indexPath.section == 3 && indexPath.row != 0 && indexPath.row != 3) {
-        cellHeight = kCellHeightOfCourse;
+        cellHeight = kCellHeightOfCourse + 15;
     }
     
     if (indexPath.section == 4) {
-        return 42 + kCellHeightOfCourse * 2 + 40;
+        return 42 + (kCellHeightOfCourse + 15) * 2 + 40;
     }
     
     if (indexPath.section == 5 && indexPath.row == 0) {
@@ -359,7 +362,7 @@
 
 - (void)contentViewInit
 {
-    CGRect tableViewRect = CGRectMake(0, -64, kScreenWidth, kScreenHeight - kTabBarHeight);
+    CGRect tableViewRect = CGRectMake(0, -(kStatusBarHeight + kNavigationBarHeight), kScreenWidth, kScreenHeight - kTabBarHeight);
     self.contentTableView = [[UITableView alloc] initWithFrame:tableViewRect style:UITableViewStylePlain];
     self.contentTableSource = [[ContentTableViewDataSource alloc] init];
     self.contentTableView.delegate = self;
@@ -524,6 +527,7 @@
         [weakSelf acquireDiscountCouponSuccesse];
     };
     self.discountCouponView.getDiscountCouponBlock = ^{
+        
         [weakSelf.discountCouponView removeFromSuperview];
         DiscountCouponViewController * discountVC = [[DiscountCouponViewController alloc]init];
         discountVC.hidesBottomBarWhenPushed = YES;

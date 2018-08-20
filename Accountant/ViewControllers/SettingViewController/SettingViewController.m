@@ -249,7 +249,7 @@
                 [self.navigationController pushViewController:userCenter animated:YES];
             }else
             {
-                if ([WXApi isWXAppSupportApi] && [WXApi isWXAppInstalled]) {
+                if ([WXApi isWXAppSupportApi] && [WXApi isWXAppInstalled] && [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"mqq://"]]) {
                     [self upgradeMemberLevel];
                 }
             }

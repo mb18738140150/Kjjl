@@ -21,6 +21,7 @@
 #define kUploadRootUrl @"http://f.kjb360.cn/UploadImg.ashx"
 
 #define kNetError @"请检查网络连接"
+#define kInternalServerError @"内部服务错误"
 
 #pragma mark - net paramaters
 #define kCommand @"command"

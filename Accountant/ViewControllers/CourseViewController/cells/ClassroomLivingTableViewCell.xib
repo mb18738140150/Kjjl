@@ -94,24 +94,14 @@
                                 <rect key="frame" x="0.0" y="0.0" width="76" height="0.0"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9J2-Dz-Glt" customClass="ShakeView">
-                                <rect key="frame" x="30" y="29" width="18" height="18"/>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="18" id="Fhf-9G-QQW"/>
-                                    <constraint firstAttribute="height" constant="18" id="r6T-Xt-1lK"/>
-                                </constraints>
-                            </view>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="9J2-Dz-Glt" firstAttribute="top" secondItem="KRc-bi-6cW" secondAttribute="top" constant="29" id="1v2-60-XKb"/>
                             <constraint firstAttribute="height" id="89R-XY-Apz"/>
                             <constraint firstItem="hBG-vh-dvn" firstAttribute="leading" secondItem="KRc-bi-6cW" secondAttribute="leading" id="8hp-pl-Yah"/>
                             <constraint firstAttribute="width" constant="76" id="B1L-Tj-scP"/>
                             <constraint firstAttribute="trailing" secondItem="hBG-vh-dvn" secondAttribute="trailing" id="ZFr-vK-AlF"/>
                             <constraint firstAttribute="bottom" secondItem="hBG-vh-dvn" secondAttribute="bottom" id="mY7-xZ-SyZ"/>
-                            <constraint firstItem="9J2-Dz-Glt" firstAttribute="leading" secondItem="KRc-bi-6cW" secondAttribute="leading" constant="30" id="se4-2Q-CGt"/>
                             <constraint firstItem="hBG-vh-dvn" firstAttribute="top" secondItem="KRc-bi-6cW" secondAttribute="top" id="vIb-Ce-I41"/>
                         </constraints>
                     </view>
@@ -214,7 +204,6 @@
                 <outlet property="livingTitleleLabel" destination="efp-FN-D6b" id="BRu-jI-fex"/>
                 <outlet property="markView" destination="hBG-vh-dvn" id="ahY-Tj-JO0"/>
                 <outlet property="payTypeLB" destination="Xxj-pv-PZN" id="8vo-xG-KaF"/>
-                <outlet property="shakeView" destination="9J2-Dz-Glt" id="sxD-9h-FX7"/>
                 <outlet property="stateBT" destination="o91-gz-u8k" id="3q5-nz-zLy"/>
                 <outlet property="teacherIconImageView" destination="1lv-M0-h6f" id="GLv-rL-Sl0"/>
                 <outlet property="teachernameLB" destination="eBo-zT-TSL" id="hvq-e8-eYv"/>

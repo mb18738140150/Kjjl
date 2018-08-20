@@ -63,6 +63,17 @@
     [self prepareUI];
 }
 
+- (void)refreshWithId
+{
+    self.packageDetailInfoDic = [[CourseraManager sharedManager] getPackageDetailInfo];
+    self.packageSpecificationArr = [self.packageDetailInfoDic objectForKey:@"data"];
+    
+    self.packageDetailSelectView.dataArray = self.packageSpecificationArr;
+    self.packageDetailSelectView.imageUrl = [self.packageDetailInfoDic objectForKey:@"packageCover"];
+    
+    [self.tableview reloadData];
+}
+
 - (void)navigationViewSetup
 {
     UIView * topView = [[UIView alloc]initWithFrame:CGRectMake(0, -64, kScreenWidth, 64)];
@@ -106,6 +117,7 @@
 - (void)backAction:(UIButton *)button
 {
     [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+    
 }
 
 - (void)changeSlect:(UISegmentedControl *)segment

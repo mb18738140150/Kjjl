@@ -105,7 +105,10 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.payTypeArray.count + 1;
+    if ([WXApi isWXAppInstalled] && [WXApi isWXAppSupportApi]) {
+        return self.payTypeArray.count + 1;
+    }
+    return self.payTypeArray.count;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView

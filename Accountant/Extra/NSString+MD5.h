@@ -12,10 +12,10 @@
 
 - (NSString *)MD5;
 
-- (NSString *)MD5_Cap;
 
 + (BOOL)judgeCurrentDay:(NSString * )livingTime;
 
+- (NSString *)MD5_Cap;
 + (int )getCurrentMonth;
 
 + (int )getCurrentYear;

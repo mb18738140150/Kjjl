@@ -43,7 +43,7 @@
     self.segmentC = [[HYSegmentedControl alloc] initWithOriginY:0 Titles:@[@"基础",@"出纳",@"会计",@"税务",@"考证"] delegate:self drop:NO color:UIRGBColor(250, 79, 13)];
     [self.contentView addSubview:self.segmentC];
     
-    self.tableview = [[UITableView alloc]initWithFrame:CGRectMake(0, kSegmentHeight, kScreenWidth, kCellHeightOfCourse * 2) style:UITableViewStylePlain];
+    self.tableview = [[UITableView alloc]initWithFrame:CGRectMake(0, kSegmentHeight, kScreenWidth, kCellHeightOfCourse * 2 + 30) style:UITableViewStylePlain];
     self.tableview.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tableview.delegate = self;
     self.tableview.dataSource = self;
@@ -120,7 +120,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return kCellHeightOfCourse;
+    return kCellHeightOfCourse + 15;
 }
 
 - (void)moreCourseClick

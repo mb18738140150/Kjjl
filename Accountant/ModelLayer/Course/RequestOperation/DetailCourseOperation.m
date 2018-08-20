@@ -56,7 +56,6 @@
         self.detailCourseModel.courseModel.oldPrice = 0;
     }
     
-    
     for (NSDictionary *tmpDic in data) {
         ChapterModel *cModel = [[ChapterModel alloc] init];
         cModel.chapterId = [[tmpDic objectForKey:@"id"] intValue];

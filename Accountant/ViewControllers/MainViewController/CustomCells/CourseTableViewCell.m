@@ -74,10 +74,9 @@
     
     [self addSubview:self.courseImage1];
     [self addSubview:self.courseLabel1];
+    [self addSubview:self.priceLabel1];
     if (self.isVideoCourse) {
-        if ([WXApi isWXAppSupportApi] && [WXApi isWXAppInstalled]) {
-            [self addSubview:self.priceLabel1];
-        }
+        
         self.courseImage1.hd_x = 0;
         self.courseImage1.hd_width = kImageWidthOfCourseOfVideo;
         self.courseImage1.hd_height = kImageHeightOfCourseOfVideo;
@@ -95,9 +94,21 @@
 
 - (NSString *)getPrice:(NSNumber *)price
 {
+    NSString * mianfeiStr = @"";
+    if ([WXApi isWXAppInstalled] && [WXApi isWXAppSupportApi]) {
+        mianfeiStr = @"会员免费";
+    }else
+    {
+        return @"";
+    }
+    
+    if (self.isTaocan) {
+        mianfeiStr = @"";
+    }
+    
     NSString * priceStr = @"";
     if (price.intValue > 0) {
-        priceStr = [NSString stringWithFormat:@"￥%@", price];
+        priceStr = [NSString stringWithFormat:@"￥%@ %@", price,mianfeiStr];
     }else
     {
         priceStr = @"免费";
@@ -158,11 +169,10 @@
     [self addSubview:self.courseImage2];
     [self addSubview:self.courseLabel2];
     [self addSubview:self.courseLabel1];
+    [self addSubview:self.priceLabel1];
+    [self addSubview:self.priceLabel2];
     if (self.isVideoCourse) {
-        if ([WXApi isWXAppSupportApi] && [WXApi isWXAppInstalled]) {
-            [self addSubview:self.priceLabel1];
-            [self addSubview:self.priceLabel2];
-        }
+        
         
         self.courseImage1.hd_x = 0;
         self.courseImage1.hd_height = kImageHeightOfCourseOfVideo;

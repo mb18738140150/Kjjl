@@ -937,6 +937,7 @@
         return;
     }
     
+    
     NSString *videoPath = [[NSString stringWithFormat:@"%@",[videoInfo objectForKey:kVideoId]] MD5];
     NSString *chapterPath = [[NSString stringWithFormat:@"%@",[chapterInfo objectForKey:kChapterId]] MD5];
     NSString *coursePath = [[NSString stringWithFormat:@"%@",[courseInfo objectForKey:kCourseID]] MD5];

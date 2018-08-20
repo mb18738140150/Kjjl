@@ -13,4 +13,6 @@
 
 @property (nonatomic, strong)NSNumber * packageId;
 
+- (void)refreshWithId;
+
 @end

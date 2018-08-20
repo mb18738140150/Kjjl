@@ -27,6 +27,7 @@
 
 - (void)resetWithDic:(NSDictionary *)infoDic
 {
+    self.countDown = nil;
     self.livingIconImageView.layer.cornerRadius = self.livingIconImageView.hd_height / 2;
     self.livingIconImageView.layer.masksToBounds = YES;
     self.markView.layer.cornerRadius = self.markView.hd_height / 2;
@@ -86,10 +87,12 @@
         default:
             break;
     }
+    [self.shakeView removeFromSuperview];
+    self.shakeView = [[ShakeView alloc]initWithFrame:self.livingStateImageView.frame];
+    [self.contentView addSubview:self.shakeView];
+    [self.contentView insertSubview:self.shakeView aboveSubview:self.livingStateImageView];
+    self.shakeView.hidden = YES;
     
-//    self.markView.hidden = YES;
-//    self.shakeView.hidden = YES;
-//    self.livingLabel.hidden = YES;
     
     switch ([[infoDic objectForKey:kLivingState] intValue]) {
         case 0:
@@ -120,11 +123,14 @@
             [self.stateBT setTitle:@"听课" forState:UIControlStateNormal];
             self.markView.hidden = NO;
             self.livingLabel.hidden = NO;
+            self.shakeView.hidden = NO;
+            [self.shakeView prepareUIWithColor:UIColorFromRGB(0x00c754)];
+            self.livingStateImageView.hidden = YES;
             self.timeLB.text = @"直播中";
-            self.livingStateImageView.image = [UIImage imageNamed:@"livingCourse_组"];
+//            self.livingStateImageView.image = [UIImage imageNamed:@"livingCourse_组"];
             self.stateBT.tag = 1000 + LivingPlayType_living;
             if (self.livingDetailVC) {
-                self.livingStateImageView.image = [UIImage imageNamed:@"icon_zbz"];
+//                self.livingStateImageView.image = [UIImage imageNamed:@"icon_zbz"];
                 self.timeLB.textColor = UIColorFromRGB(0x00c754);
             }
             break;
@@ -155,6 +161,7 @@
     self.countDown = [[CountDown alloc] init];
     __weak __typeof(self) weakSelf= self;
     ///每分回调一次
+    
     [self.countDown countDownWithPER_MINBlock:^{
         
         [weakSelf updateTimeInVisibleCells:infoDic];

@@ -75,14 +75,20 @@
     
     [WXApi registerApp:@"wx2b4e947d0cd34a16"];
     // JPush注册
-    JPUSHRegisterEntity * entity = [[JPUSHRegisterEntity alloc] init];
-    entity.types = JPAuthorizationOptionAlert|JPAuthorizationOptionBadge|JPAuthorizationOptionSound;
-    if ([[UIDevice currentDevice].systemVersion floatValue] >= 8.0) {
-        // 可以添加自定义categories
-        // NSSet<UNNotificationCategory *> *categories for iOS10 or later
-        // NSSet<UIUserNotificationCategory *> *categories for iOS8 and iOS9
+    if ([[UIDevice currentDevice].systemVersion floatValue] >= 10.0) {
+        JPUSHRegisterEntity * entity = [[JPUSHRegisterEntity alloc] init];
+        entity.types = UNAuthorizationOptionAlert|UNAuthorizationOptionBadge|UNAuthorizationOptionSound;
+        [JPUSHService registerForRemoteNotificationConfig:entity delegate:self];
     }
-    [JPUSHService registerForRemoteNotificationConfig:entity delegate:self];
+    else if ([[UIDevice currentDevice].systemVersion floatValue] >= 8.0) {
+        [JPUSHService registerForRemoteNotificationTypes:(UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert) categories:nil];
+    }else
+    {
+        [JPUSHService registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge |
+                                                          UIRemoteNotificationTypeSound |
+                                                          UIRemoteNotificationTypeAlert)
+                                              categories:nil];
+    }
     
     [JPUSHService setupWithOption:launchOptions appKey:kappKey
                           channel:kchannel
@@ -98,33 +104,35 @@
     
     [[RCDLive sharedRCDLive] initRongCloud:RONGCLOUD_IM_APPKEY];
     __weak typeof(self)weakself = self;
-    if ([[UserManager sharedManager] getUserId]) {
-        [[RCIM sharedRCIM] connectWithToken:[[UserManager sharedManager] getRongToken] success:^(NSString *userId) {
-            NSLog(@"连接融云成功");
-            [[RCDLive sharedRCDLive] setReciveMessageAndConnectionStatusDelegate];
-            RCUserInfo *user = [RCUserInfo new];
-            
-            user.userId = [NSString stringWithFormat:@"%d", [UserManager sharedManager].getUserId];
-            user.name = [[UserManager sharedManager] getUserNickName];
-            user.portraitUri = [[UserManager sharedManager] getIconUrl];
-            
-            [[RCIM sharedRCIM]refreshUserInfoCache:user withUserId:user.userId];
-            [RCIM sharedRCIM].currentUserInfo.userId = user.userId;
-            [RCIM sharedRCIM].currentUserInfo.name = user.name;
-            [RCIM sharedRCIM].currentUserInfo.portraitUri = user.portraitUri;
-        } error:^(RCConnectErrorCode status) {
-            NSLog(@"连接失败");
-            UIAlertView * alert = [[UIAlertView alloc] initWithTitle:nil message:@"连接融云失败，请从新登录" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-            [alert show];
-            [weakself pushLoginVC];
-        } tokenIncorrect:^{
-            NSLog(@"token过期");
-            UIAlertView * alert = [[UIAlertView alloc] initWithTitle:nil message:@"Token失效，请从新登录" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-            [alert show];
-            [weakself pushLoginVC];
-            
-        }];
-    }
+//    if ([[UserManager sharedManager] getUserId]) {
+//        [[RCIM sharedRCIM] connectWithToken:[[UserManager sharedManager] getRongToken] success:^(NSString *userId) {
+//            NSLog(@"连接融云成功");
+//            [[RCDLive sharedRCDLive] setReciveMessageAndConnectionStatusDelegate];
+//            RCUserInfo *user = [RCUserInfo new];
+//            
+//            user.userId = [NSString stringWithFormat:@"%d", [UserManager sharedManager].getUserId];
+//            user.name = [[UserManager sharedManager] getUserNickName];
+//            user.portraitUri = [[UserManager sharedManager] getIconUrl];
+//
+//            [[RCIM sharedRCIM]refreshUserInfoCache:user withUserId:user.userId];
+//            [RCIM sharedRCIM].currentUserInfo.userId = user.userId;
+//            [RCIM sharedRCIM].currentUserInfo.name = user.name;
+//            [RCIM sharedRCIM].currentUserInfo.portraitUri = user.portraitUri;
+//        } error:^(RCConnectErrorCode status) {
+//            NSLog(@"连接失败");
+//            UIAlertView * alert = [[UIAlertView alloc] initWithTitle:nil message:@"连接融云失败，请从新登录" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+//            [alert show];
+//            [weakself pushLoginVC];
+//        } tokenIncorrect:^{
+//            NSLog(@"token过期");
+//            UIAlertView * alert = [[UIAlertView alloc] initWithTitle:nil message:@"Token失效，请从新登录" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+//            [alert show];
+//            [weakself pushLoginVC];
+//        }];
+//    }
+    
+    NSNotificationCenter *defaultCenter = [NSNotificationCenter defaultCenter];
+    [defaultCenter addObserver:self selector:@selector(networkDidReceiveMessage:) name:kJPFNetworkDidReceiveMessageNotification object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rCIMConnectionStatusChanged:) name:kRCIMConnectionStatusChanged object:nil];
     
@@ -147,6 +155,7 @@
     
     return YES;
 }
+
 
 - (void)reloadBasicData
 {
@@ -280,6 +289,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     /// Required - 注册 DeviceToken
     [JPUSHService registerDeviceToken:deviceToken];
     NSString * registrationID = [JPUSHService registrationID];
+    NSLog(@"registrationID = %@", registrationID);
     if (registrationID.length == 0) {
         self.noticeTimer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(scrollNotice) userInfo:nil repeats:YES];
     }else
@@ -394,6 +404,9 @@ forRemoteNotification:(NSDictionary *)userInfo
     if([notification.request.trigger isKindOfClass:[UNPushNotificationTrigger class]]) {
         [JPUSHService handleRemoteNotification:userInfo];
         NSLog(@"iOS10 前台收到远程通知:");
+        // {"ios":{"alert":"您的账户在别的设备上登录，您被迫下线!","badge":"1","sound":"default"}}
+        
+        [self oprationNotification:userInfo];
         
     }
     else {
@@ -421,7 +434,7 @@ forRemoteNotification:(NSDictionary *)userInfo
     if([response.notification.request.trigger isKindOfClass:[UNPushNotificationTrigger class]]) {
         [JPUSHService handleRemoteNotification:userInfo];
         NSLog(@"iOS10 前台收到远程通知:");
-        
+        [self oprationNotification:userInfo];
     }
     else {
         // 判断为本地通知
@@ -432,6 +445,34 @@ forRemoteNotification:(NSDictionary *)userInfo
     completionHandler();  // 系统要求执行这个方法
 }
 #endif
+
+- (void)oprationNotification:(NSDictionary *)userInfo
+{
+    NSLog(@"%@", userInfo);
+    if ([[[userInfo objectForKey:@"aps"] objectForKey:@"alert"] containsString:@"被迫下线"]) {
+        UIAlertView *alert = [[UIAlertView alloc]
+                              initWithTitle:@"提示"
+                              message:@"您"
+                              @"的帐号在别的设备上登录，您被迫下线！"
+                              delegate:nil
+                              cancelButtonTitle:@"知道了"
+                              otherButtonTitles:nil, nil];
+        [alert show];
+        
+        [self loginOut];
+    }
+}
+
+- (void)networkDidReceiveMessage:(NSNotification *)notification {
+    NSDictionary * userInfo = [notification userInfo];
+    NSString *content = [userInfo valueForKey:@"content"];
+    NSString *messageID = [userInfo valueForKey:@"_j_msgid"];
+    NSDictionary *extras = [userInfo valueForKey:@"extras"];
+    NSString *customizeField1 = [extras valueForKey:@"customizeField1"]; //服务端传递的Extras附加字段，key是自己定义的
+    
+    NSLog(@"%@\n *** %@", content, extras);
+}
+
 
 #pragma mark - RCIMConnectionStatusChangeNotification
 - (void)rCIMConnectionStatusChanged:(NSNotification*)notification {

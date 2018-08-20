@@ -116,13 +116,12 @@
         cell = [[DownloadTableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cellName];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
-
+    
     [cell resetSubviews];
-
+    
     NSArray *videos = [self.chapterVideoInfoArray objectAtIndex:indexPath.section];
     NSDictionary *videoDic = [videos objectAtIndex:indexPath.row];
     NSDictionary *chapterDic = [self.chapterInfoArray objectAtIndex:indexPath.section];
-    
     
     NSString *taskId = [DownloadRquestOperation getDownloadTaskIdWitChapterId:[chapterDic objectForKey:kChapterId] andVideoId:[videoDic objectForKey:kVideoId]];
     NSString *selectedId = [NSString stringWithFormat:@"%ld_%ld",(long)indexPath.section,(long)indexPath.row];

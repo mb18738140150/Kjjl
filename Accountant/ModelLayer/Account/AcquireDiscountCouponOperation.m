@@ -50,6 +50,23 @@
     }
 }
 
+- (void)didRequestFailedWithInfo:(NSDictionary *)failedInfo
+{
+    [self.discountCouponArray removeAllObjects];
+    NSArray *dataList = [failedInfo objectForKey:@"data"];
+    if (dataList == nil || ![dataList isKindOfClass:[NSArray class]]) {
+        NSLog(@"[dataList class] = %@", [dataList class]);
+        return;
+    }
+    for (NSDictionary *infoDic in dataList) {
+        [self.discountCouponArray addObject:infoDic];
+    }
+    
+    if (isObjectNotNil(self.notifiedObject)) {
+        [self.notifiedObject didRequestAcquireDiscountCouponSuccessed];
+    }
+}
+
 - (void)didRequestFailed:(NSString *)failInfo
 {
     if (isObjectNotNil(self.notifiedObject)) {

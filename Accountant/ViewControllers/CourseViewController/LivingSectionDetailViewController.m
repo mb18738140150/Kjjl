@@ -11,7 +11,7 @@
 #import "CourseraManager.h"
 #define kLivingSectionDetailCellID @"LivingSectionDetailCellID"
 
-@interface LivingSectionDetailViewController ()<UITableViewDelegate, UITableViewDataSource,UserModule_OrderLivingCourseProtocol>
+@interface LivingSectionDetailViewController ()<UITableViewDelegate, UITableViewDataSource,UserModule_OrderLivingCourseProtocol, UITextFieldDelegate,UITextViewDelegate>
 
 @property (nonatomic, strong)UITableView * tableView;
 @property (nonatomic, strong)NSMutableArray * dataArray;
@@ -140,6 +140,76 @@
     return cell;
 }
 
+- (void)textViewDidChange:(UITextView *)textView
+{
+    if (textView.mj_offsetY > 0) {
+        if (textView.contentSize.height > 150) {
+            textView.textColor = UIColorFromRGB(0x333333);
+            dispatch_barrier_sync(dispatch_get_main_queue(), ^{
+                textView.font = kMainFont;
+            });
+        }
+        
+    }else
+    {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSString * tStr = textView.text;
+            NSRange selectRange = NSMakeRange(textView.selectedRange.location, tStr.length);
+            tStr = [tStr substringWithRange:selectRange];
+            [UIView animateWithDuration:1 animations:^{
+                textView.textColor = UIColorFromRGB(0xff7d00);
+                textView.frame = CGRectMake(0, 0, kScreenWidth, kScreenWidth * 9 / 16);
+            }];
+        });
+    }
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextSetLineWidth(context, 4);
+    CGContextSetLineCap(context, kCGLineCapRound);
+    CGColorSpaceRef fillColorSpace = CGColorSpaceCreateDeviceGray();
+    CGContextSetFillColorSpace(context, fillColorSpace);
+    CGContextSetFillColorWithColor(context, UIColorFromRGB(0x333333).CGColor);
+    
+    CGContextMoveToPoint(context, kScreenWidth / 4, kScreenHeight / 4);
+    CGContextAddLineToPoint(context, kScreenWidth / 2, kScreenHeight / 2);
+    
+    UIBezierPath *bezierPath = [UIBezierPath bezierPath];
+    [bezierPath moveToPoint:CGPointMake(0, 0)];
+    [bezierPath addLineToPoint:CGPointMake(kScreenWidth, 0)];
+    [bezierPath addQuadCurveToPoint:CGPointMake(kScreenWidth, kScreenHeight / 2) controlPoint:CGPointMake(kScreenWidth / 4 * 3, kScreenHeight / 4)];
+    CGContextAddPath(context, bezierPath.CGPath);
+    
+    CGContextSetStrokeColorWithColor(context, UIColorFromRGB(0xff2c7a).CGColor);
+    
+    CGColorSpaceRelease(fillColorSpace);
+    
+    UIGravityBehavior * gravityBehavior = [[UIGravityBehavior alloc]init];
+    [gravityBehavior addItem:self.view];
+    [gravityBehavior removeItem:self.tableView];
+    
+    UICollisionBehavior * collisionBehavior = [[UICollisionBehavior alloc]initWithItems:@[self.view,self.tableView]];
+    UIBezierPath * bezierPath1 = [UIBezierPath bezierPath];
+    [bezierPath1 moveToPoint:CGPointMake(0, 0)];
+    [bezierPath1 addLineToPoint:CGPointMake(0, kScreenHeight)];
+    [bezierPath1 addLineToPoint:CGPointMake(kScreenWidth, kScreenHeight)];
+    [bezierPath1 addLineToPoint:CGPointMake(kScreenWidth, 0)];
+    [bezierPath1 stroke];
+    [collisionBehavior addBoundaryWithIdentifier:@"boundary" forPath:bezierPath1];
+    
+    UISnapBehavior * snapBehavior = [[UISnapBehavior alloc]initWithItem:self.tableView snapToPoint:CGPointMake(kScreenWidth / 2, 0)];
+    snapBehavior.damping = 0.7;
+    
+    UIAttachmentBehavior * attachmentBehavior = [[UIAttachmentBehavior alloc]initWithItem:self.tableView attachedToItem:self.view];
+    attachmentBehavior.anchorPoint = CGPointMake(kScreenWidth / 2, kScreenHeight / 2);
+    attachmentBehavior.damping = 0.8;
+    attachmentBehavior.frequency = 30;
+    
+    UIDynamicAnimator * animator = [[UIDynamicAnimator alloc]initWithReferenceView:self.view];
+    [animator addBehavior:gravityBehavior];
+    [animator addBehavior:collisionBehavior];
+    [animator addBehavior:snapBehavior];
+    
+}
+
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     UIView * headView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, 50)];
@@ -166,86 +236,56 @@
     tf.background = [UIImage imageNamed:@""];
     tf.placeholder = @"";
     [headView addSubview:tf];
-    
-    UIGravityBehavior * gravity = [[UIGravityBehavior alloc]init];
-    [gravity addItem:self.view];
-    gravity.angle = 0;
-    gravity.magnitude = 1.0;
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    tf.delegate = self;
     
     return headView;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
+{
+    UIView * footView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, kScreenWidth * 9.0 / 16)];
+    footView.backgroundColor = UIColorFromRGB(0xf2f2f2);
+    
+    UIView * tipView = [[UIView alloc]initWithFrame:CGRectMake(10, 0, 2, 15)];
+    tipView.backgroundColor = UIColorFromRGB(0xff1d00);
+    [footView addSubview:tipView];
+    
+    if (section == self.dataArray.count) {
+        UIView * footView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, kScreenHeight / 3)];
+        footView.backgroundColor = UIColorFromRGB(0xfafafa);
+        
+        UITextField * tf = [[UITextField alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, kScreenHeight / 6)];
+        tf.backgroundColor = [UIColor colorWithWhite:0.8 alpha:0.7];
+        tf.textColor = UIColorFromRGB(0x333333);
+        tf.delegate = self;
+        tf.keyboardType = UIKeyboardTypePhonePad;
+        tf.returnKeyType = UIReturnKeyDone;
+        [footView addSubview:tf];
+        UILabel * tipLB = [[UILabel alloc] initWithFrame:CGRectMake(0, tf.hd_height, kScreenWidth / 2, 30)];
+        tipLB.textAlignment = NSTextAlignmentLeft;
+        tipLB.backgroundColor = [UIColor grayColor];
+        [footView addSubview:tipLB];
+        
+        
+        return footView;
+    }else if (section == self.dataArray.count + 1)
+    {
+        UIView * bottomView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, kScreenWidth, 50)];
+        bottomView.layer.cornerRadius = 5;
+        bottomView.layer.masksToBounds = YES;
+        bottomView.backgroundColor = UIColorFromRGB(0xf2f2f2);
+        bottomView.layer.borderWidth = 1;
+        bottomView.layer.borderColor = [UIColor grayColor].CGColor;
+        
+        UITextField * bTF = [[UITextField alloc]initWithFrame:CGRectMake(20, 0, kScreenWidth - 40, 30)];
+        bTF.keyboardType = UIKeyboardTypeNumberPad;
+        bTF.returnKeyType = UIReturnKeyDone;
+        bTF.borderStyle = UITextBorderStyleBezel;
+        bTF.backgroundColor = UIColorFromRGB(0x333333);
+        [footView addSubview:bTF];
+        
+    }
+    return footView;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
