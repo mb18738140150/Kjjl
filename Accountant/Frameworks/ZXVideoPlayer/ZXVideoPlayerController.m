@@ -635,10 +635,10 @@ static const CGFloat kVideoPlayerControllerAnimationTimeInterval = 0.3f;
     float rate = [[button.titleLabel.text substringFromIndex:1] floatValue];
     if (rate == 1) {
         self.rate = CurrentRate_2;
-    }else if (rate == 1.5)
+    }else if (rate == 1.25)
     {
         self.rate = CurrentRate_3;
-    }else if(rate == 2.0)
+    }else if(rate == 1.5)
     {
         self.rate = CurrentRate_1;
     }
@@ -647,22 +647,22 @@ static const CGFloat kVideoPlayerControllerAnimationTimeInterval = 0.3f;
 
 - (void)changePlayRate:(CurrentRate)rate
 {
-    float currentRate = 1.0;
+    NSNumber *currentRate = @(1.0);
     switch (rate) {
         case CurrentRate_1:
-            currentRate = 1.0;
+            currentRate = @(1.0);
             break;
         case CurrentRate_2:
-            currentRate = 1.5;
+            currentRate = @(1.25);
             break;
         case CurrentRate_3:
-            currentRate = 2.0;
+            currentRate = @(1.5);
             break;
         default:
             break;
     }
-    [self.videoControl.rateButton setTitle:[NSString stringWithFormat:@"x%.1f", currentRate] forState:UIControlStateNormal];
-    self.currentPlaybackRate = currentRate;
+    [self.videoControl.rateButton setTitle:[NSString stringWithFormat:@"x%@", currentRate] forState:UIControlStateNormal];
+    self.currentPlaybackRate = currentRate.floatValue;
 }
 
 - (void)changePlayer

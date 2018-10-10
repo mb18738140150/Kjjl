@@ -379,6 +379,21 @@
         return result;
     }] mutableCopy];
     
+    // 将直播中的
+    NSMutableArray * livingArray = [NSMutableArray array];
+    for (int i = 0; i < noStartlivingCourseArr.count; i++) {
+        NSDictionary * infoDic = [noStartlivingCourseArr objectAtIndex:i];
+        if ([[infoDic objectForKey:kLivingState] intValue] == 1) {
+            [livingArray addObject:infoDic];
+        }
+    }
+    if (livingArray.count > 0) {
+        for (NSDictionary * infoDic in livingArray) {
+            [noStartlivingCourseArr removeObject:infoDic];
+            [noStartlivingCourseArr insertObject:infoDic atIndex:0];
+        }
+    }
+    
     for (NSDictionary * infoDic in noStartlivingCourseArr) {
         [livingCourseArr addObject:infoDic];
     }

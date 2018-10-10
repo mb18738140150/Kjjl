@@ -349,7 +349,8 @@
 
 - (NSMutableAttributedString *)getRealityPrice:(NSString *)priceStr
 {
-    NSString * str = [NSString stringWithFormat:@"实付:￥%@", priceStr];
+    
+    NSString * str = [NSString stringWithFormat:@"实付:%@%@",[SoftManager shareSoftManager].coinName, priceStr];
     NSMutableAttributedString * mPriceStr = [[NSMutableAttributedString alloc]initWithString:str];
     [mPriceStr setAttributes:@{NSForegroundColorAttributeName:UIColorFromRGB(0xff4f00)} range:NSMakeRange(3, priceStr.length + 1)];
     return mPriceStr;

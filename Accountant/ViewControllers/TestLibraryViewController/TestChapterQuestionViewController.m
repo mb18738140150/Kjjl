@@ -181,13 +181,10 @@
         }
     }
     
-    
     if (self.questionType == TestQuestionTypeChapter) {
         [self addQuestionDetailHistory];
     }
-    if (self.currentQuestionIndex < self.totalCount-1){
-        [self nextQuestion];
-    }
+    [self showQuestionAnswer];
 }
 
 - (void)showQuestionAnswer

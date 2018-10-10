@@ -12,6 +12,10 @@
 #import "UIUtility.h"
 #import "TestMacro.h"
 
+@interface TestQuestionContentTableViewCell()<UITableViewDelegate, UITableViewDataSource>
+
+@end
+
 @implementation TestQuestionContentTableViewCell
 
 - (void)resetWithInfo:(NSDictionary *)infoDic
@@ -39,16 +43,26 @@
     [self addSubview:self.testTypeLabel];
     
     if (self.isTextAnswer) {
-         NSAttributedString * attributeStr = [[NSAttributedString alloc] initWithData:[[infoDic objectForKey:kTestQuestionContent] dataUsingEncoding:NSUnicodeStringEncoding] options:@{NSDocumentTypeDocumentAttribute:NSHTMLTextDocumentType} documentAttributes:nil error:nil];
+        
+        UIScrollView * scrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(20, 30, kScreenWidth - 40, height)];
+        [self addSubview:scrollView];
+        
+        
+        NSAttributedString * attributeStr = [[NSAttributedString alloc] initWithData:[[infoDic objectForKey:kTestQuestionContent] dataUsingEncoding:NSUnicodeStringEncoding] options:@{NSDocumentTypeDocumentAttribute:NSHTMLTextDocumentType} documentAttributes:nil error:nil];
          height = [attributeStr boundingRectWithSize:CGSizeMake(kScreenWidth - 40, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin context:nil].size.height;
         
-        self.contentLB = [[UITextView alloc]initWithFrame:CGRectMake(20, 30, kScreenWidth - 40, height)];
+        self.contentLB = [[UITextView alloc]initWithFrame:CGRectMake(0, 0, scrollView.hd_width, height)];
         self.contentLB.editable = NO;
         self.contentLB.textColor = UIColorFromRGB(0x666666);
         self.contentLB.font = kMainFont;
-        [self addSubview:self.contentLB];
+        [scrollView addSubview:self.contentLB];
         self.contentLB.scrollEnabled = NO;
         self.contentLB.attributedText = attributeStr;
+        self.contentLB.contentSize = CGSizeMake(scrollView.hd_width , height);
+        
+        scrollView.contentSize = CGSizeMake(self.contentLB.contentSize.width , height);
+        NSLog(@"%.2f ****** %.2f", scrollView.contentSize.width, kScreenWidth);
+        
     }else
     {
         
@@ -94,6 +108,30 @@
     self.questionCountLabel.font = kMainFont;
     [self addSubview:self.questionCountLabel];
     
+}
+
+- (NSString *)autoWebAutoImageSize:(NSString *)html{
+    
+    NSString * regExpStr = @"<img\\s+.*?\\s+(style\\s*=\\s*.+?\")";
+    NSRegularExpression *regex=[NSRegularExpression regularExpressionWithPattern:regExpStr options:NSRegularExpressionCaseInsensitive error:nil];
+    
+    NSArray *matches=[regex matchesInString:html
+                                    options:0
+                                      range:NSMakeRange(0, [html length])];
+    
+    
+    NSMutableArray * mutArray = [NSMutableArray array];
+    for (NSTextCheckingResult *match in matches) {
+        NSString* group1 = [html substringWithRange:[match rangeAtIndex:1]];
+        [mutArray addObject: group1];
+    }
+    
+    NSUInteger len = [mutArray count];
+    for (int i = 0; i < len; ++ i) {
+        html = [html stringByReplacingOccurrencesOfString:mutArray[i] withString: @"style=\"width:90%; height:auto;\""];
+    }
+    
+    return html;
 }
 
 @end

@@ -22,7 +22,7 @@
 - (void)didRequestRegistWithWithDic:(NSDictionary *)infoDic withNotifiedObject:(id<UserModule_RegistProtocol>)object
 {
     self.notifiedObject = object;
-    [[HttpRequestManager sharedManager] reqeustRegistWithdic:(NSDictionary *)infoDic andProcessDelegate:self];
+    [[HttpRequestManager sharedManager] reqeustRegistWithdic:infoDic andProcessDelegate:self];
 }
 
 #pragma mark - http request

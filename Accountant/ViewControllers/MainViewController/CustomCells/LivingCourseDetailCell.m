@@ -26,7 +26,7 @@
 {
     self.infoDic = infoDic;
     self.titleLB.text = [NSString stringWithFormat:@"%@", [infoDic objectForKey:kCourseName]];
-    self.priceLB.text = [NSString stringWithFormat:@"￥%@", [infoDic objectForKey:kPrice]];
+    self.priceLB.text = [NSString stringWithFormat:@"%@%@",[SoftManager shareSoftManager].coinName, [infoDic objectForKey:kPrice]];
     self.sectionCountLB.text = [NSString stringWithFormat:@"共%d节课", [[[CourseraManager sharedManager]getLivingSectionDetailArray] count]];
     self.teacherLB.text = [NSString stringWithFormat:@"主讲:%@", [infoDic objectForKey:kCourseTeacherName]];
     NSDictionary * firstInfoDic = [[[CourseraManager sharedManager]getLivingSectionDetailArray] firstObject];

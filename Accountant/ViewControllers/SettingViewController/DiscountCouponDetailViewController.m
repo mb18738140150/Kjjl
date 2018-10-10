@@ -144,7 +144,7 @@
 
 - (NSMutableAttributedString *)getPriceText:(NSString *)priceStr
 {
-    NSString * str = [NSString stringWithFormat:@"￥%@", priceStr];
+    NSString * str = [NSString stringWithFormat:@"%@%@",[SoftManager shareSoftManager].coinName, priceStr];
     NSMutableAttributedString * mStr = [[NSMutableAttributedString alloc]initWithString:str];
     NSDictionary * attribute = @{NSFontAttributeName:[UIFont systemFontOfSize:self.priceLB.hd_height]};
     [mStr addAttributes:attribute range:NSMakeRange(1, str.length - 1)];

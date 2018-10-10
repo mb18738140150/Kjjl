@@ -143,7 +143,7 @@
 - (void)refreshUIWithInfo:(NSDictionary *)infoDic
 {
     [self.iconImageView sd_setImageWithURL:[NSURL URLWithString:self.imageUrl] placeholderImage:[UIImage imageNamed:@""]];
-    self.priceLB.text = [NSString stringWithFormat:@"￥%@", [infoDic objectForKey:@"price"]];
+    self.priceLB.text = [NSString stringWithFormat:@"%@%@",[SoftManager shareSoftManager].coinName, [infoDic objectForKey:@"price"]];
     self.storeCountLB.text = [NSString stringWithFormat:@"库存：%@", [infoDic objectForKey:@"count"]];
     self.storeCountLB.hidden = YES;
     self.selectLB.text = [infoDic objectForKey:@"name"];

@@ -44,6 +44,7 @@
 #import <UserNotifications/UserNotifications.h>
 #endif
 
+
 @interface AppDelegate ()<UserModule_AppInfoProtocol,UIAlertViewDelegate,JPUSHRegisterDelegate,UserModule_BindJPushProtocol,UNUserNotificationCenterDelegate>
 
 @property (nonatomic,strong) NSString                       *versionContent;

@@ -554,7 +554,7 @@ static bool isFirstCailiaoQuestion;
 
 - (void)navigationViewSetup
 {
-    self.navigationItem.title = @"模拟";
+    self.navigationItem.title = [self.infoDic objectForKey:kTestSimulateName];
     self.edgesForExtendedLayout = UIRectEdgeNone;
     self.automaticallyAdjustsScrollViewInsets = NO;
     
@@ -571,7 +571,6 @@ static bool isFirstCailiaoQuestion;
 }
 - (void)backAction:(UIButton *)button
 {
-    
     if (self.timer) {
         [self.timer invalidate];
         self.timer = nil;

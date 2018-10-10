@@ -20,7 +20,7 @@
     self.imageHeight.constant = kScreenWidth / 14.0 * 8;
     [self.packageIconImageView sd_setImageWithURL:[NSURL URLWithString:[infoDic objectForKey:@"packageCover"]] placeholderImage:[UIImage imageNamed:@""]];
     self.packageTitleLB.text = [infoDic objectForKey:@"packageName"];
-    self.priceLB.text = [NSString stringWithFormat:@"￥ %@", [infoDic objectForKey:@"packagePrice"]];
+    self.priceLB.text = [NSString stringWithFormat:@"%@ %@",[SoftManager shareSoftManager].coinName, [infoDic objectForKey:@"packagePrice"]];
     
 }
 

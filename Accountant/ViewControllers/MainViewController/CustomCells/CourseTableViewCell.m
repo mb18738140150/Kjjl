@@ -108,7 +108,7 @@
     
     NSString * priceStr = @"";
     if (price.intValue > 0) {
-        priceStr = [NSString stringWithFormat:@"￥%@ %@", price,mianfeiStr];
+        priceStr = [NSString stringWithFormat:@"%@%@ %@",[SoftManager shareSoftManager].coinName, price,mianfeiStr];
     }else
     {
         priceStr = @"免费";

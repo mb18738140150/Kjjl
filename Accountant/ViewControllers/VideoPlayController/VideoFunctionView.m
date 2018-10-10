@@ -103,7 +103,7 @@
 
 - (NSMutableAttributedString *)getNowPriceWith:(NSString *)nowPrice
 {
-    NSString * nowPriceStr = [NSString stringWithFormat:@"现价￥%@", nowPrice];
+    NSString * nowPriceStr = [NSString stringWithFormat:@"现价%@%@",[SoftManager shareSoftManager].coinName, nowPrice];
     NSMutableAttributedString * aStr = [[NSMutableAttributedString alloc]initWithString:nowPriceStr];
     NSDictionary * attribute = @{NSForegroundColorAttributeName:UIRGBColor(251, 75, 33)};
     [aStr setAttributes:attribute range:NSMakeRange(2, nowPriceStr.length - 2)];
@@ -113,7 +113,7 @@
 
 - (NSMutableAttributedString*)getOldPaice:(NSString *)oldPrice
 {
-    NSString *oldPriceStr = [NSString stringWithFormat:@"原价￥%@", oldPrice];
+    NSString *oldPriceStr = [NSString stringWithFormat:@"原价%@%@",[SoftManager shareSoftManager].coinName, oldPrice];
     NSMutableAttributedString *aOldStr = [[NSMutableAttributedString alloc]initWithString:oldPriceStr];
     [aOldStr addAttributes:@{NSStrikethroughStyleAttributeName: [NSNumber numberWithInteger:NSUnderlineStyleSingle], NSBaselineOffsetAttributeName : @(NSUnderlineStyleSingle)} range:NSMakeRange(0, oldPriceStr.length)];
     

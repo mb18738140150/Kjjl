@@ -121,7 +121,7 @@
     if (self.segmentC.selectIndex == 1) {
         MainLivingCourseTableViewCell * lCell = (MainLivingCourseTableViewCell *)[self getCellWithCellName:@"mainCellId" inTableView:tableView andCellClass:[MainLivingCourseTableViewCell class]];
         lCell.livingCellType = LivingCellType_Order;
-        NSDictionary * infoDic = [[[CourseraManager sharedManager]getLivingOrderedSectionDetailArray] objectAtIndex:indexPath.row];
+        NSDictionary * infoDic = [self.dataSourseArry objectAtIndex:indexPath.row];//[[CourseraManager sharedManager] getLivingOrderedSectionDetailArray]
         
         [lCell resetCellContent: infoDic];
         lCell.mainCountDownFinishBlock = ^{
@@ -162,7 +162,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (self.segmentC.selectIndex == 1) {
-        NSDictionary * infoDic = [[[CourseraManager sharedManager]getLivingOrderedSectionDetailArray] objectAtIndex:indexPath.row];
+        NSDictionary * infoDic = [self.dataSourseArry objectAtIndex:indexPath.row];
         self.selectOrderLivingSectionInfoDic = infoDic;
         [SVProgressHUD show];
         NSDictionary * dic1 = @{kCourseID:[infoDic objectForKey:kCourseID],
@@ -259,6 +259,7 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationOfLivingChatClick object:self.selectLivingCourseInfoDic];;
         self.selectLivingCourseInfoDic = nil;
     }
+    
     [self.tableView reloadData];
 }
 

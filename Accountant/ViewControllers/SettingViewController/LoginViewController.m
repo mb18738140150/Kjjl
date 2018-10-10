@@ -16,7 +16,7 @@
 #import "VerifyAccountViewController.h"
 #define kImageWidth 25
 
-@interface LoginViewController ()<UITextFieldDelegate,UserModule_LoginProtocol,UserModule_BindJPushProtocol,UserModule_LevelDetailProtocol,UserModule_CommonProblem,UserModule_AssistantCenterProtocol,UserModule_LivingBackYearList>
+@interface LoginViewController ()<UITextFieldDelegate,UserModule_LoginProtocol,UserModule_BindJPushProtocol,UserModule_LevelDetailProtocol,UserModule_CommonProblem,UserModule_AssistantCenterProtocol,UserModule_LivingBackYearList, UIAlertViewDelegate>
 
 @property (nonatomic,strong) UITextField                *account;
 @property (nonatomic,strong) UITextField                *password;
@@ -298,7 +298,7 @@
     
     UIButton * touristBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     touristBtn.frame = CGRectMake(0, _background.hd_height - 40, _background.hd_width, 20);
-    [touristBtn setTitle:@"我想随便看看>>>" forState:UIControlStateNormal];
+    [touristBtn setTitle:@"游客模式>>>" forState:UIControlStateNormal];
     touristBtn.titleLabel.font = kMainFont;
     [touristBtn setTitleColor:UIRGBColor(25, 96, 246) forState:UIControlStateNormal];
     [touristBtn setBackgroundColor:[UIColor whiteColor]];
@@ -352,15 +352,28 @@
 
 - (void)touristAction
 {
-    NSLog(@"随便看看");
-    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+    if ([WXApi isWXAppInstalled] && [WXApi isWXAppSupportApi]) {
+        NSLog(@"随便看看");
+        [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+    }else
+    {
+        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"提示" message:@"游客最好注册账户，否则会账号信息存在风险" delegate:self cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+        [alert show];
+    }
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    [[UserManager sharedManager] loginWithUserName:@"18736087590" andPassword:@"111111" withNotifiedObject:self];
 }
 
 #pragma mark - login protocol func
 - (void)didUserLoginSuccessed
 {
     [SVProgressHUD dismiss];
-    [SVProgressHUD showSuccessWithStatus:@"登录成功"];
+    if ([WXApi isWXAppInstalled] && [WXApi isWXAppSupportApi]) {
+        [SVProgressHUD showSuccessWithStatus:@"登录成功"];
+    }
     [[NSUserDefaults standardUserDefaults] setObject:_account.text forKey:@"userName"];
     [[NSUserDefaults standardUserDefaults] setObject:_password.text forKey:@"password"];
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -448,6 +461,12 @@
 - (void)getLivingBackYearList
 {
     [[UserManager sharedManager]didRequestLivingBackYearListWithInfo:@{} withNotifiedObject:self];
+}
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+    
+    return YES;
 }
 
 - (void)didRequestLevelDetailSuccessed

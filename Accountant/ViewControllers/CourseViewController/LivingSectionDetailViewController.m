@@ -162,25 +162,8 @@
             }];
         });
     }
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    CGContextSetLineWidth(context, 4);
-    CGContextSetLineCap(context, kCGLineCapRound);
-    CGColorSpaceRef fillColorSpace = CGColorSpaceCreateDeviceGray();
-    CGContextSetFillColorSpace(context, fillColorSpace);
-    CGContextSetFillColorWithColor(context, UIColorFromRGB(0x333333).CGColor);
     
-    CGContextMoveToPoint(context, kScreenWidth / 4, kScreenHeight / 4);
-    CGContextAddLineToPoint(context, kScreenWidth / 2, kScreenHeight / 2);
     
-    UIBezierPath *bezierPath = [UIBezierPath bezierPath];
-    [bezierPath moveToPoint:CGPointMake(0, 0)];
-    [bezierPath addLineToPoint:CGPointMake(kScreenWidth, 0)];
-    [bezierPath addQuadCurveToPoint:CGPointMake(kScreenWidth, kScreenHeight / 2) controlPoint:CGPointMake(kScreenWidth / 4 * 3, kScreenHeight / 4)];
-    CGContextAddPath(context, bezierPath.CGPath);
-    
-    CGContextSetStrokeColorWithColor(context, UIColorFromRGB(0xff2c7a).CGColor);
-    
-    CGColorSpaceRelease(fillColorSpace);
     
     UIGravityBehavior * gravityBehavior = [[UIGravityBehavior alloc]init];
     [gravityBehavior addItem:self.view];
@@ -265,7 +248,6 @@
         tipLB.textAlignment = NSTextAlignmentLeft;
         tipLB.backgroundColor = [UIColor grayColor];
         [footView addSubview:tipLB];
-        
         
         return footView;
     }else if (section == self.dataArray.count + 1)

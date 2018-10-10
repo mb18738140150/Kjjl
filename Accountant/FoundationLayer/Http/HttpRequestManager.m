@@ -552,7 +552,7 @@
             if (result == 1) {
                 [delegate didRequestSuccessed:responseObject];
             }else{
-#warning 此段代码需删除**********
+
                 if ([[responseObject objectForKey:@"command"] intValue] == 62) {
                     [delegate didRequestFailedWithInfo:responseObject];
                     return ;
@@ -573,8 +573,20 @@
         }
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-//        NSLog(@"%@",error);
-        NSLog(@"****code = %ld \n*** userinfo = %@ \n***%@",error.code,error.userInfo,error.domain);
+        NSLog(@"%@",error);
+//        NSLog(@"****code = %ld \n*** userinfo = %@ \n***%@",error.code,error.userInfo,error.domain);
+        
+        
+        
+//        NSDictionary * userInfo = error.userInfo;
+//        
+//        NSError * UnderlyingError = [userInfo objectForKey:@"NSUnderlyingError"];
+//        NSDictionary * NSUnderlyingErrorinfoDic = UnderlyingError.userInfo;
+//
+//        NSLog(@" **** %@\n**** class = %@",[NSUnderlyingErrorinfoDic objectForKey:@"NSLocalizedDescription"], [[NSUnderlyingErrorinfoDic objectForKey:@"NSLocalizedDescription"] class]);
+        
+        
+        
         if (delegate != nil) {
             
             [delegate didRequestFailed:kNetError];

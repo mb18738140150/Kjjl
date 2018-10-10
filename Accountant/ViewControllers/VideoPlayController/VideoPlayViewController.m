@@ -585,8 +585,6 @@
         return;
     }
     
-    
-    
     NSDictionary *chapterDic = [self.chapterArray objectAtIndex:indexPath.section];
     NSArray *videoInfos = [self.chapterVideoInfoArray objectAtIndex:indexPath.section];
     NSDictionary *videoInfo = [videoInfos objectAtIndex:indexPath.row];

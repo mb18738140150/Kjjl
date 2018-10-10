@@ -41,4 +41,7 @@
 #import "UIViewController+Cloudox.h"
 #import "UINavigationController+Cloudox.h"
 #import <AlipaySDK/AlipaySDK.h>
+
+#import "SoftManager.h"
+
 #endif /* Account_h */

@@ -22,7 +22,7 @@
     [self.contentView removeAllSubviews];
     [self prepareUI];
     
-    self.discountPriceLB.attributedText = [self getPrice:[NSString stringWithFormat:@"￥%@", [infoDic objectForKey:@"CouponPrice"]]];
+    self.discountPriceLB.attributedText = [self getPrice:[NSString stringWithFormat:@"%@%@",[SoftManager shareSoftManager].coinName, [infoDic objectForKey:@"CouponPrice"]]];
     self.manPriceLB.text = [NSString stringWithFormat:@"满%@可用", [infoDic objectForKey:@"Area"]];
     self.activityLB.text = [infoDic objectForKey:@"MakeText"];
     self.deadlineLB.text = [NSString stringWithFormat:@"有效期至：%@", [infoDic objectForKey:@"EndDate"]];

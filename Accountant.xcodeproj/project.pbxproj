@@ -51,7 +51,6 @@
 		00181CC11FAAF15B00D40F08 /* btn_zixun@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 00181CB91FAAF15B00D40F08 /* btn_zixun@2x.png */; };
 		00181CC21FAAF15B00D40F08 /* btn_zixun@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 00181CBA1FAAF15B00D40F08 /* btn_zixun@3x.png */; };
 		00181CC31FAAF15B00D40F08 /* img_tx@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 00181CBB1FAAF15B00D40F08 /* img_tx@2x.png */; };
-		00181CC41FAAF15B00D40F08 /* img_tx@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 00181CBC1FAAF15B00D40F08 /* img_tx@3x.png */; };
 		00181CC71FAB0FD500D40F08 /* CansultTeachersListView.m in Sources */ = {isa = PBXBuildFile; fileRef = 00181CC61FAB0FD500D40F08 /* CansultTeachersListView.m */; };
 		001C86761EBDA62B003523DB /* SlideBlockView.m in Sources */ = {isa = PBXBuildFile; fileRef = 001C86751EBDA62B003523DB /* SlideBlockView.m */; };
 		001C86791EBDA66E003523DB /* TestSimulateQuestionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 001C86781EBDA66E003523DB /* TestSimulateQuestionViewController.m */; };
@@ -78,6 +77,7 @@
 		002BBAA12086E81000A91C72 /* TextAswerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 002BBAA02086E81000A91C72 /* TextAswerCell.m */; };
 		002FC8FD1F023AE1001511AE /* VideoCoueseOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 002FC8FC1F023AE1001511AE /* VideoCoueseOperation.m */; };
 		002FC9001F023AFB001511AE /* LiveStreamOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 002FC8FF1F023AFB001511AE /* LiveStreamOperation.m */; };
+		00327B04212CEC2B0051DB0E /* SoftManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 00327B02212CEC2A0051DB0E /* SoftManager.m */; };
 		0033718B208F193700A3F619 /* ico_fx_n@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 00337163208F193700A3F619 /* ico_fx_n@2x.png */; };
 		0033718C208F193700A3F619 /* ico_fx_n@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 00337164208F193700A3F619 /* ico_fx_n@3x.png */; };
 		0033718D208F193700A3F619 /* ico_time_n@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 00337165208F193700A3F619 /* ico_time_n@2x.png */; };
@@ -1325,7 +1325,6 @@
 		00181CB91FAAF15B00D40F08 /* btn_zixun@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn_zixun@2x.png"; sourceTree = "<group>"; };
 		00181CBA1FAAF15B00D40F08 /* btn_zixun@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn_zixun@3x.png"; sourceTree = "<group>"; };
 		00181CBB1FAAF15B00D40F08 /* img_tx@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "img_tx@2x.png"; sourceTree = "<group>"; };
-		00181CBC1FAAF15B00D40F08 /* img_tx@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "img_tx@3x.png"; sourceTree = "<group>"; };
 		00181CC51FAB0FD500D40F08 /* CansultTeachersListView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CansultTeachersListView.h; sourceTree = "<group>"; };
 		00181CC61FAB0FD500D40F08 /* CansultTeachersListView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CansultTeachersListView.m; sourceTree = "<group>"; };
 		001C86741EBDA62B003523DB /* SlideBlockView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SlideBlockView.h; sourceTree = "<group>"; };
@@ -1368,6 +1367,8 @@
 		002FC8FC1F023AE1001511AE /* VideoCoueseOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoCoueseOperation.m; sourceTree = "<group>"; };
 		002FC8FE1F023AFB001511AE /* LiveStreamOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LiveStreamOperation.h; sourceTree = "<group>"; };
 		002FC8FF1F023AFB001511AE /* LiveStreamOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LiveStreamOperation.m; sourceTree = "<group>"; };
+		00327B02212CEC2A0051DB0E /* SoftManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SoftManager.m; sourceTree = "<group>"; };
+		00327B03212CEC2B0051DB0E /* SoftManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SoftManager.h; sourceTree = "<group>"; };
 		00337163208F193700A3F619 /* ico_fx_n@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ico_fx_n@2x.png"; sourceTree = "<group>"; };
 		00337164208F193700A3F619 /* ico_fx_n@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ico_fx_n@3x.png"; sourceTree = "<group>"; };
 		00337165208F193700A3F619 /* ico_time_n@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ico_time_n@2x.png"; sourceTree = "<group>"; };
@@ -3137,7 +3138,6 @@
 				00181CB91FAAF15B00D40F08 /* btn_zixun@2x.png */,
 				00181CBA1FAAF15B00D40F08 /* btn_zixun@3x.png */,
 				00181CBB1FAAF15B00D40F08 /* img_tx@2x.png */,
-				00181CBC1FAAF15B00D40F08 /* img_tx@3x.png */,
 			);
 			path = courseVideoList;
 			sourceTree = "<group>";
@@ -3311,6 +3311,8 @@
 		003AC2E91E667DBC00713502 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				00327B03212CEC2B0051DB0E /* SoftManager.h */,
+				00327B02212CEC2A0051DB0E /* SoftManager.m */,
 				00720EE72016C15300AFF2D2 /* alipay */,
 				00729F8E1FD2936C00BD77E3 /* weichat */,
 				007100301F91A0C0003FED6F /* CountDown */,
@@ -6356,7 +6358,6 @@
 				00AA665A1EA5AA5200064189 /* Arrow@3x.png in Resources */,
 				26E4CF461E71959400D6739F /* classIcon_2_5@2x.png in Resources */,
 				004E773A1EF2154400DBE807 /* shouye-6@2x.png in Resources */,
-				00181CC41FAAF15B00D40F08 /* img_tx@3x.png in Resources */,
 				0045C8C91F6929E700A85FA9 /* complete_QQ@2x.png in Resources */,
 				00AFB3A01E6F8D95003B73A6 /* greytitle@2x.png in Resources */,
 				005A7029201EEE0800C57B7C /* kctp@2x.png in Resources */,
@@ -7025,6 +7026,7 @@
 				00AB06D21E7D1B02000CA5D2 /* HistoryTableHeaderView.m in Sources */,
 				00AFB3DC1E6FAC1D003B73A6 /* AFAutoPurgingImageCache.m in Sources */,
 				00A694D01E7FCBE800A7D10D /* LearningCourseOperation.m in Sources */,
+				00327B04212CEC2B0051DB0E /* SoftManager.m in Sources */,
 				003AC3FE1E667DBD00713502 /* UIImage+MultiFormat.m in Sources */,
 				00E685341E6D63E500DF471F /* CategoryView.m in Sources */,
 				005538091EF4C50900097978 /* TeamHitBarButtonItem.m in Sources */,

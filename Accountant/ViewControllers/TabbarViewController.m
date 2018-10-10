@@ -27,7 +27,7 @@
 #import "RCDLiveChatRoomViewController.h"
 #import "PackageDetailViewController.h"
 
-@interface TabbarViewController ()<UITabBarControllerDelegate,CourseModule_DetailCourseProtocol,UserModule_AssistantCenterProtocol,CourseModule_PackageDetailProtocol>
+@interface TabbarViewController ()<UITabBarControllerDelegate,CourseModule_DetailCourseProtocol,UserModule_AssistantCenterProtocol,CourseModule_PackageDetailProtocol,TestModule_AddHistoryProtocol>
 
 @property (nonatomic,strong) MainViewController             *mainViewController;
 @property (nonatomic,strong) SettingViewController          *settingViewController;
@@ -342,6 +342,20 @@
 //            [self setSelectedIndex:0];
 //        }
 //    }
+}
+
+- (void)didRequestAddHistorySuccess
+{
+   
+}
+- (void)didRequestAddHistoryFailed:(NSString *)failedInfo
+{
+    [SVProgressHUD dismiss];
+    
+    [SVProgressHUD showErrorWithStatus:failedInfo];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [SVProgressHUD dismiss];
+    });
 }
 
 #pragma mark - packageDetail

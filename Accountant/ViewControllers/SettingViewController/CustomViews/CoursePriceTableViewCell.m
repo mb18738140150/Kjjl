@@ -67,7 +67,7 @@
     self.totalPriceLB = [[UILabel alloc]initWithFrame:CGRectMake(10, 100, kScreenWidth / 2, 60)];
     self.totalPriceLB.font = kMainFont;
     self.totalPriceLB.textColor = UIColorFromRGB(0x999999);
-    self.totalPriceLB.text = [NSString stringWithFormat:@"总价: ￥%@", [NSString stringWithFormat:@"%@", [infoDic objectForKey:kPrice]]];
+    self.totalPriceLB.text = [NSString stringWithFormat:@"总价: %@%@",[SoftManager shareSoftManager].coinName, [NSString stringWithFormat:@"%@", [infoDic objectForKey:kPrice]]];
     [self.contentView addSubview:self.totalPriceLB];
     
     self.buyBtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -92,7 +92,7 @@
 
 - (NSMutableAttributedString*)getOldPaice:(NSString *)oldPrice
 {
-    NSString *oldPriceStr = [NSString stringWithFormat:@"￥%@", oldPrice];
+    NSString *oldPriceStr = [NSString stringWithFormat:@"%@%@",[SoftManager shareSoftManager].coinName, oldPrice];
     NSMutableAttributedString *aOldStr = [[NSMutableAttributedString alloc]initWithString:oldPriceStr];
     [aOldStr addAttributes:@{NSStrikethroughStyleAttributeName: [NSNumber numberWithInteger:NSUnderlineStyleSingle], NSBaselineOffsetAttributeName : @(NSUnderlineStyleSingle)} range:NSMakeRange(0, oldPriceStr.length)];
     
