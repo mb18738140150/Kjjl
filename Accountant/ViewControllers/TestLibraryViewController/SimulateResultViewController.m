@@ -231,6 +231,9 @@
         return CGSizeMake(kScreenWidth, kCellHeightOfBanner + 25);
     }else
     {
+        if (IS_PAD) {
+            return CGSizeMake((int)(self.view.frame.size.width / 14), self.view.frame.size.width / 14);
+        }
         return CGSizeMake((int)(self.view.frame.size.width / 6), self.view.frame.size.width / 6);
     }
 }

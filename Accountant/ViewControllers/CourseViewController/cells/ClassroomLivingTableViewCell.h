@@ -9,12 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "ShakeView.h"
 
-typedef enum : NSUInteger {
-    LivingPlayType_order,
-    LivingPlayType_ordered,
-    LivingPlayType_living,
-    LivingPlayType_videoBack,
-} LivingPlayType;
+
 
 @interface ClassroomLivingTableViewCell : UITableViewCell
 @property (weak, nonatomic) IBOutlet UILabel *payTypeLB;

@@ -44,4 +44,16 @@
 
 #import "SoftManager.h"
 
+typedef enum : NSUInteger {
+    LivingPlayType_order,
+    LivingPlayType_ordered,
+    LivingPlayType_living,
+    LivingPlayType_videoBack,
+} LivingPlayType;
+
+#define IS_PAD ([[UIDevice currentDevice].model isEqualToString:@"iPad"])
+
+//#define IS_PAD (UI_USER_INTERFACE_IDIOM()== UIUserInterfaceIdiomPad)
+
+
 #endif /* Account_h */

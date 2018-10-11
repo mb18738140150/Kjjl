@@ -216,22 +216,59 @@
         }else{
             NSArray *allCourseInfo = array;
             NSArray *subarray;
-            if ((indexPath.row) * 2 <= allCourseInfo.count) {
-                if (indexPath.row == 1) {
-                    subarray = [allCourseInfo subarrayWithRange:NSMakeRange(0, 2)];
+            
+            if (IS_PAD) {
+                if ((indexPath.row) * 3 <= allCourseInfo.count) {
+                    if (indexPath.row == 1) {
+                        subarray = [allCourseInfo subarrayWithRange:NSMakeRange(0, 3)];
+                    }else{
+                        subarray = [allCourseInfo subarrayWithRange:NSMakeRange(3*(indexPath.row - 1), 3)];
+                    }
+                    
+                    [courseCell resetCellContentWithThreeCourseInfo:subarray];
                 }else{
-                    subarray = [allCourseInfo subarrayWithRange:NSMakeRange(2*(indexPath.row - 1), 2)];
+                    if (indexPath.row == 1) {
+                        if (allCourseInfo.count == 2) {
+                            subarray = [allCourseInfo subarrayWithRange:NSMakeRange(0, 2)];
+                            [courseCell resetCellContentWithThree_TwoCourseInfo:subarray];
+                        }else
+                        {
+                            subarray = [allCourseInfo subarrayWithRange:NSMakeRange(0, 1)];
+                            [courseCell resetCellContentWithThree_OneCourseInfo:subarray];
+                        }
+                        
+                    }else{
+                        int leaveCount = allCourseInfo.count - (indexPath.row - 1) * 3;
+                        if (leaveCount % 3 == 2) {
+                            subarray = [allCourseInfo subarrayWithRange:NSMakeRange(3*(indexPath.row - 1), 2)];
+                            [courseCell resetCellContentWithThree_TwoCourseInfo:subarray];
+                        }else
+                        {
+                            subarray = [allCourseInfo subarrayWithRange:NSMakeRange(3*(indexPath.row - 1), 1)];
+                            [courseCell resetCellContentWithThree_OneCourseInfo:subarray];
+                        }
+                    }
                 }
-                
-                [courseCell resetCellContentWithTwoCourseInfo:subarray];
-            }else{
-                if (indexPath.row == 1) {
-                    subarray = [allCourseInfo subarrayWithRange:NSMakeRange(0, 1)];
+            }else
+            {
+                if ((indexPath.row) * 2 <= allCourseInfo.count) {
+                    if (indexPath.row == 1) {
+                        subarray = [allCourseInfo subarrayWithRange:NSMakeRange(0, 2)];
+                    }else{
+                        subarray = [allCourseInfo subarrayWithRange:NSMakeRange(2*(indexPath.row - 1), 2)];
+                    }
+                    
+                    [courseCell resetCellContentWithTwoCourseInfo:subarray];
                 }else{
-                    subarray = [allCourseInfo subarrayWithRange:NSMakeRange(2*(indexPath.row - 1), 1)];
+                    if (indexPath.row == 1) {
+                        subarray = [allCourseInfo subarrayWithRange:NSMakeRange(0, 1)];
+                    }else{
+                        subarray = [allCourseInfo subarrayWithRange:NSMakeRange(2*(indexPath.row - 1), 1)];
+                    }
+                    [courseCell resetCellContentWithOneCourseInfo:subarray];
                 }
-                [courseCell resetCellContentWithOneCourseInfo:subarray];
             }
+            
         }
         
         return courseCell;

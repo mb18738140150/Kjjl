@@ -175,9 +175,38 @@
 #pragma mark - delegate
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    
     CGFloat height;
     CGFloat maxHeight = 80;
     UIFont *font = kMainFont;
+    
+    if (IS_PAD) {
+        CGFloat contentHeight = [UIUtility getSpaceLabelHeght:[[self.questionsInfos objectAtIndex:indexPath.row] objectForKey:kQuestionContent] font:font width:kScreenWidth - 195];
+        height = contentHeight;
+        if (contentHeight > 80) {
+            height = 80;
+        }else
+        {
+            height = contentHeight;
+        }
+        
+        //    NSDictionary * replyDic = [[[self.questionsInfos objectAtIndex:indexPath.row] objectForKey:@"replyList"] firstObject];
+        //
+        //    CGFloat replyHeight = [UIUtility getHeightWithText:[replyDic objectForKey:@"replyCon"] font:font width:kScreenWidth - 30];
+        
+        CGFloat cellHeight = 50 + 10 + height;
+        
+        if ([[[self.questionsInfos objectAtIndex:indexPath.row] objectForKey:kQuestionImgStr] count] > 0) {
+            cellHeight += 5 + 60 + 10 + 30 ;
+        }else
+        {
+            cellHeight += 10 + 30;
+        }
+        
+        return cellHeight;
+    }
+    
+    
     CGFloat contentHeight = [UIUtility getSpaceLabelHeght:[[self.questionsInfos objectAtIndex:indexPath.row] objectForKey:kQuestionContent] font:font width:kScreenWidth - 20];
     height = contentHeight;
     if (contentHeight > 80) {
@@ -187,9 +216,9 @@
         height = contentHeight;
     }
     
-    NSDictionary * replyDic = [[[self.questionsInfos objectAtIndex:indexPath.row] objectForKey:@"replyList"] firstObject];
-    
-    CGFloat replyHeight = [UIUtility getHeightWithText:[replyDic objectForKey:@"replyCon"] font:font width:kScreenWidth - 30];
+//    NSDictionary * replyDic = [[[self.questionsInfos objectAtIndex:indexPath.row] objectForKey:@"replyList"] firstObject];
+//
+//    CGFloat replyHeight = [UIUtility getHeightWithText:[replyDic objectForKey:@"replyCon"] font:font width:kScreenWidth - 30];
     
     CGFloat cellHeight = 10 + kHeightOfCellHeaderImage + 10 + height;
     

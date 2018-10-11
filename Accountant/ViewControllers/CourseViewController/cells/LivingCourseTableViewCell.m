@@ -45,12 +45,20 @@
         [self.contentView addSubview:titleLabel];
         
         UICollectionViewFlowLayout * layout = [[UICollectionViewFlowLayout alloc]init];
-        layout.itemSize = CGSizeMake(kScreenWidth / 2.2, kScreenWidth / 4);
+        if (IS_PAD) {
+            layout.itemSize = CGSizeMake(kScreenWidth / 3, kScreenWidth / 5);
+        }else
+        {
+            layout.itemSize = CGSizeMake(kScreenWidth / 2.2, kScreenWidth / 4);
+        }
         layout.minimumLineSpacing = 0;
         layout.minimumInteritemSpacing = 0;
         layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
         
         self.collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(lineView1.frame) + 10, kScreenWidth, kScreenWidth / 4) collectionViewLayout:layout];
+        if (IS_PAD) {
+            self.collectionView.frame = CGRectMake(0, CGRectGetMaxY(lineView1.frame) + 10, kScreenWidth, kScreenWidth / 5);
+        }
         self.collectionView.delegate = self;
         self.collectionView.dataSource = self;
         self.collectionView.backgroundColor = [UIColor whiteColor];
@@ -90,6 +98,9 @@
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
+    if (IS_PAD) {
+        return CGSizeMake(kScreenWidth / 3, kScreenWidth / 5);
+    }
     return CGSizeMake(kScreenWidth / 2.2, kScreenWidth / 4);
 }
 

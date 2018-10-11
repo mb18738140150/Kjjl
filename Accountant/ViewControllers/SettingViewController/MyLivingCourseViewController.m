@@ -156,6 +156,9 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    if (IS_PAD) {
+        return 145;
+    }
     return 100;
 }
 

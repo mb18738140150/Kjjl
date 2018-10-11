@@ -69,7 +69,7 @@
 
 - (void)resetCellWithInfo:(NSDictionary *)dic
 {
-    [self removeAllContentViews];
+    [self.contentView removeAllSubviews];
     if (dic.allKeys.count == 0) {
         return;
     }
@@ -83,9 +83,9 @@
     
     self.headerImageView.layer.cornerRadius = self.headerImageView.frame.size.width/2;
     self.headerImageView.clipsToBounds = YES;
-    [self addSubview:self.headerImageView];
+    [self.contentView addSubview:self.headerImageView];
     
-    self.quizzerUserNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.headerImageView.frame.origin.x + self.headerImageView.frame.size.width + 5, 10, 100, 15)];
+    
     NSString *showName;
     NSString *userName = [dic objectForKey:kQuestionQuizzerUserName];
     if ([userName class] == [NSNull class] || userName.length <= 4) {
@@ -93,10 +93,13 @@
     }else{
         showName = [NSString stringWithFormat:@"%@****",[userName substringToIndex:userName.length-4]];
     }
+    float nameLBwidth = [UIUtility getWidthWithText:showName font:kMainFont height:15];
+    
+    self.quizzerUserNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.headerImageView.frame.origin.x + self.headerImageView.frame.size.width + 5, 10, nameLBwidth, 15)];
     self.quizzerUserNameLabel.text = showName;
     self.quizzerUserNameLabel.textColor = kCommonMainTextColor_50;
     self.quizzerUserNameLabel.font = kMainFont;
-    [self addSubview:self.quizzerUserNameLabel];
+    [self.contentView addSubview:self.quizzerUserNameLabel];
     
     self.timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.quizzerUserNameLabel.hd_x, CGRectGetMaxY(self.quizzerUserNameLabel.frame) + 5, 200, 15)];
     self.timeLabel.text = [self.cellInfoDic objectForKey:kQuestionTime];
@@ -107,13 +110,45 @@
     self.timeLabel.text = [dic objectForKey:@"questionTime"];
     self.timeLabel.font = [UIFont systemFontOfSize:12];
     self.timeLabel.textColor = kCommonMainTextColor_100;
-    [self addSubview:self.timeLabel];
+    [self.contentView addSubview:self.timeLabel];
+    
+    UILabel * isHaveCommentLB = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 50, 20)];
+    isHaveCommentLB.layer.cornerRadius = 1;
+    isHaveCommentLB.layer.masksToBounds = YES;
+    isHaveCommentLB.layer.borderWidth = 1;
+    isHaveCommentLB.layer.borderColor = UIColorFromRGB(0x008aff).CGColor;
+    isHaveCommentLB.textAlignment = NSTextAlignmentCenter;
+    isHaveCommentLB.font = kMainFont;
     
     CGFloat height;
     CGFloat maxHeight = 80;
     UIFont *font = kMainFont;
     
     CGFloat contentHeight = [UIUtility getSpaceLabelHeght:[self.cellInfoDic objectForKey:kQuestionContent] font:font width:kScreenWidth - 20];
+    
+    if (IS_PAD) {
+        self.headerImageView.frame = CGRectMake(20, 25, 50, 50);
+        self.quizzerUserNameLabel.frame = CGRectMake(self.headerImageView.frame.origin.x + self.headerImageView.frame.size.width + 5, 35, nameLBwidth, 15);
+        contentHeight = [UIUtility getSpaceLabelHeght:[self.cellInfoDic objectForKey:kQuestionContent] font:font width:(kScreenWidth - 195)];
+        
+        self.quizzerUserNameLabel.textColor = UIColorFromRGB(0xffa200);
+        self.timeLabel.frame = CGRectMake(CGRectGetMaxX(self.quizzerUserNameLabel.frame) + 20, self.quizzerUserNameLabel.hd_y, 130, 15);
+        self.timeLabel.textAlignment = NSTextAlignmentCenter;
+        isHaveCommentLB.frame = CGRectMake(CGRectGetMaxX(self.timeLabel.frame) + 20, self.quizzerUserNameLabel.hd_y - 2.5, 50, 20);
+        [self.contentView addSubview:isHaveCommentLB];
+        if ([[dic objectForKey:kQuestionReplyCount] intValue] == 0) {
+            isHaveCommentLB.layer.borderColor = UIColorFromRGB(0x008aff).CGColor;
+            isHaveCommentLB.textColor = UIColorFromRGB(0x008aff);
+            isHaveCommentLB.text = @"未回答";
+        }else
+        {
+            isHaveCommentLB.layer.borderColor = UIColorFromRGB(0xff8400).CGColor;
+            isHaveCommentLB.textColor = UIColorFromRGB(0xff8400);
+            isHaveCommentLB.text = @"已回答";
+        }
+    }
+    
+    
     if (self.isShowFullContent) {
         height = contentHeight;
     }else{
@@ -125,6 +160,9 @@
     }
     
     self.questionContentLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, self.headerImageView.frame.origin.y + self.headerImageView.frame.size.height + 10, kScreenWidth - 20, height)];
+    if (IS_PAD) {
+        self.questionContentLabel.frame = CGRectMake(75, 60, kScreenWidth - 195, height);
+    }
     self.questionContentLabel.attributedText = [UIUtility getSpaceLabelStr:[self.cellInfoDic objectForKey:kQuestionContent] withFont:font];
     if (self.isShowFullContent == YES) {
         self.questionContentLabel.numberOfLines = 10000;
@@ -134,7 +172,7 @@
     self.questionContentLabel.font = kMainFont;
     self.questionContentLabel.lineBreakMode = NSLineBreakByTruncatingTail;
     self.questionContentLabel.textColor = kCommonMainTextColor_50;
-    [self addSubview:self.questionContentLabel];
+    [self.contentView addSubview:self.questionContentLabel];
     
 //    self.seePeopleCountLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, self.questionContentLabel.frame.origin.y + self.questionContentLabel.frame.size.height + 10, kWidthOfCellSeeLabel, kheightOfCellSeeLabel)];
 //    self.seePeopleCountLabel.text = [NSString stringWithFormat:@"%@ 人看过 · %@ 人回复",[dic objectForKey:kQuestionSeePeopleCount],[dic objectForKey:kQuestionReplyCount]];
@@ -152,7 +190,7 @@
         UITapGestureRecognizer *tap1 = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tap1)];
         [self.imageView1 addGestureRecognizer:tap1];
         self.imageView1.userInteractionEnabled = YES;
-        [self addSubview:self.imageView1];
+        [self.contentView addSubview:self.imageView1];
     }
     if (imgs.count == 2) {
         [self.imageView1 sd_setImageWithURL:[NSURL URLWithString:imgs[0]]];
@@ -165,8 +203,8 @@
         [self.imageView2 addGestureRecognizer:tap2];
         self.imageView2.userInteractionEnabled = YES;
         
-        [self addSubview:self.imageView1];
-        [self addSubview:self.imageView2];
+        [self.contentView addSubview:self.imageView1];
+        [self.contentView addSubview:self.imageView2];
     }
     if (imgs.count == 3) {
         [self.imageView1 sd_setImageWithURL:[NSURL URLWithString:imgs[0]]];
@@ -184,9 +222,9 @@
         [self.imageView3 addGestureRecognizer:tap3];
         self.imageView3.userInteractionEnabled = YES;
         
-        [self addSubview:self.imageView1];
-        [self addSubview:self.imageView2];
-        [self addSubview:self.imageView3];
+        [self.contentView addSubview:self.imageView1];
+        [self.contentView addSubview:self.imageView2];
+        [self.contentView addSubview:self.imageView3];
     }
     
     self.replyBountBT = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -196,7 +234,7 @@
     self.replyBountBT.titleLabel.font = [UIFont systemFontOfSize:12];
     [self.replyBountBT setTitleColor:kCommonMainTextColor_100 forState:UIControlStateNormal];
     self.replyBountBT.titleEdgeInsets = UIEdgeInsetsMake(0, 5, 0, 0);
-    [self addSubview:self.replyBountBT];
+    [self.contentView addSubview:self.replyBountBT];
     
     self.lookVCountBT = [UIButton buttonWithType:UIButtonTypeCustom];
     self.lookVCountBT.frame = CGRectMake(kScreenWidth - 50, CGRectGetMaxY(self.questionContentLabel.frame) + 10, 40, 20);
@@ -205,7 +243,7 @@
     self.lookVCountBT.titleLabel.font = [UIFont systemFontOfSize:12];
     [self.lookVCountBT setTitleColor:kCommonMainTextColor_100 forState:UIControlStateNormal];
     self.lookVCountBT.titleEdgeInsets = UIEdgeInsetsMake(0, 5, 0, 0);
-    [self addSubview:self.lookVCountBT];
+    [self.contentView addSubview:self.lookVCountBT];
     
     if (imgs.count > 0) {
         self.replyBountBT.frame = CGRectMake(kScreenWidth - 100, CGRectGetMaxY(self.imageView1.frame) + 10, 40, 20);
@@ -214,7 +252,7 @@
     
     self.bottomLineView = [[UIView alloc] initWithFrame:CGRectMake(0, CGRectGetMaxY(self.replyBountBT.frame) + 8 ,kScreenWidth,2)];
     self.bottomLineView.backgroundColor = UIRGBColor(245, 245, 245);
-    [self addSubview:self.bottomLineView];
+    [self.contentView addSubview:self.bottomLineView];
     
     /*
      // 评论数大于0

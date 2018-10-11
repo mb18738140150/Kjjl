@@ -199,8 +199,12 @@
 {
     CGFloat cellHeight = 0;
     if (indexPath.section == 0 && indexPath.row == 0) {
+        if(IS_PAD)
+        {
+            return kScreenWidth * 0.37;
+        }
         return  2 * kCellHeightOfCategoryView + 30 + 30;
-        return [UIImage imageGetHeight:[UIImage imageNamed:@"shouye-banner"]] + 2 * kCellHeightOfCategoryView + 30 - 20 + 10;
+//        return [UIImage imageGetHeight:[UIImage imageNamed:@"shouye-banner"]] + 2 * kCellHeightOfCategoryView + 30 - 20 + 10;
     }
     if (indexPath.section == 1) {
         cellHeight = 60;
@@ -210,7 +214,13 @@
         cellHeight = kCellHeightOfCourseTitle;
     }
     if (indexPath.section == 2 && indexPath.row != 0) {
-        cellHeight = 100;
+        if(IS_PAD)
+        {
+            cellHeight = 145;
+        }else
+        {
+            cellHeight = 100;
+        }
     }
     
     if (indexPath.section == 2 && [CourseraManager sharedManager].showMore && indexPath.row == [[[[CourseraManager sharedManager]getNotStartLivingCourseArray] objectAtIndex:0] count] + 1) {
@@ -225,11 +235,21 @@
         cellHeight = kCellHeightOfCourseTitle;
     }
     if (indexPath.section == 3 && indexPath.row != 0 && indexPath.row != 3) {
-        cellHeight = kCellHeightOfCourse + 15;
+        if (IS_PAD) {
+            cellHeight = kCellHeightOfCourse_IPAD + 15;
+        }else
+        {
+            cellHeight = kCellHeightOfCourse + 15;
+        }
     }
     
     if (indexPath.section == 4) {
-        return 42 + (kCellHeightOfCourse + 15) * 2 + 40;
+        if (IS_PAD) {
+            return 42 + (kCellHeightOfCourse_IPAD + 15) * 2 + 40;
+        }else
+        {
+            return 42 + (kCellHeightOfCourse + 15) * 2 + 40;
+        }
     }
     
     if (indexPath.section == 5 && indexPath.row == 0) {

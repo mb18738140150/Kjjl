@@ -645,7 +645,7 @@
         state = MFoldingSectionStateFlod;
     }
     
-    [view setupVideoWithBackgroundColor:UIRGBColor(245, 245, 245) titleString:[chapterDic objectForKey:kChapterName] titleColor:kCommonMainTextColor_50 titleFont:kMainFont arrowImage:[UIImage imageNamed:@"tiku_plus"] learnImage:[UIImage imageNamed:@"tiku_text"] arrowPosition:MFoldingSectionHeaderArrowPositionLeft sectionState:state];
+    [view setupVideoWithBackgroundColor:UIRGBColor(245, 245, 245) titleString:[chapterDic objectForKey:kChapterName] titleColor:kCommonMainTextColor_50 titleFont:kMainFont arrowImage:[UIImage imageNamed:@"tiku_plus"] learnImage:[UIImage imageNamed:@"icon_xie"] arrowPosition:MFoldingSectionHeaderArrowPositionLeft sectionState:state];
     view.tapDelegate = self;
     view.lineView.hidden = YES;
     return view;

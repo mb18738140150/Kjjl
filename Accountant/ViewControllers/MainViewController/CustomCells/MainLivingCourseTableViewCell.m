@@ -34,6 +34,8 @@
 {
     
     [self.contentView removeAllSubviews];
+    float cellWidth = kScreenWidth;
+    float cellHeight = 145;
     
     self.selectionStyle = UITableViewCellSelectionStyleNone;
     
@@ -106,7 +108,7 @@
     {
         self.timeLabel.text = [self getTimeWith:[courseInfo objectForKey:kLivinglastTime]];
     }
-
+    
     CGFloat width = [UIUtility getWidthWithText:self.timeLabel.text font:[UIFont systemFontOfSize:13] height:20];
     self.timeLabel.frame = CGRectMake(kScreenWidth - 15 - width, self.courseCoverImageView.hd_centerY - 10, width + 5, 20);
     
@@ -115,18 +117,13 @@
     self.timeImageView = [[UIImageView alloc]initWithFrame:CGRectMake(self.timeLabel.hd_x - 5 - 12 , self.courseCoverImageView.hd_centerY - 7, 12, 13)];
     [self.contentView addSubview:self.timeImageView];
     
-//    if (height >= 30) {
-//        self.teacherIconImageView.hd_y = self.courseCoverImageView.hd_centerY;
-//        self.teacherNameLabel.hd_y = self.courseCoverImageView.hd_centerY - 3;
-//        self.timeLabel.hd_y = self.courseCoverImageView.hd_centerY - 3;
-//        self.timeImageView.hd_y = self.courseCoverImageView.hd_centerY;
-//    }
-    
+
     self.playTimeLB = [[UILabel alloc]initWithFrame:CGRectMake(CGRectGetMaxX(self.courseCoverImageView.frame) + 10, CGRectGetMaxY(self.courseCoverImageView.frame) - 20, self.hd_width - self.courseCoverImageView.hd_width - 50, 20)];
     self.playTimeLB.font = [UIFont systemFontOfSize:11];
     self.playTimeLB.textColor = kCommonMainTextColor_150;
     self.playTimeLB.text = [[[courseInfo objectForKey:kLivingTime] componentsSeparatedByString:@"~"] objectAtIndex:0];
     [self.contentView addSubview:self.playTimeLB];
+    
     
     self.cancelBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     self.cancelBtn.frame = CGRectMake(kScreenWidth - 62, self.playTimeLB.hd_y - 1, 52, 21);
@@ -141,11 +138,28 @@
     if (self.livingCellType == LivingCellType_Order) {
         [self.contentView addSubview:self.cancelBtn];
     }
-    
     // 分割线
     self.seperateLine = [[UIView alloc]initWithFrame:CGRectMake(0, 99, kScreenWidth, 1)];
     self.seperateLine.backgroundColor = kTableViewCellSeparatorColor;
     [self.contentView addSubview:self.seperateLine];
+    
+    if (IS_PAD) {
+        self.courseCoverImageView.frame = CGRectMake(cellHeight * 0.12, 20, cellWidth * 0.25, cellHeight * 0.76);
+        
+        self.courseNameLabel.frame = CGRectMake(CGRectGetMaxX(self.courseCoverImageView.frame) + 25, self.courseCoverImageView.hd_y + self.courseCoverImageView.hd_height / 12, cellWidth - CGRectGetMaxX(self.courseCoverImageView.frame) - 25 - 100, self.courseCoverImageView.hd_height / 6);
+        
+        // 讲师
+        self.teacherIconImageView.frame = CGRectMake(CGRectGetMaxX(self.courseCoverImageView.frame) + 25, self.courseCoverImageView.hd_y +self.courseCoverImageView.hd_height * 0.458 , 12, 13);
+        
+        self.teacherNameLabel.frame = CGRectMake(CGRectGetMaxX(self.teacherIconImageView.frame) + 5, self.courseCoverImageView.hd_y +self.courseCoverImageView.hd_height * 0.458 - 3, 65, self.courseCoverImageView.hd_height / 6);
+        
+        self.playTimeLB.frame = CGRectMake(self.teacherIconImageView.hd_x, self.courseCoverImageView.hd_y +self.courseCoverImageView.hd_height / 6 * 5 - 5, 120, self.courseCoverImageView.hd_height / 6);
+        
+        self.cancelBtn.frame = CGRectMake(kScreenWidth - self.courseCoverImageView.hd_height / 6 * 2.28 - 20, self.playTimeLB.hd_y - 1, self.courseCoverImageView.hd_height / 6 * 2.28, self.courseCoverImageView.hd_height / 6);
+        self.seperateLine.frame = CGRectMake(0, 144, kScreenWidth, 1);
+    }
+
+    
     
     [self showMask];
     

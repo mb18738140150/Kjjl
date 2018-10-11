@@ -91,7 +91,7 @@
     if (self.exChange) {
         if (self.ExchangeBlock) {
             [CourseraManager sharedManager].exchangeNumber++;
-            if ([CourseraManager sharedManager].exchangeNumber > 2) {
+            if ([CourseraManager sharedManager].exchangeNumber > 1) {
                 [CourseraManager sharedManager].exchangeNumber = 0;
             }
             self.ExchangeBlock([CourseraManager sharedManager].exchangeNumber);

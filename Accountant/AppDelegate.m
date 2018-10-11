@@ -154,9 +154,18 @@
     
     [self reloadBasicData];
     
+    if (!IS_PAD) {
+        NSLog(@"*******\nIS_IPHONE\n********");
+    }else
+    {
+        NSLog(@"*******\nIS_PAD\n********");
+    }
+//    NSString *deviceType = [UIDevice currentDevice].model;
+//    NSLog(@"*******\n%@\n********", deviceType);//iPhone
+    
+    
     return YES;
 }
-
 
 - (void)reloadBasicData
 {

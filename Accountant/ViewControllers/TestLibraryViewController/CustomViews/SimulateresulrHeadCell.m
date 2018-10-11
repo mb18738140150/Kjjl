@@ -14,11 +14,27 @@
 
 - (void)awakeFromNib {
     [super awakeFromNib];
+    
+    if (IS_PAD) {
+        self.iconImageWidth.constant = 125;
+        self.iconImageHeight.constant = 125;
+        self.ScoreLBHeight.constant = 125;
+        self.scoreLBWidth.constant = 125;
+        self.rightCountLBHeight.constant = 25;
+        self.wrongCountLBHeight.constant = 25;
+        self.rightLBHeight.constant = 17;
+        self.wrongLBHeight.constant = 17;
+        self.rightLB.font = [UIFont systemFontOfSize:20];
+        self.wrongnumberLabel.font = [UIFont systemFontOfSize:20];
+    }
+    
+    
     // Initialization code
 }
 
 - (void)resetWithInfo:(NSDictionary *)dic
 {
+   
     
     NSLog(@"%@",[dic description]);
     
@@ -38,6 +54,7 @@
         self.rateLabel.text = @"继续加油吧!";
         self.iconImageView.image = [UIImage imageNamed:@"simulateresultBad"];
     }
+    
     
 }
 

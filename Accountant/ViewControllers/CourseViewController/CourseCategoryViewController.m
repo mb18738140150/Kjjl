@@ -42,6 +42,9 @@
 #define kClassroomLivingcellId @"ClassroomLivingTableViewCellID"
 #define kLivingCourseCellId @"LivingCourseCellID"
 
+#import "ClassroomLivingTableViewCell_IPAD.h"
+#define kClassroomLivingcellId_IPAD @"ClassroomLivingTableViewCell_IPADID"
+
 #define kVideoTableTag  10000
 #define kTime 0.3
 #define kSegmentHeight 42
@@ -334,6 +337,10 @@
     
     
     self.videoTableview = [[UITableView alloc]initWithFrame:CGRectMake(75, 0, kScreenWidth - 75, kScreenHeight - kNavigationBarHeight - kStatusBarHeight - kTabBarHeight) style:UITableViewStylePlain];
+    if (IS_PAD) {
+        self.view.backgroundColor = UIColorFromRGB(0xf2f2f2);
+        self.videoTableview.frame = CGRectMake(145, 0, kScreenWidth - 145, kScreenHeight - kNavigationBarHeight - kStatusBarHeight - kTabBarHeight);
+    }
     self.videoTableview.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.videoTableview.tag = kVideoTableTag;
     self.videoTableview.delegate = self;
@@ -359,6 +366,7 @@
     
     [self.livingTableview registerClass:[LivingCourseTableViewCell class] forCellReuseIdentifier:kLivingCourseCellId];
     [self.livingTableview registerNib:[UINib nibWithNibName:@"ClassroomLivingTableViewCell" bundle:nil] forCellReuseIdentifier:kClassroomLivingcellId];
+    [self.livingTableview registerClass:[ClassroomLivingTableViewCell_IPAD class] forCellReuseIdentifier:kClassroomLivingcellId_IPAD];
     [self.scrollView addSubview:self.livingTableview];
     
     // 月份选择view
@@ -382,6 +390,10 @@
     [self.screenBackView addGestureRecognizer:tip];
     
     self.screenTableView = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, 75 , kScreenHeight - kNavigationBarHeight - kStatusBarHeight - kTabBarHeight) style:UITableViewStylePlain];
+    if (IS_PAD) {
+        self.screenTableView.backgroundColor = [UIColor whiteColor];
+        self.screenTableView.frame = CGRectMake(0, 0, 130 , kScreenHeight - kNavigationBarHeight - kStatusBarHeight - kTabBarHeight);
+    }
     self.screenTableView.delegate = self;
     self.screenTableView.dataSource = self;
     self.screenTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -652,7 +664,7 @@
     __weak typeof(self)weakSelf = self;
     if ([tableView isEqual:self.screenTableView]) {
         UITableViewCell * cell = [UIUtility getCellWithCellName:@"cellID" inTableView:tableView andCellClass:[UITableViewCell class]];
-        cell.backgroundColor = UIColorFromRGB(0xf2f2f2);
+        cell.backgroundColor = UIColorFromRGB(0xffffff);
         [cell removeAllSubviews];
         
         if (![cell viewWithTag:1000]) {
@@ -662,7 +674,7 @@
             [cell addSubview:lineVlew];
         }
         
-        UILabel * titleLB = [[UILabel alloc]initWithFrame:CGRectMake(5, 1, 65, 49)];
+        UILabel * titleLB = [[UILabel alloc]initWithFrame:CGRectMake(5, 1, 120, 49)];
         titleLB.font = [UIFont systemFontOfSize:12];
         titleLB.textAlignment = 1;
         [cell addSubview:titleLB];
@@ -678,6 +690,7 @@
 //        titleLB.text = [categoryDic objectForKey:kCourseCategoryName];
         if ([indexPath isEqual:self.currentVideoIndexpath]) {
             titleLB.textColor = UIColorFromRGB(0xff750d);
+            cell.backgroundColor = UIColorFromRGB(0xf2f2f2);
         }else
         {
             titleLB.textColor = kMainTextColor;
@@ -857,6 +870,81 @@
             
             return livingCell;
         }
+        
+        if (IS_PAD) {
+            ClassroomLivingTableViewCell_IPAD * cell = [tableView dequeueReusableCellWithIdentifier:kClassroomLivingcellId_IPAD forIndexPath:indexPath];
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            
+            NSDictionary * dic = [[self.livingCourseArr objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
+            if (indexPath.row <= [[self.livingCourseArr objectAtIndex:indexPath.section] count] - 1) {
+                [cell resetWithDic:dic];
+            }
+            
+            cell.countDownFinishBlock = ^{
+                NSDictionary * dic = @{kCourseID:@(0),
+                                       kteacherId:self.teacherId,
+                                       @"month":@(self.month)};
+                [[CourseraManager sharedManager] didrequestLivingSectionDetailWithInfo:dic andNotifiedObject:self];
+            };
+            
+            cell.LivingPlayBlock = ^(LivingPlayType playType) {
+                
+                switch (playType) {
+                    case LivingPlayType_living:
+                    case LivingPlayType_videoBack:
+                    {
+                        self.selectCurrentMonthCourseId = [[dic objectForKey:kCourseID] intValue];
+                        self.selectCurrentMonthCourseSectionInfoDic = dic;
+                        [SVProgressHUD show];
+                        NSDictionary * dic1 = @{kCourseID:[dic objectForKey:kCourseID],
+                                                kteacherId:@"",
+                                                @"month":@(0)};
+                        [[CourseraManager sharedManager] didrequestLivingSectionDetailWithInfo:dic1 andNotifiedObject:self];
+                        
+                    }
+                        break;
+                    case LivingPlayType_order:
+                    {
+                        if (![[UserManager sharedManager] isUserLogin]){
+                            [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationOfLoginClick object:nil];
+                            return ;
+                        }
+                        [SVProgressHUD show];
+                        
+                        weakSelf.selectOrderLivingSectionInfoDic = dic;
+                        NSDictionary * orderDic = @{@"courseID":[dic objectForKey:kCourseID],
+                                                    @"courseSecondID":[dic objectForKey:kCourseSecondID],
+                                                    @"livingTime":[[[dic objectForKey:kLivingTime] componentsSeparatedByString:@"~"] objectAtIndex:0]};
+                        [[UserManager sharedManager] didRequestOrderLivingCourseOperationWithCourseInfo:orderDic withNotifiedObject:self];
+                        
+                    }
+                        break;
+                    case LivingPlayType_ordered:
+                    {
+                        
+                        if (![[UserManager sharedManager] isUserLogin]){
+                            [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationOfLoginClick object:nil];
+                            return ;
+                        }
+                        [SVProgressHUD show];
+                        
+                        weakSelf.selectOrderLivingSectionInfoDic = dic;
+                        NSDictionary * orderDic = @{@"courseID":[dic objectForKey:kCourseID],
+                                                    @"courseSecondID":[dic objectForKey:kCourseSecondID],
+                                                    @"livingTime":[[[dic objectForKey:kLivingTime] componentsSeparatedByString:@"~"] objectAtIndex:0]};
+                        [[UserManager sharedManager] didRequestCancelOrderLivingCourseOperationWithCourseInfo:orderDic withNotifiedObject:self];
+                        
+                    }
+                        break;
+                        
+                    default:
+                        break;
+                }
+            };
+            
+            return cell;
+        }
+        
         ClassroomLivingTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:kClassroomLivingcellId forIndexPath:indexPath];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         
@@ -964,14 +1052,19 @@
     }
     
     if ([tableView isEqual:self.livingTableview] && indexPath.section == 0 && self.monthIndexPath.row == 0) {
+        if(IS_PAD)
+        {
+            return kScreenWidth / 5 + 20 + 25 + 38;
+        }
         return kScreenWidth / 4 + 20 + 25 + 38;
     }
     if ([tableView isEqual:self.livingTableview] && indexPath.section != 0 && self.monthIndexPath.row == 0) {
         NSDictionary * dic = [self.livingCourseArr[indexPath.section] objectAtIndex:indexPath.row];
+        if (IS_PAD) {
+            return 145;
+        }
         return 81;
-//        if ([[dic objectForKey:kLivingState] intValue] == 2 || [[dic objectForKey:kLivingState] intValue] == 3) {
-//        }
-//        return 110;
+
     }
     if ([tableView isEqual:self.videoTableview]) {
         
@@ -999,7 +1092,6 @@
         
         return [CourseSectionTableViewCell getCellHeightWith:sectionInfoDic andIsFold:YES];
         
-        return 30 + number * kCellHeightOfCourseOfVideo;
     }
     return 100;
 }

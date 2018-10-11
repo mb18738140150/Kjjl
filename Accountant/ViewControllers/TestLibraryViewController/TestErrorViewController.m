@@ -347,7 +347,7 @@
     
     NSDictionary *dic = [self.easyWrongArray objectAtIndex:section];
     view.isChapter = NO;
-    [view setupWithBackgroundColor:[UIColor whiteColor] titleString:[dic objectForKey:kTestChapterName] titleColor:kMainTextColor_100 titleFont:kMainFont descriptionString:[NSString stringWithFormat:@"%d/%d", writeQuestionCount, chapterQuestionCount] descriptionColor:kMainTextColor_100 descriptionFont:[UIFont systemFontOfSize:12] peopleCountString:@"" peopleCountColor:kMainTextColor_100 peopleCountFont:[UIFont systemFontOfSize:12] arrowImage:[UIImage imageNamed:@"tiku_plus"] learnImage:[UIImage imageNamed:@"tiku_text"] arrowPosition:MFoldingSectionHeaderArrowPositionLeft sectionState:state];
+    [view setupWithBackgroundColor:[UIColor whiteColor] titleString:[dic objectForKey:kTestChapterName] titleColor:kMainTextColor_100 titleFont:kMainFont descriptionString:[NSString stringWithFormat:@"%d/%d", writeQuestionCount, chapterQuestionCount] descriptionColor:kMainTextColor_100 descriptionFont:[UIFont systemFontOfSize:12] peopleCountString:@"" peopleCountColor:kMainTextColor_100 peopleCountFont:[UIFont systemFontOfSize:12] arrowImage:[UIImage imageNamed:@"tiku_plus"] learnImage:[UIImage imageNamed:@"icon_xie"] arrowPosition:MFoldingSectionHeaderArrowPositionLeft sectionState:state];
     view.tapDelegate = self;
     return view;
 }

@@ -10,7 +10,7 @@
 #import "ProcessView.h"
 
 #define YUFoldingSepertorLineWidth       0.3f
-#define YUFoldingMargin                  8.0f
+#define YUFoldingMargin                  12.0f
 #define YUFoldingIconSize                16.0f
 
 @interface CategorySectionHeadView()
@@ -166,25 +166,26 @@
     NSInteger totalCount = [countArray[1] integerValue];
     
     self.learnProcessView.progress = writeCount * 1.0 / totalCount;
+    self.learnProcessView.hidden = YES;
     self.totalCountLB.text = [NSString stringWithFormat:@"%ld", totalCount];
     if (sectionState == MFoldingSectionStateShow) {
         self.lineView.alpha = 1;
         
         if (self.arrowPosition == MFoldingSectionHeaderArrowPositionRight) {
             
-            self.showStateImageView.image = [UIImage imageNamed:@"tiku_minus"];
+            self.showStateImageView.image = [UIImage imageNamed:@"icon_zj_s"];
         }else{
             
-            self.showStateImageView.image = [UIImage imageNamed:@"tiku_minus"];
+            self.showStateImageView.image = [UIImage imageNamed:@"icon_zj_s"];
         }
     } else {
         self.lineView.alpha = 0;
         if (self.arrowPosition == MFoldingSectionHeaderArrowPositionRight) {
             
-            self.showStateImageView.image = [UIImage imageNamed:@"tiku_plus"];
+            self.showStateImageView.image = [UIImage imageNamed:@"icon_zj_n"];
         }else{
             
-            self.showStateImageView.image = [UIImage imageNamed:@"tiku_plus"];
+            self.showStateImageView.image = [UIImage imageNamed:@"icon_zj_n"];
         }
     }
     
@@ -195,14 +196,13 @@
         self.learnProcessView.hidden = YES;
         self.questionCountLabel.frame = CGRectMake(kScreenWidth - 35 - 10 - 80, self.learnImageView.hd_centerY - 6, 80, 12);
         self.questionCountLabel.textAlignment = NSTextAlignmentCenter;
-        self.lineView.backgroundColor = UIColorFromRGB(0xdddddd);
+        self.lineView.backgroundColor = UIRGBColor(0, 165, 255);
         self.questionCountLabel.attributedText = [self getQuestionStrWith:descriptionString and:countArray[0]];
         self.titleLabel.hd_width = kScreenWidth - 38 - 125;
     }
     
     [self insertSubview:self.lineView belowSubview:self.showStateImageView];
 }
-
 
 - (NSMutableAttributedString *)getQuestionStrWith:(NSString *)str and:(NSString *)dStr
 {
@@ -242,19 +242,19 @@
         
         if (self.arrowPosition == MFoldingSectionHeaderArrowPositionRight) {
             
-            self.showStateImageView.image = [UIImage imageNamed:@"tiku_minus"];
+            self.showStateImageView.image = [UIImage imageNamed:@"icon_zj_s"];
         }else{
             
-            self.showStateImageView.image = [UIImage imageNamed:@"tiku_minus"];
+            self.showStateImageView.image = [UIImage imageNamed:@"icon_zj_s"];
         }
     } else {
         self.lineView.alpha = 0;
         if (self.arrowPosition == MFoldingSectionHeaderArrowPositionRight) {
             
-            self.showStateImageView.image = [UIImage imageNamed:@"tiku_plus"];
+            self.showStateImageView.image = [UIImage imageNamed:@"icon_zj_n"];
         }else{
             
-            self.showStateImageView.image = [UIImage imageNamed:@"tiku_plus"];
+            self.showStateImageView.image = [UIImage imageNamed:@"icon_zj_n"];
         }
     }
     
@@ -282,7 +282,7 @@
     CGRect titleRect = CGRectMake(CGRectGetMaxX(arrowRect) + YUFoldingMargin, YUFoldingMargin, labelWidth, labelHeight);
     CGRect questionCountRect = CGRectMake(titleRect.origin.x,  CGRectGetMaxY(titleRect) + YUFoldingMargin, labelWidth1, labelHeight1);
     CGRect learnPeopleRect = CGRectMake(CGRectGetMaxX(questionCountRect) + 5,  CGRectGetMaxY(titleRect) + YUFoldingMargin, 100, labelHeight1);
-    CGRect learnImageRect = CGRectMake([UIScreen mainScreen].bounds.size.width - 10 - 25, (self.frame.size.height - 25) / 2, 25, 25);
+    CGRect learnImageRect = CGRectMake([UIScreen mainScreen].bounds.size.width - 10 - 25, (self.frame.size.height - 25) / 2, 22, 25);
     
     [self.showStateImageView setFrame:arrowRect];
     [self.titleLabel setFrame:titleRect];
@@ -298,14 +298,14 @@
     [self addSubview:self.learnPepleCountLB];
     [self addSubview:self.learnImageView];
     [self addGestureRecognizer:self.tapGesture];
-    [self addSubview:self.totalCountLB];
+//    [self addSubview:self.totalCountLB];
     
     self.learnProcessView = [[ProcessView alloc]initWithFrame:CGRectMake(titleRect.origin.x, self.frame.size.height - 13, 230, 3)];
     [self addSubview:self.learnProcessView];
     
     self.lineView = [[UIView alloc] initWithFrame:CGRectMake(25, 30, 0.7, self.frame.size.height - 30)];
     
-    self.lineView.backgroundColor = [UIColor blueColor];
+    self.lineView.backgroundColor = UIRGBColor(0, 165, 255);
     [self addSubview:self.lineView];
     self.lineView.alpha = 0;
     
@@ -327,7 +327,7 @@
     CGRect titleRect = CGRectMake(CGRectGetMaxX(arrowRect) + YUFoldingMargin, 17, labelWidth, labelHeight);
     CGRect questionCountRect = CGRectMake(titleRect.origin.x,  CGRectGetMaxY(titleRect) + YUFoldingMargin, labelWidth1, labelHeight1);
     CGRect learnPeopleRect = CGRectMake(CGRectGetMaxX(questionCountRect) + 5,  CGRectGetMaxY(titleRect) + YUFoldingMargin, 100, labelHeight1);
-    CGRect learnImageRect = CGRectMake([UIScreen mainScreen].bounds.size.width - 10 - 25, (self.frame.size.height - 25) / 2, 25, 25);
+    CGRect learnImageRect = CGRectMake([UIScreen mainScreen].bounds.size.width - 10 - 25, (self.frame.size.height - 25) / 2, 22, 25);
     
     [self.showStateImageView setFrame:arrowRect];
     [self.titleLabel setFrame:titleRect];
@@ -343,7 +343,7 @@
     [self addGestureRecognizer:self.tapGesture];
     
     self.lineView = [[UIView alloc] initWithFrame:CGRectMake(25, 30, 0.7, self.frame.size.height - 30)];
-    self.lineView.backgroundColor = [UIColor blueColor];
+    self.lineView.backgroundColor = UIRGBColor(0, 165, 255);
     [self addSubview:self.lineView];
     self.lineView.alpha = 0;
     
@@ -372,19 +372,19 @@
                              
                              if (self.arrowPosition == MFoldingSectionHeaderArrowPositionRight) {
 
-                                 self.showStateImageView.image = [UIImage imageNamed:@"tiku_minus"];
+                                 self.showStateImageView.image = [UIImage imageNamed:@"icon_zj_s"];
                              }else{
 
-                                 self.showStateImageView.image = [UIImage imageNamed:@"tiku_minus"];
+                                 self.showStateImageView.image = [UIImage imageNamed:@"icon_zj_s"];
                              }
                          } else {
                              self.lineView.alpha = 0;
                              if (self.arrowPosition == MFoldingSectionHeaderArrowPositionRight) {
 
-                                 self.showStateImageView.image = [UIImage imageNamed:@"tiku_plus"];
+                                 self.showStateImageView.image = [UIImage imageNamed:@"icon_zj_n"];
                              }else{
 
-                                 self.showStateImageView.image = [UIImage imageNamed:@"tiku_plus"];
+                                 self.showStateImageView.image = [UIImage imageNamed:@"icon_zj_n"];
                              }
                          }
                      } completion:^(BOOL finished) {

@@ -139,6 +139,9 @@
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     CGFloat width = kScreenWidth/6-1;
+    if (IS_PAD) {
+        width = kScreenWidth/14-1;
+    }
     return CGSizeMake(width, width);
 }
 
@@ -154,6 +157,7 @@
     self.flowLayout.minimumLineSpacing = 0;
     self.flowLayout.minimumInteritemSpacing= 0;
     self.flowLayout.sectionInset = UIEdgeInsetsMake(0, 0, 0, 0);
+    
     self.collectView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidth, kScreenHeight - kStatusBarHeight - kNavigationBarHeight -kTabBarHeight) collectionViewLayout:self.flowLayout];
     [self.collectView registerClass:[AnswerCardAnswerCollectionViewCell class] forCellWithReuseIdentifier:@"answerCardAnswerCell"];
     [self.collectView registerClass:[AnswerCardFooterCollectionViewCell class] forSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"answerCardFooterCell"];

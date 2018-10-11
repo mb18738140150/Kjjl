@@ -10,8 +10,7 @@
 #import "UIMacro.h"
 #import "CommonMacro.h"
 
-#define kcellWidth (kScreenWidth/6 * 0.75)
-#define kcellHeight (kScreenWidth/6 * 0.75) *0.75
+
 
 @implementation SimulateResultCollectionViewCell
 
@@ -25,32 +24,30 @@
     self.imageView.backgroundColor = [UIColor whiteColor];
     //    [self addSubview:self.imageView];
     
-    self.questionNumberLabel = [[UILabel alloc]initWithFrame:CGRectMake(kScreenWidth / 6 / 2 - kcellWidth / 2, kScreenWidth/6/2 - kcellHeight / 2, kcellWidth, kcellHeight)];
+    self.questionNumberLabel = [[UILabel alloc]initWithFrame:CGRectMake(7, 7, self.hd_width - 14, self.hd_width - 14)];
     [self addSubview:self.questionNumberLabel];
-    self.questionNumberLabel.textColor = kCommonMainColor;
+    self.questionNumberLabel.textColor = UIColorFromRGB(0x666666);
     self.questionNumberLabel.font = kMainFont;
     self.questionNumberLabel.textAlignment = 1;
-    
-    self.questionNumberLabel.layer.borderWidth = 0.5;
-    self.questionNumberLabel.layer.borderColor = kCommonMainColor.CGColor;
+    self.questionNumberLabel.layer.cornerRadius = self.questionNumberLabel.hd_width / 2;
+    self.questionNumberLabel.layer.masksToBounds = YES;
+    self.questionNumberLabel.layer.borderWidth = 1;
+    self.questionNumberLabel.layer.borderColor = UIColorFromRGB(0xc8c8c8).CGColor;
     
     self.questionNumberLabel.text = [NSString stringWithFormat:@"%@",[questionInfo objectForKey:kTestQuestionNumber]];
     
     if ([[questionInfo objectForKey:kTestQuestionIsAnswerCorrect] intValue]) {
-        self.questionNumberLabel.backgroundColor = kCommonMainColor;
-        self.questionNumberLabel.textColor = [UIColor whiteColor];
+        self.questionNumberLabel.layer.borderColor = UIColorFromRGB(0x008aff).CGColor;
+        self.questionNumberLabel.textColor = UIColorFromRGB(0x008aff);
     }else
     {
-        self.questionNumberLabel.backgroundColor = UIRGBColor(242, 62, 52);
-        self.questionNumberLabel.layer.borderWidth = 0;
-        self.questionNumberLabel.textColor = [UIColor whiteColor];
+        self.questionNumberLabel.layer.borderColor = UIColorFromRGB(0xff0000).CGColor;
+        self.questionNumberLabel.textColor = UIColorFromRGB(0xff0000);
     }
     
     if (![[questionInfo objectForKey:kTestQuestionIsAnswered] intValue]) {
-        self.imageView.hidden = YES;
-        self.questionNumberLabel.backgroundColor = [UIColor whiteColor];
-        self.questionNumberLabel.textColor = kCommonMainColor;
-        self.questionNumberLabel.layer.borderWidth = 0.5;
+        self.questionNumberLabel.layer.borderColor = UIColorFromRGB(0xc8c8c8).CGColor;
+        self.questionNumberLabel.textColor = UIColorFromRGB(0x666666);
     }
     
 }

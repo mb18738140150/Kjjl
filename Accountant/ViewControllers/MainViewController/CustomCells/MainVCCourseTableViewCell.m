@@ -43,7 +43,7 @@
     self.segmentC = [[HYSegmentedControl alloc] initWithOriginY:0 Titles:@[@"基础",@"出纳",@"会计",@"税务",@"考证"] delegate:self drop:NO color:UIRGBColor(250, 79, 13)];
     [self.contentView addSubview:self.segmentC];
     
-    self.tableview = [[UITableView alloc]initWithFrame:CGRectMake(0, kSegmentHeight, kScreenWidth, kCellHeightOfCourse * 2 + 30) style:UITableViewStylePlain];
+    self.tableview = [[UITableView alloc]initWithFrame:CGRectMake(0, kSegmentHeight, kScreenWidth, kCellHeightOfCourse_IPAD * 2 + 30) style:UITableViewStylePlain];
     self.tableview.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tableview.delegate = self;
     self.tableview.dataSource = self;
@@ -97,22 +97,59 @@
     }else{
         NSArray *allCourseInfo = array;
         NSArray *subarray;
-        if ((indexPath.row) * 2 <= allCourseInfo.count) {
-            if (indexPath.row == 0) {
-                subarray = [allCourseInfo subarrayWithRange:NSMakeRange(0, 2)];
+        if (IS_PAD) {
+            if ((indexPath.row) * 3 <= allCourseInfo.count) {
+                if (indexPath.row == 0) {
+                    subarray = [allCourseInfo subarrayWithRange:NSMakeRange(0, 3)];
+                }else{
+                    subarray = [allCourseInfo subarrayWithRange:NSMakeRange(3*(indexPath.row), 3)];
+                }
+                
+                [courseCell resetCellContentWithThreeCourseInfo:subarray];
             }else{
-                subarray = [allCourseInfo subarrayWithRange:NSMakeRange(2*(indexPath.row), 2)];
+                if (indexPath.row == 0) {
+                    if (allCourseInfo.count == 2) {
+                        subarray = [allCourseInfo subarrayWithRange:NSMakeRange(0, 2)];
+                        [courseCell resetCellContentWithThree_TwoCourseInfo:subarray];
+                    }else
+                    {
+                        subarray = [allCourseInfo subarrayWithRange:NSMakeRange(0, 1)];
+                        [courseCell resetCellContentWithThree_OneCourseInfo:subarray];
+                    }
+                    
+                }else{
+                    int leaveCount = allCourseInfo.count - (indexPath.row - 1) * 3;
+                    if (leaveCount % 3 == 2) {
+                        subarray = [allCourseInfo subarrayWithRange:NSMakeRange(3*(indexPath.row), 2)];
+                        [courseCell resetCellContentWithThree_TwoCourseInfo:subarray];
+                    }else
+                    {
+                        subarray = [allCourseInfo subarrayWithRange:NSMakeRange(3*(indexPath.row), 1)];
+                        [courseCell resetCellContentWithThree_OneCourseInfo:subarray];
+                    }
+                }
+            }
+        }else
+        {
+            if ((indexPath.row) * 2 <= allCourseInfo.count) {
+                if (indexPath.row == 0) {
+                    subarray = [allCourseInfo subarrayWithRange:NSMakeRange(0, 2)];
+                }else{
+                    subarray = [allCourseInfo subarrayWithRange:NSMakeRange(2*(indexPath.row), 2)];
+                }
+                
+                [courseCell resetCellContentWithTwoCourseInfo:subarray];
+            }else{
+                if (indexPath.row == 0) {
+                    subarray = [allCourseInfo subarrayWithRange:NSMakeRange(0, 1)];
+                }else{
+                    subarray = [allCourseInfo subarrayWithRange:NSMakeRange(2*(indexPath.row), 1)];
+                }
+                [courseCell resetCellContentWithOneCourseInfo:subarray];
             }
             
-            [courseCell resetCellContentWithTwoCourseInfo:subarray];
-        }else{
-            if (indexPath.row == 0) {
-                subarray = [allCourseInfo subarrayWithRange:NSMakeRange(0, 1)];
-            }else{
-                subarray = [allCourseInfo subarrayWithRange:NSMakeRange(2*(indexPath.row), 1)];
-            }
-            [courseCell resetCellContentWithOneCourseInfo:subarray];
         }
+        
     }
     
     return courseCell;
@@ -120,7 +157,12 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return kCellHeightOfCourse + 15;
+    if (IS_PAD) {
+        return  kCellHeightOfCourse_IPAD + 15;
+    }else
+    {
+        return  kCellHeightOfCourse + 15;
+    }
 }
 
 - (void)moreCourseClick

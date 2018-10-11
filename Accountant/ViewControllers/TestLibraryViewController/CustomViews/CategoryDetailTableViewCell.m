@@ -10,7 +10,7 @@
 #import "UIImage+Blur.h"
 
 #define YUFoldingSepertorLineWidth       0.3f
-#define YUFoldingMargin                  8.0f
+#define YUFoldingMargin                  12.0f
 #define YUFoldingIconSize                16.0f
 
 @implementation CategoryDetailTableViewCell
@@ -118,7 +118,7 @@
     self.backgroundColor = [UIColor whiteColor];
     
     self.lineView = [[UIView alloc]initWithFrame:CGRectMake(25, 0, 0.7, self.hd_height)];
-    self.lineView.backgroundColor = [UIColor blueColor];
+    self.lineView.backgroundColor = UIRGBColor(0, 165, 255);
     [self addSubview:self.lineView];
     if (islast) {
         self.lineView.hd_height = 10;
@@ -128,11 +128,11 @@
     CGFloat labelHeight = 15;
     CGFloat labelHeight1 = 12;
     CGFloat labelWidth1 = 80;
-    CGRect arrowRect = CGRectMake(20, 10, 10, 10);
+    CGRect arrowRect = CGRectMake(20, 12, 10, 10);
     CGRect titleRect = CGRectMake(CGRectGetMaxX(arrowRect) + YUFoldingMargin, YUFoldingMargin, labelWidth, labelHeight);
     CGRect questionCountRect = CGRectMake(titleRect.origin.x,  CGRectGetMaxY(titleRect) + YUFoldingMargin, labelWidth1, labelHeight1);
     CGRect learnPeopleRect = CGRectMake(CGRectGetMaxX(questionCountRect) + 5,  CGRectGetMaxY(titleRect) + YUFoldingMargin, 100, labelHeight1);
-    CGRect learnImageRect = CGRectMake([UIScreen mainScreen].bounds.size.width - 10 - 25, (self.frame.size.height - 25) / 2, 25, 25);
+    CGRect learnImageRect = CGRectMake([UIScreen mainScreen].bounds.size.width - 10 - 25, (self.frame.size.height - 25) / 2, 22, 25);
     CGRect shikanBtnRect = CGRectMake([UIScreen mainScreen].bounds.size.width - 10 - 40, (self.frame.size.height - 25) / 2, 40, 25);
     
     [self.showStateImageView setFrame:arrowRect];
@@ -152,12 +152,12 @@
     [self addSubview:self.learnPepleCountLB];
     [self addSubview:self.learnImageView];
     [self addSubview:self.shikanBtn];
-    [self addSubview:self.totalCountLB];
+//    [self addSubview:self.totalCountLB];
     
     [self.shikanBtn addTarget:self action:@selector(shikan) forControlEvents:UIControlEventTouchUpInside];
     
-    self.showStateImageView.image = [UIImage imageNamed:@"tiku_point"];
-    self.learnImageView.image = [UIImage imageNamed:@"tiku_text@2x"];
+    self.showStateImageView.image = [UIImage imageNamed:@"icon_jiedian"];//tiku_point
+    self.learnImageView.image = [UIImage imageNamed:@"icon_xie"];// tiku_text
     if (self.cellType == CellType_video) {
         self.lineView.frame = CGRectMake(25, 0, 0.7, 50);
         if (islast) {
@@ -179,6 +179,7 @@
     self.totalCountLB.text = [NSString stringWithFormat:@"%@", [infoDic objectForKey:kTestSectionQuestionCount]];
     self.learnProcessView = [[ProcessView alloc]initWithFrame:CGRectMake(titleRect.origin.x, self.frame.size.height - 13, 230, 3)];
     self.learnProcessView.progress = [[infoDic objectForKey:@"currentIndex"] integerValue] * 1.0 / [[infoDic objectForKey:kTestSectionQuestionCount] integerValue];
+    self.learnProcessView.hidden = YES;
     [self addSubview:self.learnProcessView];
     
     if (self.cellType != CellType_chapterTest) {
@@ -188,7 +189,7 @@
         {
             [self addSubview:self.bottomLineView];
         }
-        self.lineView.backgroundColor = UIColorFromRGB(0xdddddd);
+//        self.lineView.backgroundColor = UIColorFromRGB(0xdddddd);
         self.showStateImageView.hd_centerY = self.learnImageView.hd_centerY;
         self.titleLabel.hd_centerY = self.learnImageView.hd_centerY;
         self.titleLabel.hd_width = kScreenWidth - 38 - 125;
@@ -196,10 +197,8 @@
         self.questionCountLabel.frame = CGRectMake(kScreenWidth - 35 - 10 - 80, self.learnImageView.hd_centerY - 6, 80, 12);
         self.questionCountLabel.textAlignment = NSTextAlignmentCenter;
         self.learnProcessView.hidden = YES;
-        self.backgroundColor = UIColorFromRGB(0xf9f9f9);
+//        self.backgroundColor = UIColorFromRGB(0xf9f9f9);
     }
-
-    
 }
 
 
@@ -290,7 +289,7 @@
     self.totalCountLB.hidden = YES;
     [self.bottomLineView setFrame:CGRectMake(0, 49, kScreenWidth, 1)];
     
-    self.showStateImageView.frame = CGRectMake(17.5, 7.5, 15, 15);
+    self.showStateImageView.frame = CGRectMake(17.5, 12, 15, 15);
     self.learnImageView.frame = CGRectMake([UIScreen mainScreen].bounds.size.width - 10 - 25, (self.frame.size.height - 25) / 2, 25, 25);
     
     UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(downloadAction)];

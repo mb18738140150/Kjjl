@@ -194,6 +194,9 @@
 {
     UICollectionViewFlowLayout * layout = [[UICollectionViewFlowLayout alloc]init];
     layout.itemSize = CGSizeMake(kScreenWidth / 2 - 1, kScreenWidth / 3 * 1.2 + 70);
+    if(IS_PAD){
+        layout.itemSize = CGSizeMake(kScreenWidth / 3 - 1, (kScreenWidth / 3 - 1)*1.3);
+    }
     layout.minimumLineSpacing = 0;
     layout.minimumInteritemSpacing = 0;
     layout.scrollDirection = UICollectionViewScrollDirectionVertical;

@@ -60,6 +60,10 @@
         self.height = 2 * kCellHeightOfCategoryView + 30 + 30 + 20;
     }
     
+    if (IS_PAD) {
+        self.height = kScreenWidth * 0.37;
+    }
+    
     self.bannerScrollView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0, self.y, kScreenWidth, self.height) imageNamesGroup:self.bannerImgUrlArray];
     self.bannerScrollView.autoScrollTimeInterval = 10;
     [self.contentView addSubview:self.bannerScrollView];

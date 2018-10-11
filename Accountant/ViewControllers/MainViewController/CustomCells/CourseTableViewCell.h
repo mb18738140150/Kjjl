@@ -17,4 +17,8 @@
 
 - (void)resetCellContentWithOneCourseInfo:(NSArray *)infoArray;
 
+- (void)resetCellContentWithThreeCourseInfo:(NSArray *)infoArray;
+- (void)resetCellContentWithThree_TwoCourseInfo:(NSArray *)infoArray;
+- (void)resetCellContentWithThree_OneCourseInfo:(NSArray *)infoArray;
+
 @end

@@ -260,16 +260,31 @@
 //        [hottestArray addObject:dic];
 //    }
     
-    for (int i = 4 * self.exchangeNumber; i < 4 * self.exchangeNumber + 4 && 4 * self.exchangeNumber + 3 < self.courseModuleModel.hottestCourseModel.hottestCourses.count; i++) {
-        CourseModel * model = self.courseModuleModel.hottestCourseModel.hottestCourses[i];
-        NSDictionary *dic = @{kCourseID:@(model.courseID),
-                              kCourseCover:model.courseCover,
-                              kCourseName:model.courseName,
-                              kCourseTeacherName:model.coueseTeacherName,
-                              kPrice:@(model.price)
-                              };
-        [hottestArray addObject:dic];
+    if (IS_PAD) {
+        for (int i = 6 * self.exchangeNumber; i < 6 * self.exchangeNumber + 6 && 6 * self.exchangeNumber + 5 < self.courseModuleModel.hottestCourseModel.hottestCourses.count; i++) {
+            CourseModel * model = self.courseModuleModel.hottestCourseModel.hottestCourses[i];
+            NSDictionary *dic = @{kCourseID:@(model.courseID),
+                                  kCourseCover:model.courseCover,
+                                  kCourseName:model.courseName,
+                                  kCourseTeacherName:model.coueseTeacherName,
+                                  kPrice:@(model.price)
+                                  };
+            [hottestArray addObject:dic];
+        }
+    }else
+    {
+        for (int i = 4 * self.exchangeNumber; i < 4 * self.exchangeNumber + 4 && 4 * self.exchangeNumber + 3 < self.courseModuleModel.hottestCourseModel.hottestCourses.count; i++) {
+            CourseModel * model = self.courseModuleModel.hottestCourseModel.hottestCourses[i];
+            NSDictionary *dic = @{kCourseID:@(model.courseID),
+                                  kCourseCover:model.courseCover,
+                                  kCourseName:model.courseName,
+                                  kCourseTeacherName:model.coueseTeacherName,
+                                  kPrice:@(model.price)
+                                  };
+            [hottestArray addObject:dic];
+        }
     }
+    
     
     return hottestArray;
 }
@@ -431,7 +446,9 @@
                               kAssistantID:jModel.assistantId,
                               kPlayBackUrl:jModel.playback,
                               kIsLivingCourseFree:@(jModel.isFree),
-                              kIsBack:@(jModel.isBack)};
+                              kIsBack:@(jModel.isBack),
+                              kCourseCover:jModel.courseCover,
+                              };
         
         
         if (jModel.playState == 3) {
