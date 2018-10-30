@@ -151,7 +151,6 @@
     if ([[QuestionManager sharedManager] isLoadMax]) {
         [self.contentTableView.mj_footer endRefreshingWithNoMoreData];
     }
-    
 }
 
 - (void)didQuestionRequestFailed:(NSString *)failedInfo
@@ -175,7 +174,6 @@
 #pragma mark - delegate
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    
     CGFloat height;
     CGFloat maxHeight = 80;
     UIFont *font = kMainFont;

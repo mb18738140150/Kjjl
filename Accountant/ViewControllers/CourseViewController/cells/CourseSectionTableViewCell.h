@@ -18,4 +18,6 @@
 
 + (CGFloat)getCellHeightWith:(NSDictionary *)infoDic andIsFold:(BOOL)isFold;
 
++ (CGFloat)getCellHeightWith:(NSDictionary *)infoDic andIsPad:(BOOL)isPad;
+
 @end

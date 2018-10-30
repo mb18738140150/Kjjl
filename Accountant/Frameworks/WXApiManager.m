@@ -40,7 +40,7 @@
         }
     } else if ([resp isKindOfClass:[AddCardToWXCardPackageResp class]]) {
         if (_delegate
-            && [_delegate respondsToSelector:@selector(managerDidRecvAddCardResponse:)]) {
+            && [_delegate respondsToSelector:@selector(managerDidRecvAddCardResponse:)]) { 
             AddCardToWXCardPackageResp *addCardResp = (AddCardToWXCardPackageResp *)resp;
             [_delegate managerDidRecvAddCardResponse:addCardResp];
         }

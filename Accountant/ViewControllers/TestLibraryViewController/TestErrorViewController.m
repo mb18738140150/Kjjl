@@ -445,9 +445,7 @@
                 if ([[infoDic objectForKey:kTestSectionId] isEqual:[secDic objectForKey:kTestSectionId]]) {
                     [secDic setValue:[infoDic objectForKey:@"currentIndex"] forKey:@"currentIndex"];
                 }
-                
             }
-            
             break;
         }
     }
@@ -460,8 +458,8 @@
     }
     
     return cell;
-    
 }
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if ([self.simulateTableView isEqual:tableView]) {

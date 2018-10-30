@@ -190,6 +190,7 @@
 {
     [self.navigationController popViewControllerAnimated:YES];
 }
+
 - (void)tableViewsSetup
 {
     UICollectionViewFlowLayout * layout = [[UICollectionViewFlowLayout alloc]init];

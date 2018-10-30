@@ -44,6 +44,7 @@
 {
     [self.contentView removeAllSubviews];
     
+    
     self.tipView = [[UIView alloc]initWithFrame:CGRectMake(self.hd_width / 2 - 100, 13, 200, 1)];
     _tipView.backgroundColor = UIColorFromRGB(0xcccccc);
     [self.contentView addSubview:_tipView];
@@ -56,6 +57,7 @@
     [self.contentView addSubview:self.titleLB];
     
     self.tableView = [[UITableView alloc]initWithFrame:CGRectMake(23, CGRectGetMaxY(_tipView.frame) + 11, self.hd_width - 20, 100) style:UITableViewStylePlain];
+    
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -337,13 +339,14 @@
     return kCellHeight;
 }
 
-+ (CGFloat)getCellHeightWith:(NSDictionary *)infoDic andIsFold:(BOOL)isFold
++ (CGFloat)getCellHeightWith:(NSDictionary *)infoDic andIsPad:(BOOL)isPad
 {
     NSArray * dataArray = [infoDic objectForKey:kCourseCategorySecondCourseInfos];
     
     float cellHeight = 0.0;
-    if (isFold) {
+    if (isPad) {
         cellHeight = kCellHeight_IPAD;
+        
         int courseCount = dataArray.count;
         if (courseCount%3 == 0) {
             if (courseCount/3 > 2) {
@@ -368,6 +371,68 @@
         }
     }else
     {
+        cellHeight = kCellHeight;
+        int courseCount = dataArray.count;
+        if (courseCount%2 == 0) {
+            if (courseCount/2 > 3) {
+                if ([[infoDic objectForKey:kIsFold] intValue]) {
+                    return 3 * cellHeight + 70;
+                }
+                return (courseCount/2) * cellHeight + 70;
+            }else
+            {
+                return courseCount/2 * cellHeight + 30;
+            }
+        }else{
+            if (courseCount/2 + 1 > 3) {
+                if ([[infoDic objectForKey:kIsFold] intValue]) {
+                    return 3 * cellHeight + 70;
+                }
+                return (courseCount/2 + 1) * cellHeight + 70;
+            }else
+            {
+                return (courseCount/2 + 1) * cellHeight + 30;
+            }
+        }
+    }
+    
+    
+    return 0;
+}
+
++ (CGFloat)getCellHeightWith:(NSDictionary *)infoDic andIsFold:(BOOL)isFold
+{
+    NSArray * dataArray = [infoDic objectForKey:kCourseCategorySecondCourseInfos];
+    
+    float cellHeight = 0.0;
+    if (isFold) {
+        cellHeight = kCellHeight_IPAD;
+        
+        int courseCount = dataArray.count;
+        if (courseCount%3 == 0) {
+            if (courseCount/3 > 2) {
+                if ([[infoDic objectForKey:kIsFold] intValue]) {
+                    return 2 * cellHeight + 70;
+                }
+                return (courseCount/3) * cellHeight + 70;
+            }else
+            {
+                return courseCount/3 * cellHeight + 30;
+            }
+        }else{
+            if (courseCount/3 + 1 > 2) {
+                if ([[infoDic objectForKey:kIsFold] intValue]) {
+                    return 2 * cellHeight + 70;
+                }
+                return (courseCount/3 + 1) * cellHeight + 70;
+            }else
+            {
+                return (courseCount/3 + 1) * cellHeight + 30;
+            }
+        }
+    }else
+    {
+        
         cellHeight = kCellHeight;
         int courseCount = dataArray.count;
         if (courseCount%2 == 0) {

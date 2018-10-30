@@ -202,7 +202,6 @@
             break;
     }
 }
-
 #pragma mark - upgradeMemberLevel
 - (void)upgradeMemberLevel
 {

@@ -674,7 +674,13 @@
             [cell addSubview:lineVlew];
         }
         
-        UILabel * titleLB = [[UILabel alloc]initWithFrame:CGRectMake(5, 1, 120, 49)];
+        UILabel * titleLB = [[UILabel alloc]init];
+        if (IS_PAD) {
+            titleLB.frame = CGRectMake(5, 1, 120, 49);
+        }else
+        {
+            titleLB.frame = CGRectMake(5, 1, 65, 49);
+        }
         titleLB.font = [UIFont systemFontOfSize:12];
         titleLB.textAlignment = 1;
         [cell addSubview:titleLB];
@@ -1074,7 +1080,12 @@
             NSArray * sectionArr = [infoDic objectForKey:kCourseCategoryCourseInfos];
             NSDictionary * sectionInfoDic = [sectionArr objectAtIndex:indexPath.row];
 
-            return [CourseSectionTableViewCell getCellHeightWith:sectionInfoDic andIsFold:YES];
+            if (IS_PAD) {
+                return [CourseSectionTableViewCell getCellHeightWith:sectionInfoDic andIsPad:YES];
+            }
+            {
+                return [CourseSectionTableViewCell getCellHeightWith:sectionInfoDic andIsPad:NO];
+            }
         }
         
         NSDictionary * infoDic = [self.categoryArray objectAtIndex:self.currentVideoIndexpath.row - 1];
@@ -1090,7 +1101,13 @@
             number = courseCount/2 + 1;
         }
         
-        return [CourseSectionTableViewCell getCellHeightWith:sectionInfoDic andIsFold:YES];
+        if (IS_PAD) {
+            return [CourseSectionTableViewCell getCellHeightWith:sectionInfoDic andIsPad:YES];
+        }
+        {
+            return [CourseSectionTableViewCell getCellHeightWith:sectionInfoDic andIsPad:NO];
+        }
+//        return [CourseSectionTableViewCell getCellHeightWith:sectionInfoDic andIsFold:YES];
         
     }
     return 100;

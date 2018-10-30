@@ -30,7 +30,6 @@
     self.view.backgroundColor = [UIColor whiteColor];
     [self navigationViewSetup];
     [self contentViewSetup];
-    
 }
 
 - (void)dissmiss
