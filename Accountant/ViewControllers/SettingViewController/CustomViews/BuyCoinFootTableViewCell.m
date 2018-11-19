@@ -17,7 +17,7 @@
 
 - (void)resetUI
 {
-    self.detailLB.text = @"1、充值比例：￥1=1金币 \n2、根据苹果公司规定，iOS设备上的充值不能在非iOS设备上使用 \n3、如需帮助，请联系客服";
+    self.detailLB.text = @"1、充值比例：￥1=1金币 \n2、iOS设备上的充值不能在非iOS设备上使用 \n3、如需帮助，请联系客服";
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12121" systemVersion="16B2657" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -54,7 +54,8 @@
                     <rect key="frame" x="21" y="180" width="333" height="184"/>
                     <string key="text">1、此活动为新用户专享，您的朋友需要是未注册过此版本会计教练的新用户，否则将无法接受您的邀请。
 2、您的朋友在收到邀请后，需要输入的手机号注册成为会计教练用户，才能被视为邀请成功，否则你无法获得邀请奖励。
-3、请理解本次活动鼓励分享的初衷，不要利用活动规则恶意刷取余额，否则将不予奖励或收回已发放的余额奖励。4、如果您对本次活动有任何疑问或意见，请联系客服热线400-0088-270咨询。</string>
+3、请理解本次活动鼓励分享的初衷，不要利用活动规则恶意刷取余额，否则将不予奖励或收回已发放的余额奖励。
+4、如果您对本次活动有任何疑问或意见，请联系客服热线400-0088-270咨询。</string>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <color key="textColor" red="0.40000000000000002" green="0.40000000000000002" blue="0.40000000000000002" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
@@ -75,6 +76,7 @@
                 <constraint firstItem="kIq-ZG-7eN" firstAttribute="top" secondItem="WY6-xV-qM4" secondAttribute="bottom" id="uEG-Bb-T9b"/>
                 <constraint firstAttribute="trailing" secondItem="kIq-ZG-7eN" secondAttribute="trailing" id="unp-Bl-ib9"/>
             </constraints>
+            <point key="canvasLocation" x="-138" y="31"/>
         </view>
     </objects>
 </document>

@@ -37,7 +37,6 @@
 
 //#define RONGCLOUD_IM_APPKEY @"x18ywvqfx6dsc"
 
-
 #import "JPUSHService.h"
 // iOS10注册APNs所需头文件
 #ifdef NSFoundationVersionNumber_iOS_9_x_Max
@@ -640,5 +639,21 @@ forRemoteNotification:(NSDictionary *)userInfo
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
     return  [WXApi handleOpenURL:url delegate:[WXApiManager sharedManager]];
 }
+
+//- (UIInterfaceOrientationMask)application:(UIApplication *)application supportedInterfaceOrientationsForWindow:(UIWindow *)window
+//{
+//    if (_allowRotation == YES) {
+//        if ([SoftManager shareSoftManager].isCamera) {
+//            return UIInterfaceOrientationMaskLandscapeLeft;
+//        }else
+//        {
+//             return (UIInterfaceOrientationMaskPortrait);
+//        }
+//    }else
+//    {
+//        return (UIInterfaceOrientationMaskPortrait);
+//    }
+//
+//}
 
 @end

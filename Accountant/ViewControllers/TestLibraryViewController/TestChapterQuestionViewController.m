@@ -117,7 +117,7 @@
     
     if ([[infoDic objectForKey:@"lastLogId"] intValue] > 0) {
         
-        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:nil message:@"是否按上次进度继续做题" delegate:self cancelButtonTitle:@"从新做" otherButtonTitles:@"继续上次", nil];
+        UIAlertView * alert = [[UIAlertView alloc]initWithTitle:nil message:@"是否按上次进度继续做题" delegate:self cancelButtonTitle:@"重新做" otherButtonTitles:@"继续上次", nil];
         [alert show];
         
     }else

@@ -889,8 +889,6 @@
         [videoInfodic setValue:[weakSelf.currentVideoDic objectForKey:kVideoName] forKey:kVideoName];
         [videoInfodic setValue:[weakSelf.currentVideoDic objectForKey:kVideoURL] forKey:kVideoURL];
         [[VideoManager sharedManager]writeToDB:videoInfodic];
-        
-        
     };
     
     [self.videoController showInView:self.view];

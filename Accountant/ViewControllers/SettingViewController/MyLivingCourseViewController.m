@@ -225,6 +225,7 @@
     return footerView;
 }
 
+
 #pragma mark - HYSegmentedControlDelegate
 - (void)hySegmentedControlSelectAtIndex:(NSInteger)index
 {

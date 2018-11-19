@@ -70,7 +70,7 @@
     
     self.packageDetailSelectView.dataArray = self.packageSpecificationArr;
     self.packageDetailSelectView.imageUrl = [self.packageDetailInfoDic objectForKey:@"packageCover"];
-    
+    [_webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[self.packageDetailInfoDic objectForKey:@"packageIntroduce"]]]];
     [self.tableview reloadData];
 }
 
@@ -547,6 +547,7 @@
 
 - (void)dealloc
 {
+    NSLog(@"dealloc");
     [self.webView.scrollView removeObserver:self forKeyPath:@"contentOffset"];
 }
 

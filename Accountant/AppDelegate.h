@@ -12,6 +12,6 @@
 
 @property (strong, nonatomic) UIWindow *window;
 @property (nonatomic,strong) TabbarViewController           *tabbarViewController;
-
+@property (nonatomic, assign)BOOL allowRotation;// 是否允许转向
 @end
 

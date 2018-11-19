@@ -573,6 +573,7 @@ static const CGFloat kVideoPlayerControllerAnimationTimeInterval = 0.3f;
 - (void)changeToOrientation:(UIDeviceOrientation)orientation
 {
     if ([[UIDevice currentDevice] respondsToSelector:@selector(setOrientation:)]) {
+//        [SoftManager shareSoftManager].isCamera = NO;
         SEL selector = NSSelectorFromString(@"setOrientation:");
         NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[UIDevice instanceMethodSignatureForSelector:selector]];
         [invocation setSelector:selector];
@@ -626,6 +627,8 @@ static const CGFloat kVideoPlayerControllerAnimationTimeInterval = 0.3f;
         if (self.isLocked) { // 解锁
             [self lockButtonClick:self.videoControl.lockButton];
         }
+#pragma mark - 竖屏
+//        [SoftManager shareSoftManager].isCamera = YES;
         [self changeToOrientation:UIDeviceOrientationPortrait];
     }
 }
